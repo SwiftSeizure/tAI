@@ -1,9 +1,19 @@
+/*Helllloooooooo teamates below you will see a bunch of commented shit
+those are different chat gpt api calls. The first one makes a request for a hiku about coding
+try uncommenting only that one and seeing if it will run NOTE you will need to change the api key to the api key you get from the website
+to do this go to the .env folder and change the value to the value you generate at the website. lmk if you need help generating the key. the next two are 
+utuliing file upload the first is for pdf and the second is for png. those should hopefully also work.
+
+/*
+
+
+
 /* import dotenv from "dotenv";
 import OpenAI from "openai";
 
 dotenv.config(); // Load environment variables
 
-console.log("API Key:", process.env.OPENAI_API_KEY);
+console.log("API Key:", process.env.OPENAI_API_KEY); 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY});
 
 const completion = await openai.chat.completions.create({
