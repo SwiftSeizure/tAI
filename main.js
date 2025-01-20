@@ -16,7 +16,7 @@ const completion = await openai.chat.completions.create({
 
 console.log(completion.choices[0].message.content); */
 
-import dotenv from "dotenv";
+/* import dotenv from "dotenv";
 import OpenAI from "openai";
 import fs from "fs";
 import * as pdfjs from "pdfjs-dist";
@@ -66,5 +66,46 @@ async function processPDF(filePath) {
 const pdfFilePath = "C:/Users/haida/OneDrive/Documents/GitHub/tAI/testMLP.pdf";
 
 // Call the function
-processPDF(pdfFilePath);
+processPDF(pdfFilePath); */
 
+import dotenv from "dotenv";
+import OpenAI from "openai";
+import fs from "fs";
+import Tesseract from "tesseract.js"; // OCR library
+
+dotenv.config();
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+// Function to extract text from an image using tesseract.js
+async function extractTextFromImage(filePath) {
+  const { data: { text } } = await Tesseract.recognize(filePath, "eng"); // Recognize text in English
+  return text;
+}
+
+// Function to process the image and send extracted content to ChatGPT
+async function processImage(filePath) {
+  try {
+    const imageContent = await extractTextFromImage(filePath);
+
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        { role: "system", content: "You are a helpful teaching assistant. this means you cant give full answers ever. Your goal is to facilitate learning not to provide answers." },
+        { role: "user", content: `Here is the content extracted from an image:\n\n${imageContent}` },
+        { role: "user", content: "im on the first question help me get started" },
+      ],
+    });
+
+    console.log("Response from ChatGPT:");
+    console.log(completion.choices[0].message.content);
+  } catch (error) {
+    console.error("Error processing the image:", error);
+  }
+}
+
+// Path to the image file
+const imageFilePath = "C:/Users/haida/OneDrive/Documents/GitHub/tAI/testImage.jpg";
+
+// Call the function
+processImage(imageFilePath);
