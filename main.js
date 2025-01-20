@@ -1,14 +1,13 @@
-/*Helllloooooooo teamates below you will see a bunch of commented shit
-those are different chat gpt api calls. The first one makes a request for a hiku about coding
-try uncommenting only that one and seeing if it will run NOTE you will need to change the api key to the api key you get from the website
-to do this go to the .env folder and change the value to the value you generate at the website. lmk if you need help generating the key. the next two are 
-utuliing file upload the first is for pdf and the second is for png. those should hopefully also work.
+/*this file contains the first implementations of utulizing the chat gpt api. There are three parts
+the first is a simple api call to ask chat what its favorite song is. The second uploads a pdf to chat that it analyzes
+and the third uploads a png that it analyzes. If everything goes according to plan you should be able to uncomment one of the sections and run it,
+youll just need to install node js. if you try and run the file ones make sure to update the file path.
 
 /*
 
 
 
-/* import dotenv from "dotenv";
+import dotenv from "dotenv";
 import OpenAI from "openai";
 
 dotenv.config(); // Load environment variables
@@ -24,7 +23,7 @@ const completion = await openai.chat.completions.create({
     ],
 });
 
-console.log(completion.choices[0].message.content); */
+console.log(completion.choices[0].message.content); 
 
 /* import dotenv from "dotenv";
 import OpenAI from "openai";
@@ -78,7 +77,7 @@ const pdfFilePath = "C:/Users/haida/OneDrive/Documents/GitHub/tAI/testMLP.pdf";
 // Call the function
 processPDF(pdfFilePath); */
 
-import dotenv from "dotenv";
+/* import dotenv from "dotenv";
 import OpenAI from "openai";
 import fs from "fs";
 import Tesseract from "tesseract.js"; // OCR library
@@ -118,4 +117,5 @@ async function processImage(filePath) {
 const imageFilePath = "C:/Users/haida/OneDrive/Documents/GitHub/tAI/testImage.jpg";
 
 // Call the function
-processImage(imageFilePath);
+processImage(imageFilePath); */
+
