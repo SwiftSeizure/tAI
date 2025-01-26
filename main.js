@@ -119,3 +119,59 @@ const imageFilePath = "C:/Users/haida/OneDrive/Documents/GitHub/tAI/testImage.jp
 // Call the function
 processImage(imageFilePath); */
 
+
+
+import dotenv from "dotenv";
+import OpenAI from "openai";
+import fs from "fs";
+import * as pdfjs from "pdfjs-dist";
+
+dotenv.config();
+
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+// Function to extract text from a PDF using pdfjs-dist
+async function extractTextFromPDF(filePath) {
+  const dataBuffer = fs.readFileSync(filePath);
+  const pdf = await pdfjs.getDocument({ data: new Uint8Array(dataBuffer) }).promise;
+  const textContent = [];
+
+  for (let i = 0; i < pdf.numPages; i++) {
+    const page = await pdf.getPage(i + 1);
+    const content = await page.getTextContent();
+    const pageText = content.items.map((item) => item.str).join(" ");
+    textContent.push(pageText);
+  }
+
+  return textContent.join("\n\n");
+}
+
+// Function to process the PDF and send content to ChatGPT
+async function processPDF(filePath, filePath2) {
+  try {
+    const pdfContent = await extractTextFromPDF(filePath);
+    const pdfContent2 = await extractTextFromPDF(filePath2);
+
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        { role: "system", content: "You are a teaching assistant for a highschool math class. ..." },
+        { role: "system", content: `Here is the content of file1:\n\n${pdfContent}  Here is the content of file2:\n\n${pdfContent2}` },
+        { role: "user", content: "Can you help me start number 2 in section D of the homework? Give me a brief response." }
+      ],
+    });
+
+    console.log("Response from ChatGPT:");
+    console.log(completion.choices[0].message.content);
+  } catch (error) {
+    console.error("Error processing the PDF:", error);
+  }
+}
+
+// Path to the PDF file
+const pdfFilePath = "C:/Users/haida/OneDrive/Documents/GitHub/tAI/testExpressions.pdf";
+const pdfFilePath2 = "C:/Users/haida/OneDrive/Documents/GitHub/tAI/testExpressionsAnswers.pdf";
+
+// Call the function
+processPDF(pdfFilePath, pdfFilePath2);
