@@ -1,5 +1,5 @@
-// TODO: Split into a chat component and a file upload component for SOC
-
+// TODO: Split into a chat component and a file upload component for 
+import '../App.css';
 import React, { useState } from 'react';
 
 const HomePage = () => {
@@ -36,14 +36,14 @@ const HomePage = () => {
       <h1>This is the home page</h1>
       <div>
         <input type="file" onChange={handleFileChange} />
-        <button onClick={handleUpload}>Upload File</button>
+        <button class="button-50" onClick={handleUpload}>Upload File</button>
       </div>
       <div>
         <textarea
           value={message}
           onChange={handleMessageChange}
         />
-        <button onClick={handleMessage}>Send Message</button>
+        <button class="button-50" onClick={handleMessage}>Send Message</button>
       </div>
       {file && <p>Selected file: {file.name}</p>}
     </div>
