@@ -35,16 +35,19 @@ const HomePage = () => {
     <div>
       <h1>This is the home page</h1>
       <div>
-        <input type="file" onChange={handleFileChange} />
+        <input class="input-50" type="file" onChange={handleFileChange} />
         <button class="button-50" onClick={handleUpload}>Upload File</button>
       </div>
       <div>
         <textarea
           value={message}
           onChange={handleMessageChange}
-        />
-        <button class="button-50" onClick={handleMessage}>Send Message</button>
-      </div>
+        /> 
+      </div> 
+      <div> 
+        <button class="button-50" onClick={handleMessage}>Send Message</button> 
+      </div> 
+
       {file && <p>Selected file: {file.name}</p>}
     </div>
   );
