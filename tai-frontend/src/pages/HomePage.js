@@ -1,10 +1,10 @@
 // TODO: Split into a chat component and a file upload component for 
 import '../App.css';
 import React, { useState } from 'react'; 
-import dotenv from '../../src/.env'; // Include most correct path for .ev variable 
+import dotenv from '../../src/'; // Include most correct path for .env variable 
 import OpenAI from "openai"; 
 
-// dotenv.config(); 
+
 
 console.log("API Key:", process.env.OPENAI_API_KEY); 
 
@@ -12,29 +12,37 @@ const HomePage = () => {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState(''); 
   const [completionResult, setCompletionResult] = useState(null);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null); 
+  const [fileContext, setFileContext] = useState(null);
 
   // File Changed Handler
   const handleFileChange = (event) => {
     const uploadedFile = event.target.files[0];
     setFile(uploadedFile);
   };
+ 
+  // File context handler 
+  const handleFileContextChange = (event) => {  
+    console.log("File Context Changed to:", event.target.value);
+    setFileContext(event.target.value);
+  }; 
 
   // Uploading file handler
   const handleUpload = () => {
     if (file) {
-      console.log("File selected:", file.name);
+      console.log("File selected:", file.name, fileContext); 
+
       // Can upload to GPT here for files 
     } else {
-      console.log("No file selected");
+      console.log("No file selected, currently the context is:", fileContext);
     }
-  };
+  }; 
 
   // This needs to be here to update the message that is being typed
   const handleMessageChange = (event) => {
     setMessage(event.target.value);
   };
-
+ 
   // This handles the messages to Chat GPT
   const handleMessage = async () => {
 
@@ -69,8 +77,16 @@ const HomePage = () => {
     <div>
       <h1>This is the home page</h1>
       <div>
-        <input class="input-50" type="file" onChange={handleFileChange} />
-        <button class="button-50" onClick={handleUpload}>Upload File</button>
+        <input class="input-50" type="file" onChange={handleFileChange} /> 
+      </div> 
+      <div>
+        <button class="button-50" onClick={handleUpload}>Upload File</button>   
+        <select id = "dropdown" onChange={handleFileContextChange}>
+          <option value="N/A">N/A</option>
+          <option value="Lesson-Plan">Lesson Plan</option>
+          <option value="Homework">Homework</option>
+          <option value="Course-Overview">Course Overview</option>
+        </select>
       </div>
       <div>
         <textarea
@@ -79,7 +95,7 @@ const HomePage = () => {
         /> 
       </div> 
       <div> 
-        <button class="button-50" onClick={handleMessage}>Send Message</button> 
+        <button class="button-50" onClick={handleMessage}> Send Message </button> 
       </div>  
       {file && <p>Selected file: {file.name}</p>} 
       <div> 
