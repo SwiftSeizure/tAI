@@ -75,7 +75,8 @@ const HomePage = () => {
 
   return (
     <div>
-      <h1>This is the home page</h1>
+      <h1>This is the home page</h1> 
+      <div> You are currently logged in as a {localStorage.getItem('user')} </div>
       <div>
         <input class="input-50" type="file" onChange={handleFileChange} /> 
       </div> 
