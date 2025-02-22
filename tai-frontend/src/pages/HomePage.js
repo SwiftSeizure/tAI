@@ -3,6 +3,7 @@ import '../App.css';
 import React, { useState } from 'react'; 
 import dotenv from '../../src/'; // Include most correct path for .env variable 
 import OpenAI from "openai"; 
+import ChatFeature from "../components/ChatFeature";
 
 
 
@@ -43,34 +44,34 @@ const HomePage = () => {
     setMessage(event.target.value);
   };
  
-  // This handles the messages to Chat GPT
-  const handleMessage = async () => {
+  // // This handles the messages to Chat GPT
+  // const handleMessage = async () => {
 
-    try {
-      const openai = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
-      });
+  //   try {
+  //     const openai = new OpenAI({
+  //       apiKey: process.env.OPENAI_API_KEY,
+  //     });
 
-      const completion = await openai.chat.completions.create({
-        model: "gpt-4",
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are a teaching assistant. You must not give direct answers to questions under any circumstances. Please refer to the following file to understand what class you are TA'ing and to cite relevant materials/questions.",
-          },
-          { role: "user", content: message },
-        ],
-      });
+  //     const completion = await openai.chat.completions.create({
+  //       model: "gpt-4",
+  //       messages: [
+  //         {
+  //           role: "system",
+  //           content:
+  //             "You are a teaching assistant. You must not give direct answers to questions under any circumstances. Please refer to the following file to understand what class you are TA'ing and to cite relevant materials/questions.",
+  //         },
+  //         { role: "user", content: message },
+  //       ],
+  //     });
 
-      setCompletionResult(completion.choices[0].message.content);
-    } catch (e) {
-      console.error("Error calling OpenAI API:", e);
-      setError("Failed to get response from OpenAI");
-    }
+  //     setCompletionResult(completion.choices[0].message.content);
+  //   } catch (e) {
+  //     console.error("Error calling OpenAI API:", e);
+  //     setError("Failed to get response from OpenAI");
+  //   }
 
-    setMessage(""); // Clear input after submission
-  };
+  //   setMessage(""); 
+  // };
 
 
   return (
@@ -95,7 +96,7 @@ const HomePage = () => {
           onChange={handleMessageChange}
         /> 
       </div> 
-      <div> 
+      {/* <div> 
         <button class="button-50" onClick={handleMessage}> Send Message </button> 
       </div>  
       {file && <p>Selected file: {file.name}</p>} 
@@ -107,7 +108,9 @@ const HomePage = () => {
           cols={50}
           placeholder="Response will appear here..."
           />
-      </div> 
+      </div>  */} 
+      ? < ChatFeature 
+      />
       {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
