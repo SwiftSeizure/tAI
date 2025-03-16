@@ -121,7 +121,7 @@ processImage(imageFilePath); */
 
 
 
-import dotenv from "dotenv";
+/* import dotenv from "dotenv";
 import OpenAI from "openai";
 import fs from "fs";
 import * as pdfjs from "pdfjs-dist";
@@ -175,3 +175,4 @@ const pdfFilePath2 = "C:/Users/haida/OneDrive/Documents/GitHub/tAI/testExpressio
 
 // Call the function
 processPDF(pdfFilePath, pdfFilePath2);
+ */
