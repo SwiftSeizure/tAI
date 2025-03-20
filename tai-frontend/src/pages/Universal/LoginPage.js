@@ -8,13 +8,14 @@ const LoginPage = () => {
     const logIn = async () => { 
         try { 
             const user = { teacherOrStudent };
-            localStorage.setItem('user', JSON.stringify(user));  // Store the user in localStorage
+            localStorage.setItem('user', JSON.stringify(user));  
             navigate('/home');
         } 
         catch (e) { 
             console.log("There was an error wile logging in");
         }
     }
+
 
 
     return ( 
