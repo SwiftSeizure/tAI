@@ -1,5 +1,6 @@
 import { useState } from 'react'; 
-import { useNavigate } from 'react-router-dom';  
+import { useNavigate } from 'react-router-dom';   
+import TeacherStudentHomePage from "./TeacherStudentHomePage";
 
 const LoginPage = () => { 
     const [teacherOrStudent, setTeacherOrStudent] = useState(''); 
@@ -8,8 +9,13 @@ const LoginPage = () => {
     const logIn = async () => { 
         try { 
             const user = { teacherOrStudent };
-            localStorage.setItem('user', JSON.stringify(user));  
-            navigate('/home');
+            localStorage.setItem('user', JSON.stringify(user));   
+             
+            // TODO: Change once we have authentication  
+            if (teacherOrStudent === 'teacher') { 
+                navigate("/HomePage");
+            } 
+            
         } 
         catch (e) { 
             console.log("There was an error wile logging in");
