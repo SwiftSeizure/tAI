@@ -1,0 +1,29 @@
+[project]
+name = "assignment01"
+description = "FastAPI application for Assignment #1"
+license = { text = "MIT" }
+requires-python = ">= 3.10"
+dynamic = [ "dependencies" ]
+authors = [
+  { name = "<your_name>", email = "<your_email>@<your_email>.com" }
+]
+
+[tool.poetry]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.111.0"
+uvicorn = "^0.30.1"
+openai = "^1.68.2"
+requests = "^2.32.3"
+python-dotenv = "^1.1.0"
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
