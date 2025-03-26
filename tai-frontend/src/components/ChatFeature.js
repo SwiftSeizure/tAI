@@ -18,11 +18,20 @@ const ChatFeature = () => {
     
     try { 
 
-      /* REPLACE THIS WITH THE BACKEND INTEGRATION  */
+      /* REPLACE THIS WITH THE BACKEND INTEGRATION  */ 
+      /* Danger  */ 
+      /* Danger  */ 
+      /* Danger  */ 
+      /* Danger  */
       const openai = new OpenAI({
         apiKey: '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', 
         dangerouslyAllowBrowser: true  
-      }); 
+      });  
+      /* Danger  */ 
+      /* Danger  */ 
+      /* Danger  */ 
+      /* Danger  */ 
+      /* Danger  */
       /* END DANGER ZONE */
       
 
