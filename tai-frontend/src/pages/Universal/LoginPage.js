@@ -6,6 +6,8 @@ const LoginPage = () => {
     const [teacherOrStudent, setTeacherOrStudent] = useState(''); 
     const navigate = useNavigate(); 
 
+
+    // Need to chance with USER AUTH 
     const logIn = async () => { 
         try { 
             const user = { teacherOrStudent };
@@ -14,13 +16,17 @@ const LoginPage = () => {
             // TODO: Change once we have authentication  
             if (teacherOrStudent === 'teacher') { 
                 navigate("/HomePage");
-            } 
+            }  
+            else { 
+                navigate("/HomePage");
+            }
             
         } 
         catch (e) { 
             console.log("There was an error wile logging in");
         }
-    }
+    } 
+    // END CHANGE 
 
 
 

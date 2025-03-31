@@ -13,7 +13,7 @@ import requests
 from dotenv import load_dotenv
 
 app = FastAPI()
-load_dotenv()
+load_dotenv() 
 
 def generate_response(prompt):
     url = "https://api.deepseek.com/v1/chat/completions"
@@ -38,4 +38,8 @@ def generate_response(prompt):
 response = generate_response("Write a one-sentence bedtime story about a unicorn.")
 print(response['choices'][0]['message']['content'])
 
-# todo: add routes and logic here
+# todo: add routes and logic here 
+
+# TODO: Route for a teacher or student ID from the DB   
+
+# TODO: Route for getting all the classes a student is enrolled in 
