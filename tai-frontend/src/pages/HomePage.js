@@ -8,10 +8,8 @@ import ChatFeature from "../components/ChatFeature";
 
 console.log("API Key:", process.env.OPENAI_API_KEY); 
 
-const HomePage = () => {
+const HomePage = ( { user }) => {
   const [file, setFile] = useState(null);
-  const [message, setMessage] = useState(''); 
-  const [completionResult, setCompletionResult] = useState(null);
   const [error, setError] = useState(null); 
   const [fileContext, setFileContext] = useState(null);
 

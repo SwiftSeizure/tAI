@@ -1,7 +1,7 @@
 import React from "react"; 
 
 // Need to pass down information here about the name of the class 
-const ClassCard = () => { 
+const ClassCard = ( ) => { 
 
     return(  
         <div> 
