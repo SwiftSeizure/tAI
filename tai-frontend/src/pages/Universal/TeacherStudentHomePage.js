@@ -30,7 +30,7 @@ const TeacherStudentHomePage = () => {
                 <ClassCard />
             </div>
         )
-    }
+    } 
 
     // Make some kind of loop here to populate the class Cards with the DB  
 
