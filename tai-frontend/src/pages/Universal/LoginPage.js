@@ -10,12 +10,12 @@ const LoginPage = () => {
     // Need to chance with USER AUTH 
     const logIn = async () => { 
         try { 
-            const user = { teacherOrStudent };
+            const user = { role: teacherOrStudent };
             localStorage.setItem('user', JSON.stringify(user));   
              
             // TODO: Change once we have authentication  
             if (teacherOrStudent === 'teacher') { 
-                navigate("/HomePage");
+                navigate(`/HomePage/${user.role}`);
             }  
             else { 
                 navigate("/HomePage");
