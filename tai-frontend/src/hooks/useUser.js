@@ -5,7 +5,8 @@ const useUser = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     // Set the user as teacher or student here 
-    useEffect(() => { 
+    useEffect(() => {  
+        
         const loggedInUser = localStorage.getItem("user"); 
         if (loggedInUser) { 
             setUser(JSON.parse(loggedInUser)); 

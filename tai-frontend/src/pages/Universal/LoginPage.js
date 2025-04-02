@@ -3,31 +3,42 @@ import { useNavigate } from 'react-router-dom';
 import TeacherStudentHomePage from "./TeacherStudentHomePage";
 
 const LoginPage = () => { 
-    const [teacherOrStudent, setTeacherOrStudent] = useState(''); 
+    const [teacherOrStudent, setTeacherOrStudent] = useState('');  
+
     const navigate = useNavigate(); 
 
 
     // Need to chance with USER AUTH 
     const logIn = async () => { 
-        try { 
+        try {   
+
+            
             const user = { role: teacherOrStudent };
-            localStorage.setItem('user', JSON.stringify(user));   
-             
+            localStorage.setItem('user', JSON.stringify(user));     
+
+            console.log(user.role);
+
+            
             // TODO: Change once we have authentication  
-            if (teacherOrStudent === 'teacher') { 
-                navigate(`/HomePage/${user.role}`);
+            if (teacherOrStudent === 'teacher1') { 
+                navigate(`/HomePage/teacher/${user.role}`);
             }  
-            else { 
-                navigate("/HomePage");
+            else if (teacherOrStudent === 'teacher2'){ 
+                navigate(`/HomePage/teacher/${user.role}`);
+            } 
+            else if (teacherOrStudent === 'student1'){ 
+                navigate(`/HomePage/student/${user.role}`);
             }
             
-        } 
+        }  
+
         catch (e) { 
             console.log("There was an error wile logging in");
         }
     } 
-    // END CHANGE 
 
+
+    // END CHANGE 
 
 
     return ( 
@@ -37,19 +48,26 @@ const LoginPage = () => {
                 <input
                     type="radio"
                     name="role"
-                    value="teacher"
-                    onChange={() => setTeacherOrStudent('teacher')}
+                    value="teacher1"
+                    onChange={() => setTeacherOrStudent('teacher1')}
                 />
-                Teacher
+                Teacher1 
+                <input
+                    type="radio"
+                    name="role"
+                    value="teacher2"
+                    onChange={() => setTeacherOrStudent('teacher2')}
+                />
+                Teacher2
             </label>
             <label>
                 <input
                     type="radio"
                     name="role"
-                    value="student"
-                    onChange={() => setTeacherOrStudent('student')}
+                    value="student1"
+                    onChange={() => setTeacherOrStudent('student1')}
                 />
-                Student
+                Student1
             </label>
         </div> 
 
@@ -58,4 +76,7 @@ const LoginPage = () => {
     );
 }  
 
-export default LoginPage;
+export default LoginPage; 
+
+// Every single teacher has a unique id 
+// This 

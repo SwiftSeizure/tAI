@@ -10,13 +10,16 @@ function App() {
   return (
     <BrowserRouter>
       <div className="App">
-        <Routes> 
-           
-            
-          
-          
-          <Route path="/HomePage:user" element={<TeacherStudentHomePage /> } />  
+        <Routes>  
+
           <Route path="/" element={<LoginPage />} />
+           
+          
+          <Route path="/HomePage/teacher/:user" element={<TeacherStudentHomePage /> } />   
+          <Route path="/HomePage/student/:user" element={<TeacherStudentHomePage /> } />  
+
+
+          
         </Routes>
       </div>
     </BrowserRouter>
