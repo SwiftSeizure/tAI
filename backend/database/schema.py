@@ -1,8 +1,11 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, JSON
 from sqlalchemy.orm import relationship
-from .db import Base
+from sqlalchemy.ext.declarative import declarative_base
 
-class Student(Base):
+# Declare the base class for models
+Base = declarative_base()
+
+class DBStudent(Base):
     __tablename__ = "student" 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(25), nullable=False)
@@ -10,7 +13,7 @@ class Student(Base):
     
     classes = relationship("Enrolled", back_populates="student")
 
-class Teacher(Base):
+class DBTeacher(Base):
     __tablename__ = "teacher"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -19,7 +22,7 @@ class Teacher(Base):
     
     classes = relationship("Class", back_populates="owner", cascade="all, delete")
 
-class Enrolled(Base):
+class DBEnrolled(Base):
     __tablename__ = "enrolled"
     
     id = Column(Integer, primary_key=True, index=True)
@@ -30,7 +33,7 @@ class Enrolled(Base):
     student = relationship("Student", back_populates="classes")
     class_ = relationship("Class", back_populates="enrollment") 
 
-class Class(Base):
+class DBClass(Base):
     __tablename__ = "class"
 
     id = Column(Integer, primary_key=True, index=True)

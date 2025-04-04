@@ -19,6 +19,10 @@ uvicorn = "^0.30.1"
 openai = "^1.68.2"
 requests = "^2.32.3"
 python-dotenv = "^1.1.0"
+pymysql = "^1.1.1"
+
+[tool.poetry.group.dev.dependencies]
+sqlalchemy = "^2.0.40"
 
 [tool.pyright]
 venvPath = "."
