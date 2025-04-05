@@ -1,60 +1,83 @@
-import React from "react";  
-import { useNavigate } from 'react-router-dom';  
+import React, {useState, useEffect} from "react";  
+import { useNavigate, useLocation } from 'react-router-dom';  
 import useUser from "../../hooks/useUser";
-import ClassCard from "../../components/ClassCard";
+import ClassCard from "../../components/ClassCard"; 
+import axios from "axios";
 
 const TeacherStudentHomePage = (  ) => {   
 
-    const {user, isLoading } = useUser(); 
+
+    const [loading, setLoading] = useState(true); 
+    const [error, setError] = useState(null); 
+    
+    const location = useLocation(); 
+    const { id, name, role } = location.state || {};  
+
+    const stateData = { 
+        id: id, 
+        name: name, 
+        role: role, 
+    };
 
 
-    function getUser() {
-        const userData = localStorage.getItem('user');
-        try {
-            const userObj = JSON.parse(userData);
-            return userObj.role === 'teacher1';
-        } catch (error) {
-            console.error("Error parsing user data:", error);
-            return false;
-        }
-      }
+    const populateClassCards = async()=> {   
+        // e.preventDefault();  
 
-    function populateClassCards() {   
+        // CHANGE THIS IN FUTURE FOR USER AUTH 
+        const userInFunction = localStorage.getItem('user').teacherOrStudent; 
+        console.log("This is in the populate class cards", userInFunction);
+        // END CHANGE 
 
-        
-        // BACKEND !!!!!!!!!!
-        // Need to get a teachers ID here and see what classes they are enrolled in through the DB  
-        // Get all classes that a student/teacher is enrolled in 
-        // BACKEND !!!!!!!!!!! 
+        try {  
+            // Ideally this 
+            const response = axios.get( 
+                // BACKEND 
+                // Get requests can not have state, they need to have a url parameter 
+                `/HomePage/teacher/${id}`,
+                { timeout: 10000 }
+            ); 
 
-
-        //TODO: Help with routes for this through the DB
-
-        // Loop through all the classes and pass it down to the Class Card  
-        if ("teahcer1" === localStorage.getItem('user').teacherOrStudent) {
+            // TODO 
+            // Set the Cards here with the data from the response, map through adding each one as a div so styling is consistent, 
+            // must be in a fragments since multiple divs  (similar format bellow)
+            // {users.map(user => (
+            //     <div key={user.id}>
+            //       <UserCard name={user.name} />
+            //       <UserStats stats={user.stats} />
+            //     </div>
+            //   ))}
             return( 
-                <div>  
-                    <ClassCard />
+                <>  
+                <div> 
+                    <ClassCard stateData={ stateData }/>
                 </div>
+                </>
             )
+
+
         } 
-        else { 
+        catch (error) { 
+            console.log("Bad Bad Bad request for getting th classes from backend", error); 
+            setError(error); 
+            setLoading(false); 
             return;
+
         }
 
-    } 
+    };
+
+
 
     // Make some kind of loop here to populate the class Cards with the DB  
-
+    // TODO Add Welcome user 
     return( 
         <>
         <div>  
-            <h1> Welcome {localStorage.getItem('user').teacherOrStudent}</h1>
+            <h1> Welcome { name }</h1>
             <h1> 
                 This is going to be the Basic Home Page For Both Teachers and Students 
             </h1>   
-            {populateClassCards()}
-            {getUser() && <ClassCard />} 
+            {populateClassCards()}  
 
             <h2>  
                 

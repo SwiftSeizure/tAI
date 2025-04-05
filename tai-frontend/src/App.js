@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage'; 
 import LoginPage from './pages/Universal/LoginPage'; 
-import TeacherStudentHomePage from './pages/Universal/TeacherStudentHomePage';
+import TeacherStudentHomePage from './pages/Universal/TeacherStudentHomePage'; 
+import TeacherStudentUnitPage from './pages/Universal/TeacherStudentUnitPage';
 
 function App() { 
 
@@ -15,8 +16,10 @@ function App() {
           <Route path="/" element={<LoginPage />} />
            
           
-          <Route path="/HomePage/teacher/:user" element={<TeacherStudentHomePage /> } />   
-          <Route path="/HomePage/student/:user" element={<TeacherStudentHomePage /> } />  
+          <Route path="/HomePage" element={<TeacherStudentHomePage /> } />   
+          <Route path="/HomePage/student/:user" element={<TeacherStudentHomePage /> } />   
+
+          <Route path="/UnitPage/:user/:class" element={<TeacherStudentUnitPage />} /> 
 
 
           

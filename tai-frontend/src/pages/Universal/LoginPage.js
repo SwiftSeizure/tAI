@@ -19,10 +19,11 @@ const LoginPage = () => {
             console.log(user.role);
 
             
-            // TODO: Change once we have authentication  
+            // TODO: Change once we have authentication and pass down the uid, the name and the role  
             if (teacherOrStudent === 'teacher1') { 
-                navigate(`/HomePage/teacher/${user.role}`);
-            }  
+                navigate('/HomePage', {state: { userId: 'teacher1', name: 'Batman', role: 'teacher' }});
+            }   
+
             else if (teacherOrStudent === 'teacher2'){ 
                 navigate(`/HomePage/teacher/${user.role}`);
             } 
