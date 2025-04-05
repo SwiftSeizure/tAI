@@ -20,6 +20,8 @@ openai = "^1.68.2"
 requests = "^2.32.3"
 python-dotenv = "^1.1.0"
 pymysql = "^1.1.1"
+sqlalchemy = "^2.0.40"
+mysql-connector-python = "^9.2.0"
 
 [tool.poetry.group.dev.dependencies]
 sqlalchemy = "^2.0.40"

@@ -11,7 +11,7 @@ class DBStudent(Base):
     name = Column(String(25), nullable=False)
     password_hash = Column(String(255), nullable=False)
     
-    classes = relationship("Enrolled", back_populates="student")
+    classes = relationship("DBEnrolled", back_populates="student")
 
 class DBTeacher(Base):
     __tablename__ = "teacher"
@@ -20,7 +20,7 @@ class DBTeacher(Base):
     name = Column(String(25), nullable=False)
     password_hash = Column(String(255), nullable=False)
     
-    classes = relationship("Class", back_populates="owner", cascade="all, delete")
+    classes = relationship("DBClass", back_populates="owner", cascade="all, delete")
 
 class DBEnrolled(Base):
     __tablename__ = "enrolled"
@@ -30,8 +30,8 @@ class DBEnrolled(Base):
     studentID = Column(Integer, ForeignKey("student.id", ondelete="CASCADE"))
     classID = Column(Integer, ForeignKey("class.id", ondelete="CASCADE"))
 
-    student = relationship("Student", back_populates="classes")
-    class_ = relationship("Class", back_populates="enrollment") 
+    student = relationship("DBStudent", back_populates="classes")
+    class_ = relationship("DBClass", back_populates="enrollment") 
 
 class DBClass(Base):
     __tablename__ = "class"
@@ -41,7 +41,7 @@ class DBClass(Base):
     
     ownerID = Column(Integer, ForeignKey("teacher.id", ondelete="CASCADE"))
 
-    owner = relationship("Teacher", back_populates="classes")
-    enrollment = relationship("Enrolled", back_populates="class_")
+    owner = relationship("DBTeacher", back_populates="classes")
+    enrollment = relationship("DBEnrolled", back_populates="class_")
     
     settings = Column(JSON, nullable=False)

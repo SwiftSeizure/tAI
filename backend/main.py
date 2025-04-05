@@ -12,13 +12,16 @@ import os
 import requests
 from dotenv import load_dotenv
 from backend.routers import home
+from backend.Seed_Database import PopulateDB
 
+PopulateDB()
 app = FastAPI(
     title="TAi",
     summary="An always available, class specific TA."
 )
 
 app.include_router(home.router)
+
 """
 load_dotenv() 
 

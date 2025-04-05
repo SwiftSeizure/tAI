@@ -1,14 +1,15 @@
+import json
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-
+from backend.database.schema import DBClass,DBEnrolled,DBStudent,DBTeacher,Base
 from typing import Annotated
 from fastapi  import Depends
 
 # Database connection URL
-SQLALCHEMY_DATABASE_URL = "mysql+pymysql://username:password@localhost/db_name"
+DB_URL = "mysql+mysqlconnector://developer:password@localhost/TestDB"
 
 # Create an engine that will connect to the database
-engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_size=5, max_overflow=10)
+engine = create_engine(DB_URL, pool_size=5, max_overflow=10)
 
 # Create a session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -22,3 +23,4 @@ def get_db():
         db.close()
 
 DBSession = Annotated[Session, Depends(get_db)]
+
