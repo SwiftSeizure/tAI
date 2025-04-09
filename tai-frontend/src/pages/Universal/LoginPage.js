@@ -21,14 +21,14 @@ const LoginPage = () => {
             
             // TODO: Change once we have authentication and pass down the uid, the name and the role  
             if (teacherOrStudent === 'teacher1') { 
-                navigate('/HomePage', {state: { userId: 'teacher1', name: 'Batman', role: 'teacher' }});
+                navigate('/home', {state: { userId: 'teacher1', name: 'Batman', role: 'teacher' }});
             }   
 
             else if (teacherOrStudent === 'teacher2'){ 
-                navigate(`/HomePage/teacher/${user.role}`);
+                navigate(`/home`, {state: { userId: 'teacher2', name: 'Big Prof', role: 'teacher' }});
             } 
             else if (teacherOrStudent === 'student1'){ 
-                navigate(`/HomePage/student/${user.role}`);
+                navigate(`/home`, {state: { userID: 'student1', name: 'Gangus Khan', role: 'student'}});
             }
             
         }  
