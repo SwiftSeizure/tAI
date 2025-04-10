@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import TeacherStudentUnitPage from "../pages/Universal/TeacherStudentUnitPage";
 
 // Need to pass down props here about the name of the class 
-const ClassCard = ( {class, userId, role}  ) => {  
+const ClassCard = ( {singleClassData, userID, role}  ) => {  
 
     const navigate = useNavigate();  
 
@@ -11,7 +11,7 @@ const ClassCard = ( {class, userId, role}  ) => {
         e.preventDefault();  
 
         // Navigate to the unit page and pass down the 
-        navigate('/UnitPage', {})
+        navigate('/UnitPage', {state: {singleClassData.classID, userID, role}})
         // Navigate here 
     };
 
@@ -20,7 +20,7 @@ const ClassCard = ( {class, userId, role}  ) => {
             <button onClick={ (e) => goToPage(e) }> 
                 This is a class card  
                 <h4> Some kind of image here </h4>
-                <h5> Class name here </h5> 
+                <h5> {singleClassData.name} </h5> 
             </button>
         </div>
         
