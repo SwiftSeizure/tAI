@@ -13,10 +13,10 @@ const TeacherStudentHomePage = (  ) => {
     const [data, setData] = useState([]);
     
     const location = useLocation(); 
-    const { userId, name, role } = location.state || {};  
+    const { userID, name, role } = location.state || {};  
 
     const stateData = { 
-        userId, 
+        userID, 
         name, 
         role, 
     }; 
@@ -34,7 +34,7 @@ const TeacherStudentHomePage = (  ) => {
 
                 // BACKEND ROUTE
                 response = await axios.get( 
-                    `/home/teacher/${userId}`, 
+                    `/home/teacher/${userID}`, 
                     { headers }
                     
                 ); 
@@ -43,7 +43,7 @@ const TeacherStudentHomePage = (  ) => {
 
                 // BACKEND ROUTE
                 response = await axios.get( 
-                    `/home/student/${userId}`, 
+                    `/home/student/${userID}`, 
                     { headers }, 
                     
                 );  
@@ -56,7 +56,7 @@ const TeacherStudentHomePage = (  ) => {
         loadClassCards(); 
 
         // These need to be here because any time a class is changed, or the user changes, or the response data changes the class cards will need to be repopulated
-    }, [userId, role, data]); 
+    }, [userID, role, data]); 
 
 
 
@@ -92,8 +92,8 @@ const TeacherStudentHomePage = (  ) => {
             <>  
             <div>  
                 <ClassCard  
-                classData={classData} 
-                userId={userId}
+                singleClassData={singleClassData} 
+                userID={userID}
                 role={role}
                 />
             </div>
