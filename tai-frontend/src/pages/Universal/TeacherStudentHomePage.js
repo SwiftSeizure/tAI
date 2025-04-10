@@ -37,7 +37,9 @@ const TeacherStudentHomePage = (  ) => {
                     `/home/teacher/${userID}`, 
                     { headers }
                     
-                ); 
+                );  
+
+                
             } 
             else {  
 
