@@ -1,0 +1,21 @@
+
+
+/* Login Page */
+
+
+.radio-login-card {
+    background-color: aqua;
+    padding-top: 10px; /* Added unit to your padding value */
+    /* You might need these properties to make the background visible */
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+  } 
+
+.login-input-spacing { 
+    display: flex;
+    justify-content: space-around;
+}

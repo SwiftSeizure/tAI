@@ -1,6 +1,11 @@
+import styles from '../Pages.css';
 import { useState } from 'react'; 
 import { useNavigate } from 'react-router-dom';   
-import TeacherStudentHomePage from "./TeacherStudentHomePage";
+import TeacherStudentHomePage from "./TeacherStudentHomePage";  
+
+var teacherImage = require('../../images/teacher-login-image.png');
+var studentImage = require('../../images/student-login-image.png');
+
 
 const LoginPage = () => { 
     const [teacherOrStudent, setTeacherOrStudent] = useState('');  
@@ -44,23 +49,33 @@ const LoginPage = () => {
 
     return ( 
         <> 
-         <div>
-            <label>
-                <input
-                    type="radio"
-                    name="role"
-                    value="teacher1"
-                    onChange={() => setTeacherOrStudent('teacher1')}
-                />
-                Teacher1 
-                <input
-                    type="radio"
-                    name="role"
-                    value="teacher2"
-                    onChange={() => setTeacherOrStudent('teacher2')}
-                />
-                Teacher2
-            </label>
+        <div >
+            <span className="login-input-spacing"> 
+                <label> 
+                    <input 
+                        className="radio-login-card"
+                        type="radio"
+                        name="role"
+                        value="teacher1"
+                        onChange={() => setTeacherOrStudent('teacher1')}
+                    /> 
+                    <img src={teacherImage} />
+                    Teacher1  
+                </label> 
+                <label>
+                    <input 
+                        className="radio-login-card"
+                        type="radio"
+                        name="role"
+                        value="teacher2"
+                        onChange={() => setTeacherOrStudent('teacher2')}
+                    /> 
+                    
+                    Teacher2 
+                </label>
+            </span> 
+        </div> 
+        <div>
             <label>
                 <input
                     type="radio"

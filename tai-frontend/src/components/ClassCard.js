@@ -11,16 +11,18 @@ const ClassCard = ( {singleClassData, userID, role}  ) => {
         e.preventDefault();  
 
         // Navigate to the unit page and pass down the 
-        navigate('/UnitPage', {state: {singleClassData.classID, userID, role}})
+        // navigate('/UnitPage', {state: {singleClassData.classID, userID, role}})
         // Navigate here 
-    };
+    }; 
+
+    // <h5> {singleClassData.name} </h5> 
 
     return(  
         <div>  
             <button onClick={ (e) => goToPage(e) }> 
                 This is a class card  
                 <h4> Some kind of image here </h4>
-                <h5> {singleClassData.name} </h5> 
+                
             </button>
         </div>
         

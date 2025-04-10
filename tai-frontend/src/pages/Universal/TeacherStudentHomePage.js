@@ -104,7 +104,9 @@ const TeacherStudentHomePage = (  ) => {
 
          
 
-    };
+    }; 
+
+
 
 
 
@@ -112,7 +114,10 @@ const TeacherStudentHomePage = (  ) => {
     // TODO Add Welcome user 
     return( 
         <>
-        <div>  
+        <div  id=".myDiv">    
+
+            
+            
             <h1> Welcome { name }</h1>
             <h1> 
                 This is going to be the Basic Home Page For Both Teachers and Students 
