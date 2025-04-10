@@ -2,14 +2,16 @@ import React from "react";
 import { useNavigate } from 'react-router-dom';   
 import TeacherStudentUnitPage from "../pages/Universal/TeacherStudentUnitPage";
 
-// Need to pass down information here about the name of the class 
-const ClassCard = ( { stateData }) => {  
+// Need to pass down props here about the name of the class 
+const ClassCard = (   ) => {  
 
     const navigate = useNavigate();  
 
     const goToPage = (e) => { 
-        e.preventDefault(); 
-        navigate('/UnitPage', {stateData})
+        e.preventDefault();  
+
+        // Navigate to the unit page and pass down the 
+        navigate('/UnitPage', {})
         // Navigate here 
     };
 

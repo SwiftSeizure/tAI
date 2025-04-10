@@ -8,73 +8,96 @@ const TeacherStudentHomePage = (  ) => {
 
 
     const [loading, setLoading] = useState(true); 
-    const [error, setError] = useState(null); 
+    const [error, setError] = useState(null);  
+
+    const [data, setData] = useState([]);
     
     const location = useLocation(); 
-    const { id, name, role } = location.state || {};  
+    const { userId, name, role } = location.state || {};  
 
     const stateData = { 
-        id: id, 
-        name: name, 
-        role: role, 
-    };
+        userId, 
+        name, 
+        role, 
+    }; 
 
 
-    const populateClassCards = async() => {   
+    useEffect(() => {  
+
+        const loadClassCards = async() => { 
+            const response = null;  
+            const headers = {  
+                // Add auth here for the token once we have it 
+                'Content-Type': 'application/json'
+            }
+            if (role === 'teacher') {  
+
+                // BACKEND ROUTE
+                response = await axios.get( 
+                    `/home/teacher/${userId}`, 
+                    { headers }
+                    
+                ); 
+            } 
+            else {  
+
+                // BACKEND ROUTE
+                response = await axios.get( 
+                    `/home/student/${userId}`, 
+                    { headers }, 
+                    
+                );  
+            }   
+            setData(response);
+            populateClassCards(response);
+        } 
+
+        // Add auth here for isloading in useUser then make the loadClassCards Call 
+        loadClassCards();
+    }, [userId, role, data]); 
+
+
+
+    const populateClassCards = (response) => {   
         // e.preventDefault();  
 
         // CHANGE THIS IN FUTURE FOR USER AUTH 
-        const userInFunction = localStorage.getItem('user').teacherOrStudent; 
-        console.log("This is in the populate class cards", userInFunction);
-        // END CHANGE 
+        // const userInFunction = localStorage.getItem('user').teacherOrStudent; 
+        // console.log("This is in the populate class cards function", userInFunction);
+        // END CHANGE  
 
-        try {  
-            // Ideally this   
-            const response = null; 
 
-            if (role === 'teacher') { 
-                response = axios.get( 
-                    // BACKEND 
-                    // Get requests can not have state, they need to have a url parameter 
-                    `/home/teacher/${id}`, 
-                    { timeout: 10000 }
-                ); 
-            } 
-            else { 
-                response = axios.get( 
-                    // BACKEND 
-                    // Get requests can not have state, they need to have a url parameter 
-                    `/home/student/${id}`, 
-                    { timeout: 10000 }
-                ); 
-            } 
+        // TODO make JSON parser here   
+        console.log("This is all the data we have received", response);  
+        
 
-            console.log(response); 
-            // TODO 
-            // Set the Cards here with the data from the response, map through adding each one as a div so styling is consistent, 
-            // must be in a fragments since multiple divs  (similar format bellow)
-            // {users.map(user => (
-            //     <div key={user.id}>
-            //       <UserCard name={user.name} />
-            //       <UserStats stats={user.stats} />
-            //     </div>
-            //   ))}
-            return( 
-                <>  
-                <div> 
-                    <ClassCard stateData={ stateData }/>
-                </div>
-                </>
-            )
 
-        } 
-        catch (error) { 
-            console.log("Bad Bad Bad request for getting th classes from backend", error); 
-            setError(error); 
-            setLoading(false); 
-            return;
+        
 
-        }
+        // TODO 
+        // Set the Cards here with the data from the response, map through adding each one as a div so styling is consistent, 
+        // must be in a fragments since multiple divs  (similar format bellow)
+        // {users.map(user => (
+        //     <div key={user.id}>
+        //       <UserCard name={user.name} />
+        //       <UserStats stats={user.stats} />
+        //     </div>
+        //   ))}  
+
+
+
+        return( 
+            <>  
+            <div>  
+                
+                <ClassCard  
+
+                />
+            </div>
+            </>
+        )
+
+         
 
     };
 
@@ -88,7 +111,8 @@ const TeacherStudentHomePage = (  ) => {
             <h1> Welcome { name }</h1>
             <h1> 
                 This is going to be the Basic Home Page For Both Teachers and Students 
-            </h1>   
+            </h1>  
+
             {populateClassCards()}  
 
             <h2>  
