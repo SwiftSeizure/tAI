@@ -53,7 +53,9 @@ const TeacherStudentHomePage = (  ) => {
         } 
 
         // Add auth here for isloading in useUser then make the loadClassCards Call 
-        loadClassCards();
+        loadClassCards(); 
+
+        // These need to be here because any time a class is changed, or the user changes, or the response data changes the class cards will need to be repopulated
     }, [userId, role, data]); 
 
 
@@ -89,9 +91,10 @@ const TeacherStudentHomePage = (  ) => {
         return( 
             <>  
             <div>  
-                
                 <ClassCard  
-
+                classData={classData} 
+                userId={userId}
+                role={role}
                 />
             </div>
             </>

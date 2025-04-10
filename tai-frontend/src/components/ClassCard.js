@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import TeacherStudentUnitPage from "../pages/Universal/TeacherStudentUnitPage";
 
 // Need to pass down props here about the name of the class 
-const ClassCard = (   ) => {  
+const ClassCard = ( {class, userId, role}  ) => {  
 
     const navigate = useNavigate();  
 
