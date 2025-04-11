@@ -32,12 +32,14 @@ const TeacherStudentHomePage = (  ) => {
             }
             if (role === 'teacher') {  
 
+                console.log("Teacher Fail");
                 // BACKEND ROUTE
                 response = await axios.get( 
                     `/home/teacher/${userID}`, 
                     { headers }
                     
-                );  
+                );   
+                
 
                 
             } 
@@ -49,7 +51,8 @@ const TeacherStudentHomePage = (  ) => {
                     { headers }, 
                     
                 );  
-            }   
+            }    
+           
             setData(response);
             populateClassCards(response);
         } 
@@ -94,7 +97,8 @@ const TeacherStudentHomePage = (  ) => {
             <>  
             <div>  
                 <ClassCard  
-                singleClassData={singleClassData} 
+                // classroom={classroom}  
+                classroom={""}
                 userID={userID}
                 role={role}
                 />
@@ -123,7 +127,6 @@ const TeacherStudentHomePage = (  ) => {
                 This is going to be the Basic Home Page For Both Teachers and Students 
             </h1>  
 
-            {populateClassCards()}  
 
             <h2>  
                 
