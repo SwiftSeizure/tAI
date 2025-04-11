@@ -34,7 +34,7 @@ const TeacherStudentHomePage = (  ) => {
 
                 console.log("Teacher Fail");
                 // BACKEND ROUTE
-                axios.get( `/home/teacher/${userID}`)
+                axios.get( `http://localhost:8000/home/teacher/${userID}`)
                     .then(response => { 
                         console.log(response.data); 
                         setData(response);
@@ -48,7 +48,7 @@ const TeacherStudentHomePage = (  ) => {
 
                 console.log("Student Fail");
                 // BACKEND ROUTE
-                axios.get( `/home/teacher/${userID}`)
+                axios.get( `http://localhost:8000/home/student/${userID}`)
                     .then(response => { 
                         console.log(response.data); 
                         setData(response);
@@ -56,7 +56,9 @@ const TeacherStudentHomePage = (  ) => {
                     .catch(error => {
                         console.error(error);
                     }) 
-                    .finally(); 
+                    .finally( 
+
+                    ); 
             }    
            
             populateClassCards();
@@ -66,7 +68,7 @@ const TeacherStudentHomePage = (  ) => {
         loadClassCards(); 
 
         // These need to be here because any time a class is changed, or the user changes, or the response data changes the class cards will need to be repopulated
-    }, [userID, role, data]); 
+    }, []); 
 
 
 
@@ -80,7 +82,7 @@ const TeacherStudentHomePage = (  ) => {
 
 
         // TODO make JSON parser here   
-        console.log("This is all the data we have received", data);  
+        // console.log("This is all the data we have received", data);  
         
 
 
