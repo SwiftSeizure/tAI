@@ -34,27 +34,32 @@ const TeacherStudentHomePage = (  ) => {
 
                 console.log("Teacher Fail");
                 // BACKEND ROUTE
-                response = await axios.get( 
-                    `/home/teacher/${userID}`, 
-                    { headers }
-                    
-                );   
-                
+                axios.get( `/home/teacher/${userID}`)
+                    .then(response => { 
+                        console.log(response.data); 
+                        setData(response);
+                    })   
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }   
 
-                
-            } 
             else {  
 
+                console.log("Student Fail");
                 // BACKEND ROUTE
-                response = await axios.get( 
-                    `/home/student/${userID}`, 
-                    { headers }, 
-                    
-                );  
+                axios.get( `/home/teacher/${userID}`)
+                    .then(response => { 
+                        console.log(response.data); 
+                        setData(response);
+                    })   
+                    .catch(error => {
+                        console.error(error);
+                    }) 
+                    .finally(); 
             }    
            
-            setData(response);
-            populateClassCards(response);
+            populateClassCards();
         } 
 
         // Add auth here for isloading in useUser then make the loadClassCards Call 
@@ -65,7 +70,7 @@ const TeacherStudentHomePage = (  ) => {
 
 
 
-    const populateClassCards = (response) => {   
+    const populateClassCards = ( ) => {   
         // e.preventDefault();  
 
         // CHANGE THIS IN FUTURE FOR USER AUTH 
@@ -75,7 +80,7 @@ const TeacherStudentHomePage = (  ) => {
 
 
         // TODO make JSON parser here   
-        console.log("This is all the data we have received", response);  
+        console.log("This is all the data we have received", data);  
         
 
 
@@ -129,7 +134,6 @@ const TeacherStudentHomePage = (  ) => {
 
 
             <h2>  
-                
                 We can Create classes as components and then allow for extra functionality if they are a teacher or a student 
             </h2>
         </div> 
