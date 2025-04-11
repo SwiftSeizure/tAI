@@ -24,7 +24,15 @@ const TeacherStudentHomePage = (  ) => {
 
     useEffect(() => {  
 
-        const loadClassCards = async() => { 
+        const loadClassCards = async() => {  
+
+            try { 
+                setLoading(true);
+            
+
+
+
+
             const response = null;  
             const headers = {  
                 // Add auth here for the token once we have it 
@@ -32,89 +40,68 @@ const TeacherStudentHomePage = (  ) => {
             }
             if (role === 'teacher') {  
 
-                console.log("Teacher Fail");
+
                 // BACKEND ROUTE
                 axios.get( `http://localhost:8000/home/teacher/${userID}`)
-                    .then(response => { 
-                        console.log(response.data); 
-                        setData(response);
+                    .then(response => {  
+                        console.log(response.data.classes); 
+                        setData(response.data.classes);
                     })   
                     .catch(error => {
                         console.error(error);
-                    });
+                    })
             }   
 
             else {  
 
-                console.log("Student Fail");
                 // BACKEND ROUTE
                 axios.get( `http://localhost:8000/home/student/${userID}`)
                     .then(response => { 
-                        console.log(response.data); 
-                        setData(response);
+                        console.log(response.data.classes);  
+                        setData(response.data.classes);
                     })   
                     .catch(error => {
                         console.error(error);
-                    }) 
-                    .finally( 
-
-                    ); 
+                    });
             }    
            
-            populateClassCards();
-        } 
+            populateClassCards(); 
+
+
+            } 
+            catch(error) { 
+                setError(error);
+            }  
+            finally { 
+                setLoading(false);
+            }
+        };
 
         // Add auth here for isloading in useUser then make the loadClassCards Call 
         loadClassCards(); 
 
         // These need to be here because any time a class is changed, or the user changes, or the response data changes the class cards will need to be repopulated
-    }, []); 
+    }, [userID, role]); 
 
 
 
-    const populateClassCards = ( ) => {   
+    const populateClassCards = (classes ) => {   
         // e.preventDefault();  
-
-        // CHANGE THIS IN FUTURE FOR USER AUTH 
-        // const userInFunction = localStorage.getItem('user').teacherOrStudent; 
-        // console.log("This is in the populate class cards function", userInFunction);
-        // END CHANGE  
-
-
-        // TODO make JSON parser here   
-        // console.log("This is all the data we have received", data);  
-        
-
-
-        
-
-        // TODO 
-        // Set the Cards here with the data from the response, map through adding each one as a div so styling is consistent, 
-        // must be in a fragments since multiple divs  (similar format bellow)
-        // {users.map(user => (
-        //     <div key={user.id}>
-        //       <UserCard name={user.name} />
-        //       <UserStats stats={user.stats} />
-        //     </div>
-        //   ))}  
-
-
 
         return( 
             <>  
-            <div>  
-                <ClassCard  
-                // classroom={classroom}  
-                classroom={""}
-                userID={userID}
-                role={role}
+            {Array.isArray(data) && data.map(classroom => (
+                <ClassCard   
+                    key={classroom.id} 
+                    classID={classroom.id}
+                    classname={classroom.name}  
+                    userID={userID}
+                    role={role}
                 />
-            </div>
+            ))}
+            
             </>
         )
-
-         
-
     }; 
 
 
@@ -133,8 +120,7 @@ const TeacherStudentHomePage = (  ) => {
             <h1> 
                 This is going to be the Basic Home Page For Both Teachers and Students 
             </h1>  
-
-
+                {populateClassCards()}
             <h2>  
                 We can Create classes as components and then allow for extra functionality if they are a teacher or a student 
             </h2>
