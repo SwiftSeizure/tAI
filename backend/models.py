@@ -9,4 +9,15 @@ class HomeResponse(BaseModel):
 class HomeClass(BaseModel):
     id: int
     name: str
+    
+# Classroom Response Models ------------------------------------------
+class ClassroomResponse(BaseModel):
+    units: list[ClassroomUnit]
+    
+class ClassroomUnit(BaseModel):
+    id: int
+    name: str
+
+
+
    
