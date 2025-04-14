@@ -2,7 +2,8 @@ import React, {useState, useEffect} from "react";
 import { useNavigate, useLocation } from 'react-router-dom';  
 import useUser from "../../hooks/useUser";
 import ClassCard from "../../components/ClassCard"; 
-import axios from "axios";
+import axios from "axios"; 
+import { getRequest } from "../../API";
 
 const TeacherStudentHomePage = (  ) => {   
 
@@ -29,43 +30,41 @@ const TeacherStudentHomePage = (  ) => {
             try { 
                 setLoading(true);
             
+                const headers = {  
+                    // Add auth here for the token once we have it 
+                    'Content-Type': 'application/json'
+                }
+                if (role === 'teacher') {  
 
+                    const url = `/home/teacher/${userID}`;
+                    // BACKEND ROUTE 
+                    const response = await getRequest(url);  
+                    setData(response.data.classes);
 
+                    // axios.get( `http://localhost:8000/home/teacher/${userID}`)
+                    //     .then(response => {  
+                    //         console.log(response.data.classes); 
+                    //         setData(response.data.classes);
+                    //     })   
+                    //     .catch(error => {
+                    //         console.error(error);
+                    //     })
+                }   
 
+                else {  
 
-            const response = null;  
-            const headers = {  
-                // Add auth here for the token once we have it 
-                'Content-Type': 'application/json'
-            }
-            if (role === 'teacher') {  
-
-
-                // BACKEND ROUTE
-                axios.get( `http://localhost:8000/home/teacher/${userID}`)
-                    .then(response => {  
-                        console.log(response.data.classes); 
-                        setData(response.data.classes);
-                    })   
-                    .catch(error => {
-                        console.error(error);
-                    })
-            }   
-
-            else {  
-
-                // BACKEND ROUTE
-                axios.get( `http://localhost:8000/home/student/${userID}`)
-                    .then(response => { 
-                        console.log(response.data.classes);  
-                        setData(response.data.classes);
-                    })   
-                    .catch(error => {
-                        console.error(error);
-                    });
-            }    
-           
-            populateClassCards(); 
+                    // BACKEND ROUTE
+                    axios.get( `http://localhost:8000/home/student/${userID}`)
+                        .then(response => { 
+                            console.log(response.data.classes);  
+                            setData(response.data.classes);
+                        })   
+                        .catch(error => {
+                            console.error(error);
+                        });
+                }    
+            
+                populateClassCards(); 
 
 
             } 

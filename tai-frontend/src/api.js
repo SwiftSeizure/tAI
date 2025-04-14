@@ -1,22 +1,43 @@
-// This will be where we make the calls to the backend  
+import axios from 'axios';
 
-const get = async (url, headers) => { 
-    const response = await fetch(baseUrl + url, { 
-        headers, 
-        credentials: "include" }); 
-        return await handleResponse(response)
-}  
+const BASE_URL = 'http://localhost:8000';  
 
-const post = async (url, headers, data) => {  
-    const response = await fetch(baseURL + url, { 
-       headers: { 
-           ...headers, 
-           "Content-Type": "application/json", 
+
+
+// Can pass in auth token up here as a param
+export const getRequest = async (url) => { 
+    try { 
+        const response = await axios.get(BASE_URL + url, { 
+            headers: {  
+                // Auth token here possibly 
+                'Content-Type': 'application/json',
+            }
+        }); 
+        return response;
+    } 
+    catch (e) { 
+        console.log(e);
+    }
+} 
+
+
+// const export get = async (url, headers) => { 
+//     const response = await fetch(baseUrl + url, { 
+//         headers, 
+//         credentials: "include" }); 
+//         return await handleResponse(response)
+// }  
+
+// const post = async (url, headers, data) => {  
+//     const response = await fetch(baseURL + url, { 
+//        headers: { 
+//            ...headers, 
+//            "Content-Type": "application/json", 
            
-       }, 
-       method: "POST", 
-       body: JSON.srringify(data), 
-       credentials: "include", 
-    }); 
-    return await handleResponse(response);
-}
+//        }, 
+//        method: "POST", 
+//        body: JSON.srringify(data), 
+//        credentials: "include", 
+//     }); 
+//     return await handleResponse(response);
+// }
