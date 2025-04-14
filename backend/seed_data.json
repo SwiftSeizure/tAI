@@ -43,6 +43,32 @@
         }
       }
     ],
+    "units": [
+      {
+        "id": 1,
+        "name": "Algebra Basics",
+        "sequence": 1,
+        "classID": 1,
+        "settings": {
+        }
+      },
+      {
+        "id": 2,
+        "name": "Physics Fundamentals",
+        "sequence": 1,
+        "classID": 2,
+        "settings": {
+        }
+      },
+      {
+        "id": 3,
+        "name": "Algebra Next Steps",
+        "sequence": 2,
+        "classID": 1,
+        "settings": {
+        }
+      }
+    ],
     "enrollments": [
       {
         "studentID": 1,

@@ -11,7 +11,7 @@ from fastapi import FastAPI
 import os
 import requests
 from dotenv import load_dotenv
-from backend.routers import home
+from backend.routers import home, classroom
 from backend.Seed_Database import PopulateDB
 
 PopulateDB()
@@ -21,6 +21,7 @@ app = FastAPI(
 )
 
 app.include_router(home.router)
+app.include_router(classroom.router)
 
 """
 load_dotenv() 

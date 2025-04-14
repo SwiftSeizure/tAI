@@ -43,5 +43,18 @@ class DBClass(Base):
 
     owner = relationship("DBTeacher", back_populates="classes")
     enrollment = relationship("DBEnrolled", back_populates="class_")
+    units = relationship("DBUnit", back_populates="class_", order_by="DBUnit.sequence", cascade="all, delete")
+    
+    settings = Column(JSON, nullable=False)
+    
+class DBUnit(Base):
+    __tablename__ = "unit"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(25), nullable=False)
+    sequence = Column(Integer, nullable=False)
+    
+    classID = Column(Integer, ForeignKey("class.id", ondelete="CASCADE"))
+    class_ = relationship("DBClass", back_populates="units")
     
     settings = Column(JSON, nullable=False)

@@ -1,6 +1,6 @@
 import json
 from sqlalchemy.orm import Session
-from backend.database.schema import DBStudent, DBTeacher, DBClass, DBEnrolled, Base
+from backend.database.schema import DBStudent, DBTeacher, DBClass, DBEnrolled, DBUnit, Base
 from backend.dependencies import engine, SessionLocal
 import os
 
@@ -31,6 +31,9 @@ def PopulateDB(file: str =  SEED_FILE_PATH):
 
         for c in data.get("classes", []):
             db.add(DBClass(**c))
+            
+        for u in data.get("units", []):
+            db.add(DBUnit(**u))
 
         for e in data.get("enrollments", []):
             db.add(DBEnrolled(**e))
