@@ -22,7 +22,7 @@ app = FastAPI(
 )
 
 app.include_router(home.router)
-app.include_router
+app.include_router(classroom.router)
 
 app.add_middleware(
     CORSMiddleware,
