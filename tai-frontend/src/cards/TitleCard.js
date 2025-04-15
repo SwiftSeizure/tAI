@@ -1,11 +1,14 @@
-import React from "react"; 
+import React from "react";  
+import styles from './Cards.css';
 
 const TitleCard = ( { title } ) => { 
 
 
     return( 
         <> 
-            <h1 className="title-card-h1"> {title} </h1>
+        <div className="title-card-center">
+            <h1 className="title-card-h1"> {title} </h1> 
+        </div>
         </>  
     );
     

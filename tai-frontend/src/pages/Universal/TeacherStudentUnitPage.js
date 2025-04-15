@@ -51,16 +51,20 @@ const TeacherStudentUnitPage = () => {
 
 
         return(  
-            <> 
-            {Array.isArray(data) && data.map(unit => ( 
-                <ClassCard 
-                    key={classID} 
-                    unitID={unit.id} 
-                    unitName={unit.name} 
-                    userID={userID} 
-                    role={role}
-                />
-            ))}
+            <>  
+            <div className="card-layout-container"> 
+
+            
+                {Array.isArray(data) && data.map(unit => ( 
+                    <ClassCard 
+                        key={classID} 
+                        unitID={unit.id} 
+                        unitName={unit.name} 
+                        userID={userID} 
+                        role={role}
+                    />
+                ))} 
+            </div>
             </>
         )
 

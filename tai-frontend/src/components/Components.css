@@ -1,0 +1,17 @@
+.card-button { 
+    background-color: pink;
+    border: none;
+    padding: 1rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+} 
+
+.card-button:hover { 
+    background-color: black;
+}
+
+.card-button-outline { 
+    padding: 50px;
+}

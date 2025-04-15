@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from "react";  
+import React, {useState, useEffect} from "react";   
+import styles from '../Pages.css';
 import { useLocation } from 'react-router-dom';  
 import useUser from "../../hooks/useUser";
 import ClassCard from "../../components/ClassCard"; 
@@ -55,20 +56,23 @@ const TeacherStudentHomePage = (  ) => {
 
 
 
-    const populateClassCards = (classes ) => {   
+    const populateClassCards = ( ) => {   
         // e.preventDefault();  
 
         return( 
-            <>  
-            {Array.isArray(data) && data.map(classroom => (
-                <ClassCard   
-                    key={classroom.id} 
-                    classID={classroom.id}
-                    classname={classroom.name}  
-                    userID={userID}
-                    role={role}
-                />
-            ))}
+            <>   
+            <div className="card-layout-container"> 
+
+                {Array.isArray(data) && data.map(classroom => (
+                    <ClassCard   
+                        key={classroom.id} 
+                        classID={classroom.id}
+                        classname={classroom.name}  
+                        userID={userID}
+                        role={role}
+                    />
+                ))} 
+            </div>
             
             </>
         )
@@ -96,6 +100,8 @@ const TeacherStudentHomePage = (  ) => {
             </h1>   
 
             {populateClassCards()} 
+
+            {/* {Add condition for student here to join a class and if teacher, create a class} */}
 
             <h2>  
                 We can Create classes as components and then allow for extra functionality if they are a teacher or a student 

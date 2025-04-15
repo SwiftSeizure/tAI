@@ -5,7 +5,6 @@ const UnitCard = ( {unitID, unitName, userID, role } ) => {
 
 
 
-
     const goToPage = (e) => { 
         e.preventDefault(); 
         // Navigate here 

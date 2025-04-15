@@ -1,6 +1,7 @@
 import React, { useState } from "react";  
 import { useNavigate } from 'react-router-dom';   
-import TeacherStudentUnitPage from "../pages/Universal/TeacherStudentUnitPage";
+import TeacherStudentUnitPage from "../pages/Universal/TeacherStudentUnitPage"; 
+import styles from './Components.css';
 
 // Need to pass down props here about the name of the class 
 const ClassCard = ( {classID, classname, userID, role}  ) => {  
@@ -16,14 +17,17 @@ const ClassCard = ( {classID, classname, userID, role}  ) => {
         // Navigate here 
     }; 
 
-    // <h5> {singleClassData.name} </h5> 
+
 
     return(  
-        <div>  
-            <button onClick={ (e) => goToPage(e) }> 
-                This is a class card   
-                <h5> {classname} </h5> 
-                <h4> Some kind of image here </h4>
+        <div className="card-button-outline">  
+            <button 
+                className="card-button" 
+                onClick={ (e) => goToPage(e) }
+                >  
+
+                <div> Some kind of image here </div>
+                <div> {classname} </div> 
                 
             </button>
         </div>
