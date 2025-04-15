@@ -11,8 +11,8 @@ from fastapi import FastAPI
 import os
 import requests
 from dotenv import load_dotenv
-from backend.routers import home
-from backend.Seed_Database import PopulateDB 
+from backend.routers import home, classroom
+from backend.Seed_Database import PopulateDB
 from fastapi.middleware.cors import CORSMiddleware
 
 PopulateDB()
@@ -21,7 +21,8 @@ app = FastAPI(
     summary="An always available, class specific TA."
 )
 
-app.include_router(home.router) 
+app.include_router(home.router)
+app.include_router
 
 app.add_middleware(
     CORSMiddleware,
