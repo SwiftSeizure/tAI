@@ -6,7 +6,9 @@ import styles from './Components.css';
 // Need to pass down props here about the name of the class 
 const ClassCard = ( {classID, classname, userID, role}  ) => {  
 
-    const navigate = useNavigate();   
+    const navigate = useNavigate();    
+
+    const logo = require("../images/example-class-logo.png");
 
 
     const goToPage = (e) => { 
@@ -25,9 +27,13 @@ const ClassCard = ( {classID, classname, userID, role}  ) => {
                 className="card-button" 
                 onClick={ (e) => goToPage(e) }
                 >  
+                <img  
+                    className="card-image"
+                    src={logo} />
 
-                <div> Some kind of image here </div>
-                <div> {classname} </div> 
+                <div className="card-text-outline"> 
+                    {classname} 
+                </div> 
                 
             </button>
         </div>
