@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';   
 import TeacherStudentHomePage from "./TeacherStudentHomePage";  
 
-// var teacherImage = require('../../images/teacher-login-image.png');
+const teacherImage = require('../../images/teacher-login-image.png')
 // var studentImage = require('../../images/student-login-image.png');
 
 
@@ -51,26 +51,32 @@ const LoginPage = () => {
         <> 
         <div >
             <span className="login-input-spacing"> 
-                <label> 
-                    <input 
-                        className="radio-login-card"
-                        type="radio"
-                        name="role"
-                        value="teacher1"
-                        onChange={() => setTeacherOrStudent('teacher1')}
-                    /> 
-                    {/* <img src={teacherImage} /> */}
-                    Teacher1  
-                </label> 
+                <label className="radio-card">
+                <input
+                    className="radio-card-input"
+                    type="radio"
+                    name="role"
+                    value="teacher1"
+                    onChange={() => setTeacherOrStudent('teacher1')}
+                />
+                <div className="radio-card-content">
+                    <img
+                        className="radio-card-image"
+                        src={teacherImage}
+                        alt="Teacher"
+                    />
+                    <span className="radio-card-label"> Teacher </span>
+                </div> 
+
+                </label>
                 <label>
                     <input 
-                        className="radio-login-card"
+                        className="radio-login-input"
                         type="radio"
                         name="role"
                         value="teacher2"
                         onChange={() => setTeacherOrStudent('teacher2')}
                     /> 
-                    
                     Teacher2 
                 </label>
             </span> 

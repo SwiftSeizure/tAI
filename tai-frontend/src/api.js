@@ -9,7 +9,7 @@ export const getRequest = async (url) => {
     try { 
         const response = await axios.get(BASE_URL + url, { 
             headers: {  
-                // Auth token here possibly 
+                // Auth token here possibly that can be passed down from the DB 
                 'Content-Type': 'application/json',
             }
         }); 

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";  
-import { useNavigate, useLocation } from 'react-router-dom';  
+import { useLocation } from 'react-router-dom';  
 import useUser from "../../hooks/useUser";
 import ClassCard from "../../components/ClassCard"; 
 import axios from "axios"; 
@@ -16,11 +16,11 @@ const TeacherStudentHomePage = (  ) => {
     const location = useLocation(); 
     const { userID, name, role } = location.state || {};  
 
-    const stateData = { 
-        userID, 
-        name, 
-        role, 
-    }; 
+    // const stateData = { 
+    //     userID, 
+    //     name, 
+    //     role, 
+    // }; 
 
 
     useEffect(() => {  
@@ -30,42 +30,12 @@ const TeacherStudentHomePage = (  ) => {
             try { 
                 setLoading(true);
             
-                const headers = {  
-                    // Add auth here for the token once we have it 
-                    'Content-Type': 'application/json'
-                }
-                if (role === 'teacher') {  
-
-                    const url = `/home/teacher/${userID}`;
-                    // BACKEND ROUTE 
-                    const response = await getRequest(url);  
-                    setData(response.data.classes);
-
-                    // axios.get( `http://localhost:8000/home/teacher/${userID}`)
-                    //     .then(response => {  
-                    //         console.log(response.data.classes); 
-                    //         setData(response.data.classes);
-                    //     })   
-                    //     .catch(error => {
-                    //         console.error(error);
-                    //     })
-                }   
-
-                else {  
-
-                    // BACKEND ROUTE
-                    axios.get( `http://localhost:8000/home/student/${userID}`)
-                        .then(response => { 
-                            console.log(response.data.classes);  
-                            setData(response.data.classes);
-                        })   
-                        .catch(error => {
-                            console.error(error);
-                        });
-                }    
+                const url = `/home/${role}/${userID}`;
+                // BACKEND ROUTE 
+                const response = await getRequest(url);  
+                setData(response.data.classes);
             
                 populateClassCards(); 
-
 
             } 
             catch(error) { 
@@ -118,8 +88,10 @@ const TeacherStudentHomePage = (  ) => {
             <h1> Welcome { name }</h1>
             <h1> 
                 This is going to be the Basic Home Page For Both Teachers and Students 
-            </h1>  
-                {populateClassCards()}
+            </h1>   
+
+            {populateClassCards()} 
+
             <h2>  
                 We can Create classes as components and then allow for extra functionality if they are a teacher or a student 
             </h2>

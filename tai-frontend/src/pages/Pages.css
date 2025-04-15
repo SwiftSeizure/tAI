@@ -1,21 +1,74 @@
 
 
-/* Login Page */
+/* CSS for Radio Card */
+.radio-card {
+  display: block;
+  position: relative;
+  width: 200px;
+  cursor: pointer;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 8px;
+  transition: all 0.3s ease;
+}
 
+.radio-card:hover {
+  border-color: #a0a0a0;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
 
-.radio-login-card {
-    background-color: aqua;
-    padding-top: 10px; /* Added unit to your padding value */
-    /* You might need these properties to make the background visible */
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    outline: none;
-    cursor: pointer;
-  } 
+.radio-card-input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
 
-.login-input-spacing { 
-    display: flex;
-    justify-content: space-around;
+.radio-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.radio-card-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.radio-card-label {
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+/* Style for selected radio */
+.radio-card-input:checked + .radio-card-content {
+  /* This targets the content when the radio is checked */
+}
+
+/* Selected card style */
+.radio-card-input:checked ~ .radio-card-content {
+  /* Visual feedback when selected */
+}
+
+/* For the card itself when selected */
+.radio-card-input:checked + .radio-card-content .radio-card-image {
+  border: 2px solid #3498db;
+}
+
+/* Focus state for accessibility */
+.radio-card:focus-within {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+}
+
+/* Selected card style */
+input[type="radio"]:checked + .radio-card {
+  border-color: #3498db;
+  background-color: rgba(52, 152, 219, 0.05);
 }
