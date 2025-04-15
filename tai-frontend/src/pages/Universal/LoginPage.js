@@ -69,7 +69,7 @@ const LoginPage = () => {
             </label>
             <label className="radio-card">
                 <input 
-                    className="radio-login-input"
+                    className="radio-card-input"
                     type="radio"
                     name="role"
                     value="student1"
@@ -84,7 +84,7 @@ const LoginPage = () => {
                     <span className="radio-card-label"> Student 1 </span>
                 </div>
             </label> 
-            
+
         </div>  
 
 
