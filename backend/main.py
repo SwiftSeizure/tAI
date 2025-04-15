@@ -13,6 +13,7 @@ import requests
 from dotenv import load_dotenv
 from backend.routers import home, classroom
 from backend.Seed_Database import PopulateDB
+from fastapi.middleware.cors import CORSMiddleware
 
 PopulateDB()
 app = FastAPI(
@@ -21,7 +22,15 @@ app = FastAPI(
 )
 
 app.include_router(home.router)
-app.include_router(classroom.router)
+app.include_router
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Only allow frontend origin
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 """
 load_dotenv() 

@@ -8,9 +8,9 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SEED_FILE_PATH = os.path.join(BASE_DIR, "seed_data.json")
 
 def PopulateDB(file: str =  SEED_FILE_PATH): 
-    print("populating")
+    
     Base.metadata.create_all(bind=engine)
-
+    print("populating")
     db: Session = SessionLocal()
 
     try:

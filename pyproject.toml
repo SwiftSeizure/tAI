@@ -22,6 +22,9 @@ python-dotenv = "^1.1.0"
 pymysql = "^1.1.1"
 sqlalchemy = "^2.0.40"
 mysql-connector-python = "^9.2.0"
+mysqlclient = "^2.2.7"
+mysql-connector = "^2.2.9"
+protobuf = "^6.30.2"
 
 [tool.poetry.group.dev.dependencies]
 sqlalchemy = "^2.0.40"
