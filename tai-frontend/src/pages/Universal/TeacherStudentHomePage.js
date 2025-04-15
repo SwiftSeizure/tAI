@@ -5,7 +5,8 @@ import useUser from "../../hooks/useUser";
 import ClassCard from "../../components/ClassCard"; 
 import axios from "axios"; 
 import { getRequest } from "../../API";
-import TitleCard from "../../cards/TitleCard";
+import TitleCard from "../../cards/TitleCard";  
+import { Grid } from "antd";
 
 const TeacherStudentHomePage = (  ) => {   
 
