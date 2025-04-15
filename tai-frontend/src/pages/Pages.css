@@ -57,7 +57,7 @@
 }
 
 /* For the card itself when selected */
-.radio-card-input:checked + .radio-card-content .radio-card-image {
+.radio-card-input:checked + .radio-card-content  {
   border: 2px solid #3498db;
 }
 
@@ -71,4 +71,10 @@
 input[type="radio"]:checked + .radio-card {
   border-color: #3498db;
   background-color: rgba(52, 152, 219, 0.05);
+} 
+
+.login-input-spacing { 
+  display: flex;
+  justify-content: space-around; 
+  width: 100%; 
 }

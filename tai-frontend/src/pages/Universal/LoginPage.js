@@ -49,27 +49,27 @@ const LoginPage = () => {
 
     return ( 
         <> 
-        <div >
-            <span className="login-input-spacing"> 
+        <div className="login-input-spacing">
+            {/* <span className="login-input-spacing">  */}
                 <label className="radio-card">
-                <input
-                    className="radio-card-input"
-                    type="radio"
-                    name="role"
-                    value="teacher1"
-                    onChange={() => setTeacherOrStudent('teacher1')}
-                />
-                <div className="radio-card-content">
-                    <img
-                        className="radio-card-image"
-                        src={teacherImage}
-                        alt="Teacher"
+                    <input
+                        className="radio-card-input"
+                        type="radio"
+                        name="role"
+                        value="teacher1"
+                        onChange={() => setTeacherOrStudent('teacher1')}
                     />
-                    <span className="radio-card-label"> Teacher </span>
-                </div> 
-
+                    <div className="radio-card-content">
+                        <img
+                            className="radio-card-image"
+                            src={teacherImage}
+                            alt="Teacher"
+                        />
+                        <span className="radio-card-label"> Teacher </span>
+                    </div> 
+        
                 </label>
-                <label>
+                <label className="radio">
                     <input 
                         className="radio-login-input"
                         type="radio"
@@ -79,8 +79,12 @@ const LoginPage = () => {
                     /> 
                     Teacher2 
                 </label>
-            </span> 
-        </div> 
+            {/* </span>  */}
+        </div>  
+
+
+
+
         <div>
             <label>
                 <input
