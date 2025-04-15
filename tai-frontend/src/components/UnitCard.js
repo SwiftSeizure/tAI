@@ -10,7 +10,6 @@ const UnitCard = ( {unitID, unitName, userID, role } ) => {
         e.preventDefault(); 
         // Navigate here 
         // Should we split into Teacher/Student here?   
-
     }
 
     return(   

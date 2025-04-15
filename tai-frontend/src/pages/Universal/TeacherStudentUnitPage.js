@@ -1,6 +1,6 @@
 import React, {useState, useEffect } from "react";   
 import { useLocation } from 'react-router-dom';   
-import { getRequest } from "../../API"; 
+import { getRequest } from "../../API";
 import axios from "axios";
 import UnitCard from "../../components/UnitCard";
 import ClassCard from "../../components/ClassCard";
@@ -28,16 +28,16 @@ const TeacherStudentUnitPage = () => {
                 const url = `/classroom/${classID}/units`;
                 const response = await getRequest(url);  
                 // May have to mess around with this response
-                setData(response); 
-                populateUnitCards();  
-                console.log("This is the response from the unit page: ", response)
+                setData(response.data.units); 
 
+                populateUnitCards();  
             } 
             catch (error) { 
                 console.log(error);
             }    
             finally { 
-                setLoading(false);
+                setLoading(false); 
+                
             }
 
         };
@@ -46,18 +46,21 @@ const TeacherStudentUnitPage = () => {
 
     }, [classID, userID, role]);
 
+
+
     const populateUnitCards = () => {  
+ 
 
-
+        console.log(data); 
 
         return(  
             <>  
             <div className="card-layout-container"> 
 
-            
-                {Array.isArray(data) && data.map(unit => ( 
-                    <ClassCard 
-                        key={classID} 
+                
+                {Array.isArray(data) && data.map(unit => (  
+                    <UnitCard 
+                        key={unit.id} 
                         unitID={unit.id} 
                         unitName={unit.name} 
                         userID={userID} 
@@ -79,8 +82,12 @@ const TeacherStudentUnitPage = () => {
             <TitleCard 
                 title={classname}
             /> 
-        </div> 
+        </div>  
+
+        <div>  
             {populateUnitCards()}   
+        </div>
+            
         </>
 
     );

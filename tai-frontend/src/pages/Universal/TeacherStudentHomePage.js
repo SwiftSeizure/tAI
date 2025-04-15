@@ -58,7 +58,9 @@ const TeacherStudentHomePage = (  ) => {
 
     const populateClassCards = ( ) => {   
         // e.preventDefault();  
-
+ 
+        console.log(data); 
+        
         return( 
             <>   
             <div className="card-layout-container"> 
