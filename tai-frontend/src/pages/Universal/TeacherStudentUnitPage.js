@@ -74,7 +74,7 @@ const TeacherStudentUnitPage = () => {
         <div className="title-card-center">  
             <TitleCard 
                 title={classname}
-            />
+            /> 
         </div> 
             {populateUnitCards()}   
         </>

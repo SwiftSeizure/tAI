@@ -3,7 +3,6 @@ import axios from 'axios';
 const BASE_URL = 'http://localhost:8000';  
 
 
-
 // Can pass in auth token up here as a param
 export const getRequest = async (url) => { 
     try { 
@@ -18,7 +17,17 @@ export const getRequest = async (url) => {
     catch (e) { 
         console.log(e);
     }
-} 
+}  
+
+
+export const postRequest = async (url) => { 
+    try { 
+
+    } 
+    catch (error) { 
+
+    }
+}
 
 
 // const export get = async (url, headers) => { 
