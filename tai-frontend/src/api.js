@@ -12,7 +12,7 @@ export const getRequest = async (url) => {
                 'Content-Type': 'application/json',
             }
         }); 
-        return response;
+        return response; 
     } 
     catch (e) { 
         console.log(e);
