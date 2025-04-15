@@ -99,9 +99,17 @@ const TeacherStudentHomePage = (  ) => {
                 This is going to be the Basic Home Page For Both Teachers and Students 
             </h1>   
 
-            {populateClassCards()} 
+            {populateClassCards()}  
 
-            {/* {Add condition for student here to join a class and if teacher, create a class} */}
+            <ClassCard   
+                classID={null}
+                classname={"newClass"}  
+                userID={userID}
+                role={role}
+            />
+
+            {/* {Add condition for student here to join a class and if teacher, create a class} */} 
+
 
             <h2>  
                 We can Create classes as components and then allow for extra functionality if they are a teacher or a student 

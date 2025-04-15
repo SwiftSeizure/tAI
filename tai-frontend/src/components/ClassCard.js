@@ -11,34 +11,68 @@ const ClassCard = ( {classID, classname, userID, role}  ) => {
     const logo = require("../images/example-class-logo.png");
 
 
-    const goToPage = (e) => { 
+    const goToUnitPage = (e) => { 
         e.preventDefault();  
 
         // Navigate to the unit page and pass down the 
         navigate('/unitpage', {state: {classID, userID, role, classname}})
         // Navigate here 
-    }; 
+    };  
 
 
+    const goToNewClassPage = (e) => { 
+        e.preventDefault();  
 
-    return(  
-        <div className="card-button-outline">  
-            <button 
-                className="card-button" 
-                onClick={ (e) => goToPage(e) }
-                >  
-                <img  
-                    className="card-image"
-                    src={logo} />
+        if (role === "teacher") { 
+            // Go to create the class page for teacher 
+        } 
+        else { 
+            // Go to the add the class page for student 
+        }
 
-                <div className="card-text-outline"> 
-                    {classname} 
-                </div> 
-                
-            </button>
-        </div>
-        
-    );
+    };
+
+
+    if (classname !== "newClass") { 
+        return(  
+            <div className="card-button-outline">  
+                <button 
+                    className="card-button" 
+                    onClick={ (e) => goToUnitPage(e) }
+                    >  
+                    <img  
+                        className="card-image"
+                        src={logo} />
+    
+                    <div className="card-text-outline"> 
+                        {classname} 
+                    </div> 
+                    
+                </button>
+            </div>
+            
+        );
+    } 
+    else { 
+        return ( 
+            <div className="card-button-outline"> 
+                <button
+                    className="card-button"
+                    onClick={ (e) => goToNewClassPage(e) } 
+                    >
+                    <img 
+                        className="card-image" 
+                        src={logo} /> 
+                    <div className="card-text-outline"> 
+                        Add New class
+                    </div>
+                    
+                </button> 
+
+            </div>
+        )
+    }
+
 } 
 
 export default ClassCard;
