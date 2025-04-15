@@ -11,8 +11,28 @@ from fastapi import FastAPI
 import os
 import requests
 from dotenv import load_dotenv
+from backend.routers import home, classroom
+from backend.Seed_Database import PopulateDB
+from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+PopulateDB()
+app = FastAPI(
+    title="TAi",
+    summary="An always available, class specific TA."
+)
+
+app.include_router(home.router)
+app.include_router(classroom.router)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Only allow frontend origin
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+"""
 load_dotenv() 
 
 def generate_response(prompt):
@@ -37,7 +57,7 @@ def generate_response(prompt):
 # Example usage
 response = generate_response("Write a one-sentence bedtime story about a unicorn.")
 print(response['choices'][0]['message']['content'])
-
+"""
 # todo: add routes and logic here 
 
 # TODO: Route for a teacher or student ID from the DB   

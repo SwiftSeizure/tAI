@@ -1,0 +1,83 @@
+{
+    "teachers": [
+      {
+        "id": 1,
+        "name": "Alice Johnson",
+        "password_hash": "hash_alice"
+      },
+      {
+        "id": 2,
+        "name": "Bob Matthews",
+        "password_hash": "hash_bob"
+      }
+    ],
+    "students": [
+      {
+        "id": 1,
+        "name": "Charlie Brown",
+        "password_hash": "hash_charlie"
+      },
+      {
+        "id": 2,
+        "name": "Diana Prince",
+        "password_hash": "hash_diana"
+      }
+    ],
+    "classes": [
+      {
+        "id": 1,
+        "name": "Intro to Math",
+        "ownerID": 1,
+        "settings": {
+          "difficulty": "easy",
+          "max_students": 30
+        }
+      },
+      {
+        "id": 2,
+        "name": "Advanced Science",
+        "ownerID": 2,
+        "settings": {
+          "difficulty": "hard",
+          "max_students": 20
+        }
+      }
+    ],
+    "units": [
+      {
+        "id": 1,
+        "name": "Algebra Basics",
+        "sequence": 1,
+        "classID": 1,
+        "settings": {
+        }
+      },
+      {
+        "id": 2,
+        "name": "Physics Fundamentals",
+        "sequence": 1,
+        "classID": 2,
+        "settings": {
+        }
+      },
+      {
+        "id": 3,
+        "name": "Algebra Next Steps",
+        "sequence": 2,
+        "classID": 1,
+        "settings": {
+        }
+      }
+    ],
+    "enrollments": [
+      {
+        "studentID": 1,
+        "classID": 1
+      },
+      {
+        "studentID": 2,
+        "classID": 2
+      }
+    ]
+  }
+  
