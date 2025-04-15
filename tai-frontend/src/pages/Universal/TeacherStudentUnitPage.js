@@ -4,6 +4,7 @@ import { getRequest } from "../../API";
 import axios from "axios";
 import UnitCard from "../../components/UnitCard";
 import ClassCard from "../../components/ClassCard";
+import TitleCard from "../../cards/TitleCard";
 
 
 
@@ -67,12 +68,14 @@ const TeacherStudentUnitPage = () => {
 
 
 
-
+    
     return(  
         <> 
-        <h1> 
-            {classname}
-        </h1> 
+        <div className="title-card-center">  
+            <TitleCard 
+                title={classname}
+            />
+        </div> 
             {populateUnitCards()}   
         </>
 

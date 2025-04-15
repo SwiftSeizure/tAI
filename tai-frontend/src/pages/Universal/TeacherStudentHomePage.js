@@ -4,6 +4,7 @@ import useUser from "../../hooks/useUser";
 import ClassCard from "../../components/ClassCard"; 
 import axios from "axios"; 
 import { getRequest } from "../../API";
+import TitleCard from "../../cards/TitleCard";
 
 const TeacherStudentHomePage = (  ) => {   
 
@@ -78,14 +79,18 @@ const TeacherStudentHomePage = (  ) => {
 
 
     // Make some kind of loop here to populate the class Cards with the DB  
-    // TODO Add Welcome user 
-    return( 
-        <>
-        <div  id=".myDiv">    
+    // TODO Add Welcome user  
 
-            
-            
-            <h1> Welcome { name }</h1>
+    const title = "Welcome " + name;
+    return( 
+        <>  
+        <div className="title-card-center"> 
+            < TitleCard
+                title={title}
+            />
+        </div>
+
+        <div >      
             <h1> 
                 This is going to be the Basic Home Page For Both Teachers and Students 
             </h1>   
@@ -94,7 +99,8 @@ const TeacherStudentHomePage = (  ) => {
 
             <h2>  
                 We can Create classes as components and then allow for extra functionality if they are a teacher or a student 
-            </h2>
+            </h2> 
+
         </div> 
         </>
     );

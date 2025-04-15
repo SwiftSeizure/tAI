@@ -105,7 +105,7 @@ const LoginPage = () => {
 
 
         <div className="center-login-button"> 
-            <button className="button-6" onClick={logIn}>Log In</button> 
+            <button className="login-button" onClick={logIn}>Log In</button> 
         </div>
 
         
