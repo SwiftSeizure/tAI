@@ -25,7 +25,7 @@ const TeacherStudentUnitPage = () => {
             setLoading(true);
             try {  
 
-                const url = `unitpage/${role}/${classID}`;
+                const url = `/classroom/${classID}/units`;
                 const response = await getRequest(url);  
                 // May have to mess around with this response
                 setData(response); 
