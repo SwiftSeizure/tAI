@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import TeacherStudentHomePage from "./TeacherStudentHomePage";  
 
 const teacherImage = require('../../images/teacher-login-image.png')
-// var studentImage = require('../../images/student-login-image.png');
+const studentImage = require('../../images/student-login-image.png');
 
 
 const LoginPage = () => { 
@@ -50,36 +50,41 @@ const LoginPage = () => {
     return ( 
         <> 
         <div className="login-input-spacing">
-            {/* <span className="login-input-spacing">  */}
-                <label className="radio-card">
-                    <input
-                        className="radio-card-input"
-                        type="radio"
-                        name="role"
-                        value="teacher1"
-                        onChange={() => setTeacherOrStudent('teacher1')}
+            <label className="radio-card">
+                <input
+                    className="radio-card-input"
+                    type="radio"
+                    name="role"
+                    value="teacher1"
+                    onChange={() => setTeacherOrStudent('teacher1')}
+                />
+                <div className="radio-card-content">
+                    <img
+                        className="radio-card-image"
+                        src={teacherImage}
+                        alt="Teacher"
                     />
-                    <div className="radio-card-content">
-                        <img
-                            className="radio-card-image"
-                            src={teacherImage}
-                            alt="Teacher"
-                        />
-                        <span className="radio-card-label"> Teacher </span>
-                    </div> 
-        
-                </label>
-                <label className="radio">
-                    <input 
-                        className="radio-login-input"
-                        type="radio"
-                        name="role"
-                        value="teacher2"
-                        onChange={() => setTeacherOrStudent('teacher2')}
+                    <span className="radio-card-label"> Teacher 1 </span>
+                </div> 
+            </label>
+            <label className="radio-card">
+                <input 
+                    className="radio-login-input"
+                    type="radio"
+                    name="role"
+                    value="student1"
+                    onChange={() => setTeacherOrStudent('student1')}
+                />  
+                <div className="radio-card-content"> 
+                    <img 
+                        className="radio-card-image" 
+                        src={studentImage} 
+                        alt="Student"
                     /> 
-                    Teacher2 
-                </label>
-            {/* </span>  */}
+                    <span className="radio-card-label"> Student 1 </span>
+                </div>
+            </label> 
+            
         </div>  
 
 
@@ -90,10 +95,10 @@ const LoginPage = () => {
                 <input
                     type="radio"
                     name="role"
-                    value="student1"
-                    onChange={() => setTeacherOrStudent('student1')}
+                    value="teacher2"
+                    onChange={() => setTeacherOrStudent('teacher2')}
                 />
-                Student1
+                teacher2
             </label>
         </div> 
 
