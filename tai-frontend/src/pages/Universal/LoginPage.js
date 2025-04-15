@@ -102,7 +102,13 @@ const LoginPage = () => {
             </label>
         </div> 
 
-        <button onClick={logIn}>Log In</button> 
+
+
+        <div className="center-login-button"> 
+            <button className="button-6" onClick={logIn}>Log In</button> 
+        </div>
+
+        
         </>
     );
 }  
