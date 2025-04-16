@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";  
 import { useLocation } from "react-router-dom";
-import TitleCard from "../../components/TitleCard"; 
+import TitleCard from "../../components/TitleCard";  
+import { getRequest } from "../../API";
 import axios from "axios";
 
 const TeacherStudentModulePage = () => {     
 
     const [loading, setLoading] = useState(true); 
-    const [data, setData] = useState(null); 
+    const [data, setData] = useState(null);  
+    const [chatActive, setChatActive] = useState(false);
 
     const location = useLocation(); 
 
@@ -19,7 +21,11 @@ const TeacherStudentModulePage = () => {
 
         const loadModules = async () => {  
 
-            try {  
+            try {   
+                const url = `/modulepage/${unitID}/${userID}`; 
+                const response = await getRequest();  
+                // TODO Change this response based on getting the stuff back 
+                setData(response);
 
 
             } 
