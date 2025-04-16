@@ -55,9 +55,6 @@ const TeacherStudentUnitPage = () => {
 
         return(  
             <>  
-            <div className="card-layout-container"> 
-
-                
                 {Array.isArray(data) && data.map(unit => (  
                     <UnitCard 
                         key={unit.id} 
@@ -67,7 +64,6 @@ const TeacherStudentUnitPage = () => {
                         role={role}
                     />
                 ))} 
-            </div>
             </>
         )
 
@@ -84,8 +80,10 @@ const TeacherStudentUnitPage = () => {
             /> 
         </div>  
 
-        <div>  
-            {populateUnitCards()}   
+        <div className="class-unit-card-grid">  
+            {populateUnitCards()}    
+
+
         </div>
             
         </>

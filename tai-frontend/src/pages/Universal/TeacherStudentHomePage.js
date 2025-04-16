@@ -64,7 +64,6 @@ const TeacherStudentHomePage = (  ) => {
         
         return( 
             <>   
-            <div className="card-layout-container"> 
 
                 {Array.isArray(data) && data.map(classroom => (
                     <ClassCard   
@@ -75,8 +74,7 @@ const TeacherStudentHomePage = (  ) => {
                         role={role}
                     />
                 ))} 
-            </div>
-            
+         
             </>
         )
     }; 
@@ -97,26 +95,47 @@ const TeacherStudentHomePage = (  ) => {
             />
         </div>
 
-        <div >      
-            <h1> 
-                This is going to be the Basic Home Page For Both Teachers and Students 
-            </h1>   
-
-            {populateClassCards()}  
-
-            <ClassCard   
-                classID={null}
-                classname={"newClass"}  
-                userID={userID}
-                role={role}
-            />
-
-            {/* {Add condition for student here to join a class and if teacher, create a class} */} 
+        <div className="class-unit-card-grid">      
 
 
-            <h2>  
-                We can Create classes as components and then allow for extra functionality if they are a teacher or a student 
-            </h2> 
+            
+                {populateClassCards()}  
+
+                <ClassCard   
+                    classID={null}
+                    classname={"newClass"}  
+                    userID={userID}
+                    role={role}
+                />  
+
+
+
+                <ClassCard   
+                    classID={null}
+                    classname={"newClass"}  
+                    userID={userID}
+                    role={role}
+                />  
+                <ClassCard   
+                    classID={null}
+                    classname={"newClass"}  
+                    userID={userID}
+                    role={role}
+                />  
+                <ClassCard   
+                    classID={null}
+                    classname={"newClass"}  
+                    userID={userID}
+                    role={role}
+                />  
+                <ClassCard   
+                    classID={null}
+                    classname={"newClass"}  
+                    userID={userID}
+                    role={role}
+                /> 
+
+
 
         </div> 
         </>

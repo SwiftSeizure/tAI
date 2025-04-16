@@ -142,4 +142,10 @@ input[type="radio"]:checked + .radio-card {
 .card-layout-container { 
   display: grid;
   justify-content: space-evenly;
-} 
+}  
+
+.class-unit-card-grid { 
+  display:grid;   
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: space-evenly;
+}
