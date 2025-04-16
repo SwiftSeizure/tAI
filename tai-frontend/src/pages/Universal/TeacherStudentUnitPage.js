@@ -4,7 +4,7 @@ import { getRequest } from "../../API";
 import axios from "axios";
 import UnitCard from "../../components/UnitCard";
 import ClassCard from "../../components/ClassCard";
-import TitleCard from "../../cards/TitleCard";
+import TitleCard from "../../components/TitleCard";
 
 
 

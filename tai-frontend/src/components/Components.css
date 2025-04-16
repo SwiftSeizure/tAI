@@ -32,6 +32,18 @@
 
 .card-button-outline { 
     padding: 50px;
-} 
+}  
+
+.title-card-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px; /* or whatever works */
+    background-color: blue; 
+   }
+  
+  .title-card-h1 { 
+      /* Change font and size in here for the title  */
+  }
 
 
