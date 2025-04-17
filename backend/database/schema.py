@@ -7,6 +7,7 @@ Base = declarative_base()
 
 class DBStudent(Base):
     __tablename__ = "student" 
+
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(25), nullable=False)
     password_hash = Column(String(255), nullable=False)
@@ -53,8 +54,58 @@ class DBUnit(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(25), nullable=False)
     sequence = Column(Integer, nullable=False)
-    
     classID = Column(Integer, ForeignKey("class.id", ondelete="CASCADE"))
+
     class_ = relationship("DBClass", back_populates="units")
+    modules = relationship("DBModule", back_populates="unit")
     
     settings = Column(JSON, nullable=False)
+
+
+class DBModule(Base):
+    __tablename__ = "module"
+
+    id = Column(Integer, primary_key = True, index = True)
+    name = Column(String(25), nullable=False)
+    sequence = Column(Integer, nullable=False)
+    unitID = Column(ForeignKey("unit.id",ondelete="CASCADE"))
+
+    unit = relationship("DBUnit",back_populates="modules")
+    days = relationship("DBDay",back_populates="module",cascade="all, delete-orphan")
+
+
+
+class DBDay(Base):
+    __tablename__ = "day"
+
+    id = Column(Integer, primary_key = True, index = True)
+    name = Column(String(25), nullable=False)
+    sequence = Column(Integer, nullable=False)
+    moduleID = Column(Integer, ForeignKey("module.id", ondelete="CASCADE"))
+
+    assignments = relationship("DBAssignment",back_populates="day")
+    materials = relationship("DBMaterial",back_populates="day")
+    module = relationship("DBModule",back_populates="days")
+    
+class DBAssignment(Base):
+    __tablename__ = "assignment"
+
+    id = Column(Integer, primary_key = True, index = True)
+    name = Column(String(25), nullable=False)
+    sequence = Column(Integer, nullable=False)
+    path = Column(String(255),nullable=False)
+    dayId = Column(ForeignKey("day.id"))
+
+    day = relationship("DBDay", back_populates="assignments")
+
+class DBMaterial(Base):
+    __tablename__ = "material"
+
+    id = Column(Integer, primary_key = True, index = True)
+    name = Column(String(25), nullable=False)
+    sequence = Column(Integer, nullable=False)
+    path = Column(String(255),nullable=False)
+    dayId = Column(ForeignKey("day.id"))
+
+    day = relationship("DBDay", back_populates="materials")
+
