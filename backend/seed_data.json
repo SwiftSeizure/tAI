@@ -1,38 +1,38 @@
 {
-  "student": [
-    { "name": "Alice", "password_hash": "hashed_pw_1" },
-    { "name": "Bob", "password_hash": "hashed_pw_2" }
-  ],
   "teacher": [
-    { "name": "Ms. Smith", "password_hash": "hashed_pw_3" },
-    { "name": "Mr. Johnson", "password_hash": "hashed_pw_4" }
+    { "id": 1, "name": "Ms. Smith", "password_hash": "hashed_pw_1" },
+    { "id": 2, "name": "Mr. Johnson", "password_hash": "hashed_pw_2" }
+  ],
+  "student": [
+    { "id": 1, "name": "Alice", "password_hash": "hashed_pw_3" },
+    { "id": 2, "name": "Bob", "password_hash": "hashed_pw_4" }
   ],
   "class": [
-    { "name": "Math 101", "ownerID": 1, "settings": { "difficulty": "medium" } },
-    { "name": "Science 202", "ownerID": 2, "settings": { "difficulty": "hard" } }
+    { "id": 1, "name": "Math 101", "ownerID": 1, "settings": { "difficulty": "medium" } },
+    { "id": 2, "name": "Science 202", "ownerID": 2, "settings": { "difficulty": "hard" } }
   ],
   "enrolled": [
-    { "studentID": 1, "classID": 1 },
-    { "studentID": 2, "classID": 2 }
+    { "id": 1, "studentID": 1, "classID": 1 },
+    { "id": 2, "studentID": 2, "classID": 2 }
   ],
   "unit": [
-    { "name": "Algebra", "sequence": 1, "classID": 1, "settings": { "topic": "equations" } },
-    { "name": "Biology", "sequence": 1, "classID": 2, "settings": { "topic": "cells" } }
+    { "id": 1, "name": "Algebra", "sequence": 1, "classID": 1, "settings": { "topic": "equations" } },
+    { "id": 2, "name": "Biology", "sequence": 1, "classID": 2, "settings": { "topic": "cells" } }
   ],
   "module": [
-    { "name": "Linear Equations", "sequence": 1, "unitID": 1 },
-    { "name": "Cell Structure", "sequence": 1, "unitID": 2 }
+    { "id": 1, "name": "Linear Equations", "sequence": 1, "unitID": 1 },
+    { "id": 2, "name": "Cell Structure", "sequence": 1, "unitID": 2 }
   ],
   "day": [
-    { "name": "Day 1", "sequence": 1, "moduleID": 1 },
-    { "name": "Day 2", "sequence": 2, "moduleID": 2 }
+    { "id": 1, "name": "Day 1", "sequence": 1, "moduleID": 1 },
+    { "id": 2, "name": "Day 2", "sequence": 2, "moduleID": 2 }
   ],
   "assignment": [
-    { "name": "Worksheet A", "sequence": 1, "path": "/assignments/math/ws_a.pdf", "dayId": 1 },
-    { "name": "Lab Report", "sequence": 1, "path": "/assignments/science/lab1.docx", "dayId": 2 }
+    { "id": 1, "name": "Worksheet A", "sequence": 1, "path": "/assignments/math/ws_a.pdf", "dayId": 1 },
+    { "id": 2, "name": "Lab Report", "sequence": 1, "path": "/assignments/science/lab1.docx", "dayId": 2 }
   ],
   "material": [
-    { "name": "Slide Deck", "sequence": 1, "path": "/materials/math/slides1.pptx", "dayId": 1 },
-    { "name": "Reading PDF", "sequence": 2, "path": "/materials/science/readings1.pdf", "dayId": 2 }
+    { "id": 1, "name": "Slide Deck", "sequence": 1, "path": "/materials/math/slides1.pptx", "dayId": 1 },
+    { "id": 2, "name": "Reading PDF", "sequence": 2, "path": "/materials/science/readings1.pdf", "dayId": 2 }
   ]
 }
