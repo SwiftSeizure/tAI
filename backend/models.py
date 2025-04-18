@@ -26,4 +26,17 @@ class ClassroomResponse(BaseModel):
 class ClassroomUnit(BaseModel):
     id: int
     name: str
+    
+# Units Response Models ----------------------------------------
+class UnitResponse(BaseModel):
+    modules: list [UnitModule]
+    
+class UnitModule(BaseModel):
+    id: int
+    name: str
+    days: list[ModuleDay]
+    
+class ModuleDay(BaseModel):
+    id: int
+    name: str
 
