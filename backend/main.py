@@ -12,7 +12,7 @@ from fastapi.requests import Request
 import os
 import requests
 from dotenv import load_dotenv
-from backend.routers import home, classroom
+from backend.routers import home, classroom, unit
 from backend.Seed_Database import PopulateDB
 from fastapi.middleware.cors import CORSMiddleware
 from backend.exceptions import EntityNotFoundException
@@ -25,6 +25,7 @@ app = FastAPI(
 
 app.include_router(home.router)
 app.include_router(classroom.router)
+app.include_router(unit.router)
 
 app.add_middleware(
     CORSMiddleware,
