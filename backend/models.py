@@ -1,6 +1,10 @@
 from __future__ import annotations
 from pydantic import BaseModel
 
+# Error Response Model ------------------------------------------
+class ClientErrorResponse(BaseModel):
+    error: str
+    message: str
 
 # Home Response Models ------------------------------------------
 class HomeResponse(BaseModel):
@@ -15,7 +19,7 @@ class CreateClassroom(BaseModel):
     name: str
     settings: dict
     
-# Classroom Response Models ------------------------------------------
+# Classroom Response Models -------------------------------------
 class ClassroomResponse(BaseModel):
     units: list[ClassroomUnit]
     
