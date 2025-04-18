@@ -1,18 +1,39 @@
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload, Session
 from backend.database.schema import DBTeacher, DBClass
+from backend.models import CreateClassroom
 
-def get_teacher_classes(teacher_id: int, session: Session) -> list[DBClass]:
-    # Using select statement
+def get_teacher(teacherID: int, session: Session) -> DBTeacher | None:
+    stmt = select(DBTeacher).filter(DBTeacher.id == teacherID)
+    return session.execute(stmt).scalar_one_or_none()
+
+def get_teacher_classes(teacherID: int, session: Session) -> list[DBClass]:
+    teacher = get_teacher(teacherID, session)
+    if not teacher:
+        raise ValueError(f"Teacher with ID {teacherID} not found")
+    
     stmt = (
         select(DBTeacher)
         .options(selectinload(DBTeacher.classes))
-        .filter(DBTeacher.id == teacher_id)
+        .filter(DBTeacher.id == teacherID)
     )
-    teacher = session.execute(stmt).scalar_one_or_none()
-    if teacher:
-        print(teacher.classes)
-        
-    return list(teacher.classes) if teacher else []
+    result = session.execute(stmt).scalar_one_or_none()
+    return list(result.classes) if result else []
 
+def create_new_classroom(teacherID: int, classroom: CreateClassroom, session: Session) -> DBClass:
+    teacher = get_teacher(teacherID, session)
+    if not teacher:
+        raise ValueError(f"Teacher with ID {teacherID} not found")
+    
+    new_class = DBClass(
+        name=classroom.name,
+        ownerID=teacherID,
+        settings=classroom.settings
+    )
+    
+    session.add(new_class)
+    session.commit()
+    session.refresh(new_class)
+    
+    return new_class
     
