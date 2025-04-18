@@ -2,7 +2,6 @@ from fastapi import APIRouter, Form
 from typing import Any, Annotated
 
 from backend.database import unit as unit_db
-from backend.database.schema import DBUnit, DBModule, DBDay
 from backend.dependencies import DBSession
 from backend.models import ClientErrorResponse, UnitResponse,UnitModule, ModuleDay
 
@@ -20,7 +19,6 @@ def get_unit_modules(unitID: int, session: DBSession) -> UnitResponse:
 
     modules = []
     for m in db_modules:
-        
         modules.append(UnitModule(
             id=m.id,   # type: ignore
             name=m.name,   # type: ignore
