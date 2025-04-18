@@ -71,7 +71,7 @@ const TeacherStudentUnitPage = () => {
 
 
 
-    
+    console.log("This is supposed to me intro to math:", classname);
     return(  
         <> 
         <div className="title-card-center">  

@@ -47,7 +47,7 @@ const TeacherStudentModulePage = () => {
     // TODO: map all of the components as a list item 
 
 
-
+    
     return(  
         <>   
         <TitleCard 

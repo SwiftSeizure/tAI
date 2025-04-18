@@ -1,14 +1,14 @@
 import React, { useState } from "react";  
 import { useNavigate } from 'react-router-dom';   
-import TeacherStudentUnitPage from "../pages/Universal/TeacherStudentUnitPage"; 
-import styles from './Components.css';
+import TeacherStudentUnitPage from "../pages/Universal/TeacherStudentUnitPage";
 
 // Need to pass down props here about the name of the class 
-const ClassCard = ( {classID, classname, userID, role}  ) => {  
+const ClassCard = ( {classID, classname, userID, role}  ) => {   
 
-    const navigate = useNavigate();    
 
-    const logo = require("../images/example-class-logo.png");
+
+    const logo = require("../images/example-class-logo.png"); 
+    const navigate = useNavigate();   
 
 
     const goToUnitPage = (e) => { 
@@ -17,8 +17,7 @@ const ClassCard = ( {classID, classname, userID, role}  ) => {
         // Navigate to the unit page and pass down the 
         navigate('/unitpage', {state: {classID, userID, role, classname}})
         // Navigate here 
-    };  
-
+    }; 
 
     const goToNewClassPage = (e) => { 
         e.preventDefault();  
@@ -72,7 +71,6 @@ const ClassCard = ( {classID, classname, userID, role}  ) => {
             </div>
         )
     }
-
 } 
 
 export default ClassCard;

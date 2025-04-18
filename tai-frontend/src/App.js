@@ -21,13 +21,6 @@ function App() {
           <Route path="/unitpage" element={<TeacherStudentUnitPage /> } />     
           <Route path="/modulepage" element={ <TeacherStudentModulePage /> } />
 
-
-
-
-
-
-
-
           
         </Routes>
       </div>
