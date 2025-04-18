@@ -148,4 +148,44 @@ input[type="radio"]:checked + .radio-card {
   display:grid;   
   grid-template-columns: repeat(3, 1fr);
   justify-content: space-evenly;
+} 
+
+
+
+/* Module Page Styling  */ 
+.expanding-chat-div {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.collapsible {
+  background-color: #f1f1f1;
+  color: #444;
+  cursor: pointer;
+  padding: 12px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 16px;
+  border-radius: 8px 8px 0 0;
+  transition: 0.3s;
+}
+
+.active, .collapsible:hover {
+  background-color: #e0e0e0;
+}
+
+.chat-feature-div {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  padding: 0 15px;
+}
+
+.chat-feature-div.expanded {
+  max-height: 500px;
+  padding: 15px;
 }

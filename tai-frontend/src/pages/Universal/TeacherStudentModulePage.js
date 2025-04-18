@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from "react";  
 import { useLocation } from "react-router-dom";
 import TitleCard from "../../components/TitleCard";  
-import { getRequest } from "../../API";
+import { getRequest } from "../../API"; 
+
 import axios from "axios";
+import ChatFeature from "../../components/ChatFeature";
 
 const TeacherStudentModulePage = () => {     
 
     const [loading, setLoading] = useState(true); 
     const [data, setData] = useState(null);  
-    const [chatActive, setChatActive] = useState(false);
+
+    const [isExpanded, setIsExpanded] = useState(false);
 
     const location = useLocation(); 
+    const {unitID, unitName, userID, role} = location.state || {}; 
 
-    const {unitID, unitName, userID, role} = location.state || {};
+
+    const toggleExpand = () => {
+        setIsExpanded(!isExpanded);
+    };
 
 
     //TODO: make a get request to get all the modules of the unit  
@@ -26,7 +33,6 @@ const TeacherStudentModulePage = () => {
                 const response = await getRequest();  
                 // TODO Change this response based on getting the stuff back 
                 setData(response);
-
 
             } 
             catch(error) {
@@ -47,15 +53,33 @@ const TeacherStudentModulePage = () => {
     // TODO: map all of the components as a list item 
 
 
-    
+
     return(  
-        <>   
+        <>     
         <TitleCard 
             title={unitName}
-            />
-        <div> 
-            This is the module page 
+        />
+        <div>  
+
+            <div> 
+                This is the module page hopefully this is there the modules will go 
+            </div>  
+            
+            <div> 
+                This is where display will go 
+            </div> 
+            <div className="expanding-chat-div">   
+
+
+                <button onClick={toggleExpand} >   
+                    Chat feature
+                </button>  
+                {isExpanded && <div> <ChatFeature /> </div>}
+
+            </div>
+
         </div>
+        
         </>
     )
 
