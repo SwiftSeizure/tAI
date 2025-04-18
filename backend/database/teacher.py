@@ -2,6 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload, Session
 from backend.database.schema import DBTeacher, DBClass
 from backend.models import CreateClassroom
+from backend.exceptions import EntityNotFoundException
 
 def get_teacher(teacherID: int, session: Session) -> DBTeacher | None:
     stmt = select(DBTeacher).filter(DBTeacher.id == teacherID)
@@ -10,7 +11,7 @@ def get_teacher(teacherID: int, session: Session) -> DBTeacher | None:
 def get_teacher_classes(teacherID: int, session: Session) -> list[DBClass]:
     teacher = get_teacher(teacherID, session)
     if not teacher:
-        raise ValueError(f"Teacher with ID {teacherID} not found")
+        raise EntityNotFoundException("teacher", teacherID)
     
     stmt = (
         select(DBTeacher)
@@ -23,7 +24,7 @@ def get_teacher_classes(teacherID: int, session: Session) -> list[DBClass]:
 def create_new_classroom(teacherID: int, classroom: CreateClassroom, session: Session) -> DBClass:
     teacher = get_teacher(teacherID, session)
     if not teacher:
-        raise ValueError(f"Teacher with ID {teacherID} not found")
+        raise EntityNotFoundException("teacher", teacherID)
     
     new_class = DBClass(
         name=classroom.name,
