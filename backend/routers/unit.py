@@ -7,6 +7,9 @@ from backend.models import ClientErrorResponse, UnitResponse,UnitModule, ModuleD
 
 router = APIRouter(prefix="/unit", tags=["Unit"])
 
+ 
+# i think this route should only return the modules not the days im implementing a route that gets the days
+# but only for the selected module we dont want to load all the days for all of the modules before they click one
 @router.get("/{unitID}/modules",
             response_model=UnitResponse,
             status_code=200,

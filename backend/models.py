@@ -40,3 +40,25 @@ class ModuleDay(BaseModel):
     id: int
     name: str
 
+# Module Response Models ---------------------------------------
+
+class ModuleResponse(BaseModel):
+    days: list[ModuleDay]
+
+# Day Response Models ----------------------------------------------
+
+class DayAssignmentResposne(BaseModel):
+    assignments: list[DayAssignment]
+
+class DayAssignment(BaseModel):
+    id: int
+    name: str
+    path: str
+
+class DayMaterialResposne(BaseModel):
+    materials: list[DayMaterial]
+
+class DayMaterial(BaseModel):
+    id: int
+    name: str
+    path: str
