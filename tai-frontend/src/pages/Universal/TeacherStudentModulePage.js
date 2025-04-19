@@ -11,15 +11,25 @@ const TeacherStudentModulePage = () => {
 
     const [loading, setLoading] = useState(true); 
     const [data, setData] = useState(null);  
+    const [isChatExpanded, setIsChatExpanded] = useState(false); 
 
-    const [isExpanded, setIsExpanded] = useState(false);
+    const [displayType, setDisplayType] = useState('welcome'); 
+    const [selectedModule, setSelectedModule] = useState(null); 
+    const [selectedDay, setSelectedDay] = useState(null); 
+    const [dayContent, setDayContent] = useState(null);
 
     const location = useLocation(); 
     const {unitID, unitName, userID, role} = location.state || {}; 
 
 
-    const toggleExpand = () => {
-        setIsExpanded(!isExpanded);
+    const toggleChatExpand = () => {
+        setIsChatExpanded(!isChatExpanded); 
+        if (!isChatExpanded) { 
+            setDisplayType('chat')
+        } 
+        else { 
+            setDisplayType('welcome');
+        }
     };
 
 
@@ -40,36 +50,99 @@ const TeacherStudentModulePage = () => {
             } 
             finally { 
                 setLoading(false); 
-                populateModuleCards();
+                // populateModuleCards();
             }
-
         }; 
         
         loadModules();
 
-    }, [userID, role]);
+    }, [userID, role]); 
+
+
+    const handleDaySelect = async ( moduleID, dayID ) => {  
+        setSelectedModule(moduleID); 
+        setSelectedDay(dayID);
+        setDisplayType('day'); 
+
+        try {  
+            // TODO: 
+            // Make request here to get all of the content for the day  
+            // setDayContent("This is example content of where the actual content will go ")
+        } 
+        catch (error) { 
+            console.log(error);  
+            // 
+        }
+ 
+    };  
+
+
+    const renderModules = () => { 
+        if (!Array.isArray(data)) { 
+            return null;
+        } 
+        else { 
+            return( 
+                <> 
+                {data.map (module => ( 
+                    <ModuleComponent 
+                        key={module.id} 
+                        module={module} 
+                        onDaySelect={handleDaySelect} 
+                    />
+                ))} 
+                </>
+            )
+        }
+    }; 
+
+    const renderContent = () => { 
+        switch(displayType) { 
+            case 'welcome': 
+                return(  
+                    <div> 
+                        <h1> select something </h1>
+                    </div>
+                    
+                );  
+            case 'day': 
+                return( 
+                    <div> 
+                        {dayContent ? ( 
+                            <> 
+                            <div> 
+                                this is where the content will go for the day    
+                            </div> 
+                            </>
+                        ) : ( 
+                            <h3> Stuff is loading </h3>
+                        )}
+                    </div>
+                ); 
+            case 'chat':  
+
+                // Could maybe make an API call here for chat context??
+                return(  
+                    <div> 
+                        <ChatFeature />
+                    </div>
+                    
+                ); 
+            default: 
+                return( 
+                    <div> 
+                        Nothing is selected
+                    </div>
+                )
+        }
+    };
+
 
     //TODO: make a new component for each module with the dropdown so that they can be opened and added 
 
     // TODO: map all of the components as a list item 
 
-    const populateModuleCards = () => {   
 
-
-        console.log("This is the module cards response data: ", data);
-
-        return( 
-            <>  
-                {Array.isArray(data) && data.map(module => ( 
-                    <ModuleComponent 
-                        key={module.id} 
-                        module={module}
-                    />
-                ) ) }
-            </>
-        )
-
-    }; 
 
 
 
@@ -78,28 +151,25 @@ const TeacherStudentModulePage = () => {
         <>     
         <TitleCard 
             title={unitName}
-        />
-        <div>  
+        /> 
+
+        <div >  
 
             <div> 
-                This is the module page hopefully this is there the modules will go  
-                {populateModuleCards()} 
+                {renderModules()} 
             </div>  
             
             <div> 
-                This is where display will go 
-            </div> 
-            <div className="expanding-chat-div">   
+                {renderContent()}
+            </div>  
 
+        </div> 
 
-                <button onClick={toggleExpand} >   
-                    Chat feature
-                </button>  
-                {isExpanded && <div> <ChatFeature /> </div>}
-
-            </div>
-
-        </div>
+        <button 
+            onClick={toggleChatExpand} 
+        > 
+            {isChatExpanded ? "Close Chat" : "Open Chat"}
+        </button>
         
         </>
     )
