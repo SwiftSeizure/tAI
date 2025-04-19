@@ -5,6 +5,7 @@ import { getRequest } from "../../API";
 
 import axios from "axios";
 import ChatFeature from "../../components/ChatFeature";
+import ModuleComponent from "../../components/ModuleComponent";
 
 const TeacherStudentModulePage = () => {     
 
@@ -22,17 +23,15 @@ const TeacherStudentModulePage = () => {
     };
 
 
-    //TODO: make a get request to get all the modules of the unit  
-
     useEffect(() => { 
 
         const loadModules = async () => {  
 
             try {   
-                const url = `/modulepage/${unitID}/${userID}`; 
-                const response = await getRequest();  
-                // TODO Change this response based on getting the stuff back 
-                setData(response);
+                const url = `/unit/${unitID}/modules`; 
+                const response = await getRequest(url);  
+                console.log(response.data);
+                setData(response.data.modules);
 
             } 
             catch(error) {
@@ -40,17 +39,38 @@ const TeacherStudentModulePage = () => {
 
             } 
             finally { 
-                setLoading(false);
+                setLoading(false); 
+                populateModuleCards();
             }
 
-        } 
+        }; 
+        
+        loadModules();
 
-
-    });
+    }, [userID, role]);
 
     //TODO: make a new component for each module with the dropdown so that they can be opened and added 
 
     // TODO: map all of the components as a list item 
+
+    const populateModuleCards = () => {   
+
+
+        console.log("This is the module cards response data: ", data);
+
+        return( 
+            <>  
+                {Array.isArray(data) && data.map(module => ( 
+                    <ModuleComponent 
+                        key={module.id} 
+                        module={module}
+                    />
+                ) ) }
+            </>
+        )
+
+    }; 
+
 
 
 
@@ -62,7 +82,8 @@ const TeacherStudentModulePage = () => {
         <div>  
 
             <div> 
-                This is the module page hopefully this is there the modules will go 
+                This is the module page hopefully this is there the modules will go  
+                {populateModuleCards()} 
             </div>  
             
             <div> 
