@@ -10,6 +10,7 @@ class DBStudent(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(25), nullable=False)
+    userName = Column(String(25), nullable=False)
     password_hash = Column(String(255), nullable=False)
     
     classes = relationship("DBEnrolled", back_populates="student")
@@ -19,6 +20,7 @@ class DBTeacher(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(25), nullable=False)
+    userName = Column(String(25), nullable=False)
     password_hash = Column(String(255), nullable=False)
     
     classes = relationship("DBClass", back_populates="owner", cascade="all, delete")

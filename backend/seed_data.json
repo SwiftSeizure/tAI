@@ -1,11 +1,11 @@
 {
   "teacher": [
-    { "id": 1, "name": "Ms. Smith", "password_hash": "hashed_pw_1" },
-    { "id": 2, "name": "Mr. Johnson", "password_hash": "hashed_pw_2" }
+    { "id": 1, "name": "Ms. Smith","userName":"smithman", "password_hash": "hashed_pw_1" },
+    { "id": 2, "name": "Mr. Johnson","userName":"bigJ", "password_hash": "hashed_pw_2" }
   ],
   "student": [
-    { "id": 1, "name": "Alice", "password_hash": "hashed_pw_3" },
-    { "id": 2, "name": "Bob", "password_hash": "hashed_pw_4" }
+    { "id": 1, "name": "Alice","userName":"madhatter", "password_hash": "hashed_pw_3" },
+    { "id": 2, "name": "Bob","userName":"bobthebuilder", "password_hash": "hashed_pw_4" }
   ],
   "class": [
     { "id": 1, "name": "Math 101", "ownerID": 1, "settings": { "difficulty": "medium" } },
