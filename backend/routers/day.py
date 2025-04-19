@@ -2,7 +2,7 @@ from fastapi import APIRouter, Form
 from typing import Any, Annotated
 from backend.models import ClientErrorResponse,DayAssignmentResposne,DayMaterial,DayAssignment,DayMaterialResposne
 from backend.dependencies import DBSession
-from backend.database.day import getDayAssignment, getDayMaterial
+import backend.database.day as db_day
 
 router = APIRouter(prefix="/day", tags=["day"])
 
@@ -11,8 +11,8 @@ router = APIRouter(prefix="/day", tags=["day"])
              },
             summary="Retrieve assignments for the given day.")
 def getDayAssignments(dayID:int,session:DBSession) -> DayAssignmentResposne:
-        db_assignments = getDayAssignment(dayID,session)
-        assignments = [DayAssignment(id = a.id,name = a.name,path = a.path) for a in db_assignments] # type: ignore
+        db_assignments = db_day.getDayAssignment(dayID,session)
+        assignments = [DayAssignment(id = a.id,name = a.name,filename = a.filename) for a in db_assignments] # type: ignore
 
         return DayAssignmentResposne(assignments = assignments)
 
@@ -21,8 +21,8 @@ def getDayAssignments(dayID:int,session:DBSession) -> DayAssignmentResposne:
              },
             summary="Retrieve materials for the given day.")
 def getDayMaterials(dayID:int, session:DBSession) -> DayMaterialResposne:
-        db_materials = getDayMaterial(dayID,session)
-        materials = [DayMaterial(id = m.id, name = m.name, path = m.path)for m in db_materials] #type: ignore
+        db_materials = db_day.getDayMaterial(dayID,session)
+        materials = [DayMaterial(id = m.id, name = m.name, filename = m.filename)for m in db_materials] #type: ignore
 
         return DayMaterialResposne(materials = materials)
 

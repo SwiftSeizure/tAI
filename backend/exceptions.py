@@ -16,3 +16,17 @@ class EntityNotFoundException(Exception):
             status_code=self.status_code,
             content=ClientErrorResponse(error=self.error, message=self.message).model_dump(),
         )
+        
+class FileNotFoundException(Exception):
+    """Exception for a non-existent entity."""
+    def __init__(self, filename: str):
+        self.status_code = 404
+        self.error = f"entity_not_found"
+        self.message = f"Unable to find file with filename={filename}"
+        
+    def response(self) -> Response:
+        """HTTP response when a non-existent entity is requested."""
+        return JSONResponse(
+            status_code=self.status_code,
+            content=ClientErrorResponse(error=self.error, message=self.message).model_dump(),
+        )

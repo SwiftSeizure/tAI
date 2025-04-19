@@ -94,6 +94,7 @@ class DBAssignment(Base):
 
     id = Column(Integer, primary_key = True, index = True)
     name = Column(String(25), nullable=False)
+    filename = Column(String(225), nullable=False)
     sequence = Column(Integer, nullable=False)
     path = Column(String(255),nullable=False)
     dayId = Column(ForeignKey("day.id"))
@@ -105,6 +106,7 @@ class DBMaterial(Base):
 
     id = Column(Integer, primary_key = True, index = True)
     name = Column(String(25), nullable=False)
+    filename = Column(String(225), nullable=False)
     sequence = Column(Integer, nullable=False)
     path = Column(String(255),nullable=False)
     dayId = Column(ForeignKey("day.id"))

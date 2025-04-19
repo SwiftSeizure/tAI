@@ -12,10 +12,10 @@ from fastapi.requests import Request
 import os
 import requests
 from dotenv import load_dotenv
-from backend.routers import home, classroom, unit,module,day
+from backend.routers import home, classroom, unit,module,day,assignment, material
 from backend.Seed_Database import PopulateDB
 from fastapi.middleware.cors import CORSMiddleware
-from backend.exceptions import EntityNotFoundException
+from backend.exceptions import EntityNotFoundException, FileNotFoundException
 
 PopulateDB()
 app = FastAPI(
@@ -28,6 +28,8 @@ app.include_router(classroom.router)
 app.include_router(unit.router)
 app.include_router(module.router)
 app.include_router(day.router)
+app.include_router(assignment.router)
+app.include_router(material.router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -39,7 +41,10 @@ app.add_middleware(
 
 # Exception handlers
 @app.exception_handler(EntityNotFoundException)
-def handle_not_found(request: Request, exception: EntityNotFoundException):
+def handle_entity_not_found(request: Request, exception: EntityNotFoundException):
+    return exception.response()
+@app.exception_handler(FileNotFoundException)
+def handle_file_not_found(request: Request, exception: EntityNotFoundException):
     return exception.response()
 
 """

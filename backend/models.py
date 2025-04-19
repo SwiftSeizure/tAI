@@ -53,7 +53,7 @@ class DayAssignmentResposne(BaseModel):
 class DayAssignment(BaseModel):
     id: int
     name: str
-    path: str
+    filename: str
 
 class DayMaterialResposne(BaseModel):
     materials: list[DayMaterial]
@@ -61,4 +61,4 @@ class DayMaterialResposne(BaseModel):
 class DayMaterial(BaseModel):
     id: int
     name: str
-    path: str
+    filename: str
