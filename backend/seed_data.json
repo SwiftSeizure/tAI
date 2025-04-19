@@ -28,11 +28,11 @@
     { "id": 2, "name": "Day 2", "sequence": 2, "moduleID": 2 }
   ],
   "assignment": [
-    { "id": 1, "name": "Worksheet A", "sequence": 1, "path": "/assignments/math/ws_a.pdf", "dayId": 1 },
-    { "id": 2, "name": "Lab Report", "sequence": 1, "path": "/assignments/science/lab1.docx", "dayId": 2 }
+    { "id": 1, "name": "Worksheet A", "filename": "ws_a.pdf", "sequence": 1, "path": "/assignment/1/ws_a.pdf", "dayId": 1 },
+    { "id": 2, "name": "Lab Report", "filename": "lab1.docx", "sequence": 1, "path": "/assignments/2/lab1.docx", "dayId": 2 }
   ],
   "material": [
-    { "id": 1, "name": "Slide Deck", "sequence": 1, "path": "/materials/math/slides1.pptx", "dayId": 1 },
-    { "id": 2, "name": "Reading PDF", "sequence": 2, "path": "/materials/science/readings1.pdf", "dayId": 2 }
+    { "id": 1, "name": "Pemdas Notes", "filename": "pemdas.txt", "sequence": 1, "path": "/materials/1/pemdas.txt", "dayId": 1 },
+    { "id": 2, "name": "Cell Structure", "filename": "slides1.pdf", "sequence": 2, "path": "/material/2/slides1.pdf", "dayId": 2 }
   ]
 }
