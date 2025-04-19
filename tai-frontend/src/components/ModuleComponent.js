@@ -22,9 +22,10 @@ const ModuleComponent = ( { module, onDaySelect } ) => {
                 onClick={toggleExpand}
             > 
                 <h3 className="module-title-text"> 
-                    {module.name}
+                    {module.name} 
+                    <span>{isExpanded ? "▲" : "▼"}</span> 
                 </h3>  
-                {/* <span>{isExpanded ? "▲" : "▼"}</span> worry about this later */} 
+               
             
             </div> 
             {isExpanded && module.days && ( 

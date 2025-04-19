@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import TitleCard from "../../components/TitleCard";  
 import { getRequest } from "../../API"; 
-
 import axios from "axios";
 import ChatFeature from "../../components/ChatFeature";
-import ModuleComponent from "../../components/ModuleComponent";
+import ModuleComponent from "../../components/ModuleComponent"; 
+import List from '@mui/material/List';
 
 const TeacherStudentModulePage = () => {     
 
@@ -67,7 +67,7 @@ const TeacherStudentModulePage = () => {
         try {  
             // TODO: 
             // Make request here to get all of the content for the day  
-            // setDayContent("This is example content of where the actual content will go ")
+            setDayContent("This is example content of where the actual content will go ")
         } 
         catch (error) { 
             console.log(error);  
@@ -112,23 +112,26 @@ const TeacherStudentModulePage = () => {
                             <> 
                             <div> 
                                 this is where the content will go for the day something like whats bellow in the code 
-                                {/* {dayContent.content}    */}
+                                {dayContent.content}   
                             </div> 
                             </>
                         ) : ( 
-                            <h3> Stuff is loading </h3>
+                            <h3> {dayContent} Stuff is loading check code </h3>
                         )}
                     </div>
                 ); 
             case 'chat':  
 
-                // Could maybe make an API call here for chat context??
+                // Could maybe make an API call here for chat context?? 
+                // then be able to pass it down into the chat component
+
                 return(  
                     <div> 
                         <ChatFeature />
                     </div>
                     
-                ); 
+                );  
+
             default: 
                 return( 
                     <div> 
@@ -157,11 +160,14 @@ const TeacherStudentModulePage = () => {
 
         </div> 
 
-        <button 
-            onClick={toggleChatExpand} 
-        > 
-            {isChatExpanded ? "Close Chat" : "Open Chat"}
-        </button>
+        {role === 'student' ? 
+                   <button 
+                   onClick={toggleChatExpand} 
+               > 
+                   {isChatExpanded ? "Close Chat" : "Open Chat"}
+               </button>  
+               : "Chat settings comming soon"
+        }
         
         </>
     )
