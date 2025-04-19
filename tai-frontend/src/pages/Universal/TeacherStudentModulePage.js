@@ -71,7 +71,7 @@ const TeacherStudentModulePage = () => {
         } 
         catch (error) { 
             console.log(error);  
-            // 
+             
         }
  
     };  
@@ -111,7 +111,8 @@ const TeacherStudentModulePage = () => {
                         {dayContent ? ( 
                             <> 
                             <div> 
-                                this is where the content will go for the day    
+                                this is where the content will go for the day something like whats bellow in the code 
+                                {/* {dayContent.content}    */}
                             </div> 
                             </>
                         ) : ( 
@@ -136,15 +137,6 @@ const TeacherStudentModulePage = () => {
                 )
         }
     };
-
-
-    //TODO: make a new component for each module with the dropdown so that they can be opened and added 
-
-    // TODO: map all of the components as a list item 
-
-
-
-
 
 
     return(  
