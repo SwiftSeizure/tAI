@@ -1,0 +1,83 @@
+.custom-button-standard {
+    display: inline-block;
+    width: 200px;
+    cursor: pointer;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 8px;
+    background-color: transparent;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: #333;
+    text-align: center;
+  }
+  
+.custom-button-standard:hover {
+    border-color: #a0a0a0;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+.custom-button-standard:active {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+.custom-button-standard:focus {
+    outline-offset: 2px;
+  }
+  
+  /* If you want to add an image to your button */
+.custom-button-with-image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+.custom-button-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  } 
+
+
+.custom-button-title {
+    display: flex;
+    width: 40px; 
+    height: 40px; 
+    background-color: lch(55.78% 96.4 336.96);
+    cursor: pointer;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: #333;
+    justify-content: center;
+    align-items: center;
+  }
+  
+.custom-button-title:hover {
+    border-color: #a0a0a0;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+.custom-button-title:active {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+.custom-button-title:focus {
+    outline-offset: 2px;
+  }
+  
+
+

@@ -188,4 +188,5 @@ input[type="radio"]:checked + .radio-card {
 .chat-feature-div.expanded {
   max-height: 500px;
   padding: 15px;
-}
+} 
+

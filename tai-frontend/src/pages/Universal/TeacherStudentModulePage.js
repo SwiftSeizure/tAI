@@ -5,7 +5,8 @@ import { getRequest } from "../../API";
 import axios from "axios";
 import ChatFeature from "../../components/ChatFeature";
 import ModuleComponent from "../../components/ModuleComponent"; 
-import List from '@mui/material/List';
+import List from '@mui/material/List'; 
+import buttons from "../../CSS/Buttons.css"
 
 const TeacherStudentModulePage = () => {     
 
@@ -161,9 +162,10 @@ const TeacherStudentModulePage = () => {
         </div> 
 
         {role === 'student' ? 
-                   <button 
-                   onClick={toggleChatExpand} 
-               > 
+                <button 
+                    className="custom-button-standard" 
+                    onClick={toggleChatExpand} 
+                > 
                    {isChatExpanded ? "Close Chat" : "Open Chat"}
                </button>  
                : "Chat settings comming soon"

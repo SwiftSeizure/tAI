@@ -77,7 +77,7 @@ const ChatFeature = () => {
       </div> 
       <div>
         <button 
-          className="button-50" 
+          className="custom-button-standard" 
           onClick={handleMessage}
           disabled={loading || !message.trim()}
         >

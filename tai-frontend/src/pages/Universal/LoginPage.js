@@ -1,7 +1,9 @@
 import styles from '../Pages.css';
 import { useState } from 'react'; 
 import { useNavigate } from 'react-router-dom';   
-import TeacherStudentHomePage from "./TeacherStudentHomePage";  
+import TeacherStudentHomePage from "./TeacherStudentHomePage";   
+import buttons from "../../CSS/Buttons.css"
+import TitleCard from '../../components/TitleCard';
 
 const teacherImage = require('../../images/teacher-login-image.png')
 const studentImage = require('../../images/student-login-image.png');
@@ -48,7 +50,11 @@ const LoginPage = () => {
 
 
     return ( 
-        <> 
+        <>   
+        
+        <TitleCard title={""} />
+        
+
         <div className="login-input-spacing">
             <label className="radio-card">
                 <input
@@ -98,14 +104,19 @@ const LoginPage = () => {
                     value="teacher2"
                     onChange={() => setTeacherOrStudent('teacher2')}
                 />
-                teacher2
+                Demo teacher
             </label>
         </div> 
 
 
 
         <div className="center-login-button"> 
-            <button className="login-button" onClick={logIn}>Log In</button> 
+            <button 
+                className="custom-button-standard"
+                onClick={logIn}
+                >
+                    Log In
+                </button> 
         </div>
 
         
