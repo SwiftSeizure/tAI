@@ -6,18 +6,24 @@ import axios from "axios";
 import ChatFeature from "../../components/ChatFeature";
 import ModuleComponent from "../../components/ModuleComponent"; 
 import List from '@mui/material/List'; 
-import buttons from "../../CSS/Buttons.css"
+import buttons from "../../CSS/Buttons.css" 
+import { Document, Page } from 'react-pdf';
 
 const TeacherStudentModulePage = () => {     
 
     const [loading, setLoading] = useState(true); 
-    const [data, setData] = useState(null);  
+    const [modulesData, setModulesData] = useState(null);   
+
     const [isChatExpanded, setIsChatExpanded] = useState(false); 
 
     const [displayType, setDisplayType] = useState('welcome'); 
     const [selectedModule, setSelectedModule] = useState(null); 
-    const [selectedDay, setSelectedDay] = useState(null); 
-    const [dayContent, setDayContent] = useState(null);
+    const [selectedDay, setSelectedDay] = useState(null);  
+    const [selectedMaterial, setSelectedMaterial] = useState(null); 
+
+
+    const [dayMaterails, setDayMaterials] = useState(null); 
+    const [materialContent, setMaterialContent] = useState(null);
 
     const location = useLocation(); 
     const {unitID, unitName, userID, role} = location.state || {}; 
@@ -42,7 +48,7 @@ const TeacherStudentModulePage = () => {
                 const url = `/unit/${unitID}/modules`; 
                 const response = await getRequest(url);  
                 console.log(response.data);
-                setData(response.data.modules);
+                setModulesData(response.data.modules);
 
             } 
             catch(error) {
@@ -51,7 +57,6 @@ const TeacherStudentModulePage = () => {
             } 
             finally { 
                 setLoading(false); 
-                // populateModuleCards();
             }
         }; 
         
@@ -66,36 +71,60 @@ const TeacherStudentModulePage = () => {
         setDisplayType('day'); 
 
         try {  
-            // TODO: 
-            // Make request here to get all of the content for the day  
-            setDayContent("This is example content of where the actual content will go ")
+            const url = `/module/${moduleID}/days` 
+            const response = await getRequest(url); 
+            console.log("This is the response from /days module call", response.data.materials);
+            setDayMaterials(response.data.materials); 
+            
         } 
         catch (error) { 
             console.log(error);  
              
         }
  
-    };  
+    };    
+
+    //TODO: Make this for assignments 
+
+    const handleMaterialSelect = async ( dayID, materialID, fileName ) => { 
+
+        setSelectedMaterial(materialID); 
+        setDisplayType('material'); 
+
+        try { 
+            const url = `/material/${dayID}/${fileName}` 
+            const response = await getRequest(url); 
+            console.log("This is what we got back from /materials day call", response.data); 
+            setMaterialContent(response.data);
+        } 
+        catch (error) { 
+            console.log(error);
+        }
+
+    }
 
 
     const renderModules = () => { 
-        if (!Array.isArray(data)) { 
+        if (!Array.isArray(modulesData)) { 
             return null;
         } 
-        else { 
+        else {  
+
             return( 
                 <> 
-                {data.map (module => ( 
+                {modulesData.map (module => ( 
                     <ModuleComponent 
                         key={module.id} 
                         module={module} 
-                        onDaySelect={handleDaySelect} 
+                        onDaySelect={handleDaySelect}  
+                        onMaterialSelect={handleMaterialSelect}
                     />
-                ))} 
+                ))}  
                 </>
             )
         }
-    }; 
+    };  
+
 
     const renderContent = () => { 
         switch(displayType) { 
@@ -106,21 +135,15 @@ const TeacherStudentModulePage = () => {
                     </div>
                     
                 );  
-            case 'day': 
+            case 'material': 
                 return( 
-                    <div> 
-                        {dayContent ? ( 
-                            <> 
-                            <div> 
-                                this is where the content will go for the day something like whats bellow in the code 
-                                {dayContent.content}   
-                            </div> 
-                            </>
-                        ) : ( 
-                            <h3> {dayContent} Stuff is loading check code </h3>
-                        )}
+                    <div>      
+                        <h1>  
+
+                        {materialContent}
+                        </h1>
                     </div>
-                ); 
+                );  
             case 'chat':  
 
                 // Could maybe make an API call here for chat context?? 
