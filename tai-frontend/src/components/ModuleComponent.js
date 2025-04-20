@@ -3,7 +3,7 @@ import DayComponent from "./DayComponent";
 
 // Devide what we need to pass down to the module here maybe the entire module 
 // then do all the conditionals to map it in here if the things exist 
-const ModuleComponent = ( { module, onDaySelect, onMaterialSelect } ) => {   
+const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentSelect } ) => {   
  
     const [isExpanded, setIsExpanded] = useState(false); 
 
@@ -33,7 +33,8 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect } ) => {
                             key={day.id} 
                             day={day} 
                             onDaySelect={() => onDaySelect(module.id, day.id)} 
-                            onMaterialSelect={onMaterialSelect} 
+                            onMaterialSelect={onMaterialSelect}  
+                            onAssignmentSelect={onAssignmentSelect}
                         />
                     ))}
                 </div>

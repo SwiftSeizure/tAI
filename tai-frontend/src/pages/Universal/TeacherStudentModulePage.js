@@ -19,11 +19,13 @@ const TeacherStudentModulePage = () => {
     const [displayType, setDisplayType] = useState('welcome'); 
     const [selectedModule, setSelectedModule] = useState(null); 
     const [selectedDay, setSelectedDay] = useState(null);  
-    const [selectedMaterial, setSelectedMaterial] = useState(null); 
+    const [selectedMaterial, setSelectedMaterial] = useState(null);  
+    const [selectedAssignment, setSelectedAssignment] = useState(null);
 
 
     const [dayMaterails, setDayMaterials] = useState(null); 
-    const [materialContent, setMaterialContent] = useState(null);
+    const [materialContent, setMaterialContent] = useState(null); 
+    const [assignmentContent, setAssignmentContent] = useState(null);
 
     const location = useLocation(); 
     const {unitID, unitName, userID, role} = location.state || {}; 
@@ -84,7 +86,25 @@ const TeacherStudentModulePage = () => {
  
     };    
 
-    //TODO: Make this for assignments 
+
+
+    const handleAssignmentSelect = async (dayID, assignmentID, fileName) => { 
+
+        setSelectedAssignment(assignmentID);  
+        setDisplayType('assignment'); 
+
+        try { 
+            const url = `/assignment/${dayID}/${fileName}`; 
+            const response = await getRequest(url); 
+            console.log("This is what we got back from the /assignments file call: ", response.data); 
+            setAssignmentContent(response.data);
+        } 
+        catch (error) { 
+            console.log(error)
+        }
+
+
+    }
 
     const handleMaterialSelect = async ( dayID, materialID, fileName ) => { 
 
@@ -92,9 +112,9 @@ const TeacherStudentModulePage = () => {
         setDisplayType('material'); 
 
         try { 
-            const url = `/material/${dayID}/${fileName}` 
+            const url = `/material/${dayID}/${fileName}`;
             const response = await getRequest(url); 
-            console.log("This is what we got back from /materials day call", response.data); 
+            console.log("This is what we got back from /materials file call: ", response.data); 
             setMaterialContent(response.data);
         } 
         catch (error) { 
@@ -117,13 +137,22 @@ const TeacherStudentModulePage = () => {
                         key={module.id} 
                         module={module} 
                         onDaySelect={handleDaySelect}  
-                        onMaterialSelect={handleMaterialSelect}
+                        onMaterialSelect={handleMaterialSelect} 
+                        onAssignmentSelect={handleAssignmentSelect}
                     />
                 ))}  
                 </>
             )
         }
-    };  
+    };   
+
+
+    useEffect(() => { 
+        if (displayType !== 'chat') { 
+            setIsChatExpanded(false);
+        } 
+
+    }, [displayType]);
 
 
     const renderContent = () => { 
@@ -139,11 +168,18 @@ const TeacherStudentModulePage = () => {
                 return( 
                     <div>      
                         <h1>  
-
-                        {materialContent}
+                            {materialContent}
                         </h1>
                     </div>
-                );  
+                );   
+            case 'assignment': 
+                return( 
+                    <div> 
+                        <h1> 
+                            {assignmentContent}
+                        </h1>
+                    </div>
+                );
             case 'chat':  
 
                 // Could maybe make an API call here for chat context?? 
