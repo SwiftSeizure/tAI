@@ -7,7 +7,15 @@ import ChatFeature from "../../components/ChatFeature";
 import ModuleComponent from "../../components/ModuleComponent"; 
 import List from '@mui/material/List'; 
 import buttons from "../../CSS/Buttons.css" 
-import { Document, Page } from 'react-pdf'; 
+import { Document, Page } from 'react-pdf';      
+
+import { pdfjs } from 'react-pdf';
+// Correct import for newer versions
+
+// Tell pdfjs where to load the worker
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
+
+
 
 const TeacherStudentModulePage = () => {     
 
@@ -20,7 +28,10 @@ const TeacherStudentModulePage = () => {
     const [selectedModule, setSelectedModule] = useState(null); 
     const [selectedDay, setSelectedDay] = useState(null);  
     const [selectedMaterial, setSelectedMaterial] = useState(null);  
-    const [selectedAssignment, setSelectedAssignment] = useState(null);
+    const [selectedAssignment, setSelectedAssignment] = useState(null); 
+
+    const [numPages, setNumPages] = useState(null);
+    const [pageNumber, setPageNumber] = useState(1);
 
 
     const [dayMaterails, setDayMaterials] = useState(null); 
@@ -167,7 +178,45 @@ const TeacherStudentModulePage = () => {
             
         } 
 
-    }, [displayType]);
+    }, [displayType]);  
+
+
+    const renderPDFContent = (binaryContent) => {
+        // Convert binary string to array buffer
+        const binaryLen = binaryContent.length;
+        const bytes = new Uint8Array(binaryLen);
+        for (let i = 0; i < binaryLen; i++) {
+          bytes[i] = binaryContent.charCodeAt(i) & 0xff;
+        }
+        
+        return (
+          <div>
+            <Document
+              file={{ data: bytes.buffer }}
+              onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+            >
+              <Page pageNumber={pageNumber} />
+            </Document>
+            <div>
+              <p>
+                Page {pageNumber} of {numPages}
+              </p>
+              <button 
+                disabled={pageNumber <= 1} 
+                onClick={() => setPageNumber(pageNumber - 1)}
+              >
+                Previous
+              </button>
+              <button 
+                disabled={pageNumber >= numPages} 
+                onClick={() => setPageNumber(pageNumber + 1)}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        );
+      };
 
 
     const renderContent = () => { 
@@ -179,14 +228,23 @@ const TeacherStudentModulePage = () => {
                     </div>
                     
                 );  
-            case 'material': 
-                return( 
-                    <div>      
-                        <h1>  
-                            {materialContent}
-                        </h1>
-                    </div>
-                );   
+                case 'material': 
+                    // Check if materialContent is a PDF or text
+                    if (typeof materialContent === 'string' && materialContent.startsWith('%PDF')) {
+                        // It's PDF data
+                        return (
+                            renderPDFContent(materialContent)
+                        );
+                    } else {
+                        // It's regular text
+                        return( 
+                            <div>      
+                                <div className="content-container">
+                                    {materialContent}
+                                </div>
+                            </div>
+                        );
+                    }      
             case 'assignment': 
                 return( 
                     <div> 
