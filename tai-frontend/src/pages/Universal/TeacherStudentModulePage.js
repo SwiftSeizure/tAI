@@ -27,7 +27,7 @@ const TeacherStudentModulePage = () => {
     const [materialContent, setMaterialContent] = useState(null); 
     const [assignmentContent, setAssignmentContent] = useState(null); 
 
-    const [currentContent, setCurrentContent] = useState(null);
+    const [currentContentDisplay, setCurrentContentDisplay] = useState(null);
 
     const location = useLocation(); 
     const {unitID, unitName, userID, role} = location.state || {};  
@@ -46,7 +46,7 @@ const TeacherStudentModulePage = () => {
         }  
 
         if (isChatExpanded) { 
-            setDisplayType(currentContent);
+            setDisplayType(currentContentDisplay);
         }
 
         
@@ -109,7 +109,7 @@ const TeacherStudentModulePage = () => {
             const response = await getRequest(url); 
             console.log("This is what we got back from the /assignments file call: ", response.data); 
             setAssignmentContent(response.data); 
-            setCurrentContent('assignment');
+            setCurrentContentDisplay('assignment');
         } 
         catch (error) { 
             console.log(error)
@@ -129,7 +129,7 @@ const TeacherStudentModulePage = () => {
             const response = await getRequest(url); 
             console.log("This is what we got back from /materials file call: ", response.data); 
             setMaterialContent(response.data); 
-            setCurrentContent('material');
+            setCurrentContentDisplay('material');
         } 
         catch (error) { 
             console.log(error);
