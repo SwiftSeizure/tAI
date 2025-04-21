@@ -45,7 +45,7 @@ If a new grid is made:
 /* modulepage-layout-grid */
 .modulepage-layout-grid {
     display: grid;
-    grid-template-columns: 30% 60% 10%;
+    grid-template-columns: 25% 65% 10%;
     grid-template-rows: auto 1fr;
     gap: 0px;
     width: 100%;

@@ -25,7 +25,9 @@ const TeacherStudentModulePage = () => {
 
     const [dayMaterails, setDayMaterials] = useState(null); 
     const [materialContent, setMaterialContent] = useState(null); 
-    const [assignmentContent, setAssignmentContent] = useState(null);
+    const [assignmentContent, setAssignmentContent] = useState(null); 
+
+    const [currentContent, setCurrentContent] = useState(null);
 
     const location = useLocation(); 
     const {unitID, unitName, userID, role} = location.state || {};  
@@ -37,11 +39,17 @@ const TeacherStudentModulePage = () => {
         setIsChatExpanded(!isChatExpanded);  
 
         if (!isChatExpanded && role === "student") { 
-            setDisplayType('chat')
+            setDisplayType('chat') 
         } 
         else if (!isChatExpanded && role === "teacher") { 
-            setDisplayType('chat-settings');
+            setDisplayType('chat-settings'); 
+        }  
+
+        if (isChatExpanded) { 
+            setDisplayType(currentContent);
         }
+
+        
     };
 
 
@@ -100,7 +108,8 @@ const TeacherStudentModulePage = () => {
             const url = `/assignment/${dayID}/${fileName}`; 
             const response = await getRequest(url); 
             console.log("This is what we got back from the /assignments file call: ", response.data); 
-            setAssignmentContent(response.data);
+            setAssignmentContent(response.data); 
+            setCurrentContent('assignment');
         } 
         catch (error) { 
             console.log(error)
@@ -111,6 +120,7 @@ const TeacherStudentModulePage = () => {
 
     const handleMaterialSelect = async ( dayID, materialID, fileName ) => { 
 
+
         setSelectedMaterial(materialID); 
         setDisplayType('material'); 
 
@@ -118,7 +128,8 @@ const TeacherStudentModulePage = () => {
             const url = `/material/${dayID}/${fileName}`;
             const response = await getRequest(url); 
             console.log("This is what we got back from /materials file call: ", response.data); 
-            setMaterialContent(response.data);
+            setMaterialContent(response.data); 
+            setCurrentContent('material');
         } 
         catch (error) { 
             console.log(error);
@@ -152,7 +163,8 @@ const TeacherStudentModulePage = () => {
 
     useEffect(() => { 
         if (displayType !== 'chat' && displayType !== 'chat-settings') { 
-            setIsChatExpanded(false);
+            setIsChatExpanded(false);  
+            
         } 
 
     }, [displayType]);
@@ -237,7 +249,7 @@ const TeacherStudentModulePage = () => {
                     onClick={toggleChatExpand}  
 
                 > 
-                   {/* {isChatExpanded ? "Close Chat" : "Open Chat"}  */}
+                   { isChatExpanded ? "Close Chat" : "Open Chat" }
                    <img 
                     className="custom-button-chat-image"  
                     src={chatImage}
