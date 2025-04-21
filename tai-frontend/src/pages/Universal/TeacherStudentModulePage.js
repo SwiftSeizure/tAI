@@ -7,7 +7,7 @@ import ChatFeature from "../../components/ChatFeature";
 import ModuleComponent from "../../components/ModuleComponent"; 
 import List from '@mui/material/List'; 
 import buttons from "../../CSS/Buttons.css" 
-import { Document, Page } from 'react-pdf';
+import { Document, Page } from 'react-pdf'; 
 
 const TeacherStudentModulePage = () => {     
 
@@ -28,16 +28,19 @@ const TeacherStudentModulePage = () => {
     const [assignmentContent, setAssignmentContent] = useState(null);
 
     const location = useLocation(); 
-    const {unitID, unitName, userID, role} = location.state || {}; 
+    const {unitID, unitName, userID, role} = location.state || {};  
+
+    const chatImage = require("../../images/chat-message-dots.png");
 
 
     const toggleChatExpand = () => {
-        setIsChatExpanded(!isChatExpanded); 
-        if (!isChatExpanded) { 
+        setIsChatExpanded(!isChatExpanded);  
+
+        if (!isChatExpanded && role === "student") { 
             setDisplayType('chat')
         } 
-        else { 
-            setDisplayType('welcome');
+        else if (!isChatExpanded && role === "teacher") { 
+            setDisplayType('chat-settings');
         }
     };
 
@@ -148,7 +151,7 @@ const TeacherStudentModulePage = () => {
 
 
     useEffect(() => { 
-        if (displayType !== 'chat') { 
+        if (displayType !== 'chat' && displayType !== 'chat-settings') { 
             setIsChatExpanded(false);
         } 
 
@@ -190,7 +193,15 @@ const TeacherStudentModulePage = () => {
                         <ChatFeature />
                     </div>
                     
-                );  
+                );   
+
+            case 'chat-settings': 
+
+                return( 
+                    <div>  
+                        <h1> Teacher Chat Settings Coming Soon </h1>
+                    </div>
+                );
 
             default: 
                 return( 
@@ -222,12 +233,25 @@ const TeacherStudentModulePage = () => {
 
         {role === 'student' ? 
                 <button 
-                    className="custom-button-standard" 
-                    onClick={toggleChatExpand} 
+                    className="custom-button-chat"  
+                    onClick={toggleChatExpand}  
+
                 > 
-                   {isChatExpanded ? "Close Chat" : "Open Chat"}
+                   {/* {isChatExpanded ? "Close Chat" : "Open Chat"}  */}
+                   <img 
+                    className="custom-button-chat-image"  
+                    src={chatImage}
+                    /> 
                </button>  
-               : "Chat settings comming soon"
+               : 
+               <button 
+                    className="custom-button-chat"  
+                    onClick={toggleChatExpand}  
+
+                > 
+                    {isChatExpanded ? "Save" : "Edit Chat Settings"} 
+
+                </button> 
         } 
 
         </div> 

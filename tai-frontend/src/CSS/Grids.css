@@ -41,7 +41,9 @@ If a new grid is made:
   }   
 
 
-  .modulepage-layout-grid {
+  
+/* modulepage-layout-grid */
+.modulepage-layout-grid {
     display: grid;
     grid-template-columns: 30% 60% 10%;
     grid-template-rows: auto 1fr;
@@ -51,17 +53,17 @@ If a new grid is made:
     position: relative;
   }
   
-  .modulepage-layout-grid > div:nth-child(1) {
+.modulepage-layout-grid > div:nth-child(1) {
     grid-column: 1;
     grid-row: 1 / span 2;
   }
   
-  .modulepage-layout-grid > div:nth-child(2) {
+.modulepage-layout-grid > div:nth-child(2) {
     grid-column: 2;
     grid-row: 1 / span 2;
   }
   
-  .modulepage-layout-grid > button,
+.modulepage-layout-grid > button,
   .modulepage-layout-grid > :nth-child(3) {
     grid-column: 3;
     grid-row: 1;
