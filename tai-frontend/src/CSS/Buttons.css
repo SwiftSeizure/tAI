@@ -1,3 +1,19 @@
+/* Guidelines 
+Custom button is the base for all of the other buttons currently 
+If a new button is made: 
+    1: Add it here under the index 
+    2: Tag it at the top with the exact name 
+*/ 
+
+/* Index: 
+    1. custon-button-standard 
+    2. custom-button-title  
+    3. radio-card-button 
+    4. 
+    
+*/
+
+/* custom-button-standard */
 .custom-button-standard {
     display: inline-block;
     width: 200px;
@@ -29,7 +45,6 @@
     outline-offset: 2px;
   }
   
-  /* If you want to add an image to your button */
 .custom-button-with-image {
     display: flex;
     flex-direction: column;
@@ -46,6 +61,10 @@
   } 
 
 
+
+
+
+/* custom-button-title */
 .custom-button-title {
     display: flex;
     width: 40px; 
@@ -77,7 +96,73 @@
   
 .custom-button-title:focus {
     outline-offset: 2px;
+  } 
+
+
+
+
+
+
+/* radio-card-button */
+.radio-card-button {
+    display: block;
+    position: relative;
+    width: 200px;
+    cursor: pointer;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 8px;
+    transition: all 0.3s ease;
   }
+  
+.radio-card-button:hover {
+    border-color: #a0a0a0;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  } 
+
+.radio-card-button-input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+.radio-card-button-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+.radio-card-button-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+  
+.radio-card-button-label {
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: #333;
+  }
+  
+.radio-card-button:focus-within {
+    outline: 2px solid #3498db;
+    outline-offset: 2px;
+  } 
+
+
+.radio-card-button:has(.radio-card-button-input:checked) {
+    outline: 2px solid #3498db;
+    outline-offset: 2px;  
+    /* if we want to change the background */
+    /* background-color: rgba(0, 0, 0, 0.05); Subtle dark overlay */
+} 
+
+
   
 
 

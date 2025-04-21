@@ -208,7 +208,7 @@ const TeacherStudentModulePage = () => {
             title={unitName}
         /> 
 
-        <div >  
+        <div className="modulepage-layout-grid">  
 
             <div> 
                 {renderModules()} 
@@ -218,7 +218,7 @@ const TeacherStudentModulePage = () => {
                 {renderContent()}
             </div>  
 
-        </div> 
+        
 
         {role === 'student' ? 
                 <button 
@@ -228,7 +228,9 @@ const TeacherStudentModulePage = () => {
                    {isChatExpanded ? "Close Chat" : "Open Chat"}
                </button>  
                : "Chat settings comming soon"
-        }
+        } 
+
+        </div> 
         
         </>
     )

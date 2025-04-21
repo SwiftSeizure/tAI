@@ -1,7 +1,6 @@
 import React from "react";   
-import styles from './Components.css'; 
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom"; 
+import cardLayouts from "../CSS/CardLayouts.css"; 
 
 const UnitCard = ( {unitID, unitName, userID, role } ) => {   
 

@@ -1,5 +1,4 @@
 import React from "react";  
-import styles from './Components.css'; 
 import { useNavigate } from "react-router-dom"; 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'; 
 
@@ -9,12 +8,10 @@ const TitleCard = ( { title  } ) => {
     const navigate = useNavigate(); 
 
 
-    //TODO: Add back button  
 
     const goBackPage = (e) => {  
         e.preventDefault();
         
-
         navigate(-1);
 
     };

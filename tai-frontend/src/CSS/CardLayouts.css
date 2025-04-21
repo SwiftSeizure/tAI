@@ -1,3 +1,11 @@
+/* Guidelines 
+Custom button is the base for all of the other buttons currently 
+If a new button is made: 
+    1: Add it here under the index 
+    2: Tag it at the top with the exact name 
+*/ 
+
+
 .card-button { 
     background-color: pink; 
     border: none;
@@ -34,6 +42,8 @@
     padding: 50px;
 }  
 
+
+
 .title-card-center {
     display: flex;
     justify-content:center;
@@ -43,13 +53,13 @@
     position: relative;
    }
   
-  .title-card-h1 { 
+.title-card-h1 { 
     margin: 0;
   } 
 
-  .title-card-back-button { 
+.title-card-back-button { 
     position:static; 
-    
+
   }
 
 

@@ -1,8 +1,7 @@
-import styles from '../Pages.css';
 import { useState } from 'react'; 
 import { useNavigate } from 'react-router-dom';   
-import TeacherStudentHomePage from "./TeacherStudentHomePage";   
-import buttons from "../../CSS/Buttons.css"
+import buttons from "../../CSS/Buttons.css";
+import grids from "../../CSS/Grids.css";
 import TitleCard from '../../components/TitleCard';
 
 const teacherImage = require('../../images/teacher-login-image.png')
@@ -51,43 +50,43 @@ const LoginPage = () => {
 
     return ( 
         <>   
-        
+
         <TitleCard title={""} />
         
 
-        <div className="login-input-spacing">
-            <label className="radio-card">
+        <div className="spacing-login-radio-buttons">
+            <label className="radio-card-button">
                 <input
-                    className="radio-card-input"
+                    className="radio-card-button-input"
                     type="radio"
                     name="role"
                     value="teacher1"
                     onChange={() => setTeacherOrStudent('teacher1')}
                 />
-                <div className="radio-card-content">
+                <div className="radio-card-button-content">
                     <img
-                        className="radio-card-image"
+                        className="radio-card-button-image"
                         src={teacherImage}
                         alt="Teacher"
                     />
-                    <span className="radio-card-label"> Teacher 1 </span>
+                    <span className="radio-card-button-label"> Teacher 1 </span>
                 </div> 
             </label>
-            <label className="radio-card">
+            <label className="radio-card-button">
                 <input 
-                    className="radio-card-input"
+                    className="radio-card-button-input"
                     type="radio"
                     name="role"
                     value="student1"
                     onChange={() => setTeacherOrStudent('student1')}
                 />  
-                <div className="radio-card-content"> 
+                <div className="radio-card-button-content"> 
                     <img 
-                        className="radio-card-image" 
+                        className="radio-card-button-image" 
                         src={studentImage} 
                         alt="Student"
                     /> 
-                    <span className="radio-card-label"> Student 1 </span>
+                    <span className="radio-card-button-label"> Student 1 </span>
                 </div>
             </label> 
 
@@ -110,7 +109,7 @@ const LoginPage = () => {
 
 
 
-        <div className="center-login-button"> 
+        <div className="center-button-div"> 
             <button 
                 className="custom-button-standard"
                 onClick={logIn}

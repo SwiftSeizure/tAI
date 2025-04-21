@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from "react";   
-import styles from '../Pages.css';
 import { useLocation } from 'react-router-dom';  
 import useUser from "../../hooks/useUser";
 import ClassCard from "../../components/ClassCard"; 
 import axios from "axios"; 
 import { getRequest } from "../../API";
-import TitleCard from "../../components/TitleCard";  
+import TitleCard from "../../components/TitleCard";   
+import buttons from "../../CSS/Buttons.css";
+import grids from "../../CSS/Grids.css";
 
 
 const TeacherStudentHomePage = (  ) => {   
@@ -97,8 +98,6 @@ const TeacherStudentHomePage = (  ) => {
 
         <div className="class-unit-card-grid">      
 
-
-            
                 {populateClassCards()}  
 
                 <ClassCard   
