@@ -3,7 +3,7 @@ Custom button is the base for all of the other buttons currently
 If a new button is made: 
     1: Add it here under the index 
     2: Tag it at the top with the exact name  
-
+*/
 
 /* Index: 
     1. card-button
@@ -11,7 +11,7 @@ If a new button is made:
     3. 
 
 */
-*/ 
+
 
 
 .card-button { 
