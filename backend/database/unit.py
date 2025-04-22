@@ -14,8 +14,7 @@ def get_unit(unitID: int, session: Session) -> DBUnit:
         EntityNotFoundException: If the unit with the given ID does not exist.
         
     Returns:
-        DBUnit: The DBUnit object if found.
-    """
+        DBUnit: The DBUnit object if found."""
     stmt = select(DBUnit).filter(DBUnit.id == unitID)
     unit = session.execute(stmt).scalar_one_or_none()
     if not unit:
