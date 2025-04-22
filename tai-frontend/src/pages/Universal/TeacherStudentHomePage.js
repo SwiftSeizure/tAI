@@ -4,9 +4,11 @@ import useUser from "../../hooks/useUser";
 import ClassCard from "../../components/ClassCard"; 
 import axios from "axios"; 
 import { getRequest } from "../../API";
-import TitleCard from "../../components/TitleCard";   
+import TitleCard from "../../components/TitleCard";    
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';   
 import buttons from "../../CSS/Buttons.css";
-import grids from "../../CSS/Grids.css";
+import grids from "../../CSS/Grids.css"; 
+import "react-icons/fa";
 
 
 const TeacherStudentHomePage = (  ) => {   
@@ -18,13 +20,7 @@ const TeacherStudentHomePage = (  ) => {
     const [data, setData] = useState([]);
     
     const location = useLocation(); 
-    const { userID, name, role } = location.state || {};  
-
-    // const stateData = { 
-    //     userID, 
-    //     name, 
-    //     role, 
-    // }; 
+    const { userID, name, role } = location.state || {}; 
 
 
     useEffect(() => {  

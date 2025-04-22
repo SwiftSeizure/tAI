@@ -40,6 +40,9 @@ If a new grid is made:
     display:grid;   
     grid-template-columns: repeat(3, 1fr);
     justify-content: space-evenly;
+    /* background-color: gray;
+    border: 4px solid;
+    border-radius: 4px; */
   }   
 
 

@@ -10,7 +10,6 @@ import buttons from "../../CSS/Buttons.css"
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import { Document, Page } from 'react-pdf';     
-import { FaFilePdf, FaFileAlt, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { BiBookOpen } from 'react-icons/bi';
 import { RiChatSmile2Line } from 'react-icons/ri';  
 
@@ -253,7 +252,16 @@ const TeacherStudentModulePage = () => {
                 return( 
                     <div className="chat-settings-container">  
                         <h1 className="chat-settings-heading"> Teacher Chat Settings </h1> 
-                        <p className="chat-settings-text"> Configuration settings coming soon </p>
+                        <button 
+                            className="chat-settings-radio-button"
+                            type="radio"
+                             name="doNotGiveAnswers" 
+                             value="true" 
+                        >  
+                            Do not provide answers to students
+                        </button>
+
+                        
                     </div>
                 );
 
