@@ -2,3 +2,4 @@
 
 # Python byecode
 *.pyc
+/__pycache__/
