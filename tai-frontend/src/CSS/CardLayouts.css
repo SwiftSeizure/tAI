@@ -50,23 +50,23 @@ If a new button is made:
     grid-template-columns: 1fr 1fr;
     align-items: center;
     height: 100px;
-    background-color: blue;
+    background-color: lightblue;
     position: relative;
   }
   
-  .title-only {
+.title-only {
     grid-column: 1 / span 2;
     text-align: center;
   }
   
-  .back-button-container {
+.back-button-container {
     grid-column: 1;
     display: flex;
     justify-content: flex-start;
     padding-left: 1rem;
   }
   
-  .title-container {
+.title-container {
     grid-column: 1 / span 2;
     text-align: center;
     position: absolute;
@@ -75,17 +75,17 @@ If a new button is made:
     width: fit-content;
   }
   
-  .title-card-h1 {
+.title-card-h1 {
     margin: 0;
     white-space: nowrap;
-    color: white;
+    color: black;
   }
   
-  .custom-button-title {
+.custom-button-title {
     background: none;
     border: none;
     cursor: pointer;
-    color: white;
+    color: black;
     font-size: 1.5rem;
     padding: 0.5rem;
   }

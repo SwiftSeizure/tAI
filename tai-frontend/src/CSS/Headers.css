@@ -10,21 +10,28 @@ If a new heading is made:
 
 /* Index: 
     1. title-card-h1
-    2. 
+    2. radio-card-button-h1
     
 */
 
 
 .title-card-h1 { 
     font-family: 'Nunito', sans-serif; 
-    font-size:  3.5rem;
+    font-size:  3.5rem; 
+    font-weight: 1000;
 } 
 
 
-.radio-card-button-label {
-    font-weight: 500;
-    font-size: 1.1rem; 
-    font-family: 'Nunito', sans-serif; 
+.radio-card-button-h1 {
+    font-size: 1.25rem; 
+    font-family: 'Nunito', sans-serif;  
+    font-weight: 800;
     color: #333;
-  }
+  } 
+
+.custom-button-standard-h2 { 
+    font-family: 'Nunito', sans-serif;  
+    font-size: 1.25rem;  
+    padding: 0px;
+}
 

@@ -51,7 +51,8 @@ const LoginPage = () => {
     return ( 
         <>   
 
-        <TitleCard title={""} />
+        <TitleCard title={""} /> 
+
         
 
         <div className="spacing-login-radio-buttons">
@@ -69,7 +70,7 @@ const LoginPage = () => {
                         src={teacherImage}
                         alt="Teacher"
                     />
-                    <span className="radio-card-button-label"> Teacher 1 </span>
+                    <span className="radio-card-button-h1"> Teacher 1 </span>
                 </div> 
             </label>
             <label className="radio-card-button">
@@ -86,7 +87,7 @@ const LoginPage = () => {
                         src={studentImage} 
                         alt="Student"
                     /> 
-                    <span className="radio-card-button-label"> Student 1 </span>
+                    <span className="radio-card-button-h1"> Student 1 </span>
                 </div>
             </label> 
 
@@ -111,10 +112,10 @@ const LoginPage = () => {
 
         <div className="center-button-div"> 
             <button 
-                className="custom-button-standard"
+                className="custom-button-login"
                 onClick={logIn}
                 >
-                    Log In
+                   <h3 className="custom-button-login-h2"> Log In </h3> 
                 </button> 
         </div>
 

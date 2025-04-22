@@ -7,9 +7,10 @@ If a new button is made:
 
 /* Index: 
     1. custon-button-standard 
-    2. custom-button-title  
-    3. radio-card-button 
-    4. 
+    2. custom-button-title   
+    3. custom-button-login
+    4. radio-card-button 
+    5. 
     
 */
 
@@ -27,7 +28,8 @@ If a new button is made:
     font-weight: 500;
     font-size: 1.1rem;
     color: #333;
-    text-align: center;
+    text-align: center; 
+    font-family: 'Nunito', sans-serif; 
   }
   
 .custom-button-standard:hover {
@@ -69,7 +71,6 @@ If a new button is made:
     display: flex;
     width: 40px; 
     height: 40px; 
-    background-color: lch(55.78% 96.4 336.96);
     cursor: pointer;
     border: 2px solid #e0e0e0;
     border-radius: 8px;
@@ -98,6 +99,42 @@ If a new button is made:
     outline-offset: 2px;
   } 
 
+
+
+/* custom-button-standard */
+.custom-button-login {
+  display: inline-block;
+  width: 200px;
+  cursor: pointer;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0px;
+  margin: 8px;
+  background-color: transparent;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: #333;
+  text-align: center; 
+  font-family: 'Nunito', sans-serif; 
+}
+
+.custom-button-login:hover {
+  border-color: #a0a0a0;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.custom-button-login:active {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.custom-button-login:focus {
+  outline-offset: 2px;
+}
+
+ 
 
 
 
@@ -145,13 +182,13 @@ If a new button is made:
   
   
 .radio-card-button:focus-within {
-    outline: 2px solid #3498db;
+    outline: 6px solid lightblue;
     outline-offset: 2px;
   } 
 
 
 .radio-card-button:has(.radio-card-button-input:checked) {
-    outline: 2px solid #3498db;
+    outline: 4px solid lightblue;
     outline-offset: 2px;  
     /* if we want to change the background */
     /* background-color: rgba(0, 0, 0, 0.05); Subtle dark overlay */
@@ -190,7 +227,9 @@ If a new button is made:
   
 .custom-button-chat:focus {
     outline-offset: 2px;
-  }
+  } 
+
+
   
 .custom-button-chat-with-image {
     display: flex;
@@ -201,10 +240,9 @@ If a new button is made:
   
 .custom-button-chat-image {
     width: 100%;
-    height: auto;
+    height: 100%;
     object-fit: cover;
     border-radius: 4px;
-    margin-bottom: 12px;
   } 
 
 

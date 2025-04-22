@@ -260,10 +260,7 @@ const TeacherStudentModulePage = () => {
         {role === 'student' ? 
                 <button 
                     className="custom-button-chat"  
-                    onClick={toggleChatExpand}  
-
-                > 
-                   { isChatExpanded ? "Close Chat" : "Open Chat" }
+                    onClick={toggleChatExpand} > 
                    <img 
                     className="custom-button-chat-image"  
                     src={chatImage}

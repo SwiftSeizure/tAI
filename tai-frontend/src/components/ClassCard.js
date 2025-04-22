@@ -23,7 +23,8 @@ const ClassCard = ( {classID, classname, userID, role}  ) => {
         e.preventDefault();  
 
         if (role === "teacher") { 
-            // Go to create the class page for teacher 
+            // Go to create the class page for teacher  
+            navigate('/createclass', {state: { userID, role}})
         } 
         else { 
             // Go to the add the class page for student 
