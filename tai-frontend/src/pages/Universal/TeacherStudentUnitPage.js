@@ -78,8 +78,6 @@ const TeacherStudentUnitPage = () => {
 
         <div className="class-unit-card-grid">  
             {populateUnitCards()}    
-
-
         </div>
             
         </>

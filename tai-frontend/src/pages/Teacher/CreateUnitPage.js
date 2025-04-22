@@ -1,7 +1,9 @@
 import React from "react"; 
 
-const CreeateUnitPage = () => { 
+const CreateUnitPage = () => {  
+
+
 
 }; 
 
-export default CreeateUnitPage;
+export default CreateUnitPage;
