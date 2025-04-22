@@ -1,6 +1,7 @@
 import React, { useState } from "react";  
 import DayComponent from "./DayComponent"; 
-import { FaChevronDown, FaChevronUp, FaBookOpen } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaBookOpen } from "react-icons/fa"; 
+import "../CSS/ModulePage.css"
 
 // Devide what we need to pass down to the module here maybe the entire module 
 // then do all the conditionals to map it in here if the things exist 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import OpenAI from 'openai';
+import OpenAI from 'openai'; 
 
 const ChatFeature = () => {
   const [completionResult, setCompletionResult] = useState("");
@@ -32,19 +32,28 @@ const ChatFeature = () => {
       /* Danger  */ 
       /* Danger  */ 
       /* Danger  */
-      /* END DANGER ZONE */
-      
+      /* END DANGER ZONE */ 
 
+
+      
       const completion = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4-1106-preview", // Make sure you're using a model that supports file attachments
         messages: [
           {
-            role: "system", 
-            // TODO: May want to change this depending on How we populate the chat
-            content: "You are a teaching assistant. You must not give direct answers to questions under any circumstances. Please refer to the following file to understand what class you are TA'ing and to cite relevant materials/questions.",
+            role: "system",
+            content: [
+              {
+                type: "text",
+                text: "You are a teaching assistant. You must not give direct answers to questions under any circumstances. Please refer to the following file to understand what class you are TA'ing and to cite relevant materials/questions. Here is the text: P.E.M.D.A.S. 1) Solve inside the parenthesis. 2) Exponents 3) Multiplication and Division, from left to right 4) Addition and Subtraction, from left to right"
+              } 
+
+            ]
           },
-          { role: "user", content: message },
-        ],
+          {
+            role: "user",
+            content: message
+          }
+        ]
       });
       
       // Set the result from the API response
