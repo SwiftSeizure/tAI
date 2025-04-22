@@ -115,12 +115,13 @@ const TeacherStudentModulePage = () => {
 
         setSelectedAssignment(assignmentID);  
         setDisplayType('assignment'); 
+        console.log("This is the file name", fileName);
 
         try { 
-            const url = `/assignment/${dayID}/${fileName}`; 
-            const response = await getRequest(url); 
-            console.log("This is what we got back from the /assignments file call: ", response.data); 
-            setAssignmentContent(response.data); 
+            const url = `http://localhost:8000/assignment/${dayID}/${fileName}`;  
+            const response = await axios.get(url, { responseType: 'blob' }); 
+            const fileURL = URL.createObjectURL(response.data); 
+            setAssignmentContent(fileURL); 
             setCurrentContentDisplay('assignment');
         } 
         catch (error) { 
@@ -137,8 +138,6 @@ const TeacherStudentModulePage = () => {
         setDisplayType('material'); 
 
         try { 
-
-
             const url = `http://localhost:8000/material/${dayID}/${fileName}`; 
             const response =  await axios.get(url, {  responseType: 'blob' }); 
             const fileURL = URL.createObjectURL(response.data); 
@@ -150,6 +149,13 @@ const TeacherStudentModulePage = () => {
         }
 
     }
+
+
+    useEffect(() => { 
+        if (displayType !== 'chat' && displayType !== 'chat-settings') { 
+            setIsChatExpanded(false);  
+        } 
+    }, [displayType]);   
 
 
     const renderModules = () => { 
@@ -173,15 +179,6 @@ const TeacherStudentModulePage = () => {
             )
         }
     };   
-
-
-    useEffect(() => { 
-        if (displayType !== 'chat' && displayType !== 'chat-settings') { 
-            setIsChatExpanded(false);  
-            
-        } 
-
-    }, [displayType]);  
 
 
     const renderPDFContent = (fileURL) => {
@@ -209,17 +206,13 @@ const TeacherStudentModulePage = () => {
                     
                 );  
                 case 'material': 
-                    // Check if materialContent is a PDF or text
-                    return renderPDFContent(materialContent)
+                    // TODO: Check if materialContent is a PDF or text
+                    return renderPDFContent(materialContent);
      
             case 'assignment': 
-                return( 
-                    <div> 
-                        <h1> 
-                            {assignmentContent}
-                        </h1>
-                    </div>
-                );
+                    console.log(assignmentContent);
+                    return renderPDFContent(assignmentContent);
+
             case 'chat':  
 
                 return(  
