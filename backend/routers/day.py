@@ -6,6 +6,17 @@ import backend.database.day as db_day
 
 router = APIRouter(prefix="/day", tags=["day"])
 
+""" Get assignments for a given day
+
+        Args:
+                dayID (int): The ID of the day to retrieve assignments for.
+                session (DBSession): The database session.
+        Returns:
+                DayAssignmentResposne: A response model containing a list of assignments for the given day.
+        Raises:
+                404: If the day with the given ID is not found in the database.
+                
+"""
 @router.get("/{dayID}/assignments",response_model=DayAssignmentResposne,status_code=200,responses={
                  404: {"model": ClientErrorResponse}
              },
