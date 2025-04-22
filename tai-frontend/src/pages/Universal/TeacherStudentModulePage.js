@@ -212,7 +212,6 @@ const TeacherStudentModulePage = () => {
             case 'welcome': 
                 return(  
                     <div className="welcome-container">  
-                        <BiBookOpen className="welcome-icon" />
                         <h1 className="welcome-heading">Welcome to {unitName}</h1>
                         <p className="welcome-text"> Select a module and day from the menu to view materials and assignments. </p>
                     </div>
