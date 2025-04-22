@@ -45,8 +45,8 @@ const ClassCard = ( {classID, classname, userID, role}  ) => {
                         className="card-image"
                         src={logo} />
     
-                    <div className="card-text-outline"> 
-                        {classname} 
+                    <div className="card-text-outline">  
+                        <div className="card-text"> {classname} </div>
                     </div> 
                     
                 </button>
