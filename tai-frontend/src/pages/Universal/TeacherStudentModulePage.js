@@ -9,7 +9,10 @@ import List from '@mui/material/List';
 import buttons from "../../CSS/Buttons.css"  
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
-import { Document, Page } from 'react-pdf';      
+import { Document, Page } from 'react-pdf';     
+import { FaFilePdf, FaFileAlt, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { BiBookOpen } from 'react-icons/bi';
+import { RiChatSmile2Line } from 'react-icons/ri';  
 
 import { pdfjs } from 'react-pdf';
 
@@ -27,8 +30,10 @@ const TeacherStudentModulePage = () => {
     const [displayType, setDisplayType] = useState('welcome'); 
     const [selectedModule, setSelectedModule] = useState(null); 
     const [selectedDay, setSelectedDay] = useState(null);  
-    const [selectedMaterial, setSelectedMaterial] = useState(null);  
-    const [selectedAssignment, setSelectedAssignment] = useState(null); 
+    const [selectedMaterialID, setSelectedMaterialID] = useState(null);   
+    const [selectedMaterialName, setSelectedMaterialName] = useState(null); 
+    const [selectedAssignmentID, setSelectedAssignmentID] = useState(null);  
+    const [selectedAssignmentName, setSelectedAssignmentName] = useState(null);
 
     const [numPages, setNumPages] = useState(null);
     const [pageNumber, setPageNumber] = useState(1);
@@ -111,9 +116,10 @@ const TeacherStudentModulePage = () => {
 
 
 
-    const handleAssignmentSelect = async (dayID, assignmentID, fileName) => { 
+    const handleAssignmentSelect = async (dayID, assignmentID, fileName, assignmentName) => { 
 
-        setSelectedAssignment(assignmentID);  
+        setSelectedAssignmentID(assignmentID);   
+        setSelectedAssignmentName(assignmentName);
         setDisplayType('assignment'); 
         console.log("This is the file name", fileName);
 
@@ -131,17 +137,17 @@ const TeacherStudentModulePage = () => {
 
     }
 
-    const handleMaterialSelect = async ( dayID, materialID, fileName ) => { 
+    const handleMaterialSelect = async ( dayID, materialID, fileName, materialName ) => { 
 
-
-        setSelectedMaterial(materialID); 
+        setSelectedMaterialID(materialID);  
+        setSelectedMaterialName(materialName);
         setDisplayType('material'); 
 
         try { 
             const url = `http://localhost:8000/material/${dayID}/${fileName}`; 
             const response =  await axios.get(url, {  responseType: 'blob' }); 
             const fileURL = URL.createObjectURL(response.data); 
-            setMaterialContent(fileURL); 
+            setMaterialContent(fileURL);  
             setCurrentContentDisplay('material');
         } 
         catch (error) { 
@@ -166,57 +172,78 @@ const TeacherStudentModulePage = () => {
 
             return( 
                 <> 
-                {modulesData.map (module => ( 
-                    <ModuleComponent 
-                        key={module.id} 
-                        module={module} 
-                        onDaySelect={handleDaySelect}  
-                        onMaterialSelect={handleMaterialSelect} 
-                        onAssignmentSelect={handleAssignmentSelect}
-                    />
-                ))}  
+                <div className="module-container"> 
+                    <h1 className="modules-heading"> {unitName} Modules</h1>
+                    {modulesData.map (module => ( 
+                        <ModuleComponent 
+                            key={module.id} 
+                            module={module} 
+                            onDaySelect={handleDaySelect}  
+                            onMaterialSelect={handleMaterialSelect} 
+                            onAssignmentSelect={handleAssignmentSelect}
+                        />
+                    ))}    
+
+                </div>
                 </>
             )
         }
     };   
 
 
+
     const renderPDFContent = (fileURL) => {
         return (
-          <div className="pdf-container" style={{ width: '100%', height: '600px' }}>
-            <iframe 
-              src={fileURL} 
-              width="100%" 
-              height="100%" 
-              title="PDF Viewer"
-              style={{ border: 'none' }}
-            />
-          </div>
+            <div className="pdf-container" style={{ width: '100%', height: '600px' }}>
+                <iframe 
+                    src={fileURL} 
+                    width="100%" 
+                    height="100%" 
+                    title="PDF Viewer"
+                    style={{ border: 'none' }}
+                />
+            </div>
         );
-      };
+    };
 
 
     const renderContent = () => { 
         switch(displayType) { 
             case 'welcome': 
                 return(  
-                    <div> 
-                        <h1> select something </h1>
+                    <div className="welcome-container">  
+                        <BiBookOpen className="welcome-icon" />
+                        <h1 className="welcome-heading">Welcome to {unitName}</h1>
+                        <p className="welcome-text"> Select a module and day from the menu to view materials and assignments. </p>
                     </div>
                     
                 );  
                 case 'material': 
-                    // TODO: Check if materialContent is a PDF or text
-                    return renderPDFContent(materialContent);
+                    return (
+                        <div className="content-container material-container"> 
+                            <div className="content-header">   
+                                <h2 className="content-title"> {selectedMaterialName} </h2> 
+                            </div>
+                            {renderPDFContent(materialContent)} 
+                        </div>
+                    );
      
             case 'assignment': 
-                    console.log(assignmentContent);
-                    return renderPDFContent(assignmentContent);
+                    return( 
+                        <div className="content-container material-container"> 
+                            <div className="content-header"> 
+                                <h2 className="content-title"> {selectedAssignmentName} </h2> 
+                            </div>  
+                            {renderPDFContent(assignmentContent)}
+
+                        </div>
+                    );
+                    
 
             case 'chat':  
 
                 return(  
-                    <div> 
+                    <div className="chat-container"> 
                         <ChatFeature />
                     </div>
                     
@@ -225,15 +252,16 @@ const TeacherStudentModulePage = () => {
             case 'chat-settings': 
 
                 return( 
-                    <div>  
-                        <h1> Teacher Chat Settings Coming Soon </h1>
+                    <div className="chat-settings-container">  
+                        <h1 className="chat-settings-heading"> Teacher Chat Settings </h1> 
+                        <p className="chat-settings-text"> Configuration settings coming soon </p>
                     </div>
                 );
 
             default: 
                 return( 
-                    <div> 
-                        Nothing is selected
+                    <div className="empty-state-container">  
+                        <h1 className="empty-state-container"> Select content to display </h1>
                     </div>
                 )
         }
@@ -247,17 +275,17 @@ const TeacherStudentModulePage = () => {
 
         <div className="modulepage-layout-grid">  
 
-            <div> 
+            <div className="sidebar-container"> 
                 {renderModules()} 
             </div>  
             
-            <div> 
+            <div className="content-display-container"> 
                 {renderContent()}
             </div>  
 
         
 
-        {role === 'student' ? 
+            {role === 'student' ? 
                 <button 
                     className="custom-button-chat"  
                     onClick={toggleChatExpand} > 
@@ -275,7 +303,7 @@ const TeacherStudentModulePage = () => {
                     {isChatExpanded ? "Save" : "Edit Chat Settings"} 
 
                 </button> 
-        } 
+            } 
 
         </div> 
         

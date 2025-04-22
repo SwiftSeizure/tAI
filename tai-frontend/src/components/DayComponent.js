@@ -1,5 +1,7 @@
 import React, {useState} from "react";  
-import { getRequest } from "../API";
+import { getRequest } from "../API"; 
+import { FaChevronDown, FaChevronUp, FaFile, FaClipboard } from "react-icons/fa";
+import { MdAssignment } from "react-icons/md";
 
 const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect}  ) => { 
 
@@ -38,57 +40,75 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
         }  
 
 
-    }
+    };
 
 
-    return( 
-        <>  
-        <div className="individual-day-componet-div"> 
-   
+    return (
+        <li className={`day-item ${isExpanded ? 'day-expanded' : ''}`}>
             <div 
+                className="day-header"
                 onClick={toggleExpand}
-            >  
-                <h4 className="day-title-text"> 
-                    {day.name}
-                    <span>{isExpanded ? "▲" : "▼"}</span> 
+            >
+                <h4 className="day-title">
+                    {day.name} 
+                    {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
                 </h4>
-            </div>  
+            </div>
 
-            {isExpanded && ( 
-                <div className="individual-material-div"> 
-                    { Array.isArray(materials) && materials.map(material => ( 
-                        <div 
-                            key={material.id}
-                            className="material-item"
-                            onClick={() => onMaterialSelect(day.id, material.id, material.filename)} 
-                        > 
-                           <h4> {material.name} </h4> 
+            {isExpanded && (
+                <div className="day-content">
+                    {loading ? (
+                        <div className="day-loading">
+                            <div className="day-loading-spinner"></div>
+                            <span>Loading resources...</span>
                         </div>
-                    )) }
-                </div>
-            )}  
+                    ) : (
+                        <>
+                            {materials && materials.length > 0 && (
+                                <div className="resources-section">
+                                    <h5 className="resources-title">Materials</h5>
+                                    <ul className="material-list">
+                                        {materials.map(material => (
+                                            <li
+                                                key={material.id}
+                                                className="material-item"
+                                                onClick={() => onMaterialSelect(day.id, material.id, material.filename, material.name)}
+                                            >
+                                                <FaFile className="material-icon" />
+                                                <span className="material-name">{material.name}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
 
-            {isExpanded && ( 
-                <div className="individual-assignment-div"> 
-                    { Array.isArray(assignments) && assignments.map(assignment => ( 
-                        <div 
-                            key={assignment.id} 
-                            className="assignment-item"
-                            onClick={() => onAssignmentSelect(day.id, assignment.id, assignment.filename)} 
-                        > 
-                            <h4> {assignment.name} </h4>
-                        </div>
-                    ))}
+                            {assignments && assignments.length > 0 && (
+                                <div className="resources-section">
+                                    <h5 className="resources-title">Assignments</h5>
+                                    <ul className="assignment-list">
+                                        {assignments.map(assignment => (
+                                            <li
+                                                key={assignment.id}
+                                                className="assignment-item"
+                                                onClick={() => onAssignmentSelect(day.id, assignment.id, assignment.filename, assignment.name)}
+                                            >   
+                                                <MdAssignment className="assignment-icon" />
+                                                <span className="assignment-name">{assignment.name}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+
+                            {(!materials || materials.length === 0) && (!assignments || assignments.length === 0) && (
+                                <p className="no-resources-message">No resources available for this day.</p>
+                            )}
+                        </>
+                    )}
                 </div>
             )}
-
-        </div>
-        </>
-
-
-    );
-
-
-}; 
+        </li>
+      );
+    };
 
 export default DayComponent;
