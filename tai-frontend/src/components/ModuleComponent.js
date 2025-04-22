@@ -15,7 +15,7 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
 
     return ( 
         <>
-        <div className="individual-module-componet-div"> 
+        <div className="individual-module-component-div"> 
             <div 
                 onClick={toggleExpand}
             > 

@@ -143,11 +143,6 @@ If a new button is made:
     margin-bottom: 12px;
   }
   
-.radio-card-button-label {
-    font-weight: 500;
-    font-size: 1.1rem;
-    color: #333;
-  }
   
 .radio-card-button:focus-within {
     outline: 2px solid #3498db;

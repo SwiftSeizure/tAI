@@ -73,11 +73,8 @@ const TeacherStudentUnitPage = () => {
 
     return(  
         <> 
-        <div className="title-card-center">  
-            <TitleCard 
-                title={classname}
-            /> 
-        </div>  
+        
+        <TitleCard title={classname} />  
 
         <div className="class-unit-card-grid">  
             {populateUnitCards()}    

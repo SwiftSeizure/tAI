@@ -241,10 +241,9 @@ const TeacherStudentModulePage = () => {
 
 
     return(  
-        <>     
-        <TitleCard 
-            title={unitName}
-        /> 
+        <>   
+        
+        <TitleCard title={unitName} /> 
 
         <div className="modulepage-layout-grid">  
 

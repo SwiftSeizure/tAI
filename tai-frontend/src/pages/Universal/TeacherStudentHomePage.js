@@ -90,11 +90,9 @@ const TeacherStudentHomePage = (  ) => {
     const title = "Welcome " + name;
     return( 
         <>  
-        <div className="title-card-center"> 
-            < TitleCard
-                title={title}
-            />
-        </div>
+
+        < TitleCard title={title}/>
+
 
         <div className="class-unit-card-grid">      
 
@@ -106,7 +104,7 @@ const TeacherStudentHomePage = (  ) => {
                     userID={userID}
                     role={role}
                 />  
-            
+
         </div> 
         </>
     );
