@@ -6,13 +6,13 @@ import axios from "axios";
 import ChatFeature from "../../components/ChatFeature";
 import ModuleComponent from "../../components/ModuleComponent"; 
 import List from '@mui/material/List'; 
-import buttons from "../../CSS/Buttons.css" 
+import buttons from "../../CSS/Buttons.css"  
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import 'react-pdf/dist/esm/Page/TextLayer.css';
 import { Document, Page } from 'react-pdf';      
 
 import { pdfjs } from 'react-pdf';
-// Correct import for newer versions
 
-// Tell pdfjs where to load the worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
 
 
@@ -89,6 +89,7 @@ const TeacherStudentModulePage = () => {
     }, [userID, role]); 
 
 
+
     const handleDaySelect = async ( moduleID, dayID ) => {  
         setSelectedModule(moduleID); 
         setSelectedDay(dayID);
@@ -136,10 +137,12 @@ const TeacherStudentModulePage = () => {
         setDisplayType('material'); 
 
         try { 
-            const url = `/material/${dayID}/${fileName}`;
-            const response = await getRequest(url); 
-            console.log("This is what we got back from /materials file call: ", response.data); 
-            setMaterialContent(response.data); 
+
+
+            const url = `http://localhost:8000/material/${dayID}/${fileName}`; 
+            const response =  await axios.get(url, {  responseType: 'blob' }); 
+            const fileURL = URL.createObjectURL(response.data); 
+            setMaterialContent(fileURL); 
             setCurrentContentDisplay('material');
         } 
         catch (error) { 
@@ -181,39 +184,16 @@ const TeacherStudentModulePage = () => {
     }, [displayType]);  
 
 
-    const renderPDFContent = (binaryContent) => {
-        // Convert binary string to array buffer
-        const binaryLen = binaryContent.length;
-        const bytes = new Uint8Array(binaryLen);
-        for (let i = 0; i < binaryLen; i++) {
-          bytes[i] = binaryContent.charCodeAt(i) & 0xff;
-        }
-        
+    const renderPDFContent = (fileURL) => {
         return (
-          <div>
-            <Document
-              file={{ data: bytes.buffer }}
-              onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-            >
-              <Page pageNumber={pageNumber} />
-            </Document>
-            <div>
-              <p>
-                Page {pageNumber} of {numPages}
-              </p>
-              <button 
-                disabled={pageNumber <= 1} 
-                onClick={() => setPageNumber(pageNumber - 1)}
-              >
-                Previous
-              </button>
-              <button 
-                disabled={pageNumber >= numPages} 
-                onClick={() => setPageNumber(pageNumber + 1)}
-              >
-                Next
-              </button>
-            </div>
+          <div className="pdf-container" style={{ width: '100%', height: '600px' }}>
+            <iframe 
+              src={fileURL} 
+              width="100%" 
+              height="100%" 
+              title="PDF Viewer"
+              style={{ border: 'none' }}
+            />
           </div>
         );
       };
@@ -230,21 +210,8 @@ const TeacherStudentModulePage = () => {
                 );  
                 case 'material': 
                     // Check if materialContent is a PDF or text
-                    if (typeof materialContent === 'string' && materialContent.startsWith('%PDF')) {
-                        // It's PDF data
-                        return (
-                            renderPDFContent(materialContent)
-                        );
-                    } else {
-                        // It's regular text
-                        return( 
-                            <div>      
-                                <div className="content-container">
-                                    {materialContent}
-                                </div>
-                            </div>
-                        );
-                    }      
+                    return renderPDFContent(materialContent)
+     
             case 'assignment': 
                 return( 
                     <div> 
@@ -254,9 +221,6 @@ const TeacherStudentModulePage = () => {
                     </div>
                 );
             case 'chat':  
-
-                // Could maybe make an API call here for chat context?? 
-                // then be able to pass it down into the chat component
 
                 return(  
                     <div> 
