@@ -47,8 +47,7 @@ If a new button is made:
     border: 2px solid rgb(0, 0, 0);
     border-radius: 7.5px; 
     padding: 10px;  
-    font-family: 'Nunito', sans-serif; 
-    
+    font-family: 'Nunito', sans-serif;    
 }
 
 .card-button-outline { 

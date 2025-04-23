@@ -1,24 +1,40 @@
 import React, { useState } from 'react';
 import OpenAI from 'openai';  
-import "../CSS/Chat.css";
+import "../CSS/Chat.css"; 
 
-const ChatFeature = () => {
+
+/**
+ * ChatFeature Component
+ * This component provides a chat interface where users can send messages
+ * and receive responses from the OpenAI API. It includes input handling,
+ * API integration, and error handling.
+ */
+
+const ChatFeature = () => { 
+
+  // State to handle the completion result, user message, loading state, and error messages
   const [completionResult, setCompletionResult] = useState("");
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Message to send to chat GPT
+
+  /**
+   * handleMessage
+   * Handles the user's message submission. Sends the message to the OpenAI API
+   * and updates the state with the response or error.
+   */
   const handleMessage = async () => {
     if (!message.trim()) { 
       return;
     } 
 
+    // Clear previous results and set loading state
     setLoading(true);
     setError('');
     
     try { 
-
+      // Initialize OpenAI API client
       /* REPLACE THIS WITH THE BACKEND INTEGRATION  */ 
       /* Danger  */ 
       /* Danger  */ 
@@ -36,10 +52,12 @@ const ChatFeature = () => {
       /* END DANGER ZONE */ 
 
 
-      
+      // Send the user's message to the OpenAI API
       const completion = await openai.chat.completions.create({
-        model: "gpt-4-1106-preview", // Make sure you're using a model that supports file attachments
-        messages: [
+        model: "gpt-4-1106-preview",
+        messages: [ 
+          // System message to set the context for the assistant
+          // This message is used to instruct the assistant on how to respond
           {
             role: "system",
             content: [
@@ -49,7 +67,9 @@ const ChatFeature = () => {
               } 
 
             ]
-          },
+          }, 
+          // // User's message which is sent to GPT-4
+          // This message is the actual input from the user
           {
             role: "user",
             content: message
@@ -57,25 +77,31 @@ const ChatFeature = () => {
         ]
       });
       
-      // Set the result from the API response
+      // Update the state with the response from OpenAI 
+      // Currently the response is formatted in a message, future versions may change this
       setCompletionResult(completion.choices[0].message.content);
     } 
 
+    // Handle errors from the OpenAI API
     catch (e) {
       console.error("Error calling OpenAI API:", e);
       setError("Failed to get response from OpenAI: " + e.message);
     } 
 
+    // Reset loading state
     finally {
       setLoading(false);
     }
     
+    // Clear the message input field after sending the message
     setMessage("");
   };
 
 
-  return (
-    <div className="message-container"> 
+  return ( 
+
+    <div className="message-container">  
+      {/* Input container for users message */}
       <div className="input-container">
         <textarea
           value={message}
@@ -84,7 +110,11 @@ const ChatFeature = () => {
           className="message-input"
           placeholder="Type your message here..."
         /> 
-      </div> 
+      </div>  
+        
+        
+      {/* Button to send the message */}
+      {/* The button is disabled if loading or if the message is empty */}
       <div className="button-container">
         <button 
           className="custom-button-standard" 
@@ -95,8 +125,10 @@ const ChatFeature = () => {
         </button>
       </div>
       
+      {/* Display the error message if there is one on the screen */}
       {error && <div className="error-message">{error}</div>}
       
+      {/* Display the response from OpenAI in a read-only textarea */}
       <div className="response-container">
         <textarea
           value={completionResult}

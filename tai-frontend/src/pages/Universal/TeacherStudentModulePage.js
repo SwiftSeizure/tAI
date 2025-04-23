@@ -18,38 +18,53 @@ import { pdfjs } from 'react-pdf';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
 
 
+/**
+ * TeacherStudentModulePage Component
+ * This page displays the modules, days, materials, and assignments for a specific unit.
+ * It also includes a chat feature for students and chat settings for teachers.
+ * 
+ * Features:
+ * - Displays a list of modules and their associated days.
+ * - Allows users to view materials and assignments in a PDF viewer.
+ * - Provides a chat feature for students and chat settings for teachers.
+ * - Dynamically updates content based on user interactions.
+ */
 
 const TeacherStudentModulePage = () => {     
 
-    const [loading, setLoading] = useState(true); 
-    const [modulesData, setModulesData] = useState(null);   
+    // State variables for managing data and UI state
+    const [loading, setLoading] = useState(true); // Tracks loading state
+    const [modulesData, setModulesData] = useState(null); // Stores module data  
+    const [selectedModule, setSelectedModule] = useState(null); // Tracks the selected module
+    const [isChatExpanded, setIsChatExpanded] = useState(false); // Tracks chat expansion state
+    const [displayType, setDisplayType] = useState('welcome'); // Tracks the type of content to display
+    
+    const [selectedDay, setSelectedDay] = useState(null); // Tracks the selected day
+    const [dayMaterials, setDayMaterials] = useState(null); // Stores materials for a selected day 
+    const [selectedMaterialID, setSelectedMaterialID] = useState(null); // Tracks the selected material ID
+    const [selectedMaterialName, setSelectedMaterialName] = useState(null); // Tracks the selected material name
+    
+    const [selectedAssignmentID, setSelectedAssignmentID] = useState(null); // Tracks the selected assignment ID
+    const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
+    
+    const [numPages, setNumPages] = useState(null); // Tracks the number of pages in a PDF
+    const [pageNumber, setPageNumber] = useState(1); // Tracks the current page number in a PDF
+    
+    const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
+    const [assignmentContent, setAssignmentContent] = useState(null); // Stores the content of a selected assignment
+    const [currentContentDisplay, setCurrentContentDisplay] = useState(null); // Tracks the current content being displayed
 
-    const [isChatExpanded, setIsChatExpanded] = useState(false); 
-
-    const [displayType, setDisplayType] = useState('welcome'); 
-    const [selectedModule, setSelectedModule] = useState(null); 
-    const [selectedDay, setSelectedDay] = useState(null);  
-    const [selectedMaterialID, setSelectedMaterialID] = useState(null);   
-    const [selectedMaterialName, setSelectedMaterialName] = useState(null); 
-    const [selectedAssignmentID, setSelectedAssignmentID] = useState(null);  
-    const [selectedAssignmentName, setSelectedAssignmentName] = useState(null);
-
-    const [numPages, setNumPages] = useState(null);
-    const [pageNumber, setPageNumber] = useState(1);
-
-
-    const [dayMaterails, setDayMaterials] = useState(null); 
-    const [materialContent, setMaterialContent] = useState(null); 
-    const [assignmentContent, setAssignmentContent] = useState(null); 
-
-    const [currentContentDisplay, setCurrentContentDisplay] = useState(null);
-
+    // Retrieve user information from the location state
     const location = useLocation(); 
     const {unitID, unitName, userID, role} = location.state || {};  
 
     const chatImage = require("../../images/chat-message-dots.png");
 
 
+    /**
+     * toggleChatExpand
+     * Toggles the chat expansion state and updates the display type based on the user's role.
+     */
     const toggleChatExpand = () => {
         setIsChatExpanded(!isChatExpanded);  
 
@@ -63,11 +78,13 @@ const TeacherStudentModulePage = () => {
         if (isChatExpanded) { 
             setDisplayType(currentContentDisplay);
         }
-
-        
     };
 
 
+    /**
+     * useEffect Hook
+     * Fetches module data when the component mounts or when `userID` or `role` changes.
+     */
     useEffect(() => { 
 
         const loadModules = async () => {  
@@ -75,7 +92,6 @@ const TeacherStudentModulePage = () => {
             try {   
                 const url = `/unit/${unitID}/modules`; 
                 const response = await getRequest(url);  
-                console.log(response.data);
                 setModulesData(response.data.modules);
 
             } 
@@ -90,38 +106,60 @@ const TeacherStudentModulePage = () => {
         
         loadModules();
 
-    }, [userID, role]); 
+    }, [userID, role]);  
 
 
+    /*  
+     */
+    useEffect(() => { 
+        if (displayType !== 'chat' && displayType !== 'chat-settings') { 
+            setIsChatExpanded(false);  
+        } 
+    }, [displayType]);  
 
-    const handleDaySelect = async ( moduleID, dayID ) => {  
+
+    /**
+     * handleDaySelect
+     * Handles the selection of a day within a module and fetches its materials.
+     * @param {number} moduleID - The ID of the selected module.
+     * @param {number} dayID - The ID of the selected day.
+     */
+    const handleDaySelect = async ( moduleID, dayID ) => {   
+
+        // Update the selected module and day, and set the display type to 'day'
         setSelectedModule(moduleID); 
         setSelectedDay(dayID);
         setDisplayType('day'); 
 
+        // Fetch the materials and assignments for the selected day
         try {  
             const url = `/module/${moduleID}/days` 
             const response = await getRequest(url); 
-            console.log("This is the response from /days module call", response.data.materials);
             setDayMaterials(response.data.materials); 
-            
-        } 
+        }  
         catch (error) { 
             console.log(error);  
-             
         }
  
     };    
 
 
-
+    /**
+     * handleAssignmentSelect
+     * Handles the selection of an assignment and fetches its content.
+     * @param {number} dayID - The ID of the day containing the assignment.
+     * @param {number} assignmentID - The ID of the selected assignment.
+     * @param {string} fileName - The filename of the assignment.
+     * @param {string} assignmentName - The name of the assignment.
+     */
     const handleAssignmentSelect = async (dayID, assignmentID, fileName, assignmentName) => { 
 
+        // Update the selected assignment and set the display type to 'assignment'
         setSelectedAssignmentID(assignmentID);   
         setSelectedAssignmentName(assignmentName);
         setDisplayType('assignment'); 
-        console.log("This is the file name", fileName);
 
+        // Fetch the content of the selected assignment
         try { 
             const url = `http://localhost:8000/assignment/${dayID}/${fileName}`;  
             const response = await axios.get(url, { responseType: 'blob' }); 
@@ -132,16 +170,25 @@ const TeacherStudentModulePage = () => {
         catch (error) { 
             console.log(error)
         }
+    };
 
 
-    }
-
+    /**
+     * handleMaterialSelect
+     * Handles the selection of a material and fetches its content.
+     * @param {number} dayID - The ID of the day containing the material.
+     * @param {number} materialID - The ID of the selected material.
+     * @param {string} fileName - The filename of the material.
+     * @param {string} materialName - The name of the material.
+     */
     const handleMaterialSelect = async ( dayID, materialID, fileName, materialName ) => { 
 
+        // Update the selected material and set the display type to 'material'
         setSelectedMaterialID(materialID);  
         setSelectedMaterialName(materialName);
         setDisplayType('material'); 
 
+        // Fetch the content of the selected material
         try { 
             const url = `http://localhost:8000/material/${dayID}/${fileName}`; 
             const response =  await axios.get(url, {  responseType: 'blob' }); 
@@ -154,15 +201,12 @@ const TeacherStudentModulePage = () => {
         }
 
     }
+ 
 
-
-    useEffect(() => { 
-        if (displayType !== 'chat' && displayType !== 'chat-settings') { 
-            setIsChatExpanded(false);  
-        } 
-    }, [displayType]);   
-
-
+    /**
+     * renderModules
+     * Renders the list of modules as `ModuleComponent` components.
+     */
     const renderModules = () => { 
         if (!Array.isArray(modulesData)) { 
             return null;
@@ -171,8 +215,9 @@ const TeacherStudentModulePage = () => {
 
             return( 
                 <> 
-                <div className="module-container"> 
-                    <h1 className="modules-heading"> {unitName} Modules</h1>
+                <div className="module-container">  
+                    {/* Map all of the module components to the ModulePage */}
+                    <h1 className="modules-heading"> {unitName} Modules</h1> 
                     {modulesData.map (module => ( 
                         <ModuleComponent 
                             key={module.id} 
@@ -191,6 +236,11 @@ const TeacherStudentModulePage = () => {
 
 
 
+    /**
+     * renderPDFContent
+     * Renders a PDF viewer for the given file URL.
+     * @param {string} fileURL - The URL of the PDF file to display.
+     */
     const renderPDFContent = (fileURL) => {
         return (
             <div className="pdf-container" style={{ width: '100%', height: '600px' }}>
@@ -206,6 +256,10 @@ const TeacherStudentModulePage = () => {
     };
 
 
+    /**
+     * renderContent
+     * Renders the content based on the current display type (e.g., welcome, material, assignment, chat).
+     */
     const renderContent = () => { 
         switch(displayType) { 
             case 'welcome': 
@@ -282,16 +336,18 @@ const TeacherStudentModulePage = () => {
 
         <div className="modulepage-layout-grid">  
 
+            {/* Sidebar for modules */}
             <div className="sidebar-container"> 
                 {renderModules()} 
             </div>  
             
+            {/* Main content area for displaying selected module content */}
             <div className="content-display-container"> 
                 {renderContent()}
             </div>  
 
         
-
+            {/* Chat button for students or chat settings for teachers */}
             {role === 'student' ? 
                 <button 
                     className="custom-button-chat"  
