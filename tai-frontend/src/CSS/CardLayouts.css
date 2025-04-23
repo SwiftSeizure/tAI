@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Raleway:wght@400;600;700&display=swap');  
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:wght@400;600&display=swap'); 
+
 /* Guidelines 
 Custom button is the base for all of the other buttons currently 
 If a new button is made: 
@@ -43,7 +46,9 @@ If a new button is made:
 .card-text-outline { 
     border: 2px solid rgb(0, 0, 0);
     border-radius: 7.5px; 
-    padding: 10px;
+    padding: 10px;  
+    font-family: 'Nunito', sans-serif; 
+    
 }
 
 .card-button-outline { 

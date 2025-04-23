@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import OpenAI from 'openai'; 
+import OpenAI from 'openai';  
+import "../CSS/Chat.css";
 
 const ChatFeature = () => {
   const [completionResult, setCompletionResult] = useState("");
@@ -74,40 +75,39 @@ const ChatFeature = () => {
 
 
   return (
-    <div > 
-      <div >
+    <div className="message-container"> 
+      <div className="input-container">
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           rows={4}
-          cols={50}
+          className="message-input"
           placeholder="Type your message here..."
         /> 
       </div> 
-      <div>
+      <div className="button-container">
         <button 
           className="custom-button-standard" 
           onClick={handleMessage}
           disabled={loading || !message.trim()}
         >
           {loading ? "Sending..." : "Send Message"}
-        </button> 
-
+        </button>
       </div>
       
       {error && <div className="error-message">{error}</div>}
       
-      <div className="response-area">
+      <div className="response-container">
         <textarea
           value={completionResult}
           readOnly
           rows={6}
-          cols={50}
+          className="response-textarea"
           placeholder="Response will appear here..."
         />
       </div>
     </div>
-  );
+  );  
 };
 
 export default ChatFeature;
