@@ -24,7 +24,7 @@ const CreateClassPage = () => {
                 className="custom-input-standard" 
                 id="className"
                 type="text" 
-                placeholder="Enter Class Code" 
+                placeholder="Enter Class Name" 
             >   
             </input> 
             <button className="custom-button-standard">  
