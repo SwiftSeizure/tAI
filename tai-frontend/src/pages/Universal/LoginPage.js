@@ -61,7 +61,7 @@ const LoginPage = () => {
 
     return ( 
         <>   
-        <div class="bg-yellow-300"> 
+        <div className="h-screen w-screen bg-gradient-to-b from-blue-700 via-blue-300 via-green-400 to-blue-700 bg-[length:100%_200%] animate-scrollGradient"> 
             <TitleCard title={""} /> 
 
 
@@ -124,9 +124,9 @@ const LoginPage = () => {
 
 
 
-            <div className="center-button-div"> 
+            <div className="flex justify-center items-center "> 
                 <button 
-                    className="custom-button-login"
+                    className="rounded border-radius padding bg-yellow-400 bg-transparent"
                     onClick={logIn}
                     >
                        <h3 className="custom-button-login-h2"> Log In </h3> 

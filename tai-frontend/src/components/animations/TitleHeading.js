@@ -39,7 +39,7 @@ export default function TitleHeading( {title, transitionTime} ) {
                 : 'transform -translate-y-16 opacity-0'
             }`}
             style={{ 
-              transitionDelay: `${index * 0.1}s`,
+              transitionDelay: `${index * 0.05}s`,
               width: letter === ' ' ? '0.5em' : 'auto',  
               fontFamily: 'Nunito', 
             }}

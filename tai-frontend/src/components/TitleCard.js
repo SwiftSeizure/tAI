@@ -34,7 +34,7 @@ const TitleCard = ( { title  } ) => {
     
     return( 
         <>   
-        <div className="relative flex items-center justify-center h-fit bg-blue-400 px-4 w-full "> 
+        <div className="relative flex items-center justify-center h-fit px-4 w-full "> 
             {/*if no title is provided, show a default welcome message*/}
             {title === "" ?  (  
                 
@@ -54,7 +54,7 @@ const TitleCard = ( { title  } ) => {
                         </button>  
                     </div> 
                     <div className="flex-grow flex justify-center">
-                        <TitleHeading title={title} transitionTime={25} /> 
+                        <TitleHeading title={title} transitionTime={10} /> 
                     </div>  
                 </>
                 )
