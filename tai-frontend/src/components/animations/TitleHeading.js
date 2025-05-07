@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'; 
 
-export default function TitleHeading( {title, transitionTime} ) { 
+export default function TitleHeading( {title, transitionTime, intro} ) { 
 
   const [visibleLetters, setVisibleLetters] = useState([]);
   const headingText = title;
@@ -41,7 +41,9 @@ export default function TitleHeading( {title, transitionTime} ) {
             style={{ 
               transitionDelay: `${index * 0.05}s`,
               width: letter === ' ' ? '0.5em' : 'auto',  
-              fontFamily: 'Nunito', 
+              fontFamily: 'Nunito',  
+              fontSize: intro ? '8rem' : '5rem',
+              
             }}
           >
             {letter}

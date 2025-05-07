@@ -13,7 +13,7 @@ import TitleHeading from "./animations/TitleHeading";
  * Props:
  * - title: The title to display on the card. If empty, a default message is shown.
  */
-const TitleCard = ( { title  } ) => {   
+const TitleCard = ( { title, intro } ) => {   
 
 
     const navigate = useNavigate(); 
@@ -40,7 +40,7 @@ const TitleCard = ( { title  } ) => {
                 
 
                 <div className="flex justify-center w-full">  
-                    <TitleHeading title={'Welcome to TAi!'} transitionTime={100} />
+                    <TitleHeading title={'Welcome to TAi!'} transitionTime={100} intro={true}/>
                 </div> 
                 
                 ) : (  
@@ -57,7 +57,7 @@ const TitleCard = ( { title  } ) => {
                         <TitleHeading title={title} transitionTime={10} /> 
                     </div>   
                     <div className="absolute-right-2"> 
-                        Settings
+                        Settings TODO
                     </div>
                 </>
                 )
