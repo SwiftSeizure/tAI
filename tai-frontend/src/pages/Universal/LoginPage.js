@@ -61,7 +61,7 @@ const LoginPage = () => {
 
     return ( 
         <>   
-        <div className="h-screen w-screen bg-gradient-to-b from-blue-700 via-blue-300 via-green-400 to-blue-700 bg-[length:100%_200%] animate-scrollGradient"> 
+        <div className="h-screen w-screen bg-gradient-to-b from-blue-500 via-green-200 to-blue-500 bg-[length:100%_200%] animate-scrollGradient"> 
             <TitleCard title={""} /> 
 
 
@@ -126,10 +126,10 @@ const LoginPage = () => {
 
             <div className="flex justify-center items-center "> 
                 <button 
-                    className="rounded border-radius padding bg-yellow-400 bg-transparent"
+                    className="rounded-lg border-2 p-2 border-purple-300 bg-opacity-50 bg-purple-100"
                     onClick={logIn}
                     >
-                       <h3 className="custom-button-login-h2"> Log In </h3> 
+                       <h3 className="opacity-100"> Log In </h3> 
                     </button> 
             </div>
         </div>
