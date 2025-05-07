@@ -32,7 +32,7 @@ const TitleCard = ( { title  } ) => {
                 
                 ) : (  
                 <>  
-                    <div className="row-span-1 conte">   
+                    <div >   
                         <button 
                             className="custom-button-title"
                             onClick={ (e) => goBackPage(e)}
@@ -40,8 +40,8 @@ const TitleCard = ( { title  } ) => {
                             <ArrowBackIcon />
                         </button>  
                     </div> 
-                    <div className="row-span-2">
-                        <h1 className="title-card-h1"> {title} </h1> 
+                    <div >
+                        <TitleHeading title={title} /> 
                     </div>  
                 </>
                 )

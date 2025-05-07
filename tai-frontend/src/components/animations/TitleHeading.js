@@ -6,19 +6,26 @@ export default function TitleHeading( {title} ) {
   const headingText = title;
   
 
-  useEffect(() => {
-    let index = 0;
-    const interval = setInterval(() => {
-      if (index < headingText.length) {
-        setVisibleLetters(prev => [...prev, index]);
-        index++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 100); // Time between each letter falling
+  useEffect(() => { 
+    setVisibleLetters([]);
+    let index = -1; 
+    let interval;
+
+    const timeout = setTimeout(() => { 
+
+        interval = setInterval(() => {
+            if (index < headingText.length) {
+                setVisibleLetters(prev => [...prev, index]);
+                index++;
+            } else {
+                clearInterval(interval);
+            }
+        }, 100); // Time between each letter falling 
+
+    }, 50);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [title]);
   
   return (
 
