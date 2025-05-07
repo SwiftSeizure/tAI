@@ -21,18 +21,18 @@ const TitleCard = ( { title  } ) => {
     
     return( 
         <>   
-        <div className="grid grid-cols-2 items-center h-fit bg-blue-400 padding: 0.25rem "> 
+        <div className="relative flex items-center justify-center h-fit bg-blue-400 px-4 w-full "> 
 
             {title === "" ?  (  
                 
 
-                <div className="col-span-2 text-center">  
-                    <TitleHeading title={'Welcome to TAi!'} />
+                <div className="flex justify-center w-full">  
+                    <TitleHeading title={'Welcome to TAi!'} transitionTime={100} />
                 </div> 
                 
                 ) : (  
                 <>  
-                    <div >   
+                    <div className="absolute left-4">   
                         <button 
                             className="custom-button-title"
                             onClick={ (e) => goBackPage(e)}
@@ -40,8 +40,8 @@ const TitleCard = ( { title  } ) => {
                             <ArrowBackIcon />
                         </button>  
                     </div> 
-                    <div >
-                        <TitleHeading title={title} /> 
+                    <div className="flex-grow flex justify-center">
+                        <TitleHeading title={title} transitionTime={25} /> 
                     </div>  
                 </>
                 )

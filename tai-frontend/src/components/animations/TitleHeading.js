@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'; 
 
-export default function TitleHeading( {title} ) { 
+export default function TitleHeading( {title, transitionTime} ) { 
 
   const [visibleLetters, setVisibleLetters] = useState([]);
   const headingText = title;
@@ -20,7 +20,7 @@ export default function TitleHeading( {title} ) {
             } else {
                 clearInterval(interval);
             }
-        }, 100); // Time between each letter falling 
+        }, transitionTime); // Time between each letter falling 
 
     }, 50);
     
