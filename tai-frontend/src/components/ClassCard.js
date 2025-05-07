@@ -62,14 +62,14 @@ const ClassCard = ( {classID, classname, userID, role}  ) => {
     // Render the class card based on the classname prop
     if (classname !== "newClass") { 
         return(  
-            <div className="card-button-outline">  
+            <div className="p-12">  
                 <button 
-                    className="card-button" 
+                    className="bg-pink-300 opacity-50 border-none p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105" 
                     onClick={ (e) => goToUnitPage(e) }
                     >   
                     {/* Display the class logo */}
                     <img  
-                        className="card-image"
+                        className="opacity-100 card-image"  
                         src={logo} />
     
                     {/* Display the class name */}

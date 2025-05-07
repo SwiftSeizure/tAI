@@ -17,7 +17,7 @@ module.exports = {
       },
       animation: {
         fallBounce: 'fallBounce 0.5s ease-out forwards', 
-        scrollGradient: 'scrollGradient 10s linear infinite',
+        scrollGradient: 'scrollGradient 10s ease infinite',
       }, 
     },
   },

@@ -100,23 +100,59 @@ const TeacherStudentHomePage = () => {
     const title = "Welcome " + name;
 
     return ( 
-        <>  
-        {/* Title card displaying a personalized welcome message */}
-        <TitleCard title={title} />
+        <>   
+        <div className="h-screen w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient"> 
 
-        {/* Grid container for class cards */}
-        <div className="class-unit-card-grid">      
-            {/* Render the fetched class cards */}
-            {populateClassCards()}  
+        
 
-            {/* Add a "new class" card for creating or joining a class */}
-            <ClassCard   
-                classID={null}
-                classname={"newClass"}  
-                userID={userID}
-                role={role}
-            />  
-        </div> 
+            {/* Title card displaying a personalized welcome message */}
+            <TitleCard title={title} />
+
+            {/* Grid container for class cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-items-center">      
+                {/* Render the fetched class cards */}
+                {populateClassCards()}  
+
+                {/* Add a "new class" card for creating or joining a class */}
+                <ClassCard   
+                    classID={null}
+                    classname={"newClass"}  
+                    userID={userID}
+                    role={role}
+                />   
+                                <ClassCard   
+                    classID={null}
+                    classname={"newClass"}  
+                    userID={userID}
+                    role={role}
+                />   
+                                <ClassCard   
+                    classID={null}
+                    classname={"newClass"}  
+                    userID={userID}
+                    role={role}
+                />    
+                                                <ClassCard   
+                    classID={null}
+                    classname={"newClass"}  
+                    userID={userID}
+                    role={role}
+                /> 
+                                                <ClassCard   
+                    classID={null}
+                    classname={"newClass"}  
+                    userID={userID}
+                    role={role}
+                /> 
+                                                <ClassCard   
+                    classID={null}
+                    classname={"newClass"}  
+                    userID={userID}
+                    role={role}
+                />
+                
+            </div>  
+        </div>
         </>
     );
 };  
