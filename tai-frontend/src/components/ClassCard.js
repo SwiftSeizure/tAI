@@ -62,15 +62,19 @@ const ClassCard = ( {classID, classname, userID, role}  ) => {
     // Render the class card based on the classname prop
     if (classname !== "newClass") { 
         return(  
-            <div className="p-12">  
+            <div className="overflow-hidden p-12">  
                 <button 
-                    className="bg-pink-300 opacity-50 border-none p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105" 
+                    className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
                     onClick={ (e) => goToUnitPage(e) }
                     >   
-                    {/* Display the class logo */}
-                    <img  
-                        className="opacity-100 card-image"  
-                        src={logo} />
+                    {/* Display the class logo */} 
+                    <div className="pb-2 rounded-md"> 
+                        <img  
+                        className="w-52 h-52 rounded-md "  
+                        src={logo} 
+                        alt="Class Logo" />
+                    </div>
+
     
                     {/* Display the class name */}
                     <div className="card-text-outline">  
@@ -85,15 +89,18 @@ const ClassCard = ( {classID, classname, userID, role}  ) => {
     // Create card for either adding or joining a class based on the role
     else { 
         return ( 
-            <div className="card-button-outline"> 
-                <button
-                    className="card-button"
+            <div className="overflow-hidden p-12"> 
+                <button 
+                 className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
                     onClick={ (e) => goToNewClassPage(e) } 
                     > 
-                    {/* Display the class logo */}
-                    <img 
-                        className="card-image" 
-                        src={logo} />  
+                    <div className="pb-2 rounded-md">  
+                        {/* Display the class logo */}
+                        <img 
+                        className="w-52 h-52 rounded-md"  
+                        src={logo} 
+                        alt="Class Logo" /> 
+                    </div> 
                     {/* Display a placeholder for the new class logo */}
                     <div className="card-text-outline"> 
                         Add New class

@@ -101,7 +101,7 @@ const TeacherStudentHomePage = () => {
 
     return ( 
         <>   
-        <div className="h-screen w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient"> 
+        <div className="min-h-screen min-w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient"> 
 
         
 
@@ -109,7 +109,7 @@ const TeacherStudentHomePage = () => {
             <TitleCard title={title} />
 
             {/* Grid container for class cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-items-center">      
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-items-center gap-4">      
                 {/* Render the fetched class cards */}
                 {populateClassCards()}  
 

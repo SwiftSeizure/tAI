@@ -34,7 +34,7 @@ const TitleCard = ( { title  } ) => {
     
     return( 
         <>   
-        <div className="relative flex items-center justify-center h-fit px-4 w-full "> 
+        <div className="relative flex items-center justify-center h-fit px-4 w-90 "> 
             {/*if no title is provided, show a default welcome message*/}
             {title === "" ?  (  
                 
@@ -45,7 +45,7 @@ const TitleCard = ( { title  } ) => {
                 
                 ) : (  
                 <>  
-                    <div className="absolute left-4">   
+                    <div className="absolute left-2">   
                         <button 
                             className="custom-button-title"
                             onClick={ (e) => goBackPage(e)}
@@ -55,7 +55,10 @@ const TitleCard = ( { title  } ) => {
                     </div> 
                     <div className="flex-grow flex justify-center">
                         <TitleHeading title={title} transitionTime={10} /> 
-                    </div>  
+                    </div>   
+                    <div className="absolute-right-2"> 
+                        Settings
+                    </div>
                 </>
                 )
             }  
