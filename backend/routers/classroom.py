@@ -37,11 +37,12 @@ def get_teacher_home(classID: int, session: DBSession) -> ClassroomResponse:
              response_model=ClassroomUnit,
              status_code=201,
              responses={
-                 404: {"model": ClientErrorResponse}
+                 404: {"model": ClientErrorResponse},
+                 409: {"model": ClientErrorResponse},
              },
-             summary="Create a new classroom.")
-def create_new_classroom(accountID: int, unit: CreateUnit, session: DBSession) -> ClassroomUnit:
-    """ Create a new classroom.
+             summary="Create a new unit within a class.")
+def create_new_unit(classID: int, unit: CreateUnit, session: DBSession) -> ClassroomUnit:
+    """ Create a new unit within a class.
     
     Args:
         accountID (int): The ID of the teacher creating the classroom.
@@ -54,5 +55,5 @@ def create_new_classroom(accountID: int, unit: CreateUnit, session: DBSession) -
     Returns:
         HomeClass: A response model containing the created classroom.
     """
-    db_class = classroom_db.create_new_unit(accountID, unit, session)
+    db_class = classroom_db.create_new_unit(classID, unit, session)
     return(ClassroomUnit(id=db_class.id, name=db_class.name)) # type: ignore
