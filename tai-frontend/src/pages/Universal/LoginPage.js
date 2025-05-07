@@ -52,12 +52,12 @@ const LoginPage = () => {
     return ( 
         <>   
    
-        <div className="bg-yellow-300"> 
+        <div class="bg-yellow-300"> 
   
             <TitleCard title={""} /> 
 
 
-            <div className="bg-yellow-300">
+            <div className="spacing-login-radio-buttons">
                 <label className="radio-card-button">
                     <input
                         className="radio-card-button-input"

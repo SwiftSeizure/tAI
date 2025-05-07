@@ -1,7 +1,9 @@
 import React from "react";  
 import { useNavigate } from "react-router-dom"; 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';   
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';    
+import '../App.css';
 import headers from "../CSS/Headers.css"
+import TitleHeading from "./animations/TitleHeading";
 
 const TitleCard = ( { title  } ) => {   
 
@@ -19,15 +21,18 @@ const TitleCard = ( { title  } ) => {
     
     return( 
         <>   
-        <div className="title-card-center"> 
+        <div className="grid grid-cols-2 items-center h-fit bg-blue-400 padding: 0.25rem "> 
 
-            {title === "" ?  (
-                <div className="title-only">  
-                    <h1 className="title-card-h1"> Welcome to TAi! </h1>  
-                </div>
+            {title === "" ?  (  
+                
+
+                <div className="col-span-2 text-center">  
+                    <TitleHeading title={'Welcome to TAi!'} />
+                </div> 
+                
                 ) : (  
                 <>  
-                    <div className="back-button-container">   
+                    <div className="row-span-1 conte">   
                         <button 
                             className="custom-button-title"
                             onClick={ (e) => goBackPage(e)}
@@ -35,7 +40,7 @@ const TitleCard = ( { title  } ) => {
                             <ArrowBackIcon />
                         </button>  
                     </div> 
-                    <div className="title-container">
+                    <div className="row-span-2">
                         <h1 className="title-card-h1"> {title} </h1> 
                     </div>  
                 </>

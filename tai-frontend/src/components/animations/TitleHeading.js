@@ -1,0 +1,46 @@
+import { useState, useEffect } from 'react'; 
+
+export default function TitleHeading( {title} ) { 
+
+  const [visibleLetters, setVisibleLetters] = useState([]);
+  const headingText = title;
+  
+
+  useEffect(() => {
+    let index = 0;
+    const interval = setInterval(() => {
+      if (index < headingText.length) {
+        setVisibleLetters(prev => [...prev, index]);
+        index++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 100); // Time between each letter falling
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  return (
+
+    <h1 className="text-[3.5rem] font-extrabold font-nunito relative overflow-hidden py-8">
+        {headingText.split('').map((letter, index) => (
+          <span 
+            key={index}
+            className={`inline-block transition-all duration-500  ${
+              visibleLetters.includes(index) 
+                ? 'transform translate-y-0 opacity-100' 
+                : 'transform -translate-y-16 opacity-0'
+            }`}
+            style={{ 
+              transitionDelay: `${index * 0.1}s`,
+              width: letter === ' ' ? '0.5em' : 'auto',  
+              fontFamily: 'Nunito', 
+            }}
+          >
+            {letter}
+          </span>
+        ))}
+      </h1>
+
+  );
+}
