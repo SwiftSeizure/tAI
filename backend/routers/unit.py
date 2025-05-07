@@ -7,9 +7,7 @@ from backend.models import ClientErrorResponse, UnitResponse,UnitModule, ModuleD
 
 router = APIRouter(prefix="/unit", tags=["Unit"])
 
- 
-# i think this route should only return the modules not the days im implementing a route that gets the days
-# but only for the selected module we dont want to load all the days for all of the modules before they click one
+
 @router.get("/{unitID}/modules",
             response_model=UnitResponse,
             status_code=200,
@@ -18,6 +16,18 @@ router = APIRouter(prefix="/unit", tags=["Unit"])
              },
             summary="Retrieve the modules and days for a given unit.")
 def get_unit_modules(unitID: int, session: DBSession) -> UnitResponse:
+    """ Retrieve the modules and days for a given unit.
+ 
+    Args:
+        unitID (int): The ID of the unit to retrieve modules for.
+        session (DBSession): The database session.
+        
+    Raises:
+        404: If the unit with the given ID is not found.
+            
+    Returns:
+        UnitResponse: A response model containing the modules and their days.
+    """
     db_modules = unit_db.get_unit_modules(unitID, session) 
 
     modules = []

@@ -246,6 +246,34 @@ If a new button is made:
   } 
 
 
+
+  .chat-settings-radio-button {
+    display: block;
+    position: relative;
+    width:fit-content;
+    cursor: pointer;
+    border: 2px solid #e0e0e0; /* Default gray border */
+    border-radius: 8px;
+    padding: 16px;
+    margin: 8px;
+    transition: all 0.3s ease;
+  }
   
+  .chat-settings-radio-button:hover {
+    border-color: #a0a0a0;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* When selected, use light blue border */
+  .chat-settings-radio-button:checked {
+    border-color: #66b2ff; /* Light blue color */
+    background-color: #f0f8ff; /* Very light blue background */
+  }
+  
+  .chat-settings-radio-button:focus {
+    outline: none;
+    border-color: #66b2ff; /* Light blue color */
+  }
 
 

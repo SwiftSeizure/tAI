@@ -6,30 +6,48 @@ import UnitCard from "../../components/UnitCard";
 import ClassCard from "../../components/ClassCard";
 import TitleCard from "../../components/TitleCard";
 
-
+/**
+ * TeacherStudentUnitPage 
+ * This page displays the units associated with a specific class for both teachers and students.
+ * It fetches unit data from the backend and renders a grid of `UnitCard` components.
+ * 
+ * Features:
+ * - Fetches unit data based on the class ID.
+ * - Displays a title card with the class name.
+ * - Renders a grid of `UnitCard` components for each unit.
+ */
 
 const TeacherStudentUnitPage = () => {    
 
-
+    // State to store the list of units fetched from the backend
     const [data, setData] = useState([]); 
-    const [isloading, setLoading] = useState(true);
 
+    // State to track the loading status
+    const [isLoading, setLoading] = useState(true);
+
+    // Retrieve class and user information from the location state
     const location = useLocation(); 
-    const {classID, userID, role, classname} = location.state || {};
+    const { classID, userID, role, classname } = location.state || {};
 
 
+    /**
+     * useEffect Hook
+     * Fetches unit data from the backend when the component mounts or when `classID`, `userID`, or `role` changes.
+     */
     useEffect(() => {    
 
+        // Function to load unit cards from the backend
         const loadUnitCards = async () => { 
         
+            
             setLoading(true);
             try {  
-
+                // Get the unit data from the backend based on classID
                 const url = `/classroom/${classID}/units`;
                 const response = await getRequest(url);  
-                // May have to mess around with this response
                 setData(response.data.units); 
 
+                // Populate the unit cards with the fetched data
                 populateUnitCards();  
             } 
             catch (error) { 
@@ -42,28 +60,30 @@ const TeacherStudentUnitPage = () => {
 
         };
 
+        // Call the function to load unit cards
         loadUnitCards();
 
     }, [classID, userID, role]);
 
 
-
+    /**
+     * populateUnitCards
+     * Generates a list of `UnitCard` components based on the fetched unit data.
+     * Each `UnitCard` represents a unit associated with the class.
+     */
     const populateUnitCards = () => {  
- 
-
-        console.log("This is the unit cards response data: ", data); 
 
         return(  
             <>  
-                {Array.isArray(data) && data.map(unit => (  
-                    <UnitCard 
-                        key={unit.id} 
-                        unitID={unit.id} 
-                        unitName={unit.name} 
-                        userID={userID} 
-                        role={role}
-                    />
-                ))} 
+            {Array.isArray(data) && data.map(unit => (  
+                <UnitCard 
+                    key={unit.id} 
+                    unitID={unit.id} 
+                    unitName={unit.name} 
+                    userID={userID} 
+                    role={role}
+                />
+            ))} 
             </>
         )
 
@@ -76,6 +96,7 @@ const TeacherStudentUnitPage = () => {
         
         <TitleCard title={classname} />  
 
+        {/* Grid layout for unit cards */}
         <div className="class-unit-card-grid">  
             {populateUnitCards()}    
         </div>

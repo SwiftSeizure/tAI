@@ -19,6 +19,18 @@ router = APIRouter(prefix="/home", tags=["Home"])
              },
             summary="Retrieve all of a teachers classes for their home page.")
 def get_teacher_home(accountID: int, session: DBSession) -> HomeResponse:
+    """ Retrieve all of a teachers classes for their home page.
+    
+    Args:
+        accountID (int): The ID of the teacher to retrieve classes for.
+        session (DBSession): The database session.
+    
+    Raises:
+        404: If the teacher with the given ID is not found.
+        
+    Returns:
+        HomeResponse: A response model containing the classes for the teacher.
+    """ 
     db_classes = teacher_db.get_teacher_classes(accountID, session) 
     classes = [HomeClass(id=c.id, name=c.name) for c in db_classes] # type: ignore
     return HomeResponse(classes=classes)
@@ -31,6 +43,19 @@ def get_teacher_home(accountID: int, session: DBSession) -> HomeResponse:
              },
              summary="Create a new classroom.")
 def create_new_classroom(accountID: int, classroom: CreateClassroom, session: DBSession) -> HomeClass:
+    """ Create a new classroom.
+    
+    Args:
+        accountID (int): The ID of the teacher creating the classroom.
+        classroom (CreateClassroom): The classroom data to create.
+        session (DBSession): The database session.
+        
+    Raises:
+        404: If the teacher with the given ID is not found.
+        
+    Returns:
+        HomeClass: A response model containing the created classroom.
+    """
     db_class = teacher_db.create_new_classroom(accountID, classroom, session)
     return(HomeClass(id=db_class.id, name=db_class.name)) # type: ignore
 
@@ -45,6 +70,18 @@ def create_new_classroom(accountID: int, classroom: CreateClassroom, session: DB
              },
             summary="Retrieve all of a students classes for their home page.")
 def get_student_home(accountID: int, session: DBSession) -> HomeResponse:
+    """ Retrieve all of a students classes for their home page.
+    
+    Args:
+        accountID (int): The ID of the student to retrieve classes for.
+        session (DBSession): The database session.
+        
+    Raises:
+        404: If the student with the given ID is not found.
+        
+    Returns:
+        HomeResponse: A response model containing the classes for the student.
+    """
     db_classes = student_db.get_student_classes(accountID, session) 
     classes = [HomeClass(id=c.id, name=c.name) for c in db_classes] # type: ignore
     return HomeResponse(classes=classes)

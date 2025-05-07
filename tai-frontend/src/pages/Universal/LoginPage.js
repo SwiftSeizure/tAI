@@ -9,28 +9,37 @@ const teacherImage = require('../../images/teacher-login-image.png')
 const studentImage = require('../../images/student-login-image.png');
 
 
-const LoginPage = () => { 
+/**
+ * LoginPage Component
+ * This page allows users to log in by selecting their role (teacher or student).
+ * It includes radio buttons for role selection and a login button to navigate to the home page.
+ */
+
+const LoginPage = () => {  
+
+    // State to manage the selected role (teacher or student)
     const [teacherOrStudent, setTeacherOrStudent] = useState('');  
 
+    // Hook to navigate to HomePage
     const navigate = useNavigate(); 
 
 
-    // Need to chance with USER AUTH 
+    //TODO: Need to chance with USER AUTH  
+    /* logIn
+     * Handles the login process by checking the selected role and navigating to the home page,
+     * passing the user ID, name, and role as state.
+     */
     const logIn = async () => { 
         try {   
 
             
-            const user = { role: teacherOrStudent };
-            localStorage.setItem('user', JSON.stringify(user));     
+            // TODO: Change once we have authentication and pass down the uid, the name and the role   
 
-            console.log(user.role);
-
-            
-            // TODO: Change once we have authentication and pass down the uid, the name and the role  
+            // Navigate to the home page with the selected role and user information
+            // This is just a placeholder for the demo.
             if (teacherOrStudent === 'teacher1') { 
                 navigate('/home', {state: { userID: 1, name: 'Mr. Professor', role: 'teacher' }});
             }   
-
             else if (teacherOrStudent === 'teacher2'){ 
                 navigate(`/home`, {state: { userID: 2, name: 'Mrs. Professor', role: 'teacher' }});
             } 
@@ -40,6 +49,7 @@ const LoginPage = () => {
             
         }  
 
+        // Handle any errors that occur during the login process
         catch (e) { 
             console.log("There was an error wile logging in");
         }
@@ -51,14 +61,15 @@ const LoginPage = () => {
 
     return ( 
         <>   
-   
         <div class="bg-yellow-300"> 
-  
             <TitleCard title={""} /> 
 
 
-            <div className="spacing-login-radio-buttons">
-                <label className="radio-card-button">
+            {/* Role selection section */}
+            <div className="spacing-login-radio-buttons"> 
+                {/* Radio buttons for selecting teacher or student role */}
+                <label className="radio-card-button"> 
+                    {/* Radio button for teacher role */}
                     <input
                         className="radio-card-button-input"
                         type="radio"
@@ -75,7 +86,8 @@ const LoginPage = () => {
                         <span className="radio-card-button-h1"> Teacher 1 </span>
                     </div> 
                 </label>
-                <label className="radio-card-button">
+                <label className="radio-card-button"> 
+                    {/* Radio button for student role */}
                     <input 
                         className="radio-card-button-input"
                         type="radio"
@@ -93,11 +105,11 @@ const LoginPage = () => {
                     </div>
                 </label> 
 
-            </div>  
+                </div>  
 
 
 
-
+            {/* Radio button for demo teacher role */}
             <div>
                 <label>
                     <input
@@ -120,13 +132,10 @@ const LoginPage = () => {
                        <h3 className="custom-button-login-h2"> Log In </h3> 
                     </button> 
             </div>
-
         </div>
+        
         </>
     );
 }  
 
 export default LoginPage; 
-
-// Every single teacher has a unique id 
-// This 

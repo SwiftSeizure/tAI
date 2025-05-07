@@ -425,7 +425,8 @@
   
   .module-header {
     padding: 16px;
-    background-color: #f8f9fa;
+    background-color: #f8f9fa; 
+    border-radius: 10px 10px 0 0;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
@@ -442,6 +443,13 @@
     display: flex;
     align-items: center;
     gap: 12px;
+  }  
+
+  .module-header-icon {
+    font-size: 24px;
+    color: #3498db; 
+    padding-right: 0px; 
+    
   }
   
   .module-icon-book {

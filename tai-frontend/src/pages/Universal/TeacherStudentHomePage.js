@@ -1,71 +1,88 @@
-import React, {useState, useEffect} from "react";   
+import React, { useState, useEffect } from "react";   
 import { useLocation } from 'react-router-dom';  
 import useUser from "../../hooks/useUser";
 import ClassCard from "../../components/ClassCard"; 
 import axios from "axios"; 
 import { getRequest } from "../../API";
-import TitleCard from "../../components/TitleCard";   
+import TitleCard from "../../components/TitleCard";    
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';   
 import buttons from "../../CSS/Buttons.css";
-import grids from "../../CSS/Grids.css";
+import grids from "../../CSS/Grids.css"; 
+import "react-icons/fa";
 
+/**
+ * TeacherStudentHomePage Component
+ * This page serves as the home page for both teachers and students.
+ * It displays a welcome message and a grid of class cards, which represent the classes the user is associated with.
+ * 
+ * Features:
+ * - Fetches class data from the backend based on the user's role and ID.
+ * - Displays a list of `ClassCard` components for each class.
+ * - Includes a "new class" card for creating or joining a class.
+ */
 
-const TeacherStudentHomePage = (  ) => {   
+const TeacherStudentHomePage = () => {   
 
-
+    // State to track loading status
     const [loading, setLoading] = useState(true); 
+
+    // State to track errors during data fetching
     const [error, setError] = useState(null);  
 
+    // State to store the list of classes fetched from the backend
     const [data, setData] = useState([]);
     
+    // Retrieve user information from the location state
     const location = useLocation(); 
-    const { userID, name, role } = location.state || {};  
-
-    // const stateData = { 
-    //     userID, 
-    //     name, 
-    //     role, 
-    // }; 
+    const { userID, name, role } = location.state || {}; 
 
 
+
+    /**
+     * useEffect Hook
+     * Fetches class data from the backend when the component mounts or when `userID` or `role` changes.
+     */
     useEffect(() => {  
+        const loadClassCards = async () => {  
+            try {  
 
-        const loadClassCards = async() => {  
-
-            try { 
-                setLoading(true);
+                setLoading(true); 
             
-                const url = `/home/${role}/${userID}`;
-                // BACKEND ROUTE 
+                // Get the class data from the backend based on userID and role
+                const url = `/home/${role}/${userID}`; 
                 const response = await getRequest(url);  
-                setData(response.data.classes);
+                setData(response.data.classes); 
             
-                populateClassCards(); 
-
+                // Populate the class cards with the fetched data
+                populateClassCards();
             } 
-            catch(error) { 
+            catch (error) { 
                 setError(error);
             }  
+             
             finally { 
-                setLoading(false);
+                setLoading(false); 
             }
         };
 
-        // Add auth here for isloading in useUser then make the loadClassCards Call 
+        // Call the function to load class cards
         loadClassCards(); 
 
-        // These need to be here because any time a class is changed, or the user changes, or the response data changes the class cards will need to be repopulated
+        // Dependencies: Reload data when `userID`, `role`, or `data` changes
     }, [userID, role]); 
 
 
 
-    const populateClassCards = ( ) => {   
-        // e.preventDefault();  
- 
-        console.log(data); 
+    /**
+     * populateClassCards
+     * Generates a list of `ClassCard` components based on the fetched class data.
+     * Each `ClassCard` represents a class the user is associated with.
+     */
+    const populateClassCards = () => {   
+        console.log(data); // Debugging: Log the fetched class data
         
-        return( 
+        return ( 
             <>   
-
                 {Array.isArray(data) && data.map(classroom => (
                     <ClassCard   
                         key={classroom.id} 
@@ -75,40 +92,33 @@ const TeacherStudentHomePage = (  ) => {
                         role={role}
                     />
                 ))} 
-         
             </>
-        )
+        );
     }; 
 
-
-
-
-
-    // Make some kind of loop here to populate the class Cards with the DB  
-    // TODO Add Welcome user  
-
+    // Title for the page, personalized with the user's name
     const title = "Welcome " + name;
-    return( 
+
+    return ( 
         <>  
+        {/* Title card displaying a personalized welcome message */}
+        <TitleCard title={title} />
 
-        < TitleCard title={title}/>
-
-
+        {/* Grid container for class cards */}
         <div className="class-unit-card-grid">      
+            {/* Render the fetched class cards */}
+            {populateClassCards()}  
 
-                {populateClassCards()}  
-
-                <ClassCard   
-                    classID={null}
-                    classname={"newClass"}  
-                    userID={userID}
-                    role={role}
-                />  
-
+            {/* Add a "new class" card for creating or joining a class */}
+            <ClassCard   
+                classID={null}
+                classname={"newClass"}  
+                userID={userID}
+                role={role}
+            />  
         </div> 
         </>
     );
-}  
-
+};  
 
 export default TeacherStudentHomePage;

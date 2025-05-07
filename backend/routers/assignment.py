@@ -11,6 +11,18 @@ BASE_DIR = Path(__file__).parent.parent.parent
 
 @router.get("/{day_id}/{filename}")
 def get_file(day_id: int, filename: str):
+    """ Retrieve a file for a given assigment.
+    
+    Args:
+        day_id (int): The ID of the day to retrieve the file for.
+        filename (str): The name of the file to retrieve.
+        
+    Raises:
+        FileNotFoundException: If the file is not found or if there is a path traversal attempt.
+        
+    Returns:
+        FileResponse: A response containing the file.
+    """
     # Start from BASE_DIR and navigate to uploads
     file_path = BASE_DIR / "uploads" / "assignment" / str(day_id) / filename
     base_uploads = BASE_DIR / "uploads"

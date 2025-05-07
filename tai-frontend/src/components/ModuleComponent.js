@@ -1,13 +1,30 @@
 import React, { useState } from "react";  
 import DayComponent from "./DayComponent"; 
-import { FaChevronDown, FaChevronUp, FaBookOpen } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaBookOpen } from "react-icons/fa"; 
+import "../CSS/ModulePage.css" 
 
-// Devide what we need to pass down to the module here maybe the entire module 
-// then do all the conditionals to map it in here if the things exist 
+
+/**
+ * ModuleComponent
+ * This component represents a module in a course or curriculum. It displays the module name
+ * and allows users to expand it to view the associated days. Each day is rendered using the
+ * DayComponent.
+ * 
+ * Props:
+ * - module: Object containing information about the module (e.g., id, name, days).
+ * - onDaySelect: Callback function triggered when a day is selected.
+ * - onMaterialSelect: Callback function triggered when a material is selected.
+ * - onAssignmentSelect: Callback function triggered when an assignment is selected.
+ */
 const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentSelect } ) => {   
  
+    // State to track whether the module is expanded or not
     const [isExpanded, setIsExpanded] = useState(false); 
 
+    /**
+     * toggleExpand
+     * Toggles the expanded state of the module to show or hide its days.
+     */
     const toggleExpand = () => { 
         setIsExpanded(!isExpanded);
     };
@@ -15,24 +32,31 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
 
     return ( 
         <>
-        <div > 
+        <div >  
+            {/* Header section for the module */}
             <div  
                 className="module-header"
-                onClick={toggleExpand}
-            > 
-                <div className="module-header-content"> 
+                onClick={toggleExpand} // Toggle expand/collapse on click
+            >  
+                {/* Title and Icon for the module */} 
+                <div className="module-header-icon"> 
+                    <FaBookOpen /> 
+                </div> 
 
+                {/* Module title and expand/collapse icon */}
+                <div className="module-header-content"> 
                     <h3 className="module-title-text"> 
                         {module.name}  
                         {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
                     </h3>   
-
                 </div> 
-        
-            </div> 
+            </div>  
+
+            {/* Content section for the module, displayed only when expanded */}
             {isExpanded && module.days && ( 
                 <div className="individual-day-div">   
-                    <ul className="day-list">              
+                    <ul className="day-list">        
+                        {/* Map through the days in the module and render DayComponent for each day in the module*/}      
                         {Array.isArray(module.days) && module.days.map(day => ( 
                             <DayComponent 
                                 key={day.id} 
@@ -47,8 +71,7 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
             )}
         </div>
         </>
-    )
-
+    );
 }; 
 
 export default ModuleComponent;
