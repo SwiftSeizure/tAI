@@ -1,8 +1,9 @@
 import { useState } from 'react'; 
 import { useNavigate } from 'react-router-dom';   
 import buttons from "../../CSS/Buttons.css";
-import grids from "../../CSS/Grids.css";
-import TitleCard from '../../components/TitleCard';
+import grids from "../../CSS/Grids.css"; 
+import TitleCard from '../../components/TitleCard'; 
+import '../../App.css'
 
 const teacherImage = require('../../images/teacher-login-image.png')
 const studentImage = require('../../images/student-login-image.png');
@@ -50,76 +51,77 @@ const LoginPage = () => {
 
     return ( 
         <>   
+   
+        <div className="bg-yellow-300"> 
+  
+            <TitleCard title={""} /> 
 
-        <TitleCard title={""} /> 
 
-        
-
-        <div className="spacing-login-radio-buttons">
-            <label className="radio-card-button">
-                <input
-                    className="radio-card-button-input"
-                    type="radio"
-                    name="role"
-                    value="teacher1"
-                    onChange={() => setTeacherOrStudent('teacher1')}
-                />
-                <div className="radio-card-button-content">
-                    <img
-                        className="radio-card-button-image"
-                        src={teacherImage}
-                        alt="Teacher"
+            <div className="bg-yellow-300">
+                <label className="radio-card-button">
+                    <input
+                        className="radio-card-button-input"
+                        type="radio"
+                        name="role"
+                        value="teacher1"
+                        onChange={() => setTeacherOrStudent('teacher1')}
                     />
-                    <span className="radio-card-button-h1"> Teacher 1 </span>
-                </div> 
-            </label>
-            <label className="radio-card-button">
-                <input 
-                    className="radio-card-button-input"
-                    type="radio"
-                    name="role"
-                    value="student1"
-                    onChange={() => setTeacherOrStudent('student1')}
-                />  
-                <div className="radio-card-button-content"> 
-                    <img 
-                        className="radio-card-button-image" 
-                        src={studentImage} 
-                        alt="Student"
-                    /> 
-                    <span className="radio-card-button-h1"> Student 1 </span>
-                </div>
-            </label> 
+                    <div className="radio-card-button-content">
+                        <img
+                            className="radio-card-button-image"
+                            src={teacherImage}
+                            alt="Teacher"
+                        />
+                        <span className="radio-card-button-h1"> Teacher 1 </span>
+                    </div> 
+                </label>
+                <label className="radio-card-button">
+                    <input 
+                        className="radio-card-button-input"
+                        type="radio"
+                        name="role"
+                        value="student1"
+                        onChange={() => setTeacherOrStudent('student1')}
+                    />  
+                    <div className="radio-card-button-content"> 
+                        <img 
+                            className="radio-card-button-image" 
+                            src={studentImage} 
+                            alt="Student"
+                        /> 
+                        <span className="radio-card-button-h1"> Student 1 </span>
+                    </div>
+                </label> 
 
-        </div>  
-
-
-
-
-        <div>
-            <label>
-                <input
-                    type="radio"
-                    name="role"
-                    value="teacher2"
-                    onChange={() => setTeacherOrStudent('teacher2')}
-                />
-                Demo teacher
-            </label>
-        </div> 
+            </div>  
 
 
 
-        <div className="center-button-div"> 
-            <button 
-                className="custom-button-login"
-                onClick={logIn}
-                >
-                   <h3 className="custom-button-login-h2"> Log In </h3> 
-                </button> 
+
+            <div>
+                <label>
+                    <input
+                        type="radio"
+                        name="role"
+                        value="teacher2"
+                        onChange={() => setTeacherOrStudent('teacher2')}
+                    />
+                    Demo teacher
+                </label>
+            </div> 
+
+
+
+            <div className="center-button-div"> 
+                <button 
+                    className="custom-button-login"
+                    onClick={logIn}
+                    >
+                       <h3 className="custom-button-login-h2"> Log In </h3> 
+                    </button> 
+            </div>
+
         </div>
-
-        
         </>
     );
 }  
