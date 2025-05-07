@@ -43,7 +43,6 @@ export default function TitleHeading( {title, transitionTime, intro} ) {
               width: letter === ' ' ? '0.5em' : 'auto',  
               fontFamily: 'Nunito',  
               fontSize: intro ? '8rem' : '5rem',
-              
             }}
           >
             {letter}

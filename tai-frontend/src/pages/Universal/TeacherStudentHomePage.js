@@ -104,7 +104,6 @@ const TeacherStudentHomePage = () => {
         <div className="min-h-screen min-w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient"> 
 
         
-
             {/* Title card displaying a personalized welcome message */}
             <TitleCard title={title} />
 
