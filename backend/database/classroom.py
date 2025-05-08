@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload, Session
 from backend.database.schema import DBClass, DBUnit
 from backend.exceptions import EntityNotFoundException, DuplicateNameException
-from backend.models import CreateUnit
+from backend.models import CreateUnit, ClassroomUpdate
 
 def get_classroom(classroomID: int, session: Session) -> DBClass | None:
     """Get a DBClass object by its ID.
@@ -36,7 +36,6 @@ def get_class_units(classroomID: int, session: Session) -> list[DBClass]:
     classroom = get_classroom(classroomID, session)
     if not classroom:
         raise EntityNotFoundException("classroom", classroomID)
-    
     return classroom.units
 
 def create_new_unit(classroomID: int, unit: CreateUnit, session: Session) -> DBUnit:
@@ -87,3 +86,39 @@ def create_new_unit(classroomID: int, unit: CreateUnit, session: Session) -> DBU
     session.add(classroom)
     session.commit()
     return db_unit
+
+def update_classroom(classroomID: int, classroomUpdates: ClassroomUpdate, session: Session) -> DBClass:
+    """Update a classroom name and/or settings.
+    
+    Args:
+        ClassID (int) : The id of the classroom being updated
+        classroomUpdates (ClassroomUpdate): The updates to apply to a classroom.
+        session (Session): The database session
+        
+    Returns:
+        DBClassroom: The updated classroom.
+    """
+    classroom = get_classroom(classroomID, session)
+    if not classroom:
+        raise EntityNotFoundException("classroom", classroomID)
+    
+    # Update the classroom name
+    if classroomUpdates.name:
+        # Check for duplicate name if name is being updated
+        duplicate_stmt = select(DBClass)\
+            .filter(
+                DBClass.id != classroomID,  # Exclude current classroom
+                DBClass.name == classroomUpdates.name,
+                DBClass.ownerID == classroom.ownerID  # Add teacher check
+            )
+        existing_classroom = session.execute(duplicate_stmt).scalar_one_or_none()
+        if existing_classroom:
+            raise DuplicateNameException("classroom", classroomUpdates.name)
+        classroom.name = classroomUpdates.name # type: ignore
+    
+    # Update the classroom settings
+    if classroomUpdates.settings:
+        classroom.settings = classroomUpdates.settings # type: ignore
+    
+    session.commit()
+    return classroom
