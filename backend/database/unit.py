@@ -64,33 +64,31 @@ def create_new_module(unitID: int, module: CreateModule, session: Session) -> DB
     unit = get_unit(unitID, session)
     
     # Get the highest sequence number and add 1
-    stmt = select(DBUnit.sequence)\
-        .filter(DBUnit.classID == unitID)\
-        .order_by(DBUnit.sequence.desc())\
+    stmt = select(DBModule.sequence)\
+        .filter(DBModule.unitID == unitID)\
+        .order_by(DBModule.sequence.desc())\
         .limit(1)
     result = session.execute(stmt).scalar()
-    sequence_number = (result or 0) + 1
+    sequenceNumber = (result or 0) + 1
     
     # Check for duplicate unit name
-    duplicate_stmt = select(DBUnit)\
-        .filter(DBUnit.classID == unitID, 
-                DBUnit.name == unit.name)
-    existing_unit = session.execute(duplicate_stmt).scalar_one_or_none()
-    if existing_unit:
-        raise DuplicateNameException("unit", unit.name)
+    duplicateStmt = select(DBModule)\
+        .filter(DBModule.unitID == unitID, 
+                DBModule.name == module.name)
+    existingModule = session.execute(duplicateStmt).scalar_one_or_none()
+    if existingModule:
+        raise DuplicateNameException("module", module.name)
     
-    # Create the new unit
-    db_unit = DBUnit(
-        name = unit.name,
-        sequence = sequence_number,
-        classID = classroomID,
-        settings = unit.settings,
-        
+    # Create the new module
+    db_module = DBModule(
+        name = module.name,
+        sequence = sequenceNumber,
+        unitID = unitID,
     )
     
     # Add the new unit to the database
-    classroom.units.append(db_unit)
-    session.add(classroom)
+    unit.modules.append(db_module)
+    session.add(unit)
     session.commit()
-    return db_unit
+    return db_module
     

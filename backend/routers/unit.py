@@ -48,7 +48,7 @@ def get_unit_modules(unitID: int, session: DBSession) -> UnitResponse:
                  409: {"model": ClientErrorResponse},
              },
             summary="Create a new module for a given unit.")
-def create_new_module(unitID: int, module: UnitModule, session: DBSession) -> UnitResponse:
+def create_new_module(unitID: int, module: CreateModule, session: DBSession) -> UnitResponse:
     """ 
     Create a new module for a given unit.
  
@@ -64,5 +64,5 @@ def create_new_module(unitID: int, module: UnitModule, session: DBSession) -> Un
     Returns:
         UnitResponse: A response model containing the name and ID of the created module.
     """
-    unit_db.create_new_module(unitID, module, session)
+    module = unit_db.create_new_module(unitID, module, session)
     return get_unit_modules(unitID, session)
