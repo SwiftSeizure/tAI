@@ -47,14 +47,14 @@ const TitleCard = ( { title, intro } ) => {
                 <>  
                     <div className="absolute left-2">   
                         <button 
-                            className="custom-button-title"
-                            onClick={ (e) => goBackPage(e)}
-                            > 
-                            <ArrowBackIcon />
+                            className="flex w-10 h-10 cursor-pointer rounded-md p-4 m-2 font-medium text-[1.1rem] text-gray-800 justify-center items-center hover:shadow-2xl active:shadow-sm focus:outline-offset-2 "
+                            onClick={ (e) => goBackPage(e)}>   
+                            {/* TODO fix this arrow icon to make it seamless  */}
+                            <ArrowBackIcon  className="transform scale-100 transition-transform duration-300 ease-in hover:scale-150" />
                         </button>  
                     </div> 
                     <div className="flex-grow flex justify-center">
-                        <TitleHeading title={title} transitionTime={10} /> 
+                        <TitleHeading title={title} intro={intro} transitionTime={10} /> 
                     </div>   
                     <div className="absolute-right-2"> 
                         Settings TODO

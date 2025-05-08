@@ -93,12 +93,13 @@ const TeacherStudentUnitPage = () => {
 
     return(  
         <> 
-        
-        <TitleCard title={classname} />  
+        <div className="min-h-screen min-w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient"> 
+            <TitleCard title={classname} />  
 
-        {/* Grid layout for unit cards */}
-        <div className="class-unit-card-grid">  
-            {populateUnitCards()}    
+            {/* Grid layout for unit cards */}
+            <div className="class-unit-card-grid">  
+                {populateUnitCards()}    
+            </div>
         </div>
             
         </>

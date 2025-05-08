@@ -77,8 +77,10 @@ const ClassCard = ( {classID, classname, userID, role}  ) => {
 
     
                     {/* Display the class name */}
-                    <div className="card-text-outline">  
-                        {classname} 
+                    <div className="border-2 border-white/30 rounded-md backdrop-blur-sm bg-white/10 flex-wrap" >  
+                       <h3 className="p-2 rounded-md" > 
+                            {classname} 
+                        </h3> 
                     </div> 
                     
                 </button>
@@ -91,19 +93,22 @@ const ClassCard = ( {classID, classname, userID, role}  ) => {
         return ( 
             <div className="overflow-hidden p-12"> 
                 <button 
-                 className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
+                 className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-green-400 hover:border-green-500" 
                     onClick={ (e) => goToNewClassPage(e) } 
                     > 
                     <div className="pb-2 rounded-md">  
-                        {/* Display the class logo */}
+                        {/* Display the class logo  TODO change this to a plus or something similar */}
                         <img 
                         className="w-52 h-52 rounded-md"  
                         src={logo} 
                         alt="Class Logo" /> 
                     </div> 
                     {/* Display a placeholder for the new class logo */}
-                    <div className="card-text-outline"> 
-                        Add New class
+                    <div className="border-2 border-white/30 rounded-md backdrop-blur-sm bg-white/10 flex-wrap">  
+                        <h3 className="p-2 rounded-md"> 
+                            Add New class
+                        </h3>
+                     
                     </div>
                 </button> 
 
