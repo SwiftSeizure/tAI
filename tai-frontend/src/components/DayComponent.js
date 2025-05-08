@@ -25,6 +25,8 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
     // State to store assignments for the day
     const [assignments, setAssignments] = useState([]) 
 
+    const [selected, setSelected] = useState([null]);
+
     // State to store loading state
     const [loading, setLoading] = useState(false);
 
@@ -70,21 +72,15 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
 
 
     return (
-        <li className={`day-item ${isExpanded ? 'day-expanded' : ''}`}> 
-            {/* Header section for the day */}
-            <div 
-                className="day-header"
-                onClick={toggleExpand} // Expand/collapse on click
-            >
-                <h4 className="day-title">
+        <li className={`p-2 m-2 rounded-lg font-nunito ease-in-out duration-300 hover:font-bold hover:scale-105 ${isExpanded ? "bg-pink-400 border-pink-500 font-bold pb-3 hover:scale-100" : "bg-blue-400 bg-opacity-30 hover:bg-pink-400 hover:border-pink-500"}`}
+            onClick={toggleExpand} >
+                <h4 className={` pl-4 ${isExpanded ? "pb-2": "pb-0"} `}>
                     {day.name} 
-                    {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
                 </h4>
-            </div>
 
             {/* Content section for the day */}
             {isExpanded && (
-                <div className="day-content"> 
+                <div className="p-2 bg-white rounded-lg"> 
 
                     {/* Display loading spinner while fetching data */}
                     {loading ? (
@@ -96,15 +92,18 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
                         <> 
                         {/* Display materials if available */}
                         {materials && materials.length > 0 && (
-                            <div className="resources-section">
-                                <h5 className="resources-title">Materials</h5>
-                                <ul className="material-list"> 
+                            <div className="">
+                                <h5 className="font-nunito font-bold text-md text-gray-500 uppercase tracking-wide m-2 ">Materials</h5>
+                                <ul className=""> 
                                     { /* Map through materials and display them */}
                                     {materials.map(material => (
                                         <li
                                             key={material.id}
-                                            className="material-item"
-                                            onClick={() => onMaterialSelect(day.id, material.id, material.filename, material.name)}
+                                            className={`flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300 ${material.name === selected ? 'bg-slate-400 translate-x-1' : ''} `}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onMaterialSelect(day.id, material.id, material.filename, material.name);
+                                                setSelected(material.name)}}
                                         >
                                             <FaFile className="material-icon" />
                                             <span className="material-name">{material.name}</span>
@@ -115,15 +114,18 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
                         )} 
                         {/* Display assignments if available */}
                         {assignments && assignments.length > 0 && (
-                            <div className="resources-section">
-                                <h5 className="resources-title">Assignments</h5>
-                                <ul className="assignment-list"> 
+                            <div className="">
+                                <h5 className="font-nunito font-bold text-md text-gray-500 uppercase tracking-wide m-2 ">Assignments</h5>
+                                <ul className=""> 
                                     { /* Map through assignments and display them */}
                                     {assignments.map(assignment => (
                                         <li
                                             key={assignment.id}
-                                            className="assignment-item"
-                                            onClick={() => onAssignmentSelect(day.id, assignment.id, assignment.filename, assignment.name)}
+                                            className={`flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300 ${assignment.name === selected ? 'bg-slate-400 translate-x-1' : ''} `}
+                                            onClick={(e) => { 
+                                                e.stopPropagation();
+                                                onAssignmentSelect(day.id, assignment.id, assignment.filename, assignment.name); 
+                                                setSelected(assignment.name); }}
                                         >   
                                             <MdAssignment className="assignment-icon" />
                                             <span className="assignment-name">{assignment.name}</span>

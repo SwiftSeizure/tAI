@@ -66,7 +66,10 @@ const LoginPage = () => {
 
 
             {/* Role selection section */}
-            <div className="spacing-login-radio-buttons"> 
+            <div className="pt-[5%] pb-[5%] flex justify-around w-full"> 
+
+
+
                 {/* Radio buttons for selecting teacher or student role */}
                 <label className="radio-card-button"> 
                     {/* Radio button for teacher role */}
@@ -105,7 +108,7 @@ const LoginPage = () => {
                     </div>
                 </label> 
 
-                </div>  
+              </div>  
 
 
 

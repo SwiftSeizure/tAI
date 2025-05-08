@@ -90,6 +90,7 @@ const TeacherStudentUnitPage = () => {
     };
 
 
+    // TODO: add check for if teacher, teacher give the oportunity to add a class. 
 
     return(  
         <> 

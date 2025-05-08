@@ -34,33 +34,31 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
         <> 
 
 
-
+        {/* Everything this module will be wrapped in */}
         <div >
             {/* Header section for the module */}
             <div  
-                className={`p-2 rounded-md cursor-pointer flex flex-row items-center transition-all duration-300 ease-in-out transform hover:scale-105 ${
-                    isExpanded ? "bg-pink-400 border-pink-500" : "bg-blue-400 bg-opacity-30 hover:bg-pink-400 hover:border-pink-500"
+                className={`p-2 rounded-md cursor-pointer flex flex-row items-center transition-all duration-300 ease-in-out transform hover:scale-105 hover:font-bold
+                    ${ isExpanded ? "bg-pink-400 border-pink-500 scale-105 font-bold" : "bg-blue-400 bg-opacity-30 hover:bg-pink-400 hover:border-pink-500"
                 }`}
                 onClick={toggleExpand} // Toggle expand/collapse on click
             >  
-                {/* Title and Icon for the module */} 
-                <div className="module-header-icon"> 
+                {/* Icon for the module */} 
+                <div className="pr-2 text-lg text-blue-500"> 
                     <FaBookOpen /> 
                 </div> 
 
-                {/* Module title and expand/collapse icon */}
-                <div className="module-header-content"> 
-                    <h3 className="module-title-text"> 
-                        {module.name}  
-                        {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
-                    </h3>   
+                {/* Title Text for the module */}
+                <div className="font-nunito"> 
+                    {module.name}    
                 </div> 
             </div>  
 
             {/* Content section for the module, displayed only when expanded */}
             {isExpanded && module.days && ( 
-                <div className="individual-day-div">   
-                    <ul className="day-list">        
+                <div className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                        isExpanded ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}`}>   
+                    <ul className="">        
                         {/* Map through the days in the module and render DayComponent for each day in the module*/}      
                         {Array.isArray(module.days) && module.days.map(day => ( 
                             <DayComponent 

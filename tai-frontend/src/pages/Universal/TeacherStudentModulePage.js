@@ -5,13 +5,9 @@ import { getRequest } from "../../API";
 import axios from "axios";
 import ChatFeature from "../../components/ChatFeature";
 import ModuleComponent from "../../components/ModuleComponent"; 
-import List from '@mui/material/List'; 
-import buttons from "../../CSS/Buttons.css"  
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
-import { Document, Page } from 'react-pdf';     
-import { BiBookOpen } from 'react-icons/bi';
-import { RiChatSmile2Line } from 'react-icons/ri';  
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import { pdfjs } from 'react-pdf';
 
@@ -351,20 +347,23 @@ const TeacherStudentModulePage = () => {
                 {/* Chat button for students or chat settings for teachers */}
                 {role === 'student' ? 
                     <button 
-                        className="fixed bottom-5 right-5 w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center shadow-2xl ease-in-out z-10"  
+                        className="fixed bottom-4 right-8 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out "  
                         onClick={toggleChatExpand} > 
                        <img 
-                        className="custom-button-chat-image"  
+                        className={`rounded-md transition-all duration-300 ease-in-out ${isChatExpanded ? "w-12 h-12" : "w-8 h-8 hover:w-12 hover:h-12"}`}
                         src={chatImage}
                         /> 
                    </button>  
                    : 
                    <button 
-                        className="custom-button-chat"  
+                   className="fixed bottom-4 right-8 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out " 
                         onClick={toggleChatExpand}  
 
-                    > 
-                        {isChatExpanded ? "Save" : "Edit Chat Settings"} 
+                    >  
+                        <h2 className={`rounded-md transition-all duration-300 ease-in-out ${isChatExpanded ? "bg-red-600 p-2 fixed bottom-8 right-12 font-nunito" : "w-8 h-8 hover:w-12 hover:h-12"  }  `}>  
+                            {isChatExpanded ? "Save Changes" : <SettingsIcon />} 
+                        </h2>
+                        
 
                     </button> 
                 } 

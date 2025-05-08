@@ -2,7 +2,11 @@
 module.exports = {
   content: ["./src/**/*"],
   theme: {
-    extend: { 
+    extend: {  
+      fontFamily: { 
+        nunito: ['Nunito', 'sans-serif']
+      },
+
       keyframes: {
         fallBounce: {
           '0%': { transform: 'translateY(-4rem)', opacity: '0' },
