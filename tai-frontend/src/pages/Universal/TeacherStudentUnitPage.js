@@ -97,7 +97,7 @@ const TeacherStudentUnitPage = () => {
             <TitleCard title={classname} />  
 
             {/* Grid layout for unit cards */}
-            <div className="class-unit-card-grid">  
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-items-center gap-4">     
                 {populateUnitCards()}    
             </div>
         </div>
