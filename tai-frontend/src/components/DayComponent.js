@@ -1,7 +1,8 @@
 import React, {useState} from "react";  
 import { getRequest } from "../API"; 
 import { FaChevronDown, FaChevronUp, FaFile, FaClipboard } from "react-icons/fa";
-import { MdAssignment } from "react-icons/md";
+import { MdAssignment } from "react-icons/md"; 
+import { motion, AnimatePresence } from 'framer-motion';
 
 /**
  * DayComponent
@@ -72,7 +73,7 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
 
 
     return (
-        <li className={`p-2 m-2 rounded-lg font-nunito ease-in-out duration-300 hover:font-bold hover:scale-105 ${isExpanded ? "bg-pink-400 border-pink-500 font-bold pb-3 hover:scale-100" : "bg-blue-400 bg-opacity-30 hover:bg-pink-400 hover:border-pink-500"}`}
+        <div
             onClick={toggleExpand} >
                 <h4 className={` pl-4 ${isExpanded ? "pb-2": "pb-0"} `}>
                     {day.name} 
@@ -92,8 +93,16 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
                         <> 
                         {/* Display materials if available */}
                         {materials && materials.length > 0 && (
-                            <div className="">
-                                <h5 className="font-nunito font-bold text-md text-gray-500 uppercase tracking-wide m-2 ">Materials</h5>
+                            <AnimatePresence> 
+                                <motion.div 
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.4 }}
+                                >
+                                <h5 className="font-nunito font-bold text-md text-gray-500 uppercase tracking-wide m-2 ">
+                                    Materials
+                                </h5>
                                 <ul className=""> 
                                     { /* Map through materials and display them */}
                                     {materials.map(material => (
@@ -109,12 +118,19 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
                                             <span className="material-name">{material.name}</span>
                                         </li>
                                     ))}
-                                </ul>
-                            </div>
+                                </ul> 
+                                </motion.div>
+                            </AnimatePresence>
                         )} 
                         {/* Display assignments if available */}
                         {assignments && assignments.length > 0 && (
-                            <div className="">
+                            <AnimatePresence> 
+                                <motion.div 
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.4 }}
+                                >
                                 <h5 className="font-nunito font-bold text-md text-gray-500 uppercase tracking-wide m-2 ">Assignments</h5>
                                 <ul className=""> 
                                     { /* Map through assignments and display them */}
@@ -132,7 +148,8 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
                                         </li>
                                     ))}
                                 </ul>
-                            </div>
+                                </motion.div>
+                            </AnimatePresence>
                         )} 
                         {/* Display message if no resources are available */}
                         {(!materials || materials.length === 0) && (!assignments || assignments.length === 0) && (
@@ -142,7 +159,7 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
                     )}
                 </div>
             )}
-        </li>
+        </div>
       );
     };
 

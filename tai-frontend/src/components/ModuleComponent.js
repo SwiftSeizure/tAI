@@ -60,14 +60,22 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
                         isExpanded ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}`}>   
                     <ul className="">        
                         {/* Map through the days in the module and render DayComponent for each day in the module*/}      
-                        {Array.isArray(module.days) && module.days.map(day => ( 
-                            <DayComponent 
-                                key={day.id} 
-                                day={day} 
-                                onDaySelect={() => onDaySelect(module.id, day.id)} 
-                                onMaterialSelect={onMaterialSelect}  
-                                onAssignmentSelect={onAssignmentSelect}
-                            />
+                        {Array.isArray(module.days) && module.days.map((day, index) => (   
+
+                            // Might need to put this in the DayComponent
+                            <li 
+                                className={`p-2 m-2 rounded-lg font-nunito ease-in-out duration-300 hover:font-bold hover:scale-105 opacity-0 animate-fade-in-slide-up ${isExpanded ? "bg-pink-400 border-pink-500 font-bold pb-3 hover:scale-100" : "bg-blue-400 bg-opacity-30 hover:bg-pink-400 hover:border-pink-500"}`}
+                                style={{ animationDelay: `${index * 100}ms`}}
+                            > 
+                                <DayComponent  
+                                    key={day.id} 
+                                    day={day} 
+                                    onDaySelect={() => onDaySelect(module.id, day.id)} 
+                                    onMaterialSelect={onMaterialSelect}  
+                                    onAssignmentSelect={onAssignmentSelect}
+                                /> 
+
+                            </li>
                         ))} 
                     </ul>
                 </div>
