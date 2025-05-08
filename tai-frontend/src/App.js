@@ -3,6 +3,9 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/Universal/LoginPage'; 
 import TeacherStudentHomePage from './pages/Universal/TeacherStudentHomePage'; 
 import TeacherStudentUnitPage from './pages/Universal/TeacherStudentUnitPage';
+import TeacherStudentModulePage from './pages/Universal/TeacherStudentModulePage'; 
+import CreateClassPage from './pages/Teacher/CreateClassPage'; 
+import JoinClassPage from './pages/Student/JoinClassPage';
 
 function App() { 
 
@@ -17,11 +20,11 @@ function App() {
            
           
           <Route path="/home" element={<TeacherStudentHomePage /> } />    
-          <Route path="/unitpage" element={<TeacherStudentUnitPage /> } />   
-          <Route path="/HomePage/student/:user" element={<TeacherStudentHomePage /> } />   
+          <Route path="/unitpage" element={<TeacherStudentUnitPage /> } />     
+          <Route path="/modulepage" element={ <TeacherStudentModulePage /> } /> 
 
-          <Route path="/UnitPage/:user/:class" element={<TeacherStudentUnitPage />} /> 
-
+          <Route path="/createclass" element={ <CreateClassPage />} /> 
+          <Route path="/joinclass" element={ <JoinClassPage /> } />
 
           
         </Routes>

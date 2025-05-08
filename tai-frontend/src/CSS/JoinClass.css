@@ -1,0 +1,16 @@
+.new-class-card { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+    justify-content: center;
+    padding: 20px;  
+} 
+
+.custom-input-standard { 
+    width: 50%; 
+    padding: 10px; 
+    border-radius: 5px; 
+    border: 1px solid #ccc; 
+    font-size: 16px; 
+    margin-bottom: 10px;    
+}

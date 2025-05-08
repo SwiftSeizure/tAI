@@ -1,0 +1,6 @@
+.env
+
+# Python byecode
+*.pyc
+*/__pycache__/
+*.py[cod]

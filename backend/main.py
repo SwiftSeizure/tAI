@@ -8,12 +8,14 @@ Usage:
 """
 
 from fastapi import FastAPI
+from fastapi.requests import Request
 import os
 import requests
 from dotenv import load_dotenv
-from backend.routers import home, classroom
+from backend.routers import home, classroom, unit,module,day,assignment, material
 from backend.Seed_Database import PopulateDB
 from fastapi.middleware.cors import CORSMiddleware
+from backend.exceptions import EntityNotFoundException, FileNotFoundException, DuplicateNameException
 
 PopulateDB()
 app = FastAPI(
@@ -23,6 +25,11 @@ app = FastAPI(
 
 app.include_router(home.router)
 app.include_router(classroom.router)
+app.include_router(unit.router)
+app.include_router(module.router)
+app.include_router(day.router)
+app.include_router(assignment.router)
+app.include_router(material.router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -31,6 +38,17 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Exception handlers
+@app.exception_handler(EntityNotFoundException)
+def handle_entity_not_found(request: Request, exception: EntityNotFoundException):
+    return exception.response()
+@app.exception_handler(FileNotFoundException)
+def handle_file_not_found(request: Request, exception: EntityNotFoundException):
+    return exception.response()
+@app.exception_handler(DuplicateNameException)
+def handle_duplicate_name(request: Request, exception: DuplicateNameException):
+    return exception.response()
 
 """
 load_dotenv() 
