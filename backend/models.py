@@ -32,7 +32,7 @@ class ClassroomUnit(BaseModel):
     id: int
     name: str
     
-# Units Response Models ----------------------------------------
+# Unit Response Models ----------------------------------------
 class UnitResponse(BaseModel):
     modules: list [UnitModule]
     
@@ -49,6 +49,12 @@ class ModuleDay(BaseModel):
 
 class ModuleResponse(BaseModel):
     days: list[ModuleDay]
+
+# Module Input Models --------------------------------------- 
+    
+class CreateModule(BaseModel):
+    name: str
+    settings: dict
 
 # Day Response Models ----------------------------------------------
 

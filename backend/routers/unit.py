@@ -3,7 +3,7 @@ from typing import Any, Annotated
 
 from backend.database import unit as unit_db
 from backend.dependencies import DBSession
-from backend.models import ClientErrorResponse, UnitResponse,UnitModule, ModuleDay
+from backend.models import ClientErrorResponse, UnitResponse,UnitModule, CreateModule, ModuleDay
 
 router = APIRouter(prefix="/unit", tags=["Unit"])
 
@@ -39,3 +39,30 @@ def get_unit_modules(unitID: int, session: DBSession) -> UnitResponse:
         ))
 
     return UnitResponse(modules=modules)
+
+@router.post("/{unitID}/module",
+            response_model=UnitResponse,
+            status_code=201,
+            responses={
+                 404: {"model": ClientErrorResponse},
+                 409: {"model": ClientErrorResponse},
+             },
+            summary="Create a new module for a given unit.")
+def create_new_module(unitID: int, module: CreateModule, session: DBSession) -> UnitResponse:
+    """ 
+    Create a new module for a given unit.
+ 
+    Args:
+        unitID (int): The ID of the unit to create a module for.
+        module (UnitModule): The module data to create.
+        session (DBSession): The database session.
+        
+    Raises:
+        404: If the unit with the given ID is not found.
+        409: If the module with the given name already exists in the unit.
+            
+    Returns:
+        UnitResponse: A response model containing the name and ID of the created module.
+    """
+    module = unit_db.create_new_module(unitID, module, session)
+    return get_unit_modules(unitID, session)
