@@ -18,13 +18,14 @@ const JoinClassPage = () => {
         <> 
         {/* Title card for the page */}
         < TitleCard 
-        title="Join a Class" 
+        title="Join a Class"  
+        intro={true}
         /> 
 
         {/* Main content section for joining a class */}
         <div className="new-class-card">
             <h1 className="title-card-h1"> 
-                Enter the class cose below to join a class.
+                Enter the class code below to join a class.
             </h1> 
             <input 
                 className="custom-input-standard" 
