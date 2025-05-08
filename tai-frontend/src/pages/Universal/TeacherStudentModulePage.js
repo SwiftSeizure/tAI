@@ -215,7 +215,7 @@ const TeacherStudentModulePage = () => {
 
             return( 
                 <> 
-                <div className="module-container">  
+                <div>  
                     {/* Map all of the module components to the ModulePage */}
                     <h1 className="modules-heading"> {unitName} Modules</h1> 
                     {modulesData.map (module => ( 
@@ -331,45 +331,46 @@ const TeacherStudentModulePage = () => {
 
     return(  
         <>   
-        
-        <TitleCard title={unitName} /> 
-
-        <div className="modulepage-layout-grid">  
-
-            {/* Sidebar for modules */}
-            <div className="sidebar-container"> 
-                {renderModules()} 
-            </div>  
+        <div className="h-screen w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient">
             
-            {/* Main content area for displaying selected module content */}
-            <div className="content-display-container"> 
-                {renderContent()}
+            <TitleCard title={unitName} /> 
+
+            <div className="grid grid-cols-[280px_1fr_auto] gap-5 p-5 relative h-[calc(90vh-90px)] max-w-full overflow-x-hidden">  
+
+                {/* Sidebar for modules */}
+                <div className="bg-white rounded-lg shadow-md p-4 overflow-auto"> 
+                    {renderModules()} 
+                </div>  
+
+                {/* Main content area for displaying selected module content */}
+                <div className="bg-white rounded-lg shadow-md p-4 overflow-auto"> 
+                    {renderContent()}
+                </div>  
+
+
+                {/* Chat button for students or chat settings for teachers */}
+                {role === 'student' ? 
+                    <button 
+                        className="fixed bottom-5 right-5 w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center shadow-2xl ease-in-out z-10"  
+                        onClick={toggleChatExpand} > 
+                       <img 
+                        className="custom-button-chat-image"  
+                        src={chatImage}
+                        /> 
+                   </button>  
+                   : 
+                   <button 
+                        className="custom-button-chat"  
+                        onClick={toggleChatExpand}  
+
+                    > 
+                        {isChatExpanded ? "Save" : "Edit Chat Settings"} 
+
+                    </button> 
+                } 
             </div>  
-
-        
-            {/* Chat button for students or chat settings for teachers */}
-            {role === 'student' ? 
-                <button 
-                    className="custom-button-chat"  
-                    onClick={toggleChatExpand} > 
-                   <img 
-                    className="custom-button-chat-image"  
-                    src={chatImage}
-                    /> 
-               </button>  
-               : 
-               <button 
-                    className="custom-button-chat"  
-                    onClick={toggleChatExpand}  
-
-                > 
-                    {isChatExpanded ? "Save" : "Edit Chat Settings"} 
-
-                </button> 
-            } 
-
-        </div> 
-        
+        </div>
+    
         </>
     )
 

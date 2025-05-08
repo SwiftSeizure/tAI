@@ -31,11 +31,16 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
 
 
     return ( 
-        <>
-        <div >  
+        <> 
+
+
+
+        <div >
             {/* Header section for the module */}
             <div  
-                className="module-header"
+                className={`p-2 rounded-md cursor-pointer flex flex-row items-center transition-all duration-300 ease-in-out transform hover:scale-105 ${
+                    isExpanded ? "bg-pink-400 border-pink-500" : "bg-blue-400 bg-opacity-30 hover:bg-pink-400 hover:border-pink-500"
+                }`}
                 onClick={toggleExpand} // Toggle expand/collapse on click
             >  
                 {/* Title and Icon for the module */} 
@@ -69,7 +74,9 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
                     </ul>
                 </div>
             )}
-        </div>
+        </div> 
+
+        
         </>
     );
 }; 
