@@ -114,8 +114,8 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
                                                 onMaterialSelect(day.id, material.id, material.filename, material.name);
                                                 setSelected(material.name)}}
                                         >
-                                            <FaFile className="material-icon" />
-                                            <span className="material-name">{material.name}</span>
+                                            <FaFile className="mr-3 text-base text-yellow-500" />
+                                            <span className="font-sans text-sm text-gray-600 font-md tracking-wide">{material.name}</span>
                                         </li>
                                     ))}
                                 </ul> 
@@ -143,8 +143,8 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
                                                 onAssignmentSelect(day.id, assignment.id, assignment.filename, assignment.name); 
                                                 setSelected(assignment.name); }}
                                         >   
-                                            <MdAssignment className="assignment-icon" />
-                                            <span className="assignment-name">{assignment.name}</span>
+                                            <MdAssignment className="mr-3 text-base text-red-500" />
+                                            <span className="font-sans text-sm text-gray-600 font-md tracking-wide">{assignment.name}</span>
                                         </li>
                                     ))}
                                 </ul>
