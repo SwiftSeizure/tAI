@@ -4,7 +4,7 @@ from typing import Any, Annotated
 from backend.database import classroom as classroom_db
 from backend.database.schema import DBTeacher, DBUnit, DBClass
 from backend.dependencies import DBSession
-from backend.models import ClientErrorResponse, ClassroomResponse, ClassroomUnit, CreateUnit
+from backend.models import ClientErrorResponse, ClassroomResponse, ClassroomUnit, CreateUnit, ClassroomUpdate
 
 router = APIRouter(prefix="/classroom", tags=["classroom"])
 
@@ -57,3 +57,13 @@ def create_new_unit(classID: int, unit: CreateUnit, session: DBSession) -> Class
     """
     db_class = classroom_db.create_new_unit(classID, unit, session)
     return(ClassroomUnit(id=db_class.id, name=db_class.name)) # type: ignore
+
+
+# Update a chats owner and/or name
+@router.put("/{classroomID}",
+            status_code= 204,
+            responses={404: {"model": ClientErrorResponse},
+                       422: {"model": ClientErrorResponse}},
+            summary="Update a classrooms's name and/or settings.")
+def update_chat(classroomID: int, classroomUpdate: ClassroomUpdate, session: DBSession):
+    classroom_db.update_classroom(classroomID, classroomUpdate, session)

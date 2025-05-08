@@ -20,6 +20,10 @@ class CreateClassroom(BaseModel):
     settings: dict
     
 # Classroom Input Models -------------------------------------
+class ClassroomUpdate(BaseModel):
+    name: str
+    settings: dict
+
 class CreateUnit(BaseModel):
     name: str
     settings: dict
