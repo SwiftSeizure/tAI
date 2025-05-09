@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 from .schema import DBUnit, DBModule, DBDay
-from backend.models import CreateModule
+from backend.models import CreateModule, UnitUpdate
 from backend.exceptions import EntityNotFoundException, DuplicateNameException
 
 def get_unit(unitID: int, session: Session) -> DBUnit:
@@ -92,3 +92,37 @@ def create_new_module(unitID: int, module: CreateModule, session: Session) -> DB
     session.commit()
     return db_module
     
+    
+def update_unit(unitID: int, unitUpdates: UnitUpdate, session: Session) -> DBUnit:
+    """Update a classroom name and/or settings.
+    
+    Args:
+        ClassID (int) : The id of the classroom being updated
+        classroomUpdates (ClassroomUpdate): The updates to apply to a classroom.
+        session (Session): The database session
+        
+    Returns:
+        DBClassroom: The updated classroom.
+    """
+    unit = get_unit(unitID, session) # get_unit will raise exception if not found
+    
+    # Update the classroom name
+    if unitUpdates.name:
+        # Check for duplicate name if name is being updated
+        duplicate_stmt = select(DBUnit)\
+            .filter(
+                DBUnit.id != unitID,  # Exclude current classroom
+                DBUnit.name == unitUpdates.name,
+                DBUnit.classID == unit.classID  # Add teacher check
+            )
+        existing_unit = session.execute(duplicate_stmt).scalar_one_or_none()
+        if existing_unit:
+            raise DuplicateNameException("unit", unitUpdates.name)
+        unit.name = unitUpdates.name # type: ignore
+    
+    # Update the classroom settings
+    if unitUpdates.settings:
+        unit.settings = unitUpdates.settings # type: ignore
+    
+    session.commit()
+    return unit
