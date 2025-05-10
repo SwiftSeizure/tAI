@@ -18,10 +18,8 @@ def get_module(moduleID: int, session:Session) -> DBModule:
     """
     stmnt = select(DBModule).filter(DBModule.id == moduleID)
     module = session.execute(stmnt).scalar_one_or_none()
-
     if not module:
         raise EntityNotFoundException("module",moduleID)
-    
     return module
 
 def get_module_days(moduleID:int,session:Session) -> list[DBDay]:
@@ -43,3 +41,41 @@ def get_module_days(moduleID:int,session:Session) -> list[DBDay]:
         raise EntityNotFoundException("module",moduleID)
     
     return module.days
+
+
+def create_new_day(moduleID: int, session: Session) -> DBModule:
+    """Create a new day in a module.
+
+    Args:
+        moduleID (int): The ID of the module to create the day in.
+        session (Session): The SQLAlchemy session to use for the query.
+
+    Raises:
+        EntityNotFoundException: If the module with the given ID does not exist.
+
+    Returns:
+        DBModule: The newly created DBUnit object.
+    """
+    module = get_module(moduleID, session)
+    
+    # Get the count of existing days and multiply by 10
+    stmt = select(DBDay)\
+        .filter(DBDay.moduleID == moduleID)
+    existing_days = session.execute(stmt).all()
+    sequenceNumber = (len(existing_days) + 1) * 10
+    
+    # Name will just be the number of the day
+    dayName = f"Day {len(existing_days) + 1}"
+    
+    # Create the new module
+    db_day = DBDay(
+        name = dayName,
+        sequence = sequenceNumber,
+        moduleID = moduleID,
+    )
+    
+    # Add the new unit to the database
+    module.days.append(db_day)
+    session.add(module)
+    session.commit()
+    return db_day

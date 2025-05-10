@@ -66,8 +66,7 @@ def create_new_unit(classID: int, unit: CreateUnit, session: DBSession) -> Class
                        422: {"model": ClientErrorResponse}},
             summary="Update a classrooms's name and/or settings.")
 def update_chat(classroomID: int, classroomUpdate: ClassroomUpdate, session: DBSession):
-    """
-    Update a classrooms name and/or settings
+    """Update a classrooms name and/or settings
 
     Args:
         classroomID (int): ID of the classroom being updated
