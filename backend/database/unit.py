@@ -63,13 +63,13 @@ def create_new_module(unitID: int, module: CreateModule, session: Session) -> DB
     """
     unit = get_unit(unitID, session)
     
-    # Get the highest sequence number and add 1
+    # Get the highest sequence number and add 10
     stmt = select(DBModule.sequence)\
         .filter(DBModule.unitID == unitID)\
         .order_by(DBModule.sequence.desc())\
         .limit(1)
     result = session.execute(stmt).scalar()
-    sequenceNumber = (result or 0) + 1
+    sequenceNumber = (result or 0) + 10
     
     # Check for duplicate unit name
     duplicateStmt = select(DBModule)\

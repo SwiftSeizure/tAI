@@ -58,14 +58,20 @@ def create_new_day(moduleID: int, session: Session) -> DBModule:
     """
     module = get_module(moduleID, session)
     
-    # Get the count of existing days and multiply by 10
+    # Get the highest sequence number and add 10
+    stmt = select(DBDay.sequence)\
+        .filter(DBDay.moduleID == moduleID)\
+        .order_by(DBDay.sequence.desc())\
+        .limit(1)
+    result = session.execute(stmt).scalar()
+    sequenceNumber = (result or 0) + 10
+    
     stmt = select(DBDay)\
         .filter(DBDay.moduleID == moduleID)
-    existing_days = session.execute(stmt).all()
-    sequenceNumber = (len(existing_days) + 1) * 10
+    existingDays = session.execute(stmt).scalars().all()
     
     # Name will just be the number of the day
-    dayName = f"Day {len(existing_days) + 1}"
+    dayName = f"Day {len(existingDays) + 1}"
     
     # Create the new module
     db_day = DBDay(
