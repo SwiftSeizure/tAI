@@ -44,3 +44,17 @@ class DuplicateNameException(Exception):
             status_code=self.status_code,
             content=ClientErrorResponse(error=self.error, message=self.message).model_dump(),
         )
+        
+class HTTPException(Exception):
+    """Exception for a non-existent entity."""
+    def __init__(self, status_code: int, error: str, message: str):
+        self.status_code = status_code
+        self.error = error
+        self.message = message
+        
+    def response(self) -> Response:
+        """HTTP response when a non-existent entity is requested."""
+        return JSONResponse(
+            status_code=self.status_code,
+            content=ClientErrorResponse(error=self.error, message=self.message).model_dump(),
+        )
