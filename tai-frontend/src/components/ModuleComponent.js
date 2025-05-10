@@ -29,7 +29,6 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
         setIsExpanded(!isExpanded);
     };
 
-
     return ( 
         <> 
 
@@ -49,7 +48,7 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
                 </div> 
 
                 {/* Title Text for the module */}
-                <div className="font-nunito"> 
+                <div className="font-nunito font-bold text-[1.1rem] m-0 text-[#2c3e50]"> 
                     {module.name}    
                 </div> 
             </div>  
@@ -64,8 +63,8 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
 
                             // Might need to put this in the DayComponent
                             <li 
-                                className={`p-2 m-2 rounded-lg font-nunito ease-in-out duration-300 hover:font-bold hover:scale-105 opacity-0 animate-fade-in-slide-up ${isExpanded ? "bg-pink-400 border-pink-500 font-bold pb-3 hover:scale-100" : "bg-blue-400 bg-opacity-30 hover:bg-pink-400 hover:border-pink-500"}`}
-                                style={{ animationDelay: `${index * 100}ms`}}
+
+                             style={{ animationDelay: `${index * 100}ms`}}
                             > 
                                 <DayComponent  
                                     key={day.id} 

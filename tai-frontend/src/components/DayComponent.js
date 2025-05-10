@@ -73,9 +73,13 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
 
 
     return (
-        <div
+        <div className={`p-2 m-2 rounded-lg font-nunito text-[#2c3e50] ease-in-out duration-300 opacity-0 animate-fade-in-slide-up transform
+            ${isExpanded
+              ? "bg-pink-400 border-pink-400 font-bold pb-3"
+              : "bg-blue-400 bg-opacity-30 hover:bg-pink-400 hover:border-pink-500 hover:font-bold hover:scale-105"}
+          `}
             onClick={toggleExpand} >
-                <h4 className={` pl-4 ${isExpanded ? "pb-2": "pb-0"} `}>
+                <h4 className={` pl-4 ${isExpanded ? "pb-2 font-bold": "pb-0"} `}>
                     {day.name} 
                 </h4>
 

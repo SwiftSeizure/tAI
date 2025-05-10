@@ -301,64 +301,8 @@
   color: #2c3e50;
 }
 
-.module-icon {
-  transition: transform 0.3s ease;
-}
 
-.module-icon.expanded {
-  transform: rotate(180deg);
-}
 
-.module-content {
-  padding: 0;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease, padding 0.3s ease;
-}
-
-.module-content.expanded {
-  max-height: 500px;
-  padding: 12px 16px;
-}
-
-.day-list {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-.day-item {
-  padding: 8px 12px;
-  margin-bottom: 8px;
-  border-radius: 6px;
-  background-color: #f1f8fe;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.day-item:hover {
-  background-color: #d6eaf8;
-}
-
-.day-item.selected {
-  background-color: #3498db;
-  color: white;
-}
-
-.material-list {
-  padding-left: 16px;
-  margin: 8px 0;
-}
-
-.material-item {
-  display: flex;
-  align-items: center;
-  padding: 6px 8px;
-  margin-bottom: 4px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
 
 .material-item:hover {
   background-color: #ecf0f1;
@@ -374,70 +318,11 @@
   font-size: 0.9rem;
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-  .modulepage-layout-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr auto;
-  }
-  
-  .sidebar-container {
-    grid-row: 1;
-    height: auto;
-    max-height: 300px;
-  }
-  
-  .content-display-container {
-    grid-row: 2;
-  }
-  
-  .custom-button-chat {
-    grid-row: 3;
-    position: relative;
-    bottom: auto;
-    right: auto;
-    margin: 16px auto;
-  }
-} 
 
 
 
-/* Module Component Styles */
-.module-component {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    margin-bottom: 16px;
-    border: 1px solid #e0e0e0;
-    overflow: hidden;
-    transition: all 0.3s ease;
-  }
-  
-  .module-component:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
-  }
-  
-  .module-component.module-selected {
-    border-color: #3498db;
-    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.3);
-  }
-  
-  .module-header {
-    padding: 16px;
-    background-color: #f8f9fa; 
-    border-radius: 10px 10px 0 0;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #e0e0e0;
-    transition: background-color 0.2s ease;
-  }
-  
-  .module-header:hover {
-    background-color: #edf2f7;
-  }
+
+
   
   .module-header-content {
     display: flex;
