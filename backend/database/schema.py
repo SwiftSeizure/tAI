@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, JSON
+from sqlalchemy import Column, Integer, String, ForeignKey, JSON,Boolean 
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -43,6 +43,8 @@ class DBClass(Base):
     name = Column(String(25), nullable=False)
     
     ownerID = Column(Integer, ForeignKey("teacher.id", ondelete="CASCADE"))
+    classCode = Column(Integer, nullable = False)
+    published = Column(Boolean,nullable = False)
 
     owner = relationship("DBTeacher", back_populates="classes")
     enrollment = relationship("DBEnrolled", back_populates="class_")
@@ -61,7 +63,7 @@ class DBUnit(Base):
     class_ = relationship("DBClass", back_populates="units")
     modules = relationship("DBModule", back_populates="unit")
     
-    settings = Column(JSON, nullable=False)
+    settings = Column(JSON, nullable=True)
 
 
 class DBModule(Base):
@@ -75,6 +77,7 @@ class DBModule(Base):
     unit = relationship("DBUnit",back_populates="modules")
     days = relationship("DBDay",back_populates="module",cascade="all, delete-orphan")
 
+    settings = Column(JSON, nullable=True)
 
 
 class DBDay(Base):
@@ -89,6 +92,8 @@ class DBDay(Base):
     materials = relationship("DBMaterial",back_populates="day")
     module = relationship("DBModule",back_populates="days")
     
+    settings = Column(JSON, nullable=True)
+
 class DBAssignment(Base):
     __tablename__ = "assignment"
 
