@@ -89,8 +89,8 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
 
                     {/* Display loading spinner while fetching data */}
                     {loading ? (
-                        <div className="day-loading">
-                            <div className="day-loading-spinner"></div>
+                        <div className="flex items-center pl-4 gap-3">
+                            <div className="w-5 h-5 border-[3px] border-blue-400 border-opacity-30 border-t-blue-500 rounded-full animate-spin"></div>
                             <span>Loading resources...</span>
                         </div>
                     ) : (
