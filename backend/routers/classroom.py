@@ -67,3 +67,4 @@ def create_new_unit(classID: int, unit: CreateUnit, session: DBSession) -> Class
             summary="Update a classrooms's name and/or settings.")
 def update_chat(classroomID: int, classroomUpdate: ClassroomUpdate, session: DBSession):
     classroom_db.update_classroom(classroomID, classroomUpdate, session)
+

@@ -1,8 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 from .schema import DBStudent, DBEnrolled, DBClass
-from backend.exceptions import EntityNotFoundException
-
+from backend.exceptions import EntityNotFoundException, InvalidClassCodeException
 def get_student(studentID: int, session: Session) -> DBStudent:
     """Get a DBStudent object by its ID.
     
@@ -50,3 +49,39 @@ def get_student_classes(studentID: int, session: Session) -> list[DBClass]:
     result = session.execute(stmt)
     classes = list(result.scalars().all())
     return classes
+
+def enroll(studentID: int, classID: int, classCode: int, session: Session) -> None:
+    """Enroll a student in a class.
+    
+    Args:
+        studentID (int): The ID of the student to enroll.
+        classID (int): The ID of the class to enroll the student in.
+        session (Session): The SQLAlchemy session to use for the query.
+        
+    Raises:
+        EntityNotFoundException: If the student or class with the given ID does not exist.
+        
+    Returns:    
+        None
+    """
+
+    student = get_student(studentID, session)
+    if not student:
+        raise EntityNotFoundException("student", studentID)
+    
+    stmt = select(DBClass).filter(DBClass.id == classID)
+    classroom = session.execute(stmt).scalar_one_or_none()
+    if not classroom:
+        raise EntityNotFoundException("class", classID)
+    
+    if classCode != classroom.classCode:
+        raise InvalidClassCodeException()
+    
+    enrollment = DBEnrolled(studentID=studentID, classID=classID)
+    session.add(enrollment)
+    session.commit()
+    session.refresh(enrollment)
+    session.refresh(student)
+    session.refresh(classroom)
+    
+    return None

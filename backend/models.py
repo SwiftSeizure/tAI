@@ -77,3 +77,9 @@ class DayMaterial(BaseModel):
     id: int
     name: str
     filename: str
+
+# Enrollment Input Models -----------------------------------
+
+class AddEnrollment(BaseModel):
+    studentID: int
+    classCode: int

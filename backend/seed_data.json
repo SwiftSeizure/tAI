@@ -25,6 +25,18 @@
       "name": "Bob",
       "userName": "bobthebuilder",
       "password_hash": "hashed_pw_4"
+    },
+    {
+      "id": 3,
+      "name": "Charlie",
+      "userName": "charliebrown",
+      "password_hash": "hashed_pw_5"
+    },
+    {
+      "id": 4,
+      "name": "David",
+      "userName": "davidthegreat",
+      "password_hash": "hashed_pw_6"
     }
   ],
   "class": [
