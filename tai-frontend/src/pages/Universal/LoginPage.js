@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';   
 import buttons from "../../CSS/Buttons.css";
 import grids from "../../CSS/Grids.css"; 
-import TitleCard from '../../components/TitleCard'; 
-import '../../App.css'
+import TitleCard from '../../components/TitleCard';  
+import Button from '@mui/material/Button';
+import '../../App.css' 
+
 
 const teacherImage = require('../../images/teacher-login-image.png')
 const studentImage = require('../../images/student-login-image.png');
@@ -71,40 +73,44 @@ const LoginPage = () => {
 
 
                 {/* Radio buttons for selecting teacher or student role */}
-                <label className="radio-card-button"> 
+                <label className="radio-card group block relative w-[200px] cursor-pointer border-2 border-[#e0e0e0] rounded-lg p-4 m-2 transition-all duration-300 ease-in-out 
+                    hover:border-[#a0a0a0] hover:-translate-y-1 hover:shadow-[0_5px_15px_rgba(0,0,0,0.1)] 
+                    focus-within:outline-[6px] focus-within:outline-lightblue focus-within:outline-offset-2"> 
                     {/* Radio button for teacher role */}
                     <input
-                        className="radio-card-button-input"
+                        className="absolute opacity-0 cursor-pointer"
                         type="radio"
                         name="role"
                         value="teacher1"
                         onChange={() => setTeacherOrStudent('teacher1')}
                     />
-                    <div className="radio-card-button-content">
+                    <div className="flex flex-col items-center justify-center">
                         <img
-                            className="radio-card-button-image"
+                            className="w-full h-auto object-cover rounded mb-3"
                             src={teacherImage}
                             alt="Teacher"
                         />
-                        <span className="radio-card-button-h1"> Teacher 1 </span>
+                        <span className="text-xl font-extrabold text-gray-800 font-nunito"> Teacher 1 </span>
                     </div> 
                 </label>
-                <label className="radio-card-button"> 
+                <label className="radio-card group block relative w-[200px] cursor-pointer border-2 border-[#e0e0e0] rounded-lg p-4 m-2 transition-all duration-300 ease-in-out 
+                    hover:border-[#a0a0a0] hover:-translate-y-1 hover:shadow-[0_5px_15px_rgba(0,0,0,0.1)] 
+                    focus-within:outline-[6px] focus-within:outline-lightblue focus-within:outline-offset-2"> 
                     {/* Radio button for student role */}
                     <input 
-                        className="radio-card-button-input"
+                        className="absolute opacity-0 cursor-pointer"
                         type="radio"
                         name="role"
                         value="student1"
                         onChange={() => setTeacherOrStudent('student1')}
                     />  
-                    <div className="radio-card-button-content"> 
+                    <div className="flex flex-col items-center justify-center"> 
                         <img 
-                            className="radio-card-button-image" 
+                            className="w-full h-auto object-cover rounded mb-3" 
                             src={studentImage} 
                             alt="Student"
                         /> 
-                        <span className="radio-card-button-h1"> Student 1 </span>
+                        <span className="text-xl font-extrabold text-gray-800 font-nunito"> Student 1 </span>
                     </div>
                 </label> 
 
@@ -128,12 +134,14 @@ const LoginPage = () => {
 
 
             <div className="flex justify-center items-center "> 
-                <button 
-                    className="rounded-lg border-2 p-2 border-purple-300 bg-opacity-50 bg-purple-100"
+                <Button 
+                    variant="contained"
+                    color="primary" 
+                    size="large"
                     onClick={logIn}
                     >
-                       <h3 className="opacity-100 font-"> Log In </h3> 
-                    </button> 
+                    Log In
+                </Button> 
             </div>
         </div>
         

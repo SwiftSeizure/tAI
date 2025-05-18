@@ -134,65 +134,6 @@ If a new button is made:
   outline-offset: 2px;
 }
 
- 
-
-
-
-
-
-/* radio-card-button */
-.radio-card-button {
-    display: block;
-    position: relative;
-    width: 200px;
-    cursor: pointer;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 16px;
-    margin: 8px;
-    transition: all 0.3s ease;
-  }
-  
-.radio-card-button:hover {
-    border-color: #a0a0a0;
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  } 
-
-.radio-card-button-input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-  }
-  
-.radio-card-button-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  
-.radio-card-button-image {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    border-radius: 4px;
-    margin-bottom: 12px;
-  }
-  
-  
-.radio-card-button:focus-within {
-    outline: 6px solid lightblue;
-    outline-offset: 2px;
-  } 
-
-
-.radio-card-button:has(.radio-card-button-input:checked) {
-    outline: 4px solid lightblue;
-    outline-offset: 2px;  
-    /* if we want to change the background */
-    /* background-color: rgba(0, 0, 0, 0.05); Subtle dark overlay */
-}  
 
 
 
