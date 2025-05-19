@@ -22,10 +22,18 @@ export const getRequest = async (url) => {
 
 export const postRequest = async (url) => { 
     try { 
-
+        const response = await axios.post(BASE_URL + url, { 
+            headers: {  
+                // Auth token here possibly that can be passed down from the DB 
+                'Content-Type': 'application/json',
+            }, 
+            method: "POST", 
+            credentials: "include",
+        });  
+        return response;
     } 
     catch (error) { 
-
+        console.log(error);
     }
 }
 

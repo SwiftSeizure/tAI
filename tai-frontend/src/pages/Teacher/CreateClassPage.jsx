@@ -1,5 +1,9 @@
-import React from "react"; 
-import TitleCard from "../../components/TitleCard"; 
+import React, {useState} from "react";  
+import { useLocation, useNavigate } from 'react-router-dom';  
+import TitleCard from "../../components/TitleCard";   
+import { postRequest } from "../../API";
+import axios from "axios";
+
 
 /**
  * CreateClassPage Component
@@ -9,33 +13,75 @@ import TitleCard from "../../components/TitleCard";
 
 const CreateClassPage = () => {  
  
-    // TODO: Add the functionality to create a class here
+    // TODO: Add the functionality to create a class here 
+    const [newClassName, setNewClassName] = useState("");     
+    const [createdClassName, setCreatedClassName] = useState("");
+    
+    
+    const location = useLocation(); 
+    const { userID, role }= location.state || {}; 
+
+    const navigate = useNavigate();
+
+
+    const handleCreateClass = async (e) => {  
+        e.preventDefault(); 
+
+        try { 
+            const requestBody = { 
+                name: newClassName,
+                settings: {
+                    // Create settings here
+                },
+            }   
+
+            const response = await axios.post(`http://localhost:8000/home/teacher/${userID}`, 
+                requestBody,
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            console.log("Created class:", newClassName); 
+
+            navigate('/home', {})
+            
+        } 
+        catch (error) { 
+            console.log("Error creating class:", error);
+        } 
+
+        // Add is loading 
+    };
+
+
 
     return(  
         <>  
         <TitleCard title={"Create a Class"} />
-
-        {/* Main content section for creating a class */}
-        <div className="flex flex-col items-center justify-center p-5">
-            <h1 className="text-3xl font-extrabold text-center mb-4 text-gray-900 font-nunito"> 
-                Enter the name of the class you want to create below.
-            </h1> 
-            <input 
-                className="w-1/2 p-2 rounded border border-gray-300 text-base mb-2.5" 
+        
+        <form onSubmit={handleCreateClass} className="flex flex-col items-center">
+            <input
+                className="w-1/2 p-2 rounded border border-gray-300 text-base mb-2.5"
                 id="className"
-                type="text" 
-                placeholder="Enter Class Name" 
-            >   
-            </input> 
-            <button className="inline-block w-[200px] cursor-pointer border-2 border-gray-300 rounded-lg p-4 m-2 bg-transparent
-                    font-medium text-[1.1rem] text-gray-800 text-center font-nunito
-                    transition-all duration-300 ease-in-out
-                    hover:border-gray-400 hover:-translate-y-1 hover:shadow-lg
-                    active:-translate-y-0.5 active:shadow-md
-                    focus:outline-none focus:outline-offset-2">  
+                type="text"
+                placeholder="Enter Class Name"
+                value={newClassName}
+                onChange={(e) => setNewClassName(e.target.value)}
+            />
+
+            <button 
+                type="submit"
+                className="inline-block w-[200px] cursor-pointer border-2 border-gray-300 rounded-lg p-4 m-2 bg-transparent
+                         font-medium text-[1.1rem] text-gray-800 text-center font-nunito
+                         transition-all duration-300 ease-in-out
+                         hover:border-gray-400 hover:-translate-y-1 hover:shadow-lg
+                         active:-translate-y-0.5 active:shadow-md
+                         focus:outline-none focus:outline-offset-2">
                 Create Class
-            </button> 
-        </div>
+            </button>
+        </form>
         </>
     ); 
 
