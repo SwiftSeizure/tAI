@@ -11,10 +11,12 @@ export default function TitleHeading( {title, transitionTime, intro} ) {
     let index = -1; 
     let interval;
 
-    const timeout = setTimeout(() => { 
+    const timeout = setTimeout(() => {  
+
+      console.log("Title: ", headingText);
 
         interval = setInterval(() => {
-            if (index < headingText.length) {
+            if (typeof headingText === 'string' && index < headingText.length) {
                 setVisibleLetters(prev => [...prev, index]);
                 index++;
             } else {
@@ -30,7 +32,7 @@ export default function TitleHeading( {title, transitionTime, intro} ) {
   return (
 
     <h1 className="text-[3.5rem] font-extrabold font-nunito relative overflow-hidden py-8">
-        {headingText.split('').map((letter, index) => (
+        {headingText && headingText.split('').map((letter, index) => (
           <span 
             key={index}
             className={`inline-block transition-all duration-500  ${

@@ -45,7 +45,9 @@ const CreateClassPage = () => {
             );
             console.log("Created class:", newClassName); 
 
-            navigate('/home', {})
+            const classID = response.data.id;
+            const classname = response.data.name;
+            navigate('/unitpage', {state: { classID, userID, role, classname}})
             
         } 
         catch (error) { 
