@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";   
 import { useLocation } from 'react-router-dom';  
-import useUser from "../../hooks/useUser";
 import ClassCard from "../../components/ClassCard"; 
-import axios from "axios"; 
 import { getRequest } from "../../API";
 import TitleCard from "../../components/TitleCard";    
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';   
-import buttons from "../../CSS/Buttons.css";
-import grids from "../../CSS/Grids.css"; 
 import "react-icons/fa";
 
 /**

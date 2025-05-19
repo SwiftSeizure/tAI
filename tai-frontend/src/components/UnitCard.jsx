@@ -1,6 +1,5 @@
 import React from "react";   
 import { useNavigate } from "react-router-dom"; 
-import cardLayouts from "../CSS/CardLayouts.css"; 
 
 
 /**

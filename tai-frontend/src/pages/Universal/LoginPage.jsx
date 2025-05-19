@@ -1,9 +1,6 @@
 import { useState } from 'react'; 
 import { useNavigate } from 'react-router-dom';   
-import buttons from "../../CSS/Buttons.css";
-import grids from "../../CSS/Grids.css"; 
 import TitleCard from '../../components/TitleCard';  
-import Button from '@mui/material/Button';
 import '../../App.css' 
 
 
@@ -134,14 +131,17 @@ const LoginPage = () => {
 
 
             <div className="flex justify-center items-center "> 
-                <Button 
-                    variant="contained"
-                    color="primary" 
-                    size="large"
+                <button 
+                    className="inline-block w-[200px] cursor-pointer border-2 border-gray-300 rounded-lg p-4 m-2 bg-transparent
+                    font-medium text-[1.1rem] text-gray-800 text-center font-nunito
+                    transition-all duration-300 ease-in-out
+                    hover:border-gray-400 hover:-translate-y-1 hover:shadow-lg
+                    active:-translate-y-0.5 active:shadow-md
+                    focus:outline-none focus:outline-offset-2"
                     onClick={logIn}
                     >
                     Log In
-                </Button> 
+                </button> 
             </div>
         </div>
         

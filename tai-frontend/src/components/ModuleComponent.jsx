@@ -1,7 +1,6 @@
 import React, { useState } from "react";  
 import DayComponent from "./DayComponent"; 
-import { FaChevronDown, FaChevronUp, FaBookOpen } from "react-icons/fa"; 
-import "../CSS/ModulePage.css" 
+import { FaBookOpen } from "react-icons/fa"; 
 
 
 /**

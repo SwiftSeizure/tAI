@@ -1,8 +1,4 @@
-import React, { useState } from "react";  
 import { useNavigate } from 'react-router-dom';   
-import TeacherStudentUnitPage from "../pages/Universal/TeacherStudentUnitPage";
-import "../CSS/CardLayouts.css";
-import "../CSS/Buttons.css";
 
 /**
  * ClassCard Component
