@@ -12,6 +12,7 @@
     "@react-pdf-viewer/default-layout": "^3.12.0",
     "axios": "^1.8.4",
     "cra-template": "1.2.0",
+    "openai": "^4.103.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-dotenv": "^0.1.3",
