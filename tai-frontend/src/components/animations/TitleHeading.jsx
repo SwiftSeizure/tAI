@@ -13,8 +13,6 @@ export default function TitleHeading( {title, transitionTime, intro} ) {
 
     const timeout = setTimeout(() => {  
 
-      console.log("Title: ", headingText);
-
         interval = setInterval(() => {
             if (typeof headingText === 'string' && index < headingText.length) {
                 setVisibleLetters(prev => [...prev, index]);

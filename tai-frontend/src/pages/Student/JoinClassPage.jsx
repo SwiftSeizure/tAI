@@ -16,8 +16,6 @@ const JoinClassPage = () => {
         <>  
         <div className="h-screen w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient"> 
 
-        
-
             {/* Title card for the page */}
             < TitleCard 
             title="Join a Class"  

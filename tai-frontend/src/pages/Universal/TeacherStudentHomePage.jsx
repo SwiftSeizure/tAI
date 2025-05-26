@@ -114,36 +114,6 @@ const TeacherStudentHomePage = () => {
                     userID={userID}
                     role={role}
                 />   
-                                <ClassCard   
-                    classID={null}
-                    classname={"newClass"}  
-                    userID={userID}
-                    role={role}
-                />   
-                                <ClassCard   
-                    classID={null}
-                    classname={"newClass"}  
-                    userID={userID}
-                    role={role}
-                />    
-                                                <ClassCard   
-                    classID={null}
-                    classname={"newClass"}  
-                    userID={userID}
-                    role={role}
-                /> 
-                                                <ClassCard   
-                    classID={null}
-                    classname={"newClass"}  
-                    userID={userID}
-                    role={role}
-                /> 
-                                                <ClassCard   
-                    classID={null}
-                    classname={"newClass"}  
-                    userID={userID}
-                    role={role}
-                />
                 
             </div>  
         </div>

@@ -83,7 +83,17 @@ const TeacherStudentUnitPage = () => {
                     userID={userID} 
                     role={role}
                 />
-            ))} 
+            ))}  
+
+            {role === "teahcer" 
+                ? <UnitCard 
+                    key={null} 
+                    unitID={null}
+                    unitName={null} 
+                    userID={userID}
+                    role={role}/> 
+                : null
+            }
             </>
         )
 

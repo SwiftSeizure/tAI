@@ -7,9 +7,13 @@ const CreateUnitPage = () => {
 
 return( 
     <>
-    <div> 
-        <TitleCard title={"Create A Unit"} intro={true}/> 
-    </div>
+    <TitleCard title={"Create A Unit"} intro={true}/>   
+
+    <form> 
+        
+    </form>
+
+
     </>
 );
 
