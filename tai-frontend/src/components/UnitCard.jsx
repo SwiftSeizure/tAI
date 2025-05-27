@@ -33,6 +33,14 @@ const UnitCard = ( {unitID, unitName, userID, role } ) => {
     const goToPage = (e) => { 
         e.preventDefault(); 
         navigate('/modulepage', {state: { unitID, unitName, userID, role }});      
+    } 
+
+    /** 
+     * 
+     */ 
+    const goToNewModulePage = (e) => { 
+        e.preventDefault(); 
+        navigate('/createunit', {state: {  userID, role }});
     }
 
 
@@ -43,12 +51,12 @@ const UnitCard = ( {unitID, unitName, userID, role } ) => {
                 // Content to show when unitID or unitName is null (for teachers only)
                 <button
                     className="bg-gray-200 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-blue-400 hover:border-blue-500"
-                //    TODO: Change this on click 
-                    onClick={(e) => {goToPage(e)}}
+                    onClick={(e) => {goToNewModulePage(e)}}
                 >
                     {/* Placeholder icon for empty unit */}
                     <div className="pb-2 rounded-md flex items-center justify-center">
-                        <div className="w-52 h-52 rounded-md bg-gray-300 flex items-center justify-center">
+                        <div className="w-52 h-52 rounded-md bg-gray-300 flex items-center justify-center"> 
+                            {/* TODO: Change this to a logo or something  */}
                             <span className="text-4xl text-gray-500">+</span>
                         </div>
                     </div>

@@ -109,7 +109,14 @@ const TeacherStudentUnitPage = () => {
 
             {/* Grid layout for unit cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-items-center gap-4">     
-                {populateUnitCards()}    
+                {populateUnitCards()}     
+                <UnitCard 
+                    key={"newUnit"} 
+                    unitID={null}
+                    unitName={null} 
+                    userID={userID}
+                    role={role}
+                />
             </div>
         </div>
             
