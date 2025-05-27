@@ -10,7 +10,7 @@ const CreateUnitPage = () => {
     const [newUnitName, setNewUnitName] = useState("");
 
     const location = useLocation();  
-    const { userID, role } = location.state || {};  
+    const {classID, userID, role } = location.state || {};  
 
     const navigate = useNavigate();
 
@@ -18,37 +18,37 @@ const CreateUnitPage = () => {
     const handleCreateUnit = async (e) => { 
         e.preventDefault();  
 
-        // // TODO: Send post, 
-        // // Add route to unit page    
-        // try { 
-        //     const requestBody = {
-        //         name: newUnitName, 
-        //         settings: { 
+        // TODO: Send post, 
+        // Add route to unit page    
+        try { 
+            const requestBody = {
+                name: newUnitName, 
+                settings: { 
 
-        //         } 
-        //     } 
+                } 
+            } 
 
-        //     axios.post(`http://localhost:8000/unit/${unitID}/module`, 
-        //         requestBody,
-        //         {
-        //             headers: {
-        //                 'Content-Type': 'application/json'
-        //             }
-        //         } 
-        //     ).then((response) => { 
+            axios.post(`http://localhost:8000/classroom/${classID}/unit`, 
+                requestBody,
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                } 
+            ).then((response) => { 
 
-        //         const unitID = response.data.id; 
-        //         const unitname = response.data.name;  
+                const unitID = response.data.id; 
+                const unitname = response.data.name;  
                 
-        //         navigate('/modulepage', {state: { unitID, unitname, userID, role}});
+                navigate('/modulepage', {state: { unitID, unitname, userID, role}});
 
-        //     }).catch((error) => { 
-        //         console.log("Error creating unit:", error);
-        //     });
-        // } 
-        // catch (error) { 
-        //     console.log("Error creating unit:", error);
-        // }
+            }).catch((error) => { 
+                console.log("Error creating unit:", error);
+            });
+        } 
+        catch (error) { 
+            console.log("Error creating unit:", error);
+        }
 
     }; 
 

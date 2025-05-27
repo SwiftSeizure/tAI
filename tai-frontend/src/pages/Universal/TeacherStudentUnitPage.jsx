@@ -79,7 +79,8 @@ const TeacherStudentUnitPage = () => {
                 <UnitCard 
                     key={unit.id} 
                     unitID={unit.id} 
-                    unitName={unit.name} 
+                    unitName={unit.name}  
+                    classID={classID}
                     userID={userID} 
                     role={role}
                 />
@@ -89,7 +90,8 @@ const TeacherStudentUnitPage = () => {
                 ? <UnitCard 
                     key={null} 
                     unitID={null}
-                    unitName={null} 
+                    unitName={null}  
+                    classID={classID}
                     userID={userID}
                     role={role}/> 
                 : null

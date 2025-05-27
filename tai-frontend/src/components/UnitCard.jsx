@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
  * - role: Role of the user (e.g., "teacher" or "student").
  */
 
-const UnitCard = ( {unitID, unitName, userID, role } ) => {   
+const UnitCard = ( {unitID, unitName, classID, userID, role } ) => {   
 
     // Placeholder logo for the unit card 
     // TODO: Change this so that it pulls the logo from the backend
@@ -40,7 +40,7 @@ const UnitCard = ( {unitID, unitName, userID, role } ) => {
      */ 
     const goToNewModulePage = (e) => { 
         e.preventDefault(); 
-        navigate('/createunit', {state: {  userID, role }});
+        navigate('/createunit', {state: {classID, userID, role }});
     }
 
 
