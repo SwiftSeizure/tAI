@@ -19,7 +19,27 @@ const JoinClassPage = () => {
     const { userID, role } = location.state || {}; 
 
     const handleJoinClass = async (e) => { 
-        e.preventDefault();
+        e.preventDefault(); 
+
+        try { 
+            const requestBody= { 
+                // Whatever will be in body 
+            } 
+            const response = await axios.put(`http://localhost:8000/classroom/${classCode}/join`, 
+                requestBody, {
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    } 
+                }
+            ).then((response) => { 
+                // Do the navigation here  based on the response and whatever were given 
+
+            }
+            ).catch((error) => { 
+                console.log("Error joining class:", error);
+            }); // Whatever the params will be 
+
+        }
     };
 
 
