@@ -40,6 +40,9 @@ const JoinClassPage = () => {
             }); // Whatever the params will be 
 
         }
+        catch (error) { 
+            console.log("Error joining class:", error);
+        }
     };
 
 
