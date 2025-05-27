@@ -1,6 +1,7 @@
 import React, { useState} from "react"; 
 import TitleCard from "../../components/TitleCard"; 
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom"; 
+import axios from "axios";
 
 // Not yet implemented, but this is the page for creating a unit.
 // It will be similar to the CreateClassPage, but for units instead of classes, and take the teacher to the module page 
@@ -14,15 +15,42 @@ const CreateUnitPage = () => {
     const navigate = useNavigate();
 
 
-    const handleCreateUnit = (e) => { 
+    const handleCreateUnit = async (e) => { 
         e.preventDefault();  
 
-        // TODO: Send post, 
-        // Add route to unit page   
+        // // TODO: Send post, 
+        // // Add route to unit page    
+        // try { 
+        //     const requestBody = {
+        //         name: newUnitName, 
+        //         settings: { 
 
-        
+        //         } 
+        //     } 
 
-    } 
+        //     axios.post(`http://localhost:8000/unit/${unitID}/module`, 
+        //         requestBody,
+        //         {
+        //             headers: {
+        //                 'Content-Type': 'application/json'
+        //             }
+        //         } 
+        //     ).then((response) => { 
+
+        //         const unitID = response.data.id; 
+        //         const unitname = response.data.name;  
+                
+        //         navigate('/modulepage', {state: { unitID, unitname, userID, role}});
+
+        //     }).catch((error) => { 
+        //         console.log("Error creating unit:", error);
+        //     });
+        // } 
+        // catch (error) { 
+        //     console.log("Error creating unit:", error);
+        // }
+
+    }; 
 
      
 
