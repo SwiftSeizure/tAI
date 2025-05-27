@@ -1,5 +1,6 @@
-import React from "react"; 
-import TitleCard from "../../components/TitleCard"; 
+import React, { useState } from "react"; 
+import TitleCard from "../../components/TitleCard";  
+import { useNavigate, useLocation } from "react-router-dom";
 
 /**
  * JoinClassPage Component
@@ -9,7 +10,19 @@ import TitleCard from "../../components/TitleCard";
 
 const JoinClassPage = () => {  
 
-    // TODO: Add the functionality to join a class here
+    // TODO: Add the functionality to join a class here  
+    const [classCode, setClassCode] = useState("");
+
+    const navigate = useNavigate();  
+
+    const location = useLocation(); 
+    const { userID, role } = location.state || {}; 
+
+    const handleJoinClass = async (e) => { 
+        e.preventDefault();
+    };
+
+
 
     return(   
 
@@ -23,7 +36,7 @@ const JoinClassPage = () => {
             /> 
 
             {/* Main content section for joining a class */}
-            <div className="flex flex-col items-center justify-center p-5">
+            <form onSubmit={ handleJoinClass } className="flex flex-col items-center justify-center p-5">
                 <h1 className="text-3xl font-extrabold text-center mb-4 text-gray-900 font-nunito"> 
                     Enter the class code below to join a class.
                 </h1> 
@@ -31,7 +44,8 @@ const JoinClassPage = () => {
                     className="w-1/2 p-2 rounded border border-gray-300 text-base mb-2.5" 
                     id="classCode"
                     type="text" 
-                    placeholder="Enter Class Code" 
+                    placeholder="Enter Class Code"  
+                    onChange={(e) => setClassCode(e.target.value)}
                 >   
                 </input> 
                 <button className="inline-block w-[200px] cursor-pointer border-2 border-gray-300 rounded-lg p-4 m-2 bg-transparent
@@ -42,7 +56,7 @@ const JoinClassPage = () => {
                     focus:outline-none focus:outline-offset-2">  
                     Join Class
                 </button> 
-            </div> 
+            </form> 
 
         </div>
         </>
