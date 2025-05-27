@@ -42,12 +42,13 @@ const CreateClassPage = () => {
                         'Content-Type': 'application/json'
                     }
                 }
-            );
-            console.log("Created class:", newClassName); 
-
-            const classID = response.data.id;
-            const classname = response.data.name;
-            navigate('/unitpage', {state: { classID, userID, role, classname}})
+            ).then((response) => {
+                const classID = response.data.id;
+                const classname = response.data.name;
+                navigate('/unitpage', {state: { classID, userID, role, classname}});
+            }).catch((error) => {
+                console.log("Error creating class:", error);
+            });
             
         } 
         catch (error) { 
