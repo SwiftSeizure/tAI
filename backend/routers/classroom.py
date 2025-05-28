@@ -81,3 +81,4 @@ def update_chat(classroomID: int, classroomUpdate: ClassroomUpdate, session: DBS
         None
     """
     classroom_db.update_classroom(classroomID, classroomUpdate, session)
+

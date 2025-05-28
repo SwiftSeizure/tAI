@@ -122,3 +122,4 @@ def update_classroom(classroomID: int, classroomUpdates: ClassroomUpdate, sessio
     
     session.commit()
     return classroom
+

@@ -1,7 +1,8 @@
+
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload, Session
 from backend.database.schema import DBTeacher, DBClass
-from backend.models import CreateClassroom
+from backend.models import CreateClassroom, TeacherUpdate
 from backend.exceptions import EntityNotFoundException, DuplicateNameException
 
 def get_teacher(teacherID: int, session: Session) -> DBTeacher:
@@ -88,3 +89,21 @@ def create_new_classroom(teacherID: int, classroom: CreateClassroom, session: Se
     
     return new_class
     
+def update_teacher(teacherID: int,  update: TeacherUpdate, session: Session) -> None:
+    """ Update a teacher's username and or name."""
+
+    stmnt = (
+        select(DBTeacher)
+        .filter(DBTeacher.id == teacherID)
+    )
+    teacher = session.execute(stmnt).scalar_one_or_none()
+    if not teacher:
+        raise EntityNotFoundException("teacher", teacherID)
+    if update.name is not None:
+        teacher.name = update.name
+    if update.username is not None:
+        teacher.userName = update.username
+    session.commit()
+
+    return None
+

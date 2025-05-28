@@ -5,6 +5,7 @@ import "../CSS/CardLayouts.css";
 import "../CSS/Buttons.css";
 
 /**
+backend  Extra  node_modules  package-lock.json  poetry.lock  pyproject.toml
  * ClassCard Component
  * This component represents a card for a class. It displays the class name
  * and allows navigation to different pages based on the user's role and actions.

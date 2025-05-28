@@ -1,5 +1,6 @@
 from __future__ import annotations
 from pydantic import BaseModel
+from typing import Optional
 
 # Error Response Model --------------------------------------------
 class ClientErrorResponse(BaseModel):
@@ -73,3 +74,43 @@ class DayMaterial(BaseModel):
     id: int
     name: str
     filename: str
+
+# Enrollment Input Models -----------------------------------
+
+class AddEnrollment(BaseModel):
+    studentID: int
+    classCode: int
+
+# Teacher Input Models -----------------------------------
+class TeacherUpdate(BaseModel):
+    name : Optional[str] = None
+    username : Optional[str] = None
+
+# Teacher Response Models -----------------------------------
+
+class TeacherResponse(BaseModel):
+    name: str
+    username: str
+    
+
+
+# Student Input Models -----------------------------------
+class StudentUpdate(BaseModel):
+    name : Optional[str] = None
+    username : Optional[str] = None
+
+# Student Response Models -----------------------------------
+class StudentResponse(BaseModel):
+    name: str
+    username: str
+    
+
+class StudentClass(BaseModel):
+    id: int
+    name: str
+    classCode: int
+    published: bool
+    settings: dict
+
+
+    
