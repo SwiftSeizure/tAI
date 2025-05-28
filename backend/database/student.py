@@ -2,6 +2,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 from .schema import DBStudent, DBEnrolled, DBClass
 from backend.exceptions import EntityNotFoundException, InvalidClassCodeException
+from backend.models import StudentUpdate
+
 def get_student(studentID: int, session: Session) -> DBStudent:
     """Get a DBStudent object by its ID.
     
@@ -85,3 +87,32 @@ def enroll(studentID: int, classID: int, classCode: int, session: Session) -> No
     session.refresh(classroom)
     
     return None
+
+def updateStudent(studentID: int, update: StudentUpdate, session: Session) -> None:
+    """Update a student's information.
+    
+    Args:
+        studentID (int): The ID of the student to update.
+        update (StudentUpdate): The new information for the student.
+        session (Session): The SQLAlchemy session to use for the query.
+        
+    Raises:
+        EntityNotFoundException: If the student with the given ID does not exist.
+        
+    Returns:    
+        None
+    """
+    student = get_student(studentID, session)
+    if not student:
+        raise EntityNotFoundException("student", studentID)
+    
+    if update.name is not None:
+        student.name = update.name
+    if update.username is not None:
+        student.userName = update.username
+    
+    session.commit()
+    session.refresh(student)
+    
+    return None
+
