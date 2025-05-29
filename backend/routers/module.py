@@ -12,7 +12,7 @@ router = APIRouter(prefix="/module", tags=["module"])
             responses={
                  404: {"model": ClientErrorResponse}
              },
-            summary="Retrieve units for the given classroom.")
+            summary="Retrieve days for the given module.")
 def getModuleDays(moduleID:int,session:DBSession) -> ModuleResponse:
     """Get the days of a module.
     
@@ -26,7 +26,7 @@ def getModuleDays(moduleID:int,session:DBSession) -> ModuleResponse:
     Returns:
         ModuleResponse: The response containing the module days.
     """
-    db_mods = module_db.get_module_days(moduleID,session)
+    db_mods = module_db.get_module_days(moduleID, session)
     days = [ModuleDay(id = d.id,name = d.name) for d in db_mods] # type: ignore
     return ModuleResponse(days=days)
 
@@ -54,3 +54,20 @@ def create_new_day(moduleID: int, session: DBSession) -> ModuleDay:
     """
     db_day = module_db.create_new_day(moduleID, session)
     return(ModuleDay(id=db_day.id, name = db_day.name)) # type: ignore
+
+
+@router.delete("/{moduleID}",
+               status_code=204,
+               responses={404: {"model": ClientErrorResponse}},
+               summary="Delete a module.")
+def delete_classroom(moduleID: int, session: DBSession):
+    """Delete a module by its ID.
+    Args:
+        moduleID (int): The ID of the module to delete.
+        session (DBSession): The database session.
+    Raises:
+        404: If the module with the given ID is not found.
+    Returns:
+        None
+    """
+    module_db.delete_module(moduleID, session)
