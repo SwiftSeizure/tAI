@@ -58,3 +58,17 @@ class InvalidClassCodeException(Exception):
             status_code=self.status_code,
             content=ClientErrorResponse(error=self.error, message=self.message).model_dump(),
         )
+    
+class AlreadyEnrolledException(Exception):
+    """Exception for a non-existent entity."""
+    def __init__(self, studentID: int, classCode: str):
+        self.status_code = 409
+        self.error = f"already_enrolled"
+        self.message = f"Student {studentID} is already enrolled in class {classCode}"
+        
+    def response(self) -> Response:
+        """HTTP response when a non-existent entity is requested."""
+        return JSONResponse(
+            status_code=self.status_code,
+            content=ClientErrorResponse(error=self.error, message=self.message).model_dump(),
+        )

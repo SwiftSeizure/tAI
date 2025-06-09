@@ -8,8 +8,10 @@ from backend.database.schema import (
 )
 from backend.dependencies import engine, SessionLocal
 
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SEED_FILE_PATH = os.path.join(BASE_DIR, "seed_data.json")
+TEST_FILE_PATH = os.path.join(BASE_DIR, "test_data.json")
 
 Base.metadata.drop_all(bind=engine)   
 Base.metadata.create_all(bind=engine)
@@ -46,7 +48,7 @@ def PopulateDB(file: str = SEED_FILE_PATH):
         for c in data.get("class", []):
             db.add(DBClass(**c))
 
-        for e in data.get("enrolled", []):   # <-- moved here
+        for e in data.get("enrolled", []): 
             db.add(DBEnrolled(**e))
 
         for u in data.get("unit", []):
@@ -73,3 +75,30 @@ def PopulateDB(file: str = SEED_FILE_PATH):
 
     finally:
         db.close()
+
+
+def load_dummy_data(session: Session, json_path: str = TEST_FILE_PATH):
+    with open(json_path) as f:
+        data = json.load(f)
+
+    for item in data["teachers"]:
+        session.add(DBTeacher(**item))
+    for item in data["students"]:
+        session.add(DBStudent(**item))
+    for item in data["classes"]:
+        session.add(DBClass(**item))
+    for item in data["enrollments"]:
+        session.add(DBEnrolled(**item))
+    for item in data["units"]:
+        session.add(DBUnit(**item))
+    for item in data["modules"]:
+        session.add(DBModule(**item))
+    for item in data["days"]:
+        session.add(DBDay(**item))
+    for item in data["assignments"]:
+        session.add(DBAssignment(**item))
+    for item in data["materials"]:
+        session.add(DBMaterial(**item))
+
+    session.commit()
+

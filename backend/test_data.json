@@ -1,0 +1,85 @@
+{
+  "teachers": [
+    {
+      "id": 1,
+      "name": "Jane Doe",
+      "userName": "jdoe",
+      "password_hash": "hashed123"
+    }
+  ],
+  "students": [
+    {
+      "id": 1,
+      "name": "Alice Smith",
+      "userName": "asmith",
+      "password_hash": "hashed456"
+    },
+    {
+      "id": 2,
+      "name": "Bob Lee",
+      "userName": "blee",
+      "password_hash": "hashed789"
+    }
+  ],
+  "classes": [
+    {
+      "id": 1,
+      "name": "Intro to Math",
+      "ownerID": 1,
+      "classCode": 1010,
+      "published": true,
+      "settings": {"theme": "basic", "duration": "4 weeks"}
+    }
+  ],
+  "enrollments": [
+    {"id": 1, "studentID": 1, "classID": 1}
+    
+  ],
+  "units": [
+    {
+      "id": 1,
+      "name": "Unit 1",
+      "sequence": 1,
+      "classID": 1,
+      "settings": {"focus": "Algebra"}
+    }
+  ],
+  "modules": [
+    {
+      "id": 1,
+      "name": "Module A",
+      "sequence": 1,
+      "unitID": 1,
+      "settings": {"type": "interactive"}
+    }
+  ],
+  "days": [
+    {
+      "id": 1,
+      "name": "Day 1",
+      "sequence": 1,
+      "moduleID": 1,
+      "settings": {"objective": "Variables and Expressions"}
+    }
+  ],
+  "assignments": [
+    {
+      "id": 1,
+      "name": "Assignment 1",
+      "filename": "assignment1.pdf",
+      "sequence": 1,
+      "path": "/files/assignment1.pdf",
+      "dayId": 1
+    }
+  ],
+  "materials": [
+    {
+      "id": 1,
+      "name": "Material 1",
+      "filename": "notes1.pdf",
+      "sequence": 1,
+      "path": "/files/notes1.pdf",
+      "dayId": 1
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 from .schema import DBStudent, DBEnrolled, DBClass
-from backend.exceptions import EntityNotFoundException, InvalidClassCodeException
+from backend.exceptions import EntityNotFoundException, InvalidClassCodeException, AlreadyEnrolledException
 from backend.models import StudentUpdate
 
 def get_student(studentID: int, session: Session) -> DBStudent:
@@ -52,7 +52,7 @@ def get_student_classes(studentID: int, session: Session) -> list[DBClass]:
     classes = list(result.scalars().all())
     return classes
 
-def enroll(studentID: int, classID: int, classCode: int, session: Session) -> None:
+def enroll(studentID: int, classCode: int, session: Session) -> None:
     """Enroll a student in a class.
     
     Args:
@@ -71,13 +71,27 @@ def enroll(studentID: int, classID: int, classCode: int, session: Session) -> No
     if not student:
         raise EntityNotFoundException("student", studentID)
     
-    stmt = select(DBClass).filter(DBClass.id == classID)
+    stmt = select(DBClass).filter(DBClass.classCode == classCode)
+
     classroom = session.execute(stmt).scalar_one_or_none()
+
     if not classroom:
-        raise EntityNotFoundException("class", classID)
+        raise EntityNotFoundException("class", classCode)
+    
+    classID = classroom.id
     
     if classCode != classroom.classCode:
         raise InvalidClassCodeException()
+    
+    
+    enrolled_stmt = (
+        select(DBEnrolled)
+        .filter(DBEnrolled.studentID == studentID, DBEnrolled.classID == classID)
+    )
+    already_enrolled = session.execute(enrolled_stmt).scalar_one_or_none()
+    
+    if already_enrolled:
+        raise AlreadyEnrolledException(studentID, classCode)
     
     enrollment = DBEnrolled(studentID=studentID, classID=classID)
     session.add(enrollment)
