@@ -118,3 +118,33 @@ class DBMaterial(Base):
 
     day = relationship("DBDay", back_populates="materials")
 
+class DBConversation(Base):
+    __tablename__ = "conversation"
+
+    id = Column(Integer, primary_key=True, index=True)
+    student = Column(ForeignKey("student.id", ondelete="CASCADE"))
+    path = Column(String(255), nullable=True)
+    
+
+    student = relationship("DBStudent")
+    messages = relationship("DBMessage", back_populates="conversation", cascade="all, delete-orphan")
+    responses = relationship("DBResponse", back_populates="conversation", cascade="all, delete-orphan")
+
+class DBMessage(Base):
+    __tablename__ = "message"
+
+    id = Column(Integer, primary_key=True, index=True)
+    content = Column(String(255), nullable=False)
+    conversationID = Column(ForeignKey("conversation.id", ondelete="CASCADE"))
+    
+    conversation = relationship("DBConversation", back_populates="messages")
+
+class DBResponse(Base):
+    __tablename__ = "response"
+
+    id = Column(Integer, primary_key=True, index=True)
+    content = Column(String(255), nullable=False)
+    conversationID = Column(ForeignKey("conversation.id", ondelete="CASCADE"))
+    
+    conversation = relationship("DBConversation", back_populates="responses")    
+

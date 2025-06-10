@@ -1,6 +1,7 @@
 from __future__ import annotations
 from pydantic import BaseModel
 from typing import Optional
+from backend.database.schema import DBMessage, DBResponse
 
 # Error Response Model --------------------------------------------
 class ClientErrorResponse(BaseModel):
@@ -113,4 +114,9 @@ class StudentClass(BaseModel):
     settings: dict
 
 
-    
+# Chat Response Models -----------------------------------
+class ChatResponse(BaseModel):
+    conversationID: int
+    name: str
+    messages: list[DBMessage]
+    responses: list[DBResponse]
