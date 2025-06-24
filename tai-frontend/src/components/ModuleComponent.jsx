@@ -18,7 +18,14 @@ import { FaBookOpen } from "react-icons/fa";
 const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentSelect } ) => {   
  
     // State to track whether the module is expanded or not
-    const [isExpanded, setIsExpanded] = useState(false); 
+    const [isExpanded, setIsExpanded] = useState(false);  
+
+    // do something for onNewDaySelect  
+    // TODO Make modal for onNewDaySelect  
+    const onNewDaySelect = () => { 
+
+    };
+    
 
     /**
      * toggleExpand
@@ -74,7 +81,20 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
                                 /> 
 
                             </li>
-                        ))} 
+                        ))}  
+                        <li 
+                            style={{ animationDelay: `${index * 100}ms`}}
+                            > 
+                                <DayComponent  
+                                    key={null} 
+                                    day={null} 
+                                    onDaySelect={() => onNewDaySelect()} 
+                                    onMaterialSelect={null}  
+                                    onAssignmentSelect={null}
+                                /> 
+
+                        </li>
+
                     </ul>
                 </div>
             )}

@@ -289,7 +289,6 @@ const TeacherStudentModulePage = () => {
                     
 
             case 'chat':  
-
                 return(  
                     <div className="chat-container"> 
                         <ChatFeature />
