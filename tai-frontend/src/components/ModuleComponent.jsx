@@ -38,7 +38,6 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
     return ( 
         <> 
 
-
         {/* Everything this module will be wrapped in */}
         <div >
             {/* Header section for the module */}
