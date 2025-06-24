@@ -47,7 +47,7 @@ class ModuleResponse(BaseModel):
 
 # Day Response Models ----------------------------------------------
 
-class DayAssignmentResposne(BaseModel):
+class DayAssignmentResponse(BaseModel):
     assignments: list[DayAssignment]
 
 class DayAssignment(BaseModel):
@@ -55,7 +55,7 @@ class DayAssignment(BaseModel):
     name: str
     filename: str
 
-class DayMaterialResposne(BaseModel):
+class DayMaterialResponse(BaseModel):
     materials: list[DayMaterial]
 
 class DayMaterial(BaseModel):
