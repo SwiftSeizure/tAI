@@ -17,6 +17,20 @@ class EntityNotFoundException(Exception):
             content=ClientErrorResponse(error=self.error, message=self.message).model_dump(),
         )
         
+class UploadNotFoundException(Exception):
+    """Exception for a non-existent upload."""
+    def __init__(self, day_id: int, filename: str):
+        self.status_code = 404
+        self.error = f"upload_not_found"
+        self.message = f"Unable to find upload with name={filename} in day with id={day_id}"
+        
+    def response(self) -> Response:
+        """HTTP response when a non-existent upload is requested."""
+        return JSONResponse(
+            status_code=self.status_code,
+            content=ClientErrorResponse(error=self.error, message=self.message).model_dump(),
+        )
+        
 class FileNotFoundException(Exception):
     """Exception for a non-existent entity."""
     def __init__(self, filename: str):

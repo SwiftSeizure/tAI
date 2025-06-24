@@ -64,3 +64,5 @@ def getDayMaterial(dayId:int, session:Session) -> list[DBMaterial]:
         raise EntityNotFoundException("day", day)
     
     return day.materials
+
+
