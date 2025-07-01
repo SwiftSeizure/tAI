@@ -12,10 +12,10 @@ router=APIRouter(prefix="/material", tags=["material"])
 # Get the absolute path to one directory above the current file
 BASE_DIR = Path(__file__).parent.parent.parent
 
-@router.get("/{day_id}/{filename}")
-def get_file(day_id: int, filename: str):
+@router.get("/{dayID}/{filename}")
+def get_file(dayID: int, filename: str):
     # Start from BASE_DIR and navigate to uploads
-    file_path = BASE_DIR / "uploads" / "material" / str(day_id) / filename
+    file_path = BASE_DIR / "uploads" / "material" / str(dayID) / filename
     base_uploads = BASE_DIR / "uploads"
     
     print(f"Checking path: {file_path}")
@@ -40,17 +40,16 @@ def get_file(day_id: int, filename: str):
         raise FileNotFoundException(filename)
 
 
-
-router.delete("/{day_id}/{filename}",
+@router.delete("/{dayID}/{filename}",
                 status_code=204,
                 responses={
                     404: {"model": ClientErrorResponse},
                     403: {"model": ClientErrorResponse}
                 },
                 summary="Delete a file for a specific day.")
-def delete_file(day_id: int, filename: str, session: DBSession):
+def delete_file(dayID: int, filename: str, session: DBSession):
     # Start from BASE_DIR and navigate to uploads
-    file_path = BASE_DIR / "uploads" / "material" / str(day_id) / filename
+    file_path = BASE_DIR / "uploads" / "material" / str(dayID) / filename
     base_uploads = BASE_DIR / "uploads"
     
      # Security checks
@@ -63,7 +62,7 @@ def delete_file(day_id: int, filename: str, session: DBSession):
         if '..' in str(file_path.relative_to(base_uploads)):
             raise HTTPException(status_code=403, detail="Invalid path")
         
-        db_material.delete_material(day_id, filename, session)
+        db_material.delete_material(dayID, filename, session)
         
         # Delete the actual file
         try:
