@@ -1,12 +1,14 @@
 from fastapi import APIRouter, Form
 from backend.models import ChatResponse
 from backend.models import ClientErrorResponse
+from backend.dependencies import DBSession
+from backend.database.chat import queryBot
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 
-router.put("/{studentID}/{path}",response_model=ChatResponse,responses= {404:{"model": ClientErrorResponse}} 
+@router.put("/{studentID}/{path}",response_model=ChatResponse,responses= {404:{"model": ClientErrorResponse}} 
            ,status_code=200, summary="Run query and update chat")
-async def run_query(studentID: int, path: str, query: str = Form(...)) -> ChatResponse:
+async def queryResponse(studentID: int, path: str, session:DBSession, query: str = Form(...)) -> ChatResponse:
     """Run a query and update the chat.
 
     Args:
@@ -19,4 +21,6 @@ async def run_query(studentID: int, path: str, query: str = Form(...)) -> ChatRe
     """
     # Placeholder for actual logic to run the query and update the chat
 
-    return ChatResponse(conversationID=1, name="Sample Conversation")
+    ret = queryBot(studentID, path, query,session)
+
+    return ChatResponse(studentID=studentID, conversationID=ret.conversationID,messages=ret.messages, responses=ret.responses)

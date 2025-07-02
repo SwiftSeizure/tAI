@@ -122,13 +122,13 @@ class DBConversation(Base):
     __tablename__ = "conversation"
 
     id = Column(Integer, primary_key=True, index=True)
-    student = Column(ForeignKey("student.id", ondelete="CASCADE"))
+    studentID = Column(ForeignKey("student.id", ondelete="CASCADE"))
     path = Column(String(255), nullable=True)
-    
 
     student = relationship("DBStudent")
     messages = relationship("DBMessage", back_populates="conversation", cascade="all, delete-orphan")
     responses = relationship("DBResponse", back_populates="conversation", cascade="all, delete-orphan")
+
 
 class DBMessage(Base):
     __tablename__ = "message"
