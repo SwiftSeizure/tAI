@@ -85,3 +85,16 @@ def create_new_day(moduleID: int, session: Session) -> DBModule:
     session.add(module)
     session.commit()
     return db_day
+
+
+def delete_module(moduleID: int, session: Session) -> None:
+    """Delete a module by its ID.
+    Args:
+        moduleID (int): The ID of the module to delete.
+        session (Session): The SQLAlchemy session to use for the query.
+    Raises:
+        EntityNotFoundException: If the module with the given ID does not exist.
+    """
+    module = get_module(moduleID, session)
+    session.delete(module)
+    session.commit()
