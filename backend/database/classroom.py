@@ -56,13 +56,13 @@ def create_new_unit(classroomID: int, unit: CreateUnit, session: Session) -> DBU
     if not classroom:
         raise EntityNotFoundException("classroom", classroomID)
     
-    # Get the highest sequence number and add 1
+    # Get the highest sequence number and add 10
     stmt = select(DBUnit.sequence)\
         .filter(DBUnit.classID == classroomID)\
         .order_by(DBUnit.sequence.desc())\
         .limit(1)
     result = session.execute(stmt).scalar()
-    sequence_number = (result or 0) + 1
+    sequence_number = (result or 0) + 10
     
     # Check for duplicate unit name
     duplicate_stmt = select(DBUnit)\

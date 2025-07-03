@@ -59,11 +59,25 @@ def create_new_unit(classID: int, unit: CreateUnit, session: DBSession) -> Class
     return(ClassroomUnit(id=db_class.id, name=db_class.name)) # type: ignore
 
 
-# Update a chats owner and/or name
+
 @router.put("/{classroomID}",
             status_code= 204,
             responses={404: {"model": ClientErrorResponse},
                        422: {"model": ClientErrorResponse}},
             summary="Update a classrooms's name and/or settings.")
 def update_chat(classroomID: int, classroomUpdate: ClassroomUpdate, session: DBSession):
+    """Update a classrooms name and/or settings
+
+    Args:
+        classroomID (int): ID of the classroom being updated
+        classroomUpdate (ClassroomUpdate): The data to update the classroom with
+        session (DBSession): The database session.
+        
+    Raises:
+        404: If the classroom with the given ID is not found.
+        422: If the classroom update data is invalid.
+
+    Returns:
+        None
+    """
     classroom_db.update_classroom(classroomID, classroomUpdate, session)
