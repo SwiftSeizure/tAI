@@ -126,7 +126,17 @@ class ChatMessage(BaseModel):
     content: str
     conversationID: int
 
+    model_config = {
+        "from_attributes": True
+    }
+
+
+
 class ChatResponseMessage(BaseModel):
     id: int
     content: str
     conversationID: int
+
+    model_config = {
+        "from_attributes": True
+    }

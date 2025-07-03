@@ -3,6 +3,7 @@ from backend.models import ChatResponse
 from backend.models import ClientErrorResponse
 from backend.dependencies import DBSession
 from backend.database.chat import queryBot
+from backend.database.schema import DBConversation, DBMessage, DBResponse
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, JSON,Boolean 
+from sqlalchemy import Column, Integer, String, ForeignKey, JSON,Boolean,Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -134,17 +134,21 @@ class DBMessage(Base):
     __tablename__ = "message"
 
     id = Column(Integer, primary_key=True, index=True)
-    content = Column(String(255), nullable=False)
+    content = Column(Text, nullable=False)
     conversationID = Column(ForeignKey("conversation.id", ondelete="CASCADE"))
     
     conversation = relationship("DBConversation", back_populates="messages")
+
+    
 
 class DBResponse(Base):
     __tablename__ = "response"
 
     id = Column(Integer, primary_key=True, index=True)
-    content = Column(String(255), nullable=False)
+    content = Column(Text, nullable=False)
     conversationID = Column(ForeignKey("conversation.id", ondelete="CASCADE"))
     
     conversation = relationship("DBConversation", back_populates="responses")    
+
+    
 
