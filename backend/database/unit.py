@@ -126,3 +126,17 @@ def update_unit(unitID: int, unitUpdates: UnitUpdate, session: Session) -> DBUni
     
     session.commit()
     return unit
+
+
+def delete_unit(unitID: int, session: Session) -> None:
+    """Delete a unit by its ID.
+    Args:
+        unitID (int): The ID of the unit to delete.
+        session (Session): The SQLAlchemy session to use for the query.
+    Raises:
+        EntityNotFoundException: If the unit with the given ID does not exist.
+    """
+    unit = get_unit(unitID, session)
+
+    session.delete(unit)
+    session.commit()
