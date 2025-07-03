@@ -1,6 +1,56 @@
-.env
-
-# Python byecode
-*.pyc
-*/__pycache__/
+# Byte-compiled / optimized / DLL files
+__pycache__/
 *.py[cod]
+*$py.class
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+
+# Poetry files
+poetry.lock
+*.egg-info/
+
+# Environment variables
+*.env
+
+# VS Code
+.vscode/
+
+# JetBrains (PyCharm)
+.idea/
+
+# Mac and Linux system files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Test coverage
+.coverage
+htmlcov/
+
+# MyPy, Pyright, Pyre
+.mypy_cache/
+.pyright/
+
+# Database and migration artifacts
+*.db
+*.sqlite3
+migrations/
+
+# FastAPI Swagger docs cache
+openapi.json
+
+# Node (if you're working fullstack)
+node_modules/
+dist/
+build/
+
+# Misc
+*.bak
+*.swp
+*.tmp
