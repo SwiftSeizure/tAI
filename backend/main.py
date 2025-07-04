@@ -12,7 +12,7 @@ from fastapi.requests import Request
 import os
 import requests
 from dotenv import load_dotenv
-from backend.routers import home, classroom, unit,module,day,assignment, material,student,teacher
+from backend.routers import home, classroom, unit,module,day,assignment, material,student,teacher,chat
 from backend.Seed_Database import PopulateDB
 from fastapi.middleware.cors import CORSMiddleware
 from backend.exceptions import EntityNotFoundException, UploadNotFoundException, DuplicateNameException
@@ -32,6 +32,7 @@ app.include_router(assignment.router)
 app.include_router(material.router)
 app.include_router(student.router)
 app.include_router(teacher.router)
+app.include_router(chat.router)
 
 app.add_middleware(
     CORSMiddleware,

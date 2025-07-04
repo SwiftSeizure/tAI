@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, JSON,Boolean 
+from sqlalchemy import Column, Integer, String, ForeignKey, JSON,Boolean,Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -117,4 +117,38 @@ class DBMaterial(Base):
     dayId = Column(ForeignKey("day.id"))
 
     day = relationship("DBDay", back_populates="materials")
+
+class DBConversation(Base):
+    __tablename__ = "conversation"
+
+    id = Column(Integer, primary_key=True, index=True)
+    studentID = Column(ForeignKey("student.id", ondelete="CASCADE"))
+    path = Column(String(255), nullable=True)
+
+    student = relationship("DBStudent")
+    messages = relationship("DBMessage", back_populates="conversation", cascade="all, delete-orphan")
+    responses = relationship("DBResponse", back_populates="conversation", cascade="all, delete-orphan")
+
+
+class DBMessage(Base):
+    __tablename__ = "message"
+
+    id = Column(Integer, primary_key=True, index=True)
+    content = Column(Text, nullable=False)
+    conversationID = Column(ForeignKey("conversation.id", ondelete="CASCADE"))
+    
+    conversation = relationship("DBConversation", back_populates="messages")
+
+    
+
+class DBResponse(Base):
+    __tablename__ = "response"
+
+    id = Column(Integer, primary_key=True, index=True)
+    content = Column(Text, nullable=False)
+    conversationID = Column(ForeignKey("conversation.id", ondelete="CASCADE"))
+    
+    conversation = relationship("DBConversation", back_populates="responses")    
+
+    
 
