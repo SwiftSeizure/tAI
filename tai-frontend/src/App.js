@@ -3,9 +3,9 @@ import LoginPage from '../src/login/pages/LoginPage';
 import TeacherStudentHomePage from '../src/home/pages/TeacherStudentHomePage'; 
 import TeacherStudentUnitPage from '../src/unit/pages/TeacherStudentUnitPage';
 import TeacherStudentModulePage from '../src/module/pages/TeacherStudentModulePage'; 
-import CreateClassPage from '../src/home/pages/Teacher/CreateClassPage'; 
-import JoinClassPage from '../src/home/pages/Student/JoinClassPage';
-import CreateUnitPage from '../src/unit/pages/Teacher/CreateUnitPage';
+import CreateClassPage from '../src/home/pages/CreateClassPage'; 
+import JoinClassPage from '../src/home/pages/JoinClassPage'; 
+import CreateUnitPage from '../src/unit/pages/CreateUnitPage'; 
 
 function App() { 
 

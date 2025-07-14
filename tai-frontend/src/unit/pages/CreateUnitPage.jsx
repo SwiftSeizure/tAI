@@ -1,5 +1,5 @@
 import React, { useState} from "react"; 
-import TitleCard from "../../components/TitleCard"; 
+import TitleCard from "../../shared/components/TitleCard"; 
 import { useLocation, useNavigate } from "react-router-dom"; 
 import axios from "axios";
 
