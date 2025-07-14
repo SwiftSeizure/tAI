@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";  
 import { useLocation } from "react-router-dom";
 import TitleCard from "../../shared/components/TitleCard";  
-import { getRequest } from "../../API"; 
+import { getRequest } from "../../API";  
+import { useModules } from "../hooks/useModules";
 import axios from "axios";
 import ChatFeature from "../components/ChatFeature";
 import ModuleComponent from "../components/ModuleComponent"; 
@@ -29,21 +30,20 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2
 const TeacherStudentModulePage = () => {     
 
     // State variables for managing data and UI state
-    const [loading, setLoading] = useState(true); // Tracks loading state
-    const [modulesData, setModulesData] = useState(null); // Stores module data  
-    const [selectedModule, setSelectedModule] = useState(null); // Tracks the selected module
+    // const [modulesData, setModulesData] = useState(null); // Stores module data  
+    const [ , setSelectedModule] = useState(null); // Tracks the selected module
     const [isChatExpanded, setIsChatExpanded] = useState(false); // Tracks chat expansion state
     const [displayType, setDisplayType] = useState('welcome'); // Tracks the type of content to display
     
-    const [selectedDay, setSelectedDay] = useState(null); // Tracks the selected day
-    const [dayMaterials, setDayMaterials] = useState(null); // Stores materials for a selected day 
-    const [selectedMaterialID, setSelectedMaterialID] = useState(null); // Tracks the selected material ID
+    const [, setSelectedDay] = useState(null); // Tracks the selected day
+    const [, setDayMaterials] = useState(null); // Stores materials for a selected day 
+    const [, setSelectedMaterialID] = useState(null); // Tracks the selected material ID
     const [selectedMaterialName, setSelectedMaterialName] = useState(null); // Tracks the selected material name
     
-    const [selectedAssignmentID, setSelectedAssignmentID] = useState(null); // Tracks the selected assignment ID
+    const [, setSelectedAssignmentID] = useState(null); // Tracks the selected assignment ID
     const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
     
-    const [numPages, setNumPages] = useState(null); // Tracks the number of pages in a PDF
+    const [, setNumPages] = useState(null); // Tracks the number of pages in a PDF
     const [pageNumber, setPageNumber] = useState(1); // Tracks the current page number in a PDF
     
     const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
@@ -54,7 +54,11 @@ const TeacherStudentModulePage = () => {
     const location = useLocation(); 
     const {unitID, unitName, userID, role} = location.state || {};  
 
-    const chatImage = require("../../images/chat-message-dots.png");
+    // State to store the list of modules fetched from the backend
+    const { modules, isLoading, error } = useModules(unitID); 
+    console.log("Modules data:", modules);
+
+    const chatImage = require("../../images/chat-message-dots.png"); 
 
 
     /**
@@ -76,34 +80,6 @@ const TeacherStudentModulePage = () => {
         }
     };
 
-
-    /**
-     * useEffect Hook
-     * Fetches module data when the component mounts or when `userID` or `role` changes.
-     */
-    useEffect(() => { 
-
-        const loadModules = async () => {  
-
-            try {   
-                const url = `/unit/${unitID}/modules`; 
-                const response = await getRequest(url);  
-                setModulesData(response.data.modules); 
-                console.log("Module Page: " + response.data.modules.name); 
-
-            } 
-            catch(error) {
-              console.log(error)
-
-            } 
-            finally { 
-                setLoading(false); 
-            }
-        }; 
-        
-        loadModules();
-
-    }, [userID, role]);  
 
 
     /*  
@@ -205,7 +181,7 @@ const TeacherStudentModulePage = () => {
      * Renders the list of modules as `ModuleComponent` components.
      */
     const renderModules = () => { 
-        if (!Array.isArray(modulesData)) { 
+        if (!Array.isArray(modules)) { 
             return null;
         } 
         else {  
@@ -215,7 +191,7 @@ const TeacherStudentModulePage = () => {
                 <div>  
                     {/* Map all of the module components to the ModulePage */}
                     <h1 className="modules-heading"> {unitName} Modules</h1> 
-                    {modulesData.map (module => ( 
+                    {modules.map (module => ( 
                         <ModuleComponent 
                             key={module.id} 
                             module={module} 

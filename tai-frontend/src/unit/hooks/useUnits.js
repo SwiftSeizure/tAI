@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from 'react'; 
+import { getUnits } from '../services/get-units';
 
-const useUnits = (classId) => {
+export const useUnits = (classId) => {
   const [units, setUnits] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -10,9 +10,8 @@ const useUnits = (classId) => {
     const fetchUnits = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(`http://localhost:8000/classroom/${classId}/units`);
-        setUnits(response.data.units); 
-        console.log(response.data.units);
+        const units = await getUnits(classId);
+        setUnits(units); 
       } catch (e) {
         setError(e);
       } finally {
@@ -24,5 +23,3 @@ const useUnits = (classId) => {
 
   return { units, isLoading, error };
 };
-
-export default useUnits;

@@ -1,7 +1,6 @@
-import React, {useState, useEffect } from "react";   
+import React from "react";   
 import { useLocation } from 'react-router-dom';   
-import useUnits from "../hooks/useUnits";
-import axios from "axios";
+import { useUnits } from "../hooks/useUnits";
 import UnitCard from "../components/UnitCard";
 import TitleCard from "../../shared/components/TitleCard"; 
 import Loading from "../../shared/components/Loading";
@@ -23,46 +22,8 @@ const TeacherStudentUnitPage = () => {
     const location = useLocation(); 
     const { classID, userID, role, classname } = location.state || {}; 
 
-
     // Hook to fetch unit data from the backend
     const { units, isLoading, error } = useUnits(classID);
-
-
-    // /**
-    //  * useEffect Hook
-    //  * Fetches unit data from the backend when the component mounts or when `classID`, `userID`, or `role` changes.
-    //  */
-    // useEffect(() => {    
-
-    //     // Function to load unit cards from the backend
-    //     const loadUnitCards = async () => { 
-        
-            
-    //         setLoading(true);
-    //         try {  
-    //             // Get the unit data from the backend based on classID
-    //             const url = `/classroom/${classID}/units`;
-    //             const response = await getRequest(url);  
-    //             setData(response.data.units); 
-
-    //             // Populate the unit cards with the fetched data
-    //             populateUnitCards();  
-    //         } 
-    //         catch (error) { 
-    //             console.log(error);
-    //         }    
-    //         finally { 
-    //             setLoading(false); 
-                
-    //         }
-
-    //     };
-
-    //     // Call the function to load unit cards
-    //     loadUnitCards();
-
-    // }, [classID, userID, role]);
-
 
     /**
      * populateUnitCards
