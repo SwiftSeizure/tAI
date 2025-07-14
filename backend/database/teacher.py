@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload, Session
 from backend.database.schema import DBTeacher, DBClass
 from backend.models import CreateClassroom
-from backend.exceptions import EntityNotFoundException
+from backend.exceptions import EntityNotFoundException, DuplicateNameException
 
 def get_teacher(teacherID: int, session: Session) -> DBTeacher:
     """ Get a DBTeacher object by its ID.
@@ -66,6 +66,15 @@ def create_new_classroom(teacherID: int, classroom: CreateClassroom, session: Se
     teacher = get_teacher(teacherID, session)
     if not teacher:
         raise EntityNotFoundException("teacher", teacherID)
+    
+    duplicate_stmt = select(DBClass)\
+        .filter(
+            DBClass.name == classroom.name,
+            DBClass.ownerID == teacherID  # Add teacher check
+        )
+    existing_classroom = session.execute(duplicate_stmt).scalar_one_or_none()
+    if existing_classroom:
+        raise DuplicateNameException("classroom", classroom.name)
     
     new_class = DBClass(
         name=classroom.name,
