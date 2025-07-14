@@ -1,8 +1,10 @@
 import React, {useState} from "react";  
-import { getRequest } from "../../API"; 
 import { FaChevronDown, FaChevronUp, FaFile, FaClipboard } from "react-icons/fa";
 import { MdAssignment } from "react-icons/md"; 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion'; 
+
+import { getDayAssignments } from "../services/get-day-assignments"; 
+import { getDayMaterials } from "../services/get-day-materials";
 
 /**
  * DayComponent
@@ -47,14 +49,12 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
 
             try {   
                 // Fetch Materials
-                const urlMaterial = `/day/${day.id}/materials`; 
-                const responseMaterial = await getRequest(urlMaterial); 
-                setMaterials(responseMaterial.data.materials);  
+                const materials = await getDayMaterials(day);
+                setMaterials(materials);  
 
                 // Fetch Assignments 
-                const urlAssignment = `/day/${day.id}/assignments`; 
-                const responseAssignment = await getRequest(urlAssignment);  
-                setAssignments(responseAssignment.data.assignments);
+                const assignments = await getDayAssignments(day); 
+                setAssignments(assignments);
             }  
 
             // Handle errors during API requests

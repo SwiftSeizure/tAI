@@ -3,7 +3,8 @@ import { useLocation } from 'react-router-dom';
 import ClassCard from "../components/ClassCard"; 
 import { getRequest } from "../../API";
 import TitleCard from "../../shared/components/TitleCard";    
-import "react-icons/fa";
+import "react-icons/fa"; 
+import { useClasses } from "../hooks/useClasses";
 
 /**
  * TeacherStudentHomePage Component
@@ -17,55 +18,16 @@ import "react-icons/fa";
  */
 
 const TeacherStudentHomePage = () => {   
-
-    // State to track loading status
-    const [loading, setLoading] = useState(true); 
-
-    // State to track errors during data fetching
-    const [error, setError] = useState(null);  
-
-    // State to store the list of classes fetched from the backend
-    const [data, setData] = useState([]);
     
     // Retrieve user information from the location state
     const location = useLocation(); 
-    const { userID, name, role } = location.state || {}; 
+    const { userID, name, role } = location.state || {};  
 
+    const { classes, isLoading, error } = useClasses(userID, role);  
 
-
-    /**
-     * useEffect Hook
-     * Fetches class data from the backend when the component mounts or when `userID` or `role` changes.
-     */
-    useEffect(() => {  
-        const loadClassCards = async () => {  
-            try {  
-
-                setLoading(true); 
-            
-                // Get the class data from the backend based on userID and role
-                const url = `/home/${role}/${userID}`; 
-                const response = await getRequest(url);  
-                setData(response.data.classes); 
-            
-                // Populate the class cards with the fetched data
-                populateClassCards();
-            } 
-            catch (error) { 
-                setError(error);
-            }  
-             
-            finally { 
-                setLoading(false); 
-            }
-        };
-
-        // Call the function to load class cards
-        loadClassCards(); 
-
-        // Dependencies: Reload data when `userID`, `role`, or `data` changes
-    }, [userID, role]); 
-
+    useEffect(() => {
+        populateClassCards();
+    }, [userID, role, isLoading])
 
 
     /**
@@ -74,11 +36,11 @@ const TeacherStudentHomePage = () => {
      * Each `ClassCard` represents a class the user is associated with.
      */
     const populateClassCards = () => {   
-        console.log(data); // Debugging: Log the fetched class data
+        console.log(classes); // Debugging: Log the fetched class data
         
         return ( 
             <>   
-                {Array.isArray(data) && data.map(classroom => (
+                {Array.isArray(classes) && classes.map(classroom => (
                     <ClassCard   
                         key={classroom.id} 
                         classID={classroom.id}

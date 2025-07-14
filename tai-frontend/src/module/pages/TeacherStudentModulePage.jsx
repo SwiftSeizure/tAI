@@ -12,7 +12,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 
 import { pdfjs } from 'react-pdf';
 import { getMaterialURL } from "../services/get-material-url";
-import { getAssignmentURL } from "../services/get-assignment-url";
+import { getAssignmentURL } from "../services/get-assignment-url"; 
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
 
@@ -38,7 +38,6 @@ const TeacherStudentModulePage = () => {
     const [displayType, setDisplayType] = useState('welcome'); // Tracks the type of content to display
     
     const [, setSelectedDay] = useState(null); // Tracks the selected day
-    const [, setDayMaterials] = useState(null); // Stores materials for a selected day 
     const [, setSelectedMaterialID] = useState(null); // Tracks the selected material ID
     const [selectedMaterialName, setSelectedMaterialName] = useState(null); // Tracks the selected material name
     
@@ -105,17 +104,6 @@ const TeacherStudentModulePage = () => {
         setSelectedModule(moduleID); 
         setSelectedDay(dayID);
         setDisplayType('day'); 
-
-        // Fetch the materials and assignments for the selected day
-        try {  
-            const url = `/module/${moduleID}/days` 
-            const response = await getRequest(url); 
-            setDayMaterials(response.data.materials); 
-        }  
-        catch (error) { 
-            console.log(error);  
-        }
- 
     };    
 
 
@@ -135,14 +123,9 @@ const TeacherStudentModulePage = () => {
         setDisplayType('assignment'); 
 
         // Fetch the content of the selected assignment
-        try { 
-            const fileURL = await getAssignmentURL(dayID, fileName); 
-            setAssignmentContent(fileURL); 
-            setCurrentContentDisplay('assignment');
-        } 
-        catch (error) { 
-            console.log(error)
-        }
+        const fileURL = await getAssignmentURL(dayID, fileName); 
+        setAssignmentContent(fileURL); 
+        setCurrentContentDisplay('assignment');
     };
 
 
@@ -162,7 +145,6 @@ const TeacherStudentModulePage = () => {
         setDisplayType('material'); 
 
         // Fetch the content of the selected material
-
         const fileURL = await getMaterialURL(dayID, fileName);
         setMaterialContent(fileURL);  
         setCurrentContentDisplay('material');
