@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import TitleCard from "../../shared/components/TitleCard";  
 import { useModules } from "../hooks/useModules";
-import axios from "axios";
 import ChatFeature from "../components/ChatFeature";
 import ModuleComponent from "../components/ModuleComponent"; 
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
@@ -43,8 +42,6 @@ const TeacherStudentModulePage = () => {
     const [, setSelectedAssignmentID] = useState(null); // Tracks the selected assignment ID
     const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
     
-    const [, setNumPages] = useState(null); // Tracks the number of pages in a PDF
-    const [pageNumber, setPageNumber] = useState(1); // Tracks the current page number in a PDF
     
     const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
     const [assignmentContent, setAssignmentContent] = useState(null); // Stores the content of a selected assignment

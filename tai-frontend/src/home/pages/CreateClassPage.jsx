@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import { useLocation, useNavigate } from 'react-router-dom';  
 import TitleCard from "../../shared/components/TitleCard";   
 import { postCreateClass } from "../services/post-create-class";
+import ChatSettings from "../../shared/components/ChatSettings";
 
 
 /**
@@ -14,7 +15,7 @@ const CreateClassPage = () => {
  
     // TODO: Add the functionality to create a class here 
     const [newClassName, setNewClassName] = useState("");     
-    const [createdClassName, setCreatedClassName] = useState("");
+    const [selectedChatSetting, setSelectedChatSetting] = useState(null);
     
     
     const location = useLocation(); 
@@ -29,11 +30,10 @@ const CreateClassPage = () => {
         try {  
             const requestBody = { 
                 name: newClassName,
-                settings: {
-                    // Create settings here
-                },
+                settings: selectedChatSetting
             };
 
+            console.log(requestBody);
             const response = await postCreateClass(userID, requestBody); 
             const classID = response.data.id; 
             const classname = response.data.name;
@@ -59,6 +59,10 @@ const CreateClassPage = () => {
                 placeholder="Enter Class Name"
                 value={newClassName}
                 onChange={(e) => setNewClassName(e.target.value)}
+            /> 
+
+            <ChatSettings 
+                onSettingsChange={(selectedSetting) => setSelectedChatSetting(selectedSetting)}
             />
 
             <button 
