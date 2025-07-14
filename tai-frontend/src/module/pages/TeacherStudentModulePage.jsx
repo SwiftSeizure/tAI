@@ -56,7 +56,7 @@ const TeacherStudentModulePage = () => {
 
     // State to store the list of modules fetched from the backend
     const { modules, isLoading, error } = useModules(unitID); 
-    console.log("Modules data:", modules);
+   
 
     const chatImage = require("../../images/chat-message-dots.png"); 
 

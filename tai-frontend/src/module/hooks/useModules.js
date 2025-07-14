@@ -11,7 +11,7 @@ export const useModules = (unitID) => {
       setIsLoading(true);
       try {
         const modules = await getModules(unitID);
-        setModules(modules);
+        setModules(modules); 
       } catch (e) {
         setError(e);
       } finally {

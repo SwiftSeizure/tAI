@@ -80,7 +80,7 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
           `}
             onClick={toggleExpand} >
                 <h4 className={` pl-4 ${isExpanded ? "pb-2 font-bold": "pb-0"} `}>
-                    {day.name} 
+                    {day?.name} 
                 </h4>
 
             {/* Content section for the day */}
