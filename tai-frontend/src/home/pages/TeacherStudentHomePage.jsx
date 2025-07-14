@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";   
 import { useLocation } from 'react-router-dom';  
 import ClassCard from "../components/ClassCard"; 
-import { getRequest } from "../../API";
 import TitleCard from "../../shared/components/TitleCard";    
 import "react-icons/fa"; 
 import { useClasses } from "../hooks/useClasses";

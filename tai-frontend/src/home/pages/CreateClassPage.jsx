@@ -1,8 +1,7 @@
 import React, {useState} from "react";  
 import { useLocation, useNavigate } from 'react-router-dom';  
 import TitleCard from "../../shared/components/TitleCard";   
-import { postRequest } from "../../API";
-import axios from "axios";
+import { postCreateClass } from "../services/post-create-class";
 
 
 /**
@@ -27,35 +26,23 @@ const CreateClassPage = () => {
     const handleCreateClass = async (e) => {  
         e.preventDefault(); 
 
-        try { 
+        try {  
             const requestBody = { 
                 name: newClassName,
                 settings: {
                     // Create settings here
                 },
-            }   
+            };
 
-            const response = await axios.post(`http://localhost:8000/home/teacher/${userID}`, 
-                requestBody,
-                {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }
-            ).then((response) => {
-                const classID = response.data.id;
-                const classname = response.data.name;
-                navigate('/unitpage', {state: { classID, userID, role, classname}});
-            }).catch((error) => {
-                console.log("Error creating class:", error);
-            });
-            
-        } 
+            const response = await postCreateClass(userID, requestBody); 
+            const classID = response.data.id; 
+            const classname = response.data.name;
+            navigate('/unitpage', {state: { classID, userID, role, classname}});
+        }
+
         catch (error) { 
-            console.log("Error creating class:", error);
-        } 
-
-        // Add is loading 
+            console.log("Error creating class:", error); 
+        }
     };
 
 

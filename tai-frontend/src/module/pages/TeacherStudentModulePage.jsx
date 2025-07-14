@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";  
 import { useLocation } from "react-router-dom";
 import TitleCard from "../../shared/components/TitleCard";  
-import { getRequest } from "../../API";  
 import { useModules } from "../hooks/useModules";
 import axios from "axios";
 import ChatFeature from "../components/ChatFeature";
