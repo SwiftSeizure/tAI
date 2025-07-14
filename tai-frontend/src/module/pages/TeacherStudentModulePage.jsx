@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";  
 import { useLocation } from "react-router-dom";
-import TitleCard from "../../components/TitleCard";  
+import TitleCard from "../../shared/components/TitleCard";  
 import { getRequest } from "../../API"; 
 import axios from "axios";
-import ChatFeature from "../../components/ChatFeature";
-import ModuleComponent from "../../components/ModuleComponent"; 
+import ChatFeature from "../components/ChatFeature";
+import ModuleComponent from "../components/ModuleComponent"; 
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -88,7 +88,8 @@ const TeacherStudentModulePage = () => {
             try {   
                 const url = `/unit/${unitID}/modules`; 
                 const response = await getRequest(url);  
-                setModulesData(response.data.modules);
+                setModulesData(response.data.modules); 
+                console.log("Module Page: " + response.data.modules.name); 
 
             } 
             catch(error) {

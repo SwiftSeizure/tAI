@@ -1,5 +1,5 @@
 import React, {useState} from "react";  
-import { getRequest } from "../API"; 
+import { getRequest } from "../../API"; 
 import { FaChevronDown, FaChevronUp, FaFile, FaClipboard } from "react-icons/fa";
 import { MdAssignment } from "react-icons/md"; 
 import { motion, AnimatePresence } from 'framer-motion';

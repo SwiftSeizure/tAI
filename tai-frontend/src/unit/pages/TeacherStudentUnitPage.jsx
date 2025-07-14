@@ -2,9 +2,9 @@ import React, {useState, useEffect } from "react";
 import { useLocation } from 'react-router-dom';   
 import { getRequest } from "../../API";
 import axios from "axios";
-import UnitCard from "../../components/UnitCard";
-import ClassCard from "../../components/ClassCard";
-import TitleCard from "../../components/TitleCard";
+import UnitCard from "../components/UnitCard";
+import ClassCard from "../../shared/ClassCard";
+import TitleCard from "../../shared/components/TitleCard";
 
 /**
  * TeacherStudentUnitPage 

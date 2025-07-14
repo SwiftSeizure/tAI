@@ -1,5 +1,5 @@
 import React, { useState } from "react";  
-import DayComponent from "./DayComponent"; 
+import DayComponent from "./DayComponent";
 import { FaBookOpen } from "react-icons/fa"; 
 
 
@@ -18,7 +18,7 @@ import { FaBookOpen } from "react-icons/fa";
 const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentSelect } ) => {   
  
     // State to track whether the module is expanded or not
-    const [isExpanded, setIsExpanded] = useState(false);  
+    const [isExpanded, setIsExpanded] = useState(false);   
 
     // do something for onNewDaySelect  
     // TODO Make modal for onNewDaySelect  
@@ -64,35 +64,19 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
                         isExpanded ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}`}>   
                     <ul className="">        
                         {/* Map through the days in the module and render DayComponent for each day in the module*/}      
-                        {Array.isArray(module.days) && module.days.map((day, index) => (   
-
-                            // Might need to put this in the DayComponent
+                        {Array.isArray(module.days) && [...module.days, null].map((day, index) => (   
                             <li 
-
-                             style={{ animationDelay: `${index * 100}ms`}}
+                                key={day?.id || 'new-day'}
+                                style={{ animationDelay: `${index * 100}ms`}}
                             > 
                                 <DayComponent  
-                                    key={day.id} 
                                     day={day} 
-                                    onDaySelect={() => onDaySelect(module.id, day.id)} 
-                                    onMaterialSelect={onMaterialSelect}  
-                                    onAssignmentSelect={onAssignmentSelect}
+                                    onDaySelect={day ? () => onDaySelect(module.id, day.id) : () => onNewDaySelect()} 
+                                    onMaterialSelect={day ? onMaterialSelect : null}  
+                                    onAssignmentSelect={day ? onAssignmentSelect : null}
                                 /> 
-
-                            </li>
-                        ))}  
-                        <li 
-                            style={{ animationDelay: `${index * 100}ms`}}
-                            > 
-                                <DayComponent  
-                                    key={null} 
-                                    day={null} 
-                                    onDaySelect={() => onNewDaySelect()} 
-                                    onMaterialSelect={null}  
-                                    onAssignmentSelect={null}
-                                /> 
-
-                        </li>
+                            </li> 
+                        ))}
 
                     </ul>
                 </div>
