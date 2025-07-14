@@ -1,8 +1,8 @@
 import React from "react";  
 import { useNavigate } from "react-router-dom"; 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';    
-import '../App.css';
-import TitleHeading from "./animations/TitleHeading";
+import '../../App.css';
+import TitleHeading from "../animations/TitleHeading";
 
 /**
  * TitleCard Component

@@ -15,7 +15,7 @@ const ClassCard = ( {classID, classname, userID, role}  ) => {
 
     // Logo for the class card 
     // TODO: change this to allow teacher to upload or select from a list of logos
-    const logo = require("../images/example-class-logo.png");  
+    const logo = require("../../images/example-class-logo.png");  
 
     // Hook to navigate to the UnitPage
     const navigate = useNavigate();   

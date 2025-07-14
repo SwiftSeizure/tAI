@@ -1,12 +1,11 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import HomePage from './pages/HomePage'; 
-import LoginPage from './pages/Universal/LoginPage'; 
-import TeacherStudentHomePage from './pages/Universal/TeacherStudentHomePage'; 
-import TeacherStudentUnitPage from './pages/Universal/TeacherStudentUnitPage';
-import TeacherStudentModulePage from './pages/Universal/TeacherStudentModulePage'; 
-import CreateClassPage from './pages/Teacher/CreateClassPage'; 
-import JoinClassPage from './pages/Student/JoinClassPage';
-import CreateUnitPage from './pages/Teacher/CreateUnitPage';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'; 
+import LoginPage from '../src/login/pages/LoginPage'; 
+import TeacherStudentHomePage from '../src/home/pages/TeacherStudentHomePage'; 
+import TeacherStudentUnitPage from '../src/unit/pages/TeacherStudentUnitPage';
+import TeacherStudentModulePage from '../src/module/pages/TeacherStudentModulePage'; 
+import CreateClassPage from '../src/home/pages/Teacher/CreateClassPage'; 
+import JoinClassPage from '../src/home/pages/Student/JoinClassPage';
+import CreateUnitPage from '../src/unit/pages/Teacher/CreateUnitPage';
 
 function App() { 
 

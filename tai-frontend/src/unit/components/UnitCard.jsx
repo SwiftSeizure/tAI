@@ -18,7 +18,7 @@ const UnitCard = ( {unitID, unitName, classID, userID, role } ) => {
 
     // Placeholder logo for the unit card 
     // TODO: Change this so that it pulls the logo from the backend
-    const logo = require("../images/example-class-logo.png"); 
+    const logo = require("../../images/example-class-logo.png"); 
 
     // Hook to navigate to the ModulePage
     const navigate = useNavigate();    

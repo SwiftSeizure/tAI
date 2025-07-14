@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 import { getRequest } from "../../API";
 import axios from "axios";
 import UnitCard from "../components/UnitCard";
-import ClassCard from "../../shared/ClassCard";
 import TitleCard from "../../shared/components/TitleCard";
 
 /**
