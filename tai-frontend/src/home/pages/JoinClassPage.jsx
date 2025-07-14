@@ -1,7 +1,8 @@
 import React, { useState } from "react";  
 import axios from "axios";
 import TitleCard from "../../shared/components/TitleCard";  
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; 
+import { postJoinClass } from "../services/post-join-class";
 
 /**
  * JoinClassPage Component
@@ -22,28 +23,10 @@ const JoinClassPage = () => {
     const handleJoinClass = async (e) => { 
         e.preventDefault(); 
 
-        try { 
-            const requestBody= { 
-                // Whatever will be in body 
-            } 
-            const response = await axios.put(`http://localhost:8000/classroom/${classCode}/join`, 
-                requestBody, {
-                    headers: { 
-                        'Content-Type': 'application/json'
-                    } 
-                }
-            ).then((response) => { 
-                // Do the navigation here  based on the response and whatever were given 
+       const requestBody = { /* Whatever will be in body */ };
+       const response = await postJoinClass(classCode, requestBody); 
 
-            }
-            ).catch((error) => { 
-                console.log("Error joining class:", error);
-            }); // Whatever the params will be 
-
-        }
-        catch (error) { 
-            console.log("Error joining class:", error);
-        }
+       // Figure out what to do with response 
     };
 
 
