@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import getModules from '../services/get-modules';
+import { getModules } from '../services/get-modules';
 
 export const useModules = (unitID) => {
   const [modules, setModules] = useState([]);

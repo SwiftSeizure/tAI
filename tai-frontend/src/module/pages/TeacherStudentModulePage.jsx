@@ -11,6 +11,8 @@ import 'react-pdf/dist/esm/Page/TextLayer.css';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 import { pdfjs } from 'react-pdf';
+import { getMaterialURL } from "../services/get-material-url";
+import { getAssignmentURL } from "../services/get-assignment-url";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
 
@@ -55,7 +57,7 @@ const TeacherStudentModulePage = () => {
     const {unitID, unitName, userID, role} = location.state || {};  
 
     // State to store the list of modules fetched from the backend
-    const { modules, isLoading, error } = useModules(unitID); 
+    const { modules, isLoading, error } = useModules(unitID);  
    
 
     const chatImage = require("../../images/chat-message-dots.png"); 
@@ -134,9 +136,7 @@ const TeacherStudentModulePage = () => {
 
         // Fetch the content of the selected assignment
         try { 
-            const url = `http://localhost:8000/assignment/${dayID}/${fileName}`;  
-            const response = await axios.get(url, { responseType: 'blob' }); 
-            const fileURL = URL.createObjectURL(response.data); 
+            const fileURL = await getAssignmentURL(dayID, fileName); 
             setAssignmentContent(fileURL); 
             setCurrentContentDisplay('assignment');
         } 
@@ -162,16 +162,10 @@ const TeacherStudentModulePage = () => {
         setDisplayType('material'); 
 
         // Fetch the content of the selected material
-        try { 
-            const url = `http://localhost:8000/material/${dayID}/${fileName}`; 
-            const response =  await axios.get(url, {  responseType: 'blob' }); 
-            const fileURL = URL.createObjectURL(response.data); 
-            setMaterialContent(fileURL);  
-            setCurrentContentDisplay('material');
-        } 
-        catch (error) { 
-            console.log(error);
-        }
+
+        const fileURL = await getMaterialURL(dayID, fileName);
+        setMaterialContent(fileURL);  
+        setCurrentContentDisplay('material');
 
     }
  
