@@ -1,9 +1,10 @@
 import React, {useState, useEffect } from "react";   
 import { useLocation } from 'react-router-dom';   
-import { getRequest } from "../../API";
+import useUnits from "../hooks/useUnits";
 import axios from "axios";
 import UnitCard from "../components/UnitCard";
-import TitleCard from "../../shared/components/TitleCard";
+import TitleCard from "../../shared/components/TitleCard"; 
+import Loading from "../../shared/components/Loading";
 
 /**
  * TeacherStudentUnitPage 
@@ -18,51 +19,49 @@ import TitleCard from "../../shared/components/TitleCard";
 
 const TeacherStudentUnitPage = () => {    
 
-    // State to store the list of units fetched from the backend
-    const [data, setData] = useState([]); 
-
-    // State to track the loading status
-    const [isLoading, setLoading] = useState(true);
-
     // Retrieve class and user information from the location state
     const location = useLocation(); 
-    const { classID, userID, role, classname } = location.state || {};
+    const { classID, userID, role, classname } = location.state || {}; 
 
 
-    /**
-     * useEffect Hook
-     * Fetches unit data from the backend when the component mounts or when `classID`, `userID`, or `role` changes.
-     */
-    useEffect(() => {    
+    // Hook to fetch unit data from the backend
+    const { units, isLoading, error } = useUnits(classID);
 
-        // Function to load unit cards from the backend
-        const loadUnitCards = async () => { 
+
+    // /**
+    //  * useEffect Hook
+    //  * Fetches unit data from the backend when the component mounts or when `classID`, `userID`, or `role` changes.
+    //  */
+    // useEffect(() => {    
+
+    //     // Function to load unit cards from the backend
+    //     const loadUnitCards = async () => { 
         
             
-            setLoading(true);
-            try {  
-                // Get the unit data from the backend based on classID
-                const url = `/classroom/${classID}/units`;
-                const response = await getRequest(url);  
-                setData(response.data.units); 
+    //         setLoading(true);
+    //         try {  
+    //             // Get the unit data from the backend based on classID
+    //             const url = `/classroom/${classID}/units`;
+    //             const response = await getRequest(url);  
+    //             setData(response.data.units); 
 
-                // Populate the unit cards with the fetched data
-                populateUnitCards();  
-            } 
-            catch (error) { 
-                console.log(error);
-            }    
-            finally { 
-                setLoading(false); 
+    //             // Populate the unit cards with the fetched data
+    //             populateUnitCards();  
+    //         } 
+    //         catch (error) { 
+    //             console.log(error);
+    //         }    
+    //         finally { 
+    //             setLoading(false); 
                 
-            }
+    //         }
 
-        };
+    //     };
 
-        // Call the function to load unit cards
-        loadUnitCards();
+    //     // Call the function to load unit cards
+    //     loadUnitCards();
 
-    }, [classID, userID, role]);
+    // }, [classID, userID, role]);
 
 
     /**
@@ -74,7 +73,7 @@ const TeacherStudentUnitPage = () => {
 
         return(  
             <>  
-            {Array.isArray(data) && data.map(unit => (  
+            {Array.isArray(units) && units.map(unit => (  
                 <UnitCard 
                     key={unit.id} 
                     unitID={unit.id} 
@@ -106,19 +105,22 @@ const TeacherStudentUnitPage = () => {
     return(  
         <> 
         <div className="min-h-screen min-w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient"> 
-            <TitleCard title={classname} />  
+            <TitleCard title={classname} />   
 
-            {/* Grid layout for unit cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-items-center gap-4">     
-                {populateUnitCards()}     
-                <UnitCard 
-                    key={"newUnit"} 
-                    unitID={null}
-                    unitName={null} 
-                    userID={userID}
-                    role={role}
-                />
-            </div>
+            {isLoading 
+                ? <Loading /> 
+                :  
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-items-center gap-4">     
+                        {populateUnitCards()}     
+                        <UnitCard 
+                            key={"newUnit"} 
+                            unitID={null}
+                            unitName={null} 
+                            userID={userID}
+                            role={role}
+                        />
+                    </div>
+            }
         </div>
             
         </>
