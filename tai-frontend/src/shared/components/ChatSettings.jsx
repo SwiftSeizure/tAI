@@ -1,7 +1,7 @@
 import React, { useState } from "react";  
 import { presetChatSettings } from "../constants/preset-chat-settings"
 
-const ChatSettings = ({ className, onSettingsChange }) => { 
+export const ChatSettings = ({ className, onSettingsChange }) => { 
     const [selectedSetting, setSelectedSetting] = useState(null);
 
     const handleSettingChange = (e) => {
@@ -40,5 +40,3 @@ const ChatSettings = ({ className, onSettingsChange }) => {
         </div>
     );
 } 
-
-export default ChatSettings;

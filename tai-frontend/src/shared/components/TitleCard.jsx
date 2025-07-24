@@ -1,8 +1,10 @@
 import React from "react";  
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate, useLocation } from "react-router-dom";  
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';    
 import '../../App.css';
-import TitleHeading from "../animations/TitleHeading";
+import TitleHeading from "../animations/TitleHeading"; 
+import { useSettingsModal } from "../hooks/useSettingsModal"; 
+import { SettingsModal } from "../modals/SettingsModal";
 
 /**
  * TitleCard Component
@@ -12,10 +14,12 @@ import TitleHeading from "../animations/TitleHeading";
  * Props:
  * - title: The title to display on the card. If empty, a default message is shown.
  */
-const TitleCard = ( { title, intro } ) => {   
+export const TitleCard = ( { title, intro, settings } ) => {    
 
+    const { isOpen, isLoading, openModal, closeModal } = useSettingsModal();
 
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();  
+    const location = useLocation();
 
     // TODO: change this to make it so that it keeps a list of pages  
     /**
@@ -25,10 +29,12 @@ const TitleCard = ( { title, intro } ) => {
      */
     const goBackPage = (e) => {  
         e.preventDefault();
-        
         navigate(-1);
+    };  
 
-    };
+
+    //TODO Find out how we want to display the settings 
+
 
     
     return( 
@@ -54,18 +60,23 @@ const TitleCard = ( { title, intro } ) => {
                     </div> 
                     <div className="flex-grow flex justify-center">
                         <TitleHeading title={title} intro={intro} transitionTime={10} /> 
-                    </div>   
-                    <div className="absolute-right-2"> 
-                        Settings TODO
-                    </div>
+                    </div>    
+
+                    {settings && (
+                        <button className="absolute-right-2" onClick={openModal}> 
+                            Settings TODO
+                        </button>
+                    )} 
+                    
                 </>
                 )
             }  
-        </div>
+        </div> 
+
+        {isOpen && <SettingsModal onClose={closeModal} isLoading={isLoading} />}
 
         </>  
     );
     
 }; 
 
-export default TitleCard;

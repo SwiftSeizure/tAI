@@ -1,6 +1,6 @@
 import { useState } from 'react'; 
 import { useNavigate } from 'react-router-dom';   
-import TitleCard from '../../shared/components/TitleCard';  
+import { TitleCard } from '../../shared/components/TitleCard';  
 import '../../App.css' 
 
 

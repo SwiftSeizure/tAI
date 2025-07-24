@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";  
 import { useLocation } from "react-router-dom";
-import TitleCard from "../../shared/components/TitleCard";  
+import { TitleCard } from "../../shared/components/TitleCard";  
 import { useModules } from "../hooks/useModules";
 import ChatFeature from "../components/ChatFeature";
 import ModuleComponent from "../components/ModuleComponent"; 

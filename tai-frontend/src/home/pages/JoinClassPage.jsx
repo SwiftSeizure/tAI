@@ -1,6 +1,6 @@
 import React, { useState } from "react";  
 import axios from "axios";
-import TitleCard from "../../shared/components/TitleCard";  
+import { TitleCard } from "../../shared/components/TitleCard";  
 import { useNavigate, useLocation } from "react-router-dom"; 
 import { postJoinClass } from "../services/post-join-class";
 

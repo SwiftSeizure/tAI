@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation } from 'react-router-dom';   
 import { useUnits } from "../hooks/useUnits";
 import UnitCard from "../components/UnitCard";
-import TitleCard from "../../shared/components/TitleCard"; 
+import { TitleCard } from "../../shared/components/TitleCard"; 
 import Loading from "../../shared/components/Loading";
 
 /**

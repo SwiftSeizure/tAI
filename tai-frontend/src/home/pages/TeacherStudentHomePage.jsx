@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";   
 import { useLocation } from 'react-router-dom';  
 import ClassCard from "../components/ClassCard"; 
-import TitleCard from "../../shared/components/TitleCard";    
+import { TitleCard } from "../../shared/components/TitleCard";    
 import "react-icons/fa"; 
 import { useClasses } from "../hooks/useClasses";
 
@@ -61,7 +61,7 @@ const TeacherStudentHomePage = () => {
 
         
             {/* Title card displaying a personalized welcome message */}
-            <TitleCard title={title} />
+            <TitleCard title={title} settings={true} />
 
             {/* Grid container for class cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-items-center gap-4">      

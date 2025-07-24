@@ -1,8 +1,8 @@
 import React, {useState} from "react";  
 import { useLocation, useNavigate } from 'react-router-dom';  
-import TitleCard from "../../shared/components/TitleCard";   
+import { TitleCard } from "../../shared/components/TitleCard";   
 import { postCreateClass } from "../services/post-create-class";
-import ChatSettings from "../../shared/components/ChatSettings";
+import { ChatSettings } from "../../shared/components/ChatSettings";
 
 
 /**
