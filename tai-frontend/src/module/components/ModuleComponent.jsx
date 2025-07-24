@@ -23,7 +23,7 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
     // do something for onNewDaySelect  
     // TODO Make modal for onNewDaySelect  
     const onNewDaySelect = () => { 
-
+        
     };
     
 
