@@ -1,5 +1,8 @@
 .env
-*.DS_Store
+
+# macOS stystem files
+.DS_Store
+**/.DS_Store
 
 # Python byecode
 *.pyc
