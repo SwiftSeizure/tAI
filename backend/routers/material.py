@@ -1,16 +1,23 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, File, UploadFile
 from fastapi.responses import FileResponse
-from backend.exceptions import FileNotFoundException, ClientErrorResponse
+from backend.exceptions import FileNotFoundException, ClientErrorResponse, DuplicateNameException
 from backend.database import material as db_material
 from backend.dependencies import DBSession
 from pathlib import Path
+import shutil
+from datetime import datetime
+from backend.validators import DocumentValidator
 import mimetypes
 import os
 # import backend.path_fetch as path_fetch
 
 router=APIRouter(prefix="/material", tags=["material"])
+
 # Get the absolute path to one directory above the current file
 BASE_DIR = Path(__file__).parent.parent.parent
+
+#Create a validator instance
+doc_validator = DocumentValidator(max_size= 25 * 1024 * 1024)
 
 @router.get("/{dayID}/{filename}")
 def get_file(dayID: int, filename: str):
@@ -76,15 +83,56 @@ def delete_file(dayID: int, filename: str, session: DBSession):
     except (ValueError, RuntimeError):
         raise FileNotFoundException(filename)
 
-"""
-from fastapi import APIRouter
-from fastapi.responses import FileResponse
-import backend.path_fetch as path_fetch
 
-router=APIRouter(prefix="/material", tags=["material"])
+@router.post("{dayID}/{filename}",
+                status_code=201,
+                responses={
+                    404: {"model": ClientErrorResponse},
+                    })
+async def upload_single_file(dayID: int, filename: str, file: UploadFile = File(...)):
+    """Upload a single file with basic validation"""
+    if file.filename == "":
+        raise HTTPException(status_code=400, detail="No file selected")
 
-@router.get("/{day_id}/{filename}")
-def get_file(day_id: int, filename: str):
-    path = path_fetch.get_safe_path("material", day_id, filename)
-    return FileResponse(path=path, filename=filename)
-    """
+    # Check if the folder exists, if not create it
+    UPLOAD_DIR = BASE_DIR / "uploads" / "material" / str(dayID)
+    UPLOAD_DIR.mkdir(exist_ok=True)
+    
+    file_path = BASE_DIR / "uploads" / "material" / str(dayID) / filename
+
+    # Validate the file first
+    validation = await doc_validator.validate_file(file)
+
+    if not validation["valid"]:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "message": "File validation failed",
+                "errors": validation["errors"]
+            }
+        )
+
+    # Check if file already exists
+    if file_path.exists():
+        raise DuplicateNameException("file" , filename)
+    
+    # Save the file
+    try:
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to save file: {str(e)}"
+        )
+
+    # TODO add the new material to the database.
+    #db_material.create_material(dayID, filename, file.content_type)
+
+    return {
+        "filename": file.filename,
+        "content_type": file.content_type,
+        "size": file.size,
+        "upload_time": datetime.now().isoformat(),
+        "location": str(file_path)
+    }

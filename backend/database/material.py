@@ -31,3 +31,6 @@ def delete_material(dayId: int, filename: str, session: Session):
     # Delete from database
     session.delete(material)
     session.commit()
+
+# TODO
+#def create_material
