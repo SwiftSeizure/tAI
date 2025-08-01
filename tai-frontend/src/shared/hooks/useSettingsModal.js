@@ -1,32 +1,49 @@
 import { useState } from 'react';
 import { putUpdateClassSettings } from '../services/put-update-class-settings';
 
-export const useSettingsModal = (classID) => { 
-
+export const useSettingsModal = (classID, onSuccess, onError) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const openModal = () => setIsOpen(true);
-    
-    const closeModal = async (settingsData = null) => {
-        if (settingsData) {
-            setIsLoading(true);
-                try {
-                    await putUpdateClassSettings(classID, settingsData);
-                } catch (error) {
-                    console.error('Failed to save settings:', error);
-                    return; 
-                } finally {
-                    setIsLoading(false);
-                }
+
+    const closeModal = () => setIsOpen(false);
+
+    const saveSettings = async (settingsData) => {
+        if (!settingsData) {
+            closeModal();
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            const response = await putUpdateClassSettings(classID, settingsData);
+            
+            // Call success callback if provided
+            if (onSuccess) {
+                onSuccess(response.data, settingsData);
             }
-        setIsOpen(false);
-    };  
+            
+            closeModal();
+        } catch (error) {
+            console.error('Failed to save settings:', error);
+            
+            // Call error callback if provided
+            if (onError) {
+                onError(error);
+            }
+            
+            // Don't close modal on error so user can retry
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return {
         isOpen,
         isLoading,
         openModal,
-        closeModal
+        closeModal,
+        saveSettings
     };
 };

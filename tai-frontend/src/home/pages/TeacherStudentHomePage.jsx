@@ -61,7 +61,7 @@ const TeacherStudentHomePage = () => {
 
         
             {/* Title card displaying a personalized welcome message */}
-            <TitleCard title={title} settings={true} />
+            <TitleCard title={title}  />
 
             {/* Grid container for class cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-items-center gap-4">      
