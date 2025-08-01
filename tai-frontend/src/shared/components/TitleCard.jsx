@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SettingsIcon from '@mui/icons-material/Settings';
 
@@ -7,6 +7,7 @@ import '../../App.css';
 import TitleHeading from "../animations/TitleHeading";
 import { useSettingsModal } from "../hooks/useSettingsModal";
 import { SettingsModal } from "../modals/SettingsModal";
+import { putUpdateClassSettings } from "../services/put-update-class-settings";
 
 /**
  * TitleCard Component
@@ -21,11 +22,12 @@ import { SettingsModal } from "../modals/SettingsModal";
  */
 export const TitleCard = ({ title, intro, settings, classID }) => {
     const navigate = useNavigate();
-    const location = useLocation();
 
     // Callbacks for settings operations
     const handleSettingsSuccess = (responseData, settingsData) => {
-        console.log('Settings saved successfully:', responseData);
+        console.log('Settings saved successfully:', responseData); 
+        putUpdateClassSettings(classID, settingsData); 
+        
         // You could add a toast notification here
         // You could update local state here if needed
     };
