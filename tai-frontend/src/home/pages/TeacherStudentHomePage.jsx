@@ -4,7 +4,8 @@ import ClassCard from "../components/ClassCard";
 import { TitleCard } from "../../shared/components/TitleCard";    
 import "react-icons/fa"; 
 import { useClasses } from "../hooks/useClasses";
-import { useCurrentUser, useIsAuthenticated } from "../../store/store";
+import { useCurrentUser, useIsAuthenticated } from "../../store/user-store"; 
+import { useClass } from "../../store/class-store";
 
 /**
  * TeacherStudentHomePage Component
@@ -20,7 +21,8 @@ import { useCurrentUser, useIsAuthenticated } from "../../store/store";
 const TeacherStudentHomePage = () => {   
     const navigate = useNavigate();
     const { user }  = useCurrentUser();
-    const isAuthenticated = useIsAuthenticated();
+    const isAuthenticated = useIsAuthenticated(); 
+    const [state, { setClasses }] = useClass();
 
     // Redirect to login if not authenticated
     useEffect(() => {
@@ -29,7 +31,11 @@ const TeacherStudentHomePage = () => {
         }
     }, [isAuthenticated, navigate]);
 
-    const { classes, isLoading, error } = useClasses(user.id, user.role);  
+    const { classes, isLoading, error } = useClasses();   
+
+    useEffect(() => {
+        setClasses(classes);
+    }, [classes]);
 
     /**
      * populateClassCards

@@ -4,7 +4,7 @@ import { useUnits } from "../hooks/useUnits";
 import UnitCard from "../components/UnitCard";
 import { TitleCard } from "../../shared/components/TitleCard"; 
 import Loading from "../../shared/components/Loading"; 
-import { useCurrentUser } from "../../store/store";
+import { useCurrentUser } from "../../store/user-store";
 
 
 /**

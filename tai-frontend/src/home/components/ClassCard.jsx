@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';   
-import { useCurrentUser } from '../../store/store';
+import { useCurrentUser } from '../../store/user-store';
 
 /**
  * ClassCard Component

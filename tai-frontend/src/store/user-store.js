@@ -1,5 +1,5 @@
 import { createStore, createHook } from 'react-sweet-state';
-import * as actions from './actions';
+import * as actions from './user-actions';
 
 // Key for localStorage
 export const USER_STORAGE_KEY = 'tai_user_state';

@@ -1,7 +1,7 @@
 import { useState } from 'react'; 
 import { useNavigate } from 'react-router-dom';   
 import { TitleCard } from '../../shared/components/TitleCard';   
-import { useUser } from '../../store/store';
+import { useUser } from '../../store/user-store';
 import '../../App.css'  
 
 

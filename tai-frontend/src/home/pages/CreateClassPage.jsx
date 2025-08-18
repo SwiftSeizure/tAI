@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { TitleCard } from "../../shared/components/TitleCard";   
 import { postCreateClass } from "../services/post-create-class";
 import { ChatSettings } from "../../shared/components/ChatSettings";
-import { useCurrentUser } from "../../store/store";
+import { useCurrentUser } from "../../store/user-store";
 
 
 /**

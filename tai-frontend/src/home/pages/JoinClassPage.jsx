@@ -3,7 +3,7 @@ import axios from "axios";
 import { TitleCard } from "../../shared/components/TitleCard";  
 import { useNavigate, useLocation } from "react-router-dom"; 
 import { postJoinClass } from "../services/post-join-class";
-import { useCurrentUser } from "../../store/store";
+import { useCurrentUser } from "../../store/user-store";
 
 /**
  * JoinClassPage Component

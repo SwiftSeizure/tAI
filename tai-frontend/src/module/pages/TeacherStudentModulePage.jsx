@@ -4,7 +4,7 @@ import { TitleCard } from "../../shared/components/TitleCard";
 import { useModules } from "../hooks/useModules";
 import ChatFeature from "../components/ChatFeature";
 import ModuleComponent from "../components/ModuleComponent";  
-import { useCurrentUser } from "../../store/store";
+import { useCurrentUser } from "../../store/user-store";
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import SettingsIcon from '@mui/icons-material/Settings';
