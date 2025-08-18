@@ -1,6 +1,8 @@
 import React, { useState } from "react";  
 import { presetChatSettings } from "../constants/preset-chat-settings"
 
+
+//TODO: Figure out a better way to pass this class name. 
 export const ChatSettings = ({ className, onSettingsChange }) => { 
     const [selectedSetting, setSelectedSetting] = useState(null);
 
