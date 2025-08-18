@@ -1,7 +1,8 @@
 import { useState } from 'react'; 
 import { useNavigate } from 'react-router-dom';   
-import { TitleCard } from '../../shared/components/TitleCard';  
-import '../../App.css' 
+import { TitleCard } from '../../shared/components/TitleCard';   
+import { useUserActions } from '../../store/store';
+import '../../App.css'  
 
 
 const teacherImage = require('../../images/teacher-login-image.png')
@@ -17,7 +18,10 @@ const studentImage = require('../../images/student-login-image.png');
 const LoginPage = () => {  
 
     // State to manage the selected role (teacher or student)
-    const [teacherOrStudent, setTeacherOrStudent] = useState('');  
+    const [teacherOrStudent, setTeacherOrStudent] = useState('');   
+    const [error, setError] = useState('');  
+
+    const { setUser } = useUserActions();
 
     // Hook to navigate to HomePage
     const navigate = useNavigate(); 
@@ -30,27 +34,40 @@ const LoginPage = () => {
      */
     const logIn = async () => { 
         try {   
-
-            
-            // TODO: Change once we have authentication and pass down the uid, the name and the role   
-
-            // Navigate to the home page with the selected role and user information
-            // This is just a placeholder for the demo.
+            // Set user data in the store based on the selected role
             if (teacherOrStudent === 'teacher1') { 
-                navigate('/home', {state: { userID: 1, name: 'Mr. Professor', role: 'teacher' }});
-            }   
+                setUser({
+                    id: 1,
+                    name: 'Mr. Professor',
+                    role: 'teacher',
+                    email: 'prof1@example.com'
+                });
+                navigate('/home');
+            }    
             else if (teacherOrStudent === 'teacher2'){ 
-                navigate(`/home`, {state: { userID: 2, name: 'Mrs. Professor', role: 'teacher' }});
+                setUser({
+                    id: 2,
+                    name: 'Mrs. Professor',
+                    role: 'teacher',
+                    email: 'prof2@example.com'
+                });
+                navigate('/home');
             } 
             else if (teacherOrStudent === 'student1'){ 
-                navigate(`/home`, {state: { userID: 1, name: 'Student Struggling', role: 'student'}});
-            }
+                setUser({
+                    id: 1,
+                    name: 'Student Struggling',
+                    role: 'student',
+                    email: 'student1@example.com'
+                });
+                navigate('/home');
+            } else {
+                setError('Please select a role to log in');
+            }  
             
-        }  
-
-        // Handle any errors that occur during the login process
-        catch (e) { 
-            console.log("There was an error wile logging in");
+        } catch (e) { 
+            console.error("There was an error while logging in:", e);
+            setError('An error occurred during login');
         }
     } 
 
@@ -130,7 +147,12 @@ const LoginPage = () => {
 
 
 
-            <div className="flex justify-center items-center "> 
+            {error && (
+                <div className="text-red-500 text-center mb-4">
+                    {error}
+                </div>
+            )}
+            <div className="flex justify-center items-center"> 
                 <button 
                     className="inline-block w-[200px] cursor-pointer border-2 border-gray-300 rounded-lg p-4 m-2 bg-transparent
                     font-medium text-[1.1rem] text-gray-800 text-center font-nunito

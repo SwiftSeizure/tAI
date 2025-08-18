@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';   
+import { useCurrentUser } from '../../store/store';
 
 /**
  * ClassCard Component
@@ -10,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
  * - userID: ID of the current user
  * - role: Role of the user (e.g., "teacher" or "student")
  */
-const ClassCard = ( {classID, classname, userID, role}  ) => {   
+const ClassCard = ( {classID, classname}  ) => {   
 
 
     // Logo for the class card 
@@ -20,6 +21,7 @@ const ClassCard = ( {classID, classname, userID, role}  ) => {
     // Hook to navigate to the UnitPage
     const navigate = useNavigate();   
 
+    const { user } = useCurrentUser();
 
 
     /**
@@ -29,7 +31,7 @@ const ClassCard = ( {classID, classname, userID, role}  ) => {
      */
     const goToUnitPage = (e) => { 
         e.preventDefault();  
-        navigate('/unitpage', {state: {classID, userID, role, classname}})
+        navigate('/unitpage', {state: {classID, classname}})
     }; 
 
 
@@ -41,15 +43,16 @@ const ClassCard = ( {classID, classname, userID, role}  ) => {
      * - Students are redirected to the "join class" page.
      */
     const goToNewClassPage = (e) => { 
-        e.preventDefault();  
+        e.preventDefault();   
+        console.log(user.role);
 
-        if (role === "teacher") { 
+        if (user.role === "teacher") { 
             // Go to CreateClass page for teacher  
-            navigate('/createclass', {state: { userID, role}});
+            navigate('/createclass');
         } 
         else { 
             // Go to the JoinClass page for student 
-            navigate('/joinclass', {state: { userID, role}});
+            navigate('/joinclass');
         }
 
     };

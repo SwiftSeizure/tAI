@@ -3,6 +3,7 @@ import axios from "axios";
 import { TitleCard } from "../../shared/components/TitleCard";  
 import { useNavigate, useLocation } from "react-router-dom"; 
 import { postJoinClass } from "../services/post-join-class";
+import { useCurrentUser } from "../../store/store";
 
 /**
  * JoinClassPage Component
@@ -17,14 +18,18 @@ const JoinClassPage = () => {
 
     const navigate = useNavigate();  
 
-    const location = useLocation(); 
-    const { userID, role } = location.state || {}; 
+    const {user } = useCurrentUser();
 
     const handleJoinClass = async (e) => { 
         e.preventDefault(); 
 
        const requestBody = { /* Whatever will be in body */ };
-       const response = await postJoinClass(classCode, requestBody); 
+       const response = await postJoinClass(classCode, requestBody);  
+
+       
+       const classID = response.data.id; 
+       const classname = response.data.name;
+       navigate('/unitpage', {state: { classID, classname}});
 
        // Figure out what to do with response 
     };

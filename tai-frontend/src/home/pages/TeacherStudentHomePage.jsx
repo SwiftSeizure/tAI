@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";   
-import { useLocation } from 'react-router-dom';  
+import React, { useEffect } from "react";   
+import { useNavigate } from 'react-router-dom';
 import ClassCard from "../components/ClassCard"; 
 import { TitleCard } from "../../shared/components/TitleCard";    
 import "react-icons/fa"; 
 import { useClasses } from "../hooks/useClasses";
+import { useCurrentUser, useIsAuthenticated } from "../../store/store";
 
 /**
  * TeacherStudentHomePage Component
@@ -17,25 +18,27 @@ import { useClasses } from "../hooks/useClasses";
  */
 
 const TeacherStudentHomePage = () => {   
-    
-    // Retrieve user information from the location state
-    const location = useLocation(); 
-    const { userID, name, role } = location.state || {};  
+    const navigate = useNavigate();
+    const { user }  = useCurrentUser();
+    const isAuthenticated = useIsAuthenticated();
 
-    const { classes, isLoading, error } = useClasses(userID, role);  
-
+    // Redirect to login if not authenticated
     useEffect(() => {
-        populateClassCards();
-    }, [userID, role, isLoading])
+        if (!isAuthenticated) {
+            navigate('/');
+        }
+    }, [isAuthenticated, navigate]);
 
+    const { classes, isLoading, error } = useClasses(user.id, user.role);  
 
     /**
      * populateClassCards
      * Generates a list of `ClassCard` components based on the fetched class data.
      * Each `ClassCard` represents a class the user is associated with.
      */
-    const populateClassCards = () => {   
-        console.log(classes); // Debugging: Log the fetched class data
+    const populateClassCards = () => {
+        if (isLoading) return <div>Loading classes...</div>;
+        if (error) return <div>Error loading classes: {error}</div>;
         
         return ( 
             <>   
@@ -44,8 +47,8 @@ const TeacherStudentHomePage = () => {
                         key={classroom.id} 
                         classID={classroom.id}
                         classname={classroom.name}  
-                        userID={userID}
-                        role={role}
+                        userID={user?.id}
+                        role={user?.role}
                     />
                 ))} 
             </>
@@ -53,7 +56,7 @@ const TeacherStudentHomePage = () => {
     }; 
 
     // Title for the page, personalized with the user's name
-    const title = "Welcome " + name;
+    const title = `Welcome ${user?.name || ''}`;
 
     return ( 
         <>   
@@ -72,8 +75,8 @@ const TeacherStudentHomePage = () => {
                 <ClassCard   
                     classID={null}
                     classname={"newClass"}  
-                    userID={userID}
-                    role={role}
+                    userID={user?.id}
+                    role={user?.role}
                 />   
                 
             </div>  

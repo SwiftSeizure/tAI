@@ -3,7 +3,9 @@ import { useLocation } from 'react-router-dom';
 import { useUnits } from "../hooks/useUnits";
 import UnitCard from "../components/UnitCard";
 import { TitleCard } from "../../shared/components/TitleCard"; 
-import Loading from "../../shared/components/Loading";
+import Loading from "../../shared/components/Loading"; 
+import { useCurrentUser } from "../../store/store";
+
 
 /**
  * TeacherStudentUnitPage 
@@ -20,7 +22,8 @@ const TeacherStudentUnitPage = () => {
 
     // Retrieve class and user information from the location state
     const location = useLocation(); 
-    const { classID, userID, role, classname } = location.state || {}; 
+    const { classID, classname } = location.state || {};  
+    const { user } = useCurrentUser();
 
     // Hook to fetch unit data from the backend
     const { units, isLoading, error } = useUnits(classID);
@@ -40,19 +43,19 @@ const TeacherStudentUnitPage = () => {
                     unitID={unit.id} 
                     unitName={unit.name}  
                     classID={classID}
-                    userID={userID} 
-                    role={role}
+                    userID={user.id} 
+                    role={user.role}
                 />
             ))}  
 
-            {role === "teahcer" 
+            {user.role === "teahcer" 
                 ? <UnitCard 
                     key={null} 
                     unitID={null}
                     unitName={null}  
                     classID={classID}
-                    userID={userID}
-                    role={role}/> 
+                    userID={user.id}
+                    role={user.role}/> 
                 : null
             }
             </>
@@ -77,8 +80,8 @@ const TeacherStudentUnitPage = () => {
                             key={"newUnit"} 
                             unitID={null}
                             unitName={null} 
-                            userID={userID}
-                            role={role}
+                            userID={user.id}
+                            role={user.role}
                         />
                     </div>
             }
