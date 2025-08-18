@@ -3,7 +3,8 @@ import { useLocation } from "react-router-dom";
 import { TitleCard } from "../../shared/components/TitleCard";  
 import { useModules } from "../hooks/useModules";
 import ChatFeature from "../components/ChatFeature";
-import ModuleComponent from "../components/ModuleComponent"; 
+import ModuleComponent from "../components/ModuleComponent";  
+import { useCurrentUser } from "../../store/store";
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -49,7 +50,9 @@ const TeacherStudentModulePage = () => {
 
     // Retrieve user information from the location state
     const location = useLocation(); 
-    const {unitID, unitName, userID, role} = location.state || {};  
+    const {unitID, unitName } = location.state || {};   
+
+    const { user } = useCurrentUser();
 
     // State to store the list of modules fetched from the backend
     const { modules, isLoading, error } = useModules(unitID);  
@@ -65,10 +68,10 @@ const TeacherStudentModulePage = () => {
     const toggleChatExpand = () => {
         setIsChatExpanded(!isChatExpanded);  
 
-        if (!isChatExpanded && role === "student") { 
+        if (!isChatExpanded && user.role === "student") { 
             setDisplayType('chat') 
         } 
-        else if (!isChatExpanded && role === "teacher") { 
+        else if (!isChatExpanded && user.role === "teacher") { 
             setDisplayType('chat-settings'); 
         }  
 
@@ -300,7 +303,7 @@ const TeacherStudentModulePage = () => {
 
 
                 {/* Chat button for students or chat settings for teachers */}
-                {role === 'student' ? 
+                {user.role === 'student' ? 
                     <button 
                         className="fixed bottom-4 right-8 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out "  
                         onClick={toggleChatExpand} > 

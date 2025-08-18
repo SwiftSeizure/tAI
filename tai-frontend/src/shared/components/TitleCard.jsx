@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SettingsIcon from '@mui/icons-material/Settings';
 
@@ -21,7 +21,6 @@ import { SettingsModal } from "../modals/SettingsModal";
  */
 export const TitleCard = ({ title, intro, settings, classID }) => {
     const navigate = useNavigate();
-    const location = useLocation();
 
     // Callbacks for settings operations
     const handleSettingsSuccess = (responseData, settingsData) => {

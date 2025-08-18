@@ -1,7 +1,7 @@
 import { useState } from 'react'; 
 import { useNavigate } from 'react-router-dom';   
 import { TitleCard } from '../../shared/components/TitleCard';   
-import { useUserActions } from '../../store/store';
+import { useUser } from '../../store/store';
 import '../../App.css'  
 
 
@@ -21,7 +21,7 @@ const LoginPage = () => {
     const [teacherOrStudent, setTeacherOrStudent] = useState('');   
     const [error, setError] = useState('');  
 
-    const { setUser } = useUserActions();
+    const [, { setUser }] = useUser();
 
     // Hook to navigate to HomePage
     const navigate = useNavigate(); 

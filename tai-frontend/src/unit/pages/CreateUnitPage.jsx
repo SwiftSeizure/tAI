@@ -1,6 +1,6 @@
 import React, { useState} from "react"; 
 import { TitleCard } from "../../shared/components/TitleCard"; 
-import { useLocation, useNavigate } from "react-router-dom"; 
+import { useLocation, useNavigate } from "react-router-dom";  
 import axios from "axios";
 
 // Not yet implemented, but this is the page for creating a unit.
@@ -10,7 +10,7 @@ const CreateUnitPage = () => {
     const [newUnitName, setNewUnitName] = useState("");
 
     const location = useLocation();  
-    const {classID, userID, role } = location.state || {};  
+    const { classID } = location.state || {};   
 
     const navigate = useNavigate();
 
@@ -40,7 +40,7 @@ const CreateUnitPage = () => {
                 const unitID = response.data.id; 
                 const unitname = response.data.name;  
                 
-                navigate('/modulepage', {state: { unitID, unitname, userID, role}});
+                navigate('/modulepage', {state: { unitID, unitname }});
 
             }).catch((error) => { 
                 console.log("Error creating unit:", error);
