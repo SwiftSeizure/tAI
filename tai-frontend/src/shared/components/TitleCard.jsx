@@ -7,6 +7,7 @@ import '../../App.css';
 import TitleHeading from "../animations/TitleHeading";
 import { useSettingsModal } from "../hooks/useSettingsModal";
 import { SettingsModal } from "../modals/SettingsModal";
+import { useCurrentClass } from "../../store/class-store";
 
 /**
  * TitleCard Component
@@ -17,14 +18,19 @@ import { SettingsModal } from "../modals/SettingsModal";
  * - title: The title to display on the card. If empty, a default message is shown.
  * - intro: Boolean for intro animation
  * - settings: Boolean to show settings button
- * - classID: ID of the class for settings updates
  */
-export const TitleCard = ({ title, intro, settings, classID }) => {
-    const navigate = useNavigate();
+export const TitleCard = ({ title, intro, settings }) => {
+    const navigate = useNavigate(); 
+    const { currentClass } = useCurrentClass();
 
     // Callbacks for settings operations
     const handleSettingsSuccess = (responseData, settingsData) => {
-        console.log('Settings saved successfully:', responseData);
+        console.log('Settings saved successfully:', responseData);   
+
+
+        // Update the current class in the store  
+        //TODO: Update class here for state managment 
+        //updateClass(responseDat);
         // You could add a toast notification here
         // You could update local state here if needed
     };
@@ -41,7 +47,7 @@ export const TitleCard = ({ title, intro, settings, classID }) => {
         openModal, 
         closeModal, 
         saveSettings 
-    } = useSettingsModal(classID, handleSettingsSuccess, handleSettingsError);
+    } = useSettingsModal(currentClass.id, handleSettingsSuccess, handleSettingsError);
 
     /**
      * goBackPage

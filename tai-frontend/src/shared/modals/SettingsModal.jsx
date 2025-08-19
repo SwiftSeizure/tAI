@@ -7,11 +7,11 @@ export const SettingsModal = ({ onSave, onCancel, isLoading }) => {
         settings: {} 
     });
 
-    const handleSettingsChange = (selectedSetting) => {
+    const handleSettingsChange = (selectedSetting) => { 
         setFormData(prev => ({
             ...prev,
             settings: selectedSetting
-        }));
+        })); 
     };
 
     const handleSave = () => {
@@ -19,7 +19,9 @@ export const SettingsModal = ({ onSave, onCancel, isLoading }) => {
         if (!formData.name.trim() && Object.keys(formData.settings).length === 0) {
             // Could add error handling here
             return;
-        }
+        } 
+
+        
         
         onSave(formData);
     };

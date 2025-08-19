@@ -1,5 +1,3 @@
-import { useNavigate } from 'react-router-dom';   
-import { useCurrentUser } from '../../store/user-store';
 
 /**
  * ClassCard Component
@@ -22,10 +20,6 @@ const ClassCard = ( {classID, classname, onClick }  ) => {
     // Logo for the class card 
     // TODO: change this to allow teacher to upload or select from a list of logos
     const logo = require("../../images/example-class-logo.png");  
-
-    // const navigate = useNavigate();   
-
-    const { user } = useCurrentUser();
 
 
     /**

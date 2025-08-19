@@ -25,8 +25,9 @@ const TeacherStudentUnitPage = () => {
     console.log(currentClass);
     const { user } = useCurrentUser();
 
-    // Hook to fetch unit data from the backend
-    const { units, isLoading } = useUnits(currentClass.classID);
+    // Hook to fetch unit data from the backend 
+    console.log("This is the current class in the unit page",currentClass);
+    const { units, isLoading } = useUnits(currentClass.id);
 
     /**
      * populateUnitCards
@@ -42,7 +43,7 @@ const TeacherStudentUnitPage = () => {
                     key={unit.id} 
                     unitID={unit.id} 
                     unitName={unit.name}  
-                    classID={currentClass.classID}
+                    classID={currentClass.id}
                     userID={user.id} 
                     role={user.role}
                 />
@@ -69,7 +70,12 @@ const TeacherStudentUnitPage = () => {
     return(  
         <> 
         <div className="min-h-screen min-w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient"> 
-            <TitleCard title={currentClass.classname} settings={true}  classID={currentClass.classID}/>   
+            <TitleCard 
+                title={currentClass?.name} 
+                settings={true}  
+                classID={currentClass?.id}
+                intro={true}
+            />   
 
             {isLoading 
                 ? <Loading /> 

@@ -4,7 +4,6 @@ import ClassCard from "../components/ClassCard";
 import { TitleCard } from "../../shared/components/TitleCard";    
 import "react-icons/fa"; 
 import { useCurrentUser, useIsAuthenticated } from "../../store/user-store"; 
-import { setCurrentClass } from "../../store/class-actions";
 import { useClass, useAllClasses, useClassesLoading, useClassesError } from "../../store/class-store";
 
 /**
