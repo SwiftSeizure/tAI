@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";   
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';   
 import ClassCard from "../components/ClassCard"; 
 import { TitleCard } from "../../shared/components/TitleCard";    
 import "react-icons/fa"; 
-import { useClasses } from "../hooks/useClasses";
 import { useCurrentUser, useIsAuthenticated } from "../../store/user-store"; 
-import { useClass } from "../../store/class-store";
+import { setCurrentClass } from "../../store/class-actions";
+import { useClass, useAllClasses, useClassesLoading, useClassesError } from "../../store/class-store";
 
 /**
  * TeacherStudentHomePage Component
@@ -20,9 +20,12 @@ import { useClass } from "../../store/class-store";
 
 const TeacherStudentHomePage = () => {   
     const navigate = useNavigate();
-    const { user }  = useCurrentUser();
-    const isAuthenticated = useIsAuthenticated(); 
-    const [state, { setClasses }] = useClass();
+    const { user } = useCurrentUser();
+    const isAuthenticated = useIsAuthenticated();
+    const { classes } = useAllClasses();
+    const { isLoading } = useClassesLoading();
+    const { error } = useClassesError();
+    const [state, { setCurrentClass, fetchClasses }] = useClass();
 
     // Redirect to login if not authenticated
     useEffect(() => {
@@ -31,11 +34,24 @@ const TeacherStudentHomePage = () => {
         }
     }, [isAuthenticated, navigate]);
 
-    const { classes, isLoading, error } = useClasses();   
-
+    // Fetch classes when component mounts or user changes
     useEffect(() => {
-        setClasses(classes);
-    }, [classes]);
+        if (user.id && user.role) {
+            fetchClasses(user.id, user.role);
+        }
+    }, [user, fetchClasses]); 
+
+    const handleClassSelect = async (classID, classname) => { 
+        try {  
+            console.log("hANDLE CLASS SELECT CALLED");
+            await setCurrentClass(classID); 
+            console.log("CURRENT CLASS SET", state.currentClass);
+            navigate('/unitpage');
+        }
+        catch (error) { 
+            console.error('Error selecting class:', error);
+        }
+    };
 
     /**
      * populateClassCards
@@ -44,7 +60,9 @@ const TeacherStudentHomePage = () => {
      */
     const populateClassCards = () => {
         if (isLoading) return <div>Loading classes...</div>;
-        if (error) return <div>Error loading classes: {error}</div>;
+        if (error) return <div>Error loading classes: {error}</div>; 
+
+        console.log(classes);
         
         return ( 
             <>   
@@ -53,8 +71,7 @@ const TeacherStudentHomePage = () => {
                         key={classroom.id} 
                         classID={classroom.id}
                         classname={classroom.name}  
-                        userID={user?.id}
-                        role={user?.role}
+                        onClick={handleClassSelect}
                     />
                 ))} 
             </>
@@ -81,8 +98,7 @@ const TeacherStudentHomePage = () => {
                 <ClassCard   
                     classID={null}
                     classname={"newClass"}  
-                    userID={user?.id}
-                    role={user?.role}
+                    onClick={handleClassSelect}
                 />   
                 
             </div>  

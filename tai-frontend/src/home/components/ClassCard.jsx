@@ -11,15 +11,19 @@ import { useCurrentUser } from '../../store/user-store';
  * - userID: ID of the current user
  * - role: Role of the user (e.g., "teacher" or "student")
  */
-const ClassCard = ( {classID, classname}  ) => {   
+const ClassCard = ( {classID, classname, onClick }  ) => {
+     
+    
+    const handleClick = () => { 
+        onClick(classID, classname);
+    };
 
 
     // Logo for the class card 
     // TODO: change this to allow teacher to upload or select from a list of logos
     const logo = require("../../images/example-class-logo.png");  
 
-    // Hook to navigate to the UnitPage
-    const navigate = useNavigate();   
+    // const navigate = useNavigate();   
 
     const { user } = useCurrentUser();
 
@@ -29,10 +33,10 @@ const ClassCard = ( {classID, classname}  ) => {
      * Navigates to the unit page for the selected class.
      * Passes classID, userID, role, and classname as state to the next page.
      */
-    const goToUnitPage = (e) => { 
-        e.preventDefault();  
-        navigate('/unitpage', {state: {classID, classname}})
-    }; 
+    // const goToUnitPage = (e) => { 
+    //     e.preventDefault();  
+    //     navigate('/unitpage', {state: {classID, classname}})
+    // }; 
 
 
 
@@ -42,20 +46,18 @@ const ClassCard = ( {classID, classname}  ) => {
      * - Teachers are redirected to the "create class" page.
      * - Students are redirected to the "join class" page.
      */
-    const goToNewClassPage = (e) => { 
-        e.preventDefault();   
-        console.log(user.role);
+    // const goToNewClassPage = (e) => { 
+    //     e.preventDefault();   
 
-        if (user.role === "teacher") { 
-            // Go to CreateClass page for teacher  
-            navigate('/createclass');
-        } 
-        else { 
-            // Go to the JoinClass page for student 
-            navigate('/joinclass');
-        }
-
-    };
+    //     if (user.role === "teacher") { 
+    //         // Go to CreateClass page for teacher  
+    //         navigate('/createclass');
+    //     } 
+    //     else { 
+    //         // Go to the JoinClass page for student 
+    //         navigate('/joinclass');
+    //     }
+    // };
 
  
     // Render the class card based on the classname prop
@@ -64,7 +66,7 @@ const ClassCard = ( {classID, classname}  ) => {
             <div className="overflow-hidden p-12">  
                 <button 
                     className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
-                    onClick={ (e) => goToUnitPage(e) }
+                    onClick={ () => handleClick() }
                     >   
                     {/* Display the class logo */} 
                     <div className="pb-2 rounded-md"> 
@@ -93,7 +95,7 @@ const ClassCard = ( {classID, classname}  ) => {
             <div className="overflow-hidden p-12"> 
                 <button 
                  className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-green-400 hover:border-green-500" 
-                    onClick={ (e) => goToNewClassPage(e) } 
+                    onClick={ () => handleClick() } 
                     > 
                     <div className="pb-2 rounded-md">  
                         {/* Display the class logo  TODO change this to a plus or something similar */}

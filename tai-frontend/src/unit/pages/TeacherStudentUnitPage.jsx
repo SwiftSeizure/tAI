@@ -1,10 +1,10 @@
 import React from "react";   
-import { useLocation } from 'react-router-dom';   
 import { useUnits } from "../hooks/useUnits";
 import UnitCard from "../components/UnitCard";
 import { TitleCard } from "../../shared/components/TitleCard"; 
 import Loading from "../../shared/components/Loading"; 
 import { useCurrentUser } from "../../store/user-store";
+import { useCurrentClass } from "../../store/class-store";
 
 
 /**
@@ -21,12 +21,12 @@ import { useCurrentUser } from "../../store/user-store";
 const TeacherStudentUnitPage = () => {    
 
     // Retrieve class and user information from the location state
-    const location = useLocation(); 
-    const { classID, classname } = location.state || {};  
+    const { currentClass } = useCurrentClass(); 
+    console.log(currentClass);
     const { user } = useCurrentUser();
 
     // Hook to fetch unit data from the backend
-    const { units, isLoading, error } = useUnits(classID);
+    const { units, isLoading } = useUnits(currentClass.classID);
 
     /**
      * populateUnitCards
@@ -42,7 +42,7 @@ const TeacherStudentUnitPage = () => {
                     key={unit.id} 
                     unitID={unit.id} 
                     unitName={unit.name}  
-                    classID={classID}
+                    classID={currentClass.classID}
                     userID={user.id} 
                     role={user.role}
                 />
@@ -53,7 +53,7 @@ const TeacherStudentUnitPage = () => {
                     key={null} 
                     unitID={null}
                     unitName={null}  
-                    classID={classID}
+                    classID={currentClass.classID}
                     userID={user.id}
                     role={user.role}/> 
                 : null
@@ -69,7 +69,7 @@ const TeacherStudentUnitPage = () => {
     return(  
         <> 
         <div className="min-h-screen min-w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient"> 
-            <TitleCard title={classname} settings={true}  classID={classID}/>   
+            <TitleCard title={currentClass.classname} settings={true}  classID={currentClass.classID}/>   
 
             {isLoading 
                 ? <Loading /> 
