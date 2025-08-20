@@ -24,13 +24,13 @@ export const TitleCard = ({ title, intro, settings }) => {
     const { currentClass } = useCurrentClass();
 
     // Callbacks for settings operations
-    const handleSettingsSuccess = (responseData, settingsData) => {
+    const handleSettingsSuccess = (responseData) => {
         console.log('Settings saved successfully:', responseData);   
 
 
         // Update the current class in the store  
         //TODO: Update class here for state managment 
-        //updateClass(responseDat);
+        // updateClass(currentClass.id);
         // You could add a toast notification here
         // You could update local state here if needed
     };
@@ -47,7 +47,7 @@ export const TitleCard = ({ title, intro, settings }) => {
         openModal, 
         closeModal, 
         saveSettings 
-    } = useSettingsModal(currentClass.id, handleSettingsSuccess, handleSettingsError);
+    } = useSettingsModal(currentClass?.id, handleSettingsSuccess, handleSettingsError);
 
     /**
      * goBackPage

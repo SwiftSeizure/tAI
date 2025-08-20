@@ -26,7 +26,7 @@ const TeacherStudentUnitPage = () => {
     const { user } = useCurrentUser();
 
     // Hook to fetch unit data from the backend 
-    console.log("This is the current class in the unit page",currentClass);
+    console.log("This is the current class in the unit page", currentClass);
     const { units, isLoading } = useUnits(currentClass.id);
 
     /**

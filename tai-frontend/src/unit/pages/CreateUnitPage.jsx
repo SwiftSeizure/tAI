@@ -1,6 +1,8 @@
 import React, { useState} from "react"; 
 import { TitleCard } from "../../shared/components/TitleCard"; 
-import { useLocation, useNavigate } from "react-router-dom";  
+import { useLocation, useNavigate } from "react-router-dom";   
+import { useCurrentClass } from "../../store/class-store"; 
+import { postNewUnit } from "../services/post-new-unit";
 import axios from "axios";
 
 // Not yet implemented, but this is the page for creating a unit.
@@ -10,7 +12,7 @@ const CreateUnitPage = () => {
     const [newUnitName, setNewUnitName] = useState("");
 
     const location = useLocation();  
-    const { classID } = location.state || {};   
+    const { currentClass } = useCurrentClass();
 
     const navigate = useNavigate();
 
@@ -18,39 +20,13 @@ const CreateUnitPage = () => {
     const handleCreateUnit = async (e) => { 
         e.preventDefault();  
 
-        // TODO: Send post, 
-        // Add route to unit page    
-        try { 
-            const requestBody = {
-                name: newUnitName, 
-                settings: { 
+        const response = await postNewUnit(currentClass.id, newUnitName); 
 
-                } 
-            } 
-
-            axios.post(`http://localhost:8000/classroom/${classID}/unit`, 
-                requestBody,
-                {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                } 
-            ).then((response) => { 
-
-                const unitID = response.data.id; 
-                const unitname = response.data.name;  
-                
-                navigate('/modulepage', {state: { unitID, unitname }});
-
-            }).catch((error) => { 
-                console.log("Error creating unit:", error);
-            });
-        } 
-        catch (error) { 
-            console.log("Error creating unit:", error);
+        if (response.success) {
+            navigate(`/modulepage`);
         }
 
-    }; 
+    };
 
      
 
