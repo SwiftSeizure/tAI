@@ -4,7 +4,7 @@ from typing import Any, Annotated
 from backend.database import classroom as classroom_db
 from backend.database.schema import DBTeacher, DBUnit, DBClass
 from backend.dependencies import DBSession
-from backend.models import ClientErrorResponse, ClassroomResponse, ClassroomUnit, CreateUnit, ClassroomUpdate
+from backend.models import ClientErrorResponse, ClassroomResponse, ClassroomUnit, CreateUnit, ClassroomUpdate, ClassroomUpdateReturn
 
 router = APIRouter(prefix="/classroom", tags=["classroom"])
 
@@ -78,7 +78,7 @@ def update_chat(classroomID: int, classroomUpdate: ClassroomUpdate, session: DBS
         422: If the classroom update data is invalid.
 
     Returns:
-        None
+        ClassroomUpdateReturn
     """
     classroom_db.update_classroom(classroomID, classroomUpdate, session)
-
+    ret = ClassroomUpdateReturn(classID = classroomID, name = classroomUpdate.name, settings = classroomUpdate.settings)
