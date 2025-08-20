@@ -21,11 +21,17 @@ class HomeClass(BaseModel):
     name: str
 
 
-# Classroom Input Models ------------------------------------------
-class ClassroomUpdate(BaseModel):
+# Classroom Input Models -----------------------------------------
+
+class ClassroomUpdateReturn(Basemodel):
     classID: int
     name: str
     settings: dict
+
+class ClassroomUpdate(BaseModel):
+    name: str
+    settings: dict
+
 class CreateUnit(BaseModel):
     name: str
     settings: dict
