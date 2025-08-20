@@ -89,7 +89,7 @@ def delete_file(dayID: int, filename: str, session: DBSession):
                 responses={
                     404: {"model": ClientErrorResponse},
                     })
-async def upload_single_file(dayID: int, filename: str, file: UploadFile = File(...)):
+async def upload_single_file(dayID: int, name: str, session: DBSession, file: UploadFile = File(...)):
     """Upload a single file with basic validation"""
     if file.filename == "":
         raise HTTPException(status_code=400, detail="No file selected")
@@ -98,7 +98,11 @@ async def upload_single_file(dayID: int, filename: str, file: UploadFile = File(
     UPLOAD_DIR = BASE_DIR / "uploads" / "material" / str(dayID)
     UPLOAD_DIR.mkdir(exist_ok=True)
     
-    file_path = BASE_DIR / "uploads" / "material" / str(dayID) / filename
+    # Use the original filename from the uploaded file
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="Invalid file: filename is missing")
+    safe_filename = Path(file.filename).name  # Remove any path components
+    file_path = UPLOAD_DIR / safe_filename
 
     # Validate the file first
     validation = await doc_validator.validate_file(file)
@@ -114,7 +118,7 @@ async def upload_single_file(dayID: int, filename: str, file: UploadFile = File(
 
     # Check if file already exists
     if file_path.exists():
-        raise DuplicateNameException("file" , filename)
+        raise DuplicateNameException("file" , safe_filename)
     
     # Save the file
     try:
@@ -126,13 +130,5 @@ async def upload_single_file(dayID: int, filename: str, file: UploadFile = File(
             detail=f"Failed to save file: {str(e)}"
         )
 
-    # TODO add the new material to the database.
-    #db_material.create_material(dayID, filename, file.content_type)
-
-    return {
-        "filename": file.filename,
-        "content_type": file.content_type,
-        "size": file.size,
-        "upload_time": datetime.now().isoformat(),
-        "location": str(file_path)
-    }
+    # Add the new material to the database and return the created entry.
+    return db_material.create_material(dayID, name, safe_filename, file.content_type, session)

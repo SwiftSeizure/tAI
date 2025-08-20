@@ -33,4 +33,40 @@ def delete_material(dayId: int, filename: str, session: Session):
     session.commit()
 
 # TODO
-#def create_material
+"""class DBMaterial(Base):
+    __tablename__ = "material"
+
+    id = Column(Integer, primary_key = True, index = True)
+    name = Column(String(25), nullable=False)
+    filename = Column(String(225), nullable=False)
+    sequence = Column(Integer, nullable=False)
+    path = Column(String(255),nullable=False)
+    dayId = Column(ForeignKey("day.id"))
+
+    day = relationship("DBDay", back_populates="materials")"""
+def create_material(dayID: int, name: str, filename: str, fileType: str | None, session: Session) -> DBMaterial:
+    """Create a new material entry in the database.
+    
+    Args:
+        dayID (int): The ID of the day the material belongs to
+        filename (str): The name of the file
+        fileType (str): The type of the file
+        session (Session): Database session
+        
+    Returns:
+        DBMaterial: The created material entry
+    """
+    
+    new_material = DBMaterial(
+        name=name,
+        filename=filename,
+        sequence=0,  # Default sequence, can be updated later
+        path=f"uploads/material/{dayID}/{filename}",
+        dayId=dayID
+    )
+    
+    session.add(new_material)
+    session.commit()
+    session.refresh(new_material)
+    
+    return new_material
