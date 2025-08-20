@@ -119,12 +119,12 @@ def delete_file(dayID: int, filename: str, session: DBSession):
         raise UploadNotFoundException(dayID, filename)
     
 
-# TODO Continue converting.
 @router.post("{dayID}/{filename}",
                 status_code=201,
                 responses={
                     404: {"model": ClientErrorResponse},
-                    })
+                    },
+                summary="Upload an assignment file for to a day.")
 async def upload_assignment(dayID: int, name: str, session: DBSession, file: UploadFile = File(...)):
     """Upload a single file with basic validation"""
     if file.filename == "":
