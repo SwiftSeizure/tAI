@@ -23,6 +23,7 @@ class HomeClass(BaseModel):
 
 # Classroom Input Models ------------------------------------------
 class ClassroomUpdate(BaseModel):
+    classID: int
     name: str
     settings: dict
 class CreateUnit(BaseModel):
