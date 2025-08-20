@@ -32,18 +32,7 @@ def delete_material(dayId: int, filename: str, session: Session):
     session.delete(material)
     session.commit()
 
-# TODO
-"""class DBMaterial(Base):
-    __tablename__ = "material"
 
-    id = Column(Integer, primary_key = True, index = True)
-    name = Column(String(25), nullable=False)
-    filename = Column(String(225), nullable=False)
-    sequence = Column(Integer, nullable=False)
-    path = Column(String(255),nullable=False)
-    dayId = Column(ForeignKey("day.id"))
-
-    day = relationship("DBDay", back_populates="materials")"""
 def create_material(dayID: int, name: str, filename: str, fileType: str | None, session: Session) -> DBMaterial:
     """Create a new material entry in the database.
     
