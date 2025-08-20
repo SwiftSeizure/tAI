@@ -92,3 +92,22 @@ def update_unit(unitID: int, unitUpdate: UnitUpdate, session: DBSession):
         None
     """
     unit_db.update_unit(unitID, unitUpdate, session)
+    
+
+
+
+@router.delete("/{unitID}",
+               status_code=204,
+               responses={404: {"model": ClientErrorResponse}},
+               summary="Delete a unit.")
+def delete_classroom(unitID: int, session: DBSession):
+    """Delete a unit by its ID.
+    Args:
+        unitID (int): The ID of the unit to delete.
+        session (DBSession): The database session.
+    Raises:
+        404: If the unit with the given ID is not found.
+    Returns:
+        None
+    """
+    unit_db.delete_unit(unitID, session)

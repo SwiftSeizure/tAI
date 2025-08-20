@@ -50,4 +50,3 @@ def getDayMaterials(dayID:int, session:DBSession) -> DayMaterialResponse:
         materials = [DayMaterial(id = m.id, name = m.name, filename = m.filename)for m in db_materials] #type: ignore
 
         return DayMaterialResponse(materials = materials)
-

@@ -21,7 +21,7 @@ def getDay(dayId:int, session:Session) -> DBDay:
     day = session.execute(stmnt).scalar_one_or_none()
 
     if not day:
-        raise EntityNotFoundException("day",day)
+        raise EntityNotFoundException("day",dayId)
     
     return day
 
@@ -64,3 +64,5 @@ def getDayMaterial(dayId:int, session:Session) -> list[DBMaterial]:
         raise EntityNotFoundException("day", day)
     
     return day.materials
+
+
