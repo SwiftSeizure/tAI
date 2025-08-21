@@ -7,7 +7,7 @@ import { useCurrentClass } from "../../store/class-store";
 import { useUnit } from "../../store/unit-store";
 import { useNavigate } from "react-router-dom";
 import { useIsAuthenticated } from "../../store/user-store";
-import { useAllUnits } from "../../store/unit-store";
+import { useAllUnits, useUnitLoading, useUnitError } from "../../store/unit-store";
 
 /**
  * TeacherStudentUnitPage 
@@ -29,6 +29,8 @@ const TeacherStudentUnitPage = () => {
     const [state, { setCurrentUnit, fetchUnits } ] = useUnit();  
     const isAuthenticated = useIsAuthenticated(); 
     const { units } = useAllUnits();
+    const { isLoading } = useUnitLoading();
+    const { error } = useUnitError();
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -39,9 +41,6 @@ const TeacherStudentUnitPage = () => {
     useEffect(() => {
         fetchUnits(currentClass.id);
     }, [currentClass.id]);
-
-    // Hook to fetch unit data from the backend 
-    console.log("This is the current class in the unit page", currentClass);  
 
 
     const handleUnitSelect = async (unitID) => {
@@ -79,14 +78,6 @@ const TeacherStudentUnitPage = () => {
                 />
             ))}  
 
-            {user.role === "teacher" 
-                ? <UnitCard 
-                    key={null} 
-                    unitID={null}
-                    unitName={null}  
-                    onClick={handleUnitSelect}/>
-                : null
-            }
             </>
         )
 
@@ -108,12 +99,15 @@ const TeacherStudentUnitPage = () => {
                 ? <Loading /> 
                 :  
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-items-center gap-4">     
-                        {populateUnitCards()}     
-                        <UnitCard 
-                            key={"newUnit"} 
-                            unitID={null}
-                            unitName={null} 
-                            onClick={handleUnitSelect}/>
+                        {populateUnitCards()}    
+                        {user.role === "teacher" 
+                            ? <UnitCard 
+                                key={null} 
+                                unitID={null}
+                                unitName={null}  
+                                onClick={handleUnitSelect}/>
+                            : null
+                        }  
                     </div>
             }
         </div>

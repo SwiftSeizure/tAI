@@ -1,7 +1,5 @@
 import React from "react";   
-import { useNavigate } from "react-router-dom"; 
 import { useCurrentUser } from "../../store/user-store"; 
-import { useCurrentClass } from "../../store/class-store";
 
 /**
  * UnitCard Component
@@ -19,32 +17,7 @@ const UnitCard = ( {unitID, unitName, onClick } ) => {
     // TODO: Change this so that it pulls the logo from the backend
     const logo = require("../../images/example-class-logo.png");  
 
-    // Hook to navigate to the ModulePage
-    const navigate = useNavigate();     
-
     const { user } = useCurrentUser();
-    const { currentClass } = useCurrentClass(); 
-
-
-
-    // /**
-    //  * goToPage
-    //  * Navigates the user to the module page for the selected unit.
-    //  * Passes unitID, unitName, userID, and role as state to the next page.
-    //  * @param {Event} e - The click event
-    //  */
-    // const goToPage = (e) => { 
-    //     e.preventDefault(); 
-    //     navigate('/modulepage', {state: { unitID, unitName }});      
-    // } 
-
-    // /** 
-    //  * 
-    //  */ 
-    // const goToNewModulePage = (e) => { 
-    //     e.preventDefault(); 
-    //     navigate('/createunit', {state: {classID: currentClass.id}});
-    // } 
 
     const handleOnClick = () => { 
         onClick(unitID);

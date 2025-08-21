@@ -4,7 +4,7 @@ import { useModules } from "../hooks/useModules";
 import ChatFeature from "../components/ChatFeature";
 import ModuleComponent from "../components/ModuleComponent";  
 import { useCurrentUser } from "../../store/user-store"; 
-import { useUnit } from "../../store/unit-store";
+import { useCurrentUnit } from "../../store/unit-store";
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -48,18 +48,12 @@ const TeacherStudentModulePage = () => {
     const [assignmentContent, setAssignmentContent] = useState(null); // Stores the content of a selected assignment
     const [currentContentDisplay, setCurrentContentDisplay] = useState(null); // Tracks the current content being displayed
 
-    // Retrieve user information from the location state
-    // const location = useLocation(); 
-    // const {unitID, unitName } = location.state || {};    
-
-    const { unit } = useUnit();
-
-    const { user } = useCurrentUser();
+    const { user } = useCurrentUser(); 
+    const { currentUnit } = useCurrentUnit();
 
     // State to store the list of modules fetched from the backend
-    const { modules, isLoading, error } = useModules(unit.id);  
+    
    
-
     const chatImage = require("../../images/chat-message-dots.png"); 
 
 
@@ -158,7 +152,7 @@ const TeacherStudentModulePage = () => {
      * Renders the list of modules as `ModuleComponent` components.
      */
     const renderModules = () => { 
-        if (!Array.isArray(modules)) { 
+        if (!Array.isArray(currentUnit.modules)) { 
             return null;
         } 
         else {  
@@ -167,8 +161,8 @@ const TeacherStudentModulePage = () => {
                 <> 
                 <div>  
                     {/* Map all of the module components to the ModulePage */}
-                    <h1 className="modules-heading"> {unit.name} Modules</h1> 
-                    {modules.map (module => ( 
+                    <h1 className="modules-heading"> {currentUnit.name} Modules</h1> 
+                    {currentUnit.modules.map (module => ( 
                         <ModuleComponent 
                             key={module.id} 
                             module={module} 
@@ -215,7 +209,7 @@ const TeacherStudentModulePage = () => {
             case 'welcome': 
                 return(  
                     <div className="welcome-container">  
-                        <h1 className="welcome-heading">Welcome to {unit.name}</h1>
+                        <h1 className="welcome-heading">Welcome to {currentUnit.name}</h1>
                         <p className="welcome-text"> Select a module and day from the menu to view materials and assignments. </p>
                     </div>
                     
@@ -277,7 +271,7 @@ const TeacherStudentModulePage = () => {
             default: 
                 return( 
                     <div className="welcome-container">  
-                        <h1 className="welcome-heading">Welcome to {unit.name}</h1>
+                        <h1 className="welcome-heading">Welcome to {currentUnit.name}</h1>
                         <p className="welcome-text"> Select a module and day from the menu to view materials and assignments. </p>
                     </div>
                 )
@@ -289,7 +283,7 @@ const TeacherStudentModulePage = () => {
         <>   
         <div className="h-screen w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient">
             
-            <TitleCard title={unit.name} /> 
+            <TitleCard title={currentUnit.name} /> 
 
             <div className="grid grid-cols-[280px_1fr_auto] gap-5 p-5 relative h-[calc(90vh-90px)] max-w-full overflow-x-hidden">  
 
