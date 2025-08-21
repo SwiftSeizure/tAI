@@ -4,6 +4,7 @@ import { TitleCard } from "../../shared/components/TitleCard";
 import { postCreateClass } from "../services/post-create-class";
 import { ChatSettings } from "../../shared/components/ChatSettings";
 import { useCurrentUser } from "../../store/user-store";
+import { useCurrentClass } from "../../store/class-store";
 
 
 /**
@@ -18,7 +19,7 @@ const CreateClassPage = () => {
     const [newClassName, setNewClassName] = useState("");     
     const [selectedChatSetting, setSelectedChatSetting] = useState(null);
     
-
+    const { setCurrentClass } = useCurrentClass();
     const { user } = useCurrentUser(); 
 
     const navigate = useNavigate();
@@ -34,10 +35,10 @@ const CreateClassPage = () => {
             };
 
             console.log(requestBody);
-            const response = await postCreateClass(user.id, requestBody); 
-            const classID = response.data.id; 
-            const classname = response.data.name;
-            navigate('/unitpage', {state: { classID, classname}});
+            const response = await postCreateClass(user.id, requestBody);  
+            console.log(response.data.id);
+            await setCurrentClass(response.data.id); 
+            navigate('/unitpage');
         }
 
         catch (error) { 

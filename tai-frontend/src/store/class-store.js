@@ -54,9 +54,3 @@ export const useClassesError = () => {
   const [state] = useClass();
   return { error: state.error };
 };
-
-// Create a hook to get all class actions
-export const useClassActions = () => {
-  const [, actions] = useClass();
-  return actions;
-};

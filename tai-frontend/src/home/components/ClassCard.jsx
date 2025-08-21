@@ -21,39 +21,8 @@ const ClassCard = ( {classID, classname, onClick }  ) => {
     // TODO: change this to allow teacher to upload or select from a list of logos
     const logo = require("../../images/example-class-logo.png");  
 
-
-    /**
-     * goToUnitPage
-     * Navigates to the unit page for the selected class.
-     * Passes classID, userID, role, and classname as state to the next page.
-     */
-    // const goToUnitPage = (e) => { 
-    //     e.preventDefault();  
-    //     navigate('/unitpage', {state: {classID, classname}})
-    // }; 
-
-
-
-    /**
-     * goToNewClassPage
-     * Navigates to the appropriate page for adding or creating a class.
-     * - Teachers are redirected to the "create class" page.
-     * - Students are redirected to the "join class" page.
-     */
-    // const goToNewClassPage = (e) => { 
-    //     e.preventDefault();   
-
-    //     if (user.role === "teacher") { 
-    //         // Go to CreateClass page for teacher  
-    //         navigate('/createclass');
-    //     } 
-    //     else { 
-    //         // Go to the JoinClass page for student 
-    //         navigate('/joinclass');
-    //     }
-    // };
-
  
+    //TODO: make one conditional on if this is a new class or not 
     // Render the class card based on the classname prop
     if (classname !== "newClass") { 
         return(  

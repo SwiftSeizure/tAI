@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { putUpdateClassSettings } from '../services/put-update-class-settings';
+import { putUpdateClassSettings } from '../../home/services/put-update-class-settings';
 
 export const useSettingsModal = (classID, onSuccess, onError) => {
     const [isOpen, setIsOpen] = useState(false);

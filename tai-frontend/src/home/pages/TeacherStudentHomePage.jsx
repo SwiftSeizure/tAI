@@ -40,11 +40,14 @@ const TeacherStudentHomePage = () => {
         }
     }, [user, fetchClasses]); 
 
-    const handleClassSelect = async (classID, classname) => { 
+    const handleClassSelect = async (classID) => { 
         try {  
-            console.log("hANDLE CLASS SELECT CALLED");
+            console.log("hANDLE CLASS SELECT CALLED"); 
+            if (!classID) {
+                navigate('/createclass');
+                return;
+            }
             await setCurrentClass(classID); 
-            console.log("CURRENT CLASS SET", state.currentClass);
             navigate('/unitpage');
         }
         catch (error) { 
@@ -60,8 +63,6 @@ const TeacherStudentHomePage = () => {
     const populateClassCards = () => {
         if (isLoading) return <div>Loading classes...</div>;
         if (error) return <div>Error loading classes: {error}</div>; 
-
-        console.log(classes);
         
         return ( 
             <>   

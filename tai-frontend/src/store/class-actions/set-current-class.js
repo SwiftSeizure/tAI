@@ -1,8 +1,8 @@
 import { CLASS_STORAGE_KEY } from '../class-store';
 
-export const setCurrentClass = (classID) => ({ setState, getState }) => {
+export const setCurrentClass = (id) => ({ setState, getState }) => {
   const { classes } = getState(); 
-  const currentClass = classID ? classes.find(c => c.id === classID) || null : null;
+  const currentClass = id ? classes.find(c => c.id === id) || null : null;
 
   const newState = {
     currentClass: currentClass,

@@ -1,4 +1,4 @@
-import { getClasses } from '../../shared/services/get-classes';
+import { getClasses } from '../../home/services/get-classes';
 import { CLASS_STORAGE_KEY } from '../class-store';
 
 export const fetchClasses = (userId, role) => async ({ setState, getState }) => {
