@@ -11,9 +11,21 @@ const initialState = {
     lastUpdated: null
 }; 
 
+// Load state from localStorage if available
+export const loadUnitState = () => {
+  try {
+    const serializedState = localStorage.getItem(UNIT_STORAGE_KEY);
+    if (serializedState === null) return initialState;
+    return JSON.parse(serializedState);
+  } catch (err) {
+    console.warn('Failed to load unit state from localStorage:', err);
+    return initialState;
+  }
+};
+
 export const UnitStore = createStore({
     name: 'unit',
-    initialState: initialState,
+    initialState: loadUnitState(),
     actions,
 });
 
@@ -38,4 +50,3 @@ export const useUnitError = () => {
     const [state] = useUnit();
     return { error: state.error };
 }; 
-

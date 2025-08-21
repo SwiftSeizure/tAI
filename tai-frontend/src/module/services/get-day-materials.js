@@ -7,7 +7,6 @@ export const getDayMaterials = async (day) => {
     return response.data.materials;
   } 
   catch (error) {
-    console.error("Error fetching day materials information:", error);
-    throw error;
+    return;
   }
 };

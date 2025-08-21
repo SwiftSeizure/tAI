@@ -10,9 +10,21 @@ const initialState = {
     lastUpdated: null
 }; 
 
+// Load state from localStorage if available
+export const loadModuleState = () => {
+    try {
+        const serializedState = localStorage.getItem(MODULE_STORAGE_KEY);
+        if (serializedState === null) return initialState;
+        return JSON.parse(serializedState);
+    } catch (err) {
+        console.warn('Failed to load module state from localStorage:', err);
+        return initialState;
+    }
+};
+
 export const ModuleStore = createStore({
     name: 'module',
-    initialState: initialState,
+    initialState: loadModuleState(),
     actions,
 });
 

@@ -1,5 +1,5 @@
 import { getModules } from '../../module/services/get-modules'; 
-import { UNIT_STORAGE_KEY } from '../unit-store'; 
+import { MODULE_STORAGE_KEY } from '../module-store'; 
 
 export const fetchModules = (unitID) => async ({ setState, getState }) => {
   try {
@@ -25,7 +25,7 @@ export const fetchModules = (unitID) => async ({ setState, getState }) => {
     setState(newState);
     
     // Save to localStorage
-    localStorage.setItem(UNIT_STORAGE_KEY, JSON.stringify(newState));
+    localStorage.setItem(MODULE_STORAGE_KEY, JSON.stringify(newState));
     
     return modules;
   } catch (error) {
@@ -39,7 +39,7 @@ export const fetchModules = (unitID) => async ({ setState, getState }) => {
     setState(newState);
     
     // Save to localStorage
-    localStorage.setItem(UNIT_STORAGE_KEY, JSON.stringify(newState));
+    localStorage.setItem(MODULE_STORAGE_KEY, JSON.stringify(newState));
     
     throw error;
   } 

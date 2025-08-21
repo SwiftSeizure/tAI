@@ -5,6 +5,7 @@ export const setCurrentUnit = (id) => ({ setState, getState }) => {
     const currentUnit = id ? units.find(u => u.id === id) || null : null;
 
     const newState = {
+        ...getState(),
         currentUnit: currentUnit,
         error: null
     };
@@ -12,10 +13,7 @@ export const setCurrentUnit = (id) => ({ setState, getState }) => {
     setState(newState);
     
     // Update localStorage
-    localStorage.setItem(UNIT_STORAGE_KEY, JSON.stringify({
-        ...getState(),
-        ...newState
-    }));
+    localStorage.setItem(UNIT_STORAGE_KEY, JSON.stringify(newState));
     
     return currentUnit;
 };

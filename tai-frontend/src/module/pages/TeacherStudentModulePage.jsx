@@ -53,14 +53,10 @@ const TeacherStudentModulePage = () => {
     const [state, actions] = useModule();
     const { modules, isLoading, error } = state;
     const { fetchModules } = actions;
-    console.log("CURRENT UNIT", currentUnit);
-    console.log("MODULES", modules);
 
     // Fetch modules when the component mounts or when currentUnit changes
     useEffect(() => {
-        if (currentUnit?.id) {
-            fetchModules(currentUnit.id);
-        }
+        fetchModules(currentUnit.id);
     }, [currentUnit?.id, fetchModules]);
 
     const chatImage = require("../../images/chat-message-dots.png");  
@@ -169,7 +165,7 @@ const TeacherStudentModulePage = () => {
                 <> 
                 <div>  
                     {/* Map all of the module components to the ModulePage */}
-                    <h1 className="modules-heading"> {currentUnit.name} Modules</h1> 
+                    <h1 className="modules-heading"> {currentUnit?.name } Modules</h1> 
                     {modules.map (module => ( 
                         <ModuleComponent 
                             key={module.id} 
@@ -217,12 +213,12 @@ const TeacherStudentModulePage = () => {
             case 'welcome': 
                 return(  
                     <div className="welcome-container">  
-                        <h1 className="welcome-heading">Welcome to {currentUnit.name}</h1>
+                        <h1 className="welcome-heading">Welcome to {currentUnit?.name || 'Loading...'}</h1>
                         <p className="welcome-text"> Select a module and day from the menu to view materials and assignments. </p>
                     </div>
                     
-                );  
-                case 'material': 
+                );
+            case 'material': 
                     return (
                         <div className="content-container material-container"> 
                             <div className="content-header">   
@@ -279,7 +275,7 @@ const TeacherStudentModulePage = () => {
             default: 
                 return( 
                     <div className="welcome-container">  
-                        <h1 className="welcome-heading">Welcome to {currentUnit.name}</h1>
+                        <h1 className="welcome-heading">Welcome to {currentUnit?.name || 'Loading...'}</h1>
                         <p className="welcome-text"> Select a module and day from the menu to view materials and assignments. </p>
                     </div>
                 )
@@ -291,7 +287,7 @@ const TeacherStudentModulePage = () => {
         <>   
         <div className="h-screen w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient">
             
-            <TitleCard title={currentUnit.name} /> 
+            <TitleCard title={currentUnit?.name || 'Loading...'} /> 
 
             <div className="grid grid-cols-[280px_1fr_auto] gap-5 p-5 relative h-[calc(90vh-90px)] max-w-full overflow-x-hidden">  
 
