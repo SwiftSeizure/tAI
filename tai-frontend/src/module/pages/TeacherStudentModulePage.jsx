@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";  
-import { TitleCard } from "../../shared/components/TitleCard";  
-import { useModules } from "../hooks/useModules";
+import { TitleCard } from "../../shared/components/TitleCard";
 import ChatFeature from "../components/ChatFeature";
 import ModuleComponent from "../components/ModuleComponent";  
 import { useCurrentUser } from "../../store/user-store"; 
 import { useCurrentUnit } from "../../store/unit-store";
+import { useModule } from "../../store/module-store"; 
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -49,13 +49,21 @@ const TeacherStudentModulePage = () => {
     const [currentContentDisplay, setCurrentContentDisplay] = useState(null); // Tracks the current content being displayed
 
     const { user } = useCurrentUser(); 
-    const { currentUnit } = useCurrentUnit();
+    const { currentUnit } = useCurrentUnit();  
+    const [state, actions] = useModule();
+    const { modules, isLoading, error } = state;
+    const { fetchModules } = actions;
+    console.log("CURRENT UNIT", currentUnit);
+    console.log("MODULES", modules);
 
-    // State to store the list of modules fetched from the backend
-    
-   
-    const chatImage = require("../../images/chat-message-dots.png"); 
+    // Fetch modules when the component mounts or when currentUnit changes
+    useEffect(() => {
+        if (currentUnit?.id) {
+            fetchModules(currentUnit.id);
+        }
+    }, [currentUnit?.id, fetchModules]);
 
+    const chatImage = require("../../images/chat-message-dots.png");  
 
     /**
      * toggleChatExpand
@@ -152,7 +160,7 @@ const TeacherStudentModulePage = () => {
      * Renders the list of modules as `ModuleComponent` components.
      */
     const renderModules = () => { 
-        if (!Array.isArray(currentUnit.modules)) { 
+        if (!Array.isArray(modules)) { 
             return null;
         } 
         else {  
@@ -162,7 +170,7 @@ const TeacherStudentModulePage = () => {
                 <div>  
                     {/* Map all of the module components to the ModulePage */}
                     <h1 className="modules-heading"> {currentUnit.name} Modules</h1> 
-                    {currentUnit.modules.map (module => ( 
+                    {modules.map (module => ( 
                         <ModuleComponent 
                             key={module.id} 
                             module={module} 
