@@ -5,6 +5,7 @@ import { postCreateClass } from "../services/post-create-class";
 import { ChatSettings } from "../../shared/components/ChatSettings";
 import { useCurrentUser } from "../../store/user-store";
 import { useCurrentClass } from "../../store/class-store";
+import { useClass } from "../../store/class-store";
 
 
 /**
@@ -21,7 +22,7 @@ const CreateClassPage = () => {
     
     const { setCurrentClass } = useCurrentClass();
     const { user } = useCurrentUser(); 
-
+    const [state, { fetchClasses } ] = useClass();  
     const navigate = useNavigate();
 
 
@@ -34,9 +35,10 @@ const CreateClassPage = () => {
                 settings: selectedChatSetting
             };
 
-            console.log(requestBody);
+            console.log("This is the requestBody: ", requestBody);
             const response = await postCreateClass(user.id, requestBody);  
-            console.log(response.data.id);
+            console.log("This is the response.data.id when creating a class: ", response.data.id); 
+            await fetchClasses(user.id);
             await setCurrentClass(response.data.id); 
             navigate('/unitpage');
         }
