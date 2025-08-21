@@ -23,6 +23,14 @@ app = FastAPI(
     summary="An always available, class specific TA."
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Only allow frontend origin
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(home.router)
 app.include_router(classroom.router)
 app.include_router(unit.router)
@@ -33,14 +41,6 @@ app.include_router(material.router)
 app.include_router(student.router)
 app.include_router(teacher.router)
 app.include_router(chat.router)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Only allow frontend origin
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 # Exception handlers
 @app.exception_handler(EntityNotFoundException)
