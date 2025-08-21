@@ -1,6 +1,7 @@
 import React from "react";   
 import { useNavigate } from "react-router-dom"; 
-
+import { useCurrentUser } from "../../store/user-store"; 
+import { useCurrentClass } from "../../store/class-store";
 
 /**
  * UnitCard Component
@@ -10,48 +11,54 @@ import { useNavigate } from "react-router-dom";
  * Props:
  * - unitID: Unique identifier for the unit.
  * - unitName: Name of the unit to display on the card.
- * - userID: ID of the current user.
- * - role: Role of the user (e.g., "teacher" or "student").
  */
 
-const UnitCard = ( {unitID, unitName, classID, userID, role } ) => {   
+const UnitCard = ( {unitID, unitName, onClick } ) => {   
 
     // Placeholder logo for the unit card 
     // TODO: Change this so that it pulls the logo from the backend
-    const logo = require("../../images/example-class-logo.png"); 
+    const logo = require("../../images/example-class-logo.png");  
 
     // Hook to navigate to the ModulePage
-    const navigate = useNavigate();    
+    const navigate = useNavigate();     
+
+    const { user } = useCurrentUser();
+    const { currentClass } = useCurrentClass(); 
 
 
-    /**
-     * goToPage
-     * Navigates the user to the module page for the selected unit.
-     * Passes unitID, unitName, userID, and role as state to the next page.
-     * @param {Event} e - The click event
-     */
-    const goToPage = (e) => { 
-        e.preventDefault(); 
-        navigate('/modulepage', {state: { unitID, unitName, userID, role }});      
-    } 
 
-    /** 
-     * 
-     */ 
-    const goToNewModulePage = (e) => { 
-        e.preventDefault(); 
-        navigate('/createunit', {state: {classID, userID, role }});
-    }
+    // /**
+    //  * goToPage
+    //  * Navigates the user to the module page for the selected unit.
+    //  * Passes unitID, unitName, userID, and role as state to the next page.
+    //  * @param {Event} e - The click event
+    //  */
+    // const goToPage = (e) => { 
+    //     e.preventDefault(); 
+    //     navigate('/modulepage', {state: { unitID, unitName }});      
+    // } 
+
+    // /** 
+    //  * 
+    //  */ 
+    // const goToNewModulePage = (e) => { 
+    //     e.preventDefault(); 
+    //     navigate('/createunit', {state: {classID: currentClass.id}});
+    // } 
+
+    const handleOnClick = () => { 
+        onClick(unitID);
+    };
 
 
     return(    
        <div className="overflow-hidden p-12">
             {/* Conditionally render based on null values */}
-            {(!unitID || !unitName) && role === "teacher" ? (
+            {(!unitID || !unitName) && user.role === "teacher" ? (
                 // Content to show when unitID or unitName is null (for teachers only)
                 <button
                     className="bg-gray-200 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-blue-400 hover:border-blue-500"
-                    onClick={(e) => {goToNewModulePage(e)}}
+                    onClick={() => handleOnClick()}
                 >
                     {/* Placeholder icon for empty unit */}
                     <div className="pb-2 rounded-md flex items-center justify-center">
@@ -71,7 +78,7 @@ const UnitCard = ( {unitID, unitName, classID, userID, role } ) => {
                 // Normal content when unitID and unitName are available
                 <button
                     className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500"
-                    onClick={(e) => {goToPage(e)}}
+                    onClick={() => handleOnClick()}
                 >
                     {/* Logo for the unit card */}
                     <div className="pb-2 rounded-md">
