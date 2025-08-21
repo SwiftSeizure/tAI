@@ -17,7 +17,12 @@ BASE_DIR = Path(__file__).parent.parent.parent
 # Create a validator instance
 doc_validator = DocumentValidator(max_size= 25 * 1024 * 1024)
 
-@router.get("/{dayID}/{filename}")
+@router.get("/{dayID}/{filename}",
+            status_code=200,
+            responses={
+                404: {"model": ClientErrorResponse}
+            },
+            summary="Get an assignment file for a specific day.")
 def get_file(dayID: int, filename: str):
     """ Retrieve a file for a given assigment.
     
@@ -122,7 +127,7 @@ def delete_file(dayID: int, filename: str, session: DBSession):
 @router.post("{dayID}/{filename}",
                 status_code=201,
                 responses={
-                    404: {"model": ClientErrorResponse},
+                    409: {"model": ClientErrorResponse},
                     },
                 summary="Upload an assignment file for to a day.")
 async def upload_assignment(dayID: int, name: str, session: DBSession, file: UploadFile = File(...)):
