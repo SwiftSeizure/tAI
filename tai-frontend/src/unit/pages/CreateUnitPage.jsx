@@ -1,9 +1,10 @@
-import React, { useState} from "react"; 
+import React, { useState } from "react"; 
 import { TitleCard } from "../../shared/components/TitleCard"; 
 import { useLocation, useNavigate } from "react-router-dom";   
 import { useCurrentClass } from "../../store/class-store"; 
 import { postNewUnit } from "../services/post-new-unit";
-import axios from "axios";
+import { useUnit } from "../../store/unit-store";
+import { useCurrentUnit } from "../../store/unit-store";
 
 // Not yet implemented, but this is the page for creating a unit.
 // It will be similar to the CreateClassPage, but for units instead of classes, and take the teacher to the module page 
@@ -12,17 +13,24 @@ const CreateUnitPage = () => {
     const [newUnitName, setNewUnitName] = useState("");
 
     const location = useLocation();  
-    const { currentClass } = useCurrentClass();
+    const { currentClass } = useCurrentClass();  
 
-    const navigate = useNavigate();
+    const [state, { setCurrentUnit, fetchUnits } ] = useUnit();
+    const { currentUnit } = useCurrentUnit();
+
+    const navigate = useNavigate(); 
 
 
     const handleCreateUnit = async (e) => { 
         e.preventDefault();  
 
-        const response = await postNewUnit(currentClass.id, newUnitName); 
+        const response = await postNewUnit(currentClass.id, newUnitName);  
 
-        if (response.success) {
+        if (response.success) { 
+            await fetchUnits(currentClass.id);
+            await setCurrentUnit(response.data.id); 
+            console.log("This is the response.data.id: ", response.data.id); 
+            console.log("This is the currentUnit.id: ", currentUnit);
             navigate(`/modulepage`);
         }
 

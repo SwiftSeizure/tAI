@@ -54,7 +54,9 @@ const TeacherStudentModulePage = () => {
     const { modules, isLoading, error } = state;
     const { fetchModules } = actions;
 
-    // Fetch modules when the component mounts or when currentUnit changes
+    // Fetch modules when the component mounts or when currentUnit changes 
+
+    console.log("This is the currentUnit.id: ", currentUnit);
     useEffect(() => {
         fetchModules(currentUnit.id);
     }, [currentUnit?.id, fetchModules]);
