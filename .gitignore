@@ -1,5 +1,12 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
+.env
+
+# macOS stystem files
+.DS_Store
+**/.DS_Store
+
+# Python byecode
+*.pyc
+*/__pycache__/
 *.py[cod]
 *$py.class
 

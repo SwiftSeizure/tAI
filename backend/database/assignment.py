@@ -30,3 +30,31 @@ def delete_assignment(dayID: int, filename: str, session: Session) -> None:
     
     session.delete(assignment)
     session.commit()
+    
+    
+def create_assignment(dayID: int, name: str, filename: str, fileType: str | None, session: Session) -> DBAssignment:
+    """Create a new assignment entry in the database.
+    
+    Args:
+        dayID (int): The ID of the day the material belongs to
+        filename (str): The name of the file
+        fileType (str): The type of the file
+        session (Session): Database session
+        
+    Returns:
+        DBAssignment: The created material entry
+    """
+    
+    new_assignment = DBAssignment(
+        name=name,
+        filename=filename,
+        sequence=0,  # Default sequence, can be updated later
+        path=f"uploads/assignment/{dayID}/{filename}",
+        dayId=dayID
+    )
+    
+    session.add(new_assignment)
+    session.commit()
+    session.refresh(new_assignment)
+    
+    return new_assignment

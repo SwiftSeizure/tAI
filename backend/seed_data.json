@@ -3805,9 +3805,9 @@
     {
       "id": 1,
       "name": "Assignment 1",
-      "filename": "ws_1.pdf",
+      "filename": "ws_a.pdf",
       "sequence": 1,
-      "path": "/assignment/1/ws_1.pdf",
+      "path": "/assignment/1/ws_a.pdf",
       "dayId": 1
     },
     {
@@ -7647,9 +7647,9 @@
     {
       "id": 1,
       "name": "Material 1",
-      "filename": "material_1.pdf",
+      "filename": "pemdas.txt",
       "sequence": 1,
-      "path": "/material/1/material_1.pdf",
+      "path": "/material/1/pemdas.txt",
       "dayId": 1
     },
     {
