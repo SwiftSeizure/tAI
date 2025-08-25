@@ -12,9 +12,10 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 async def queryResponse(studentID: int, path: str, session:DBSession, query: str = Form(...)) -> ChatResponse:
     """Run a query and update the chat.
 
-    Args:
+    Args:doc_validator.validate_file(file)
+
         studentID (int): The ID of the student.
-        path (str): TThe relative path of what context chat is being run in.
+        path (str): The relative path of what context the chat is being run in.
         query (str): The query to run.
 
     Returns:

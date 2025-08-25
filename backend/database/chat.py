@@ -7,6 +7,9 @@ from sqlalchemy.orm import Session
 from backend.database.schema import DBConversation,DBMessage, DBResponse
 from backend.database.student import get_student
 from backend.exceptions import EntityNotFoundException, InvalidClassCodeException
+from backend.routers.material import get_file
+import mimetypes
+import json
 
 load_dotenv()
 
@@ -26,8 +29,12 @@ def queryBot(studentID :int, path: str, prompt: str, session:Session) -> ChatRes
     Returns:
        str: The response from the OpenAI API.
     """
+    try:
+        context = get_file(1, path)
+    except Exception as e:
+        context = "No context given"
 
-    
+    formatted_context =  file_to_text("backend/uploads/material/1/" + path)
 
     student = get_student(studentID, session)
     if not student:
@@ -49,6 +56,10 @@ def queryBot(studentID :int, path: str, prompt: str, session:Session) -> ChatRes
         {
             "role": "system",
             "content": "You are a teaching assistant. You must not give direct answers to questions under any circumstances."
+        },
+        {
+            "role": "system",
+            "content": f"Here is relevant context for this conversation:\n\n{formatted_context}"
         },
         {
             "role": "user",
@@ -90,6 +101,34 @@ def queryBot(studentID :int, path: str, prompt: str, session:Session) -> ChatRes
     
     except Exception as e:
         raise InvalidClassCodeException() from e 
+    
+def file_to_text(path: str) -> str:
+    mime, _ = mimetypes.guess_type(path)
+    mime = mime or ""
+
+    # Plaintext-ish files you can read directly
+    if mime.startswith("text/") or path.lower().endswith((".md", ".py", ".js", ".ts", ".csv", ".log", ".env", ".yaml", ".yml")):
+        with open(path, "r", encoding="utf-8", errors="replace") as f:
+            return f.read()
+
+    # JSON -> pretty string
+    if path.lower().endswith(".json"):
+        with open(path, "r", encoding="utf-8", errors="replace") as f:
+            return json.dumps(json.load(f), indent=2)
+
+    # PDF -> text (requires pdfminer.six or similar)
+    if path.lower().endswith(".pdf"):
+        from pdfminer.high_level import extract_text  # pip install pdfminer.six
+        return extract_text(path)
+
+    # DOCX -> text (requires python-docx)
+    if path.lower().endswith(".docx"):
+        from docx import Document  # pip install python-docx
+        doc = Document(path)
+        return "\n".join(p.text for p in doc.paragraphs)
+
+    # Fallback: bytes -> hex length notice (avoid sending binary)
+    return f"[Unsupported/binary file: {path}]"
 
 
 
