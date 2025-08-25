@@ -116,17 +116,23 @@ const TeacherStudentModulePage = () => {
      * @param {string} fileName - The filename of the assignment.
      * @param {string} assignmentName - The name of the assignment.
      */
-    const handleAssignmentSelect = async (dayID, assignmentID, fileName, assignmentName) => { 
+    const handleAssignmentSelect = async (dayID, assignmentID, fileName, assignmentName) => {
+        try { 
+            // Update the selected assignment and set the display type to 'assignment'
+            setSelectedMaterialID(null); 
+            setSelectedMaterialName(null);
+            setSelectedAssignmentID(assignmentID);   
+            setSelectedAssignmentName(assignmentName);
+            setDisplayType('assignment'); 
 
-        // Update the selected assignment and set the display type to 'assignment'
-        setSelectedAssignmentID(assignmentID);   
-        setSelectedAssignmentName(assignmentName);
-        setDisplayType('assignment'); 
-
-        // Fetch the content of the selected assignment
-        const fileURL = await getAssignmentURL(dayID, fileName); 
-        setAssignmentContent(fileURL); 
-        setCurrentContentDisplay('assignment');
+            // Fetch the content of the selected assignment
+            const fileURL = await getAssignmentURL(dayID, fileName); 
+            setAssignmentContent(fileURL); 
+            setCurrentContentDisplay('assignment'); 
+        } catch (error) {
+            console.error('Error fetching assignment:', error);
+            setDisplayType('error'); 
+        }
     };
 
 
@@ -140,15 +146,21 @@ const TeacherStudentModulePage = () => {
      */
     const handleMaterialSelect = async ( dayID, materialID, fileName, materialName ) => { 
 
-        // Update the selected material and set the display type to 'material'
-        setSelectedMaterialID(materialID);  
-        setSelectedMaterialName(materialName);
-        setDisplayType('material'); 
+        try {
+            // Update the selected material and set the display type to 'material'
+            setSelectedAssignmentID(null);   
+            setSelectedAssignmentName(null);
+            setSelectedMaterialID(materialID);  
+            setSelectedMaterialName(materialName);
+            setDisplayType('material'); 
 
-        // Fetch the content of the selected material
-        const fileURL = await getMaterialURL(dayID, fileName);
-        setMaterialContent(fileURL);  
-        setCurrentContentDisplay('material');
+            // Fetch the content of the selected material
+            const fileURL = await getMaterialURL(dayID, fileName);
+            setMaterialContent(fileURL);  
+            setCurrentContentDisplay('material'); 
+        } catch (error) {
+            setDisplayType('error'); 
+        }
 
     }
  
@@ -272,7 +284,15 @@ const TeacherStudentModulePage = () => {
 
                         
                     </div>
-                );
+                ); 
+
+            case 'error': 
+               return( 
+                   <div > 
+                       <h1 > Error loading {selectedMaterialName || selectedAssignmentName || 'content'} </h1>
+                       <p >An error occurred while loading the material.</p>
+                   </div>
+               );
 
             default: 
                 return( 
