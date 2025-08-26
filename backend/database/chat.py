@@ -1,73 +1,115 @@
 from openai import OpenAI
 from dotenv import load_dotenv
-import os
-from backend.models import ChatResponse,ClientErrorResponse, ChatMessage, ChatResponseMessage
+import os, mimetypes, base64
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from backend.database.schema import DBConversation,DBMessage, DBResponse
+
+from backend.models import ChatResponse, ClientErrorResponse, ChatMessage, ChatResponseMessage
+from backend.database.schema import DBConversation, DBMessage, DBResponse
 from backend.database.student import get_student
 from backend.exceptions import EntityNotFoundException, InvalidClassCodeException
-from backend.routers.material import get_file
-import mimetypes
-import json
+from backend.routers.material import get_file  # unchanged
 
 load_dotenv()
-
-
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
+RESPONSES_TEXT_MODEL = os.getenv("RESPONSES_TEXT_MODEL", "gpt-4.1-mini")
+RESPONSES_VISION_MODEL = os.getenv("RESPONSES_VISION_MODEL", "gpt-4o-mini")
 
-### TO DO take the path get the context and add it to the prompt
-def queryBot(studentID :int, path: str, prompt: str, session:Session) -> ChatResponse:
+def _upload_file(path: str):
+    return client.files.create(file=open(path, "rb"), purpose="user_data")  
+
+def _png_to_data_url(path: str) -> str:
+    with open(path, "rb") as f:
+        b64 = base64.b64encode(f.read()).decode("ascii")
+    return f"data:image/png;base64,{b64}"
+
+def _ask_with_pdf(file_id: str, prompt: str) -> str:
+    resp = client.responses.create(
+        model=RESPONSES_VISION_MODEL, 
+        instructions="You are a teaching assistant. You must not give direct answers to questions under any circumstances.",
+        input=[{
+            "role": "user",
+            "content": [
+                {"type": "input_text", "text": f"Use the attached PDF as context.\n\nQuestion: {prompt}"},
+                {"type": "input_file", "file_id": file_id}
+            ],
+        }],
+    )
+    return resp.output_text
+
+def _ask_with_txt_file_search(file_id: str, prompt: str) -> str:
+    resp = client.responses.create(
+        model=RESPONSES_TEXT_MODEL,
+
+        instructions="You are a teaching assistant. You must not give direct answers to questions under any circumstances.",
+        tools=[{"type": "file_search"}],
+        attachments=[{"file_id": file_id, "tools": [{"type": "file_search"}]}],
+        input=[{
+            "role": "user",
+            "content": [{"type": "input_text", "text": prompt}],
+        }],
+    )
+    return resp.output_text
+
+def _ask_with_png_data_url(data_url: str, prompt: str) -> str:
+    resp = client.responses.create(
+        model=RESPONSES_VISION_MODEL,
+        instructions="You are a teaching assistant. You must not give direct answers to questions under any circumstances.",
+        input=[{
+            "role": "user",
+            "content": [
+                {"type": "input_text", "text": f"Use the attached image as context.\n\nQuestion: {prompt}"},
+                {"type": "input_image", "image_url": data_url},
+            ],
+        }],
+    )
+    return resp.output_text
+
+def queryBot(studentID: int, path: str, prompt: str, session: Session) -> ChatResponse:
     """
     Queries the OpenAI API with the given prompt and returns the response.
-    
-    Args:
-        prompt (str): The prompt to send to the OpenAI API.
-        
-    Returns:
-       str: The response from the OpenAI API.
+    (DB logic unchanged; only OpenAI call is different.)
     """
-    try:
-        context = get_file(1, path)
-    except Exception as e:
-        context = "No context given"
+    
+    ### TODO: Change hardcode file path to dynamic path 
+    full_path = os.path.join("uploads", "material", "1", path)
+    mime, _ = mimetypes.guess_type(full_path)
+    ext = (os.path.splitext(full_path)[1] or "").lower()
 
-    formatted_context =  file_to_text("backend/uploads/material/1/" + path)
+    try:
+        if not os.path.exists(full_path):
+            response_text = "[Context file not found]"
+        elif (ext == ".pdf") or (mime == "application/pdf"):
+            uploaded = _upload_file(full_path)
+            response_text = _ask_with_pdf(uploaded.id, prompt)
+        elif (ext == ".txt") or (mime == "text/plain"):
+            uploaded = _upload_file(full_path)
+            response_text = _ask_with_txt_file_search(uploaded.id, prompt)
+        elif (ext == ".png") or (mime == "image/png"):
+            try:
+                _upload_file(full_path)
+            except Exception:
+                pass
+            data_url = _png_to_data_url(full_path)
+            response_text = _ask_with_png_data_url(data_url, prompt)
+        else:
+            response_text = "[Unsupported file type for direct scanning. Please use PDF, TXT, or PNG.]"
+    except Exception as e:
+        response_text = f"[Failed to process file: {e}]"
 
     student = get_student(studentID, session)
     if not student:
         raise EntityNotFoundException("student", studentID)
 
-
     stmnt = select(DBConversation).filter(
         DBConversation.studentID == studentID,
         DBConversation.path == path
-     )
+    )
     conversation = session.execute(stmnt).scalar_one_or_none()
-    
-
 
     try:
-        chat_response = client.chat.completions.create(
-        model="gpt-4-1106-preview",
-        messages=[
-        {
-            "role": "system",
-            "content": "You are a teaching assistant. You must not give direct answers to questions under any circumstances."
-        },
-        {
-            "role": "system",
-            "content": f"Here is relevant context for this conversation:\n\n{formatted_context}"
-        },
-        {
-            "role": "user",
-            "content": prompt
-        }
-    ]
-)
-        
         if not conversation:
             conversation = DBConversation(student=student, path=path)
             session.add(conversation)
@@ -77,14 +119,9 @@ def queryBot(studentID :int, path: str, prompt: str, session:Session) -> ChatRes
         else:
             conversationID = conversation.id
 
-        message = DBMessage(
-            content=prompt,
-            conversationID=conversationID
-        )
-        response = DBResponse(
-            content=chat_response.choices[0].message.content,
-            conversationID=conversationID
-        )
+        message = DBMessage(content=prompt, conversationID=conversationID)
+        response = DBResponse(content=response_text, conversationID=conversationID)
+
         session.add(message)
         session.add(response)
         session.commit()
@@ -93,43 +130,11 @@ def queryBot(studentID :int, path: str, prompt: str, session:Session) -> ChatRes
         session.refresh(response)
 
         return ChatResponse(
-    conversationID=conversation.id,
-    studentID=studentID,
-    messages=[ChatMessage.model_validate(m) for m in conversation.messages],
-    responses=[ChatResponseMessage.model_validate(r) for r in conversation.responses]
-)
-    
+            conversationID=conversation.id,
+            studentID=studentID,
+            messages=[ChatMessage.model_validate(m) for m in conversation.messages],
+            responses=[ChatResponseMessage.model_validate(r) for r in conversation.responses],
+        )
+
     except Exception as e:
-        raise InvalidClassCodeException() from e 
-    
-def file_to_text(path: str) -> str:
-    mime, _ = mimetypes.guess_type(path)
-    mime = mime or ""
-
-    # Plaintext-ish files you can read directly
-    if mime.startswith("text/") or path.lower().endswith((".md", ".py", ".js", ".ts", ".csv", ".log", ".env", ".yaml", ".yml")):
-        with open(path, "r", encoding="utf-8", errors="replace") as f:
-            return f.read()
-
-    # JSON -> pretty string
-    if path.lower().endswith(".json"):
-        with open(path, "r", encoding="utf-8", errors="replace") as f:
-            return json.dumps(json.load(f), indent=2)
-
-    # PDF -> text (requires pdfminer.six or similar)
-    if path.lower().endswith(".pdf"):
-        from pdfminer.high_level import extract_text  # pip install pdfminer.six
-        return extract_text(path)
-
-    # DOCX -> text (requires python-docx)
-    if path.lower().endswith(".docx"):
-        from docx import Document  # pip install python-docx
-        doc = Document(path)
-        return "\n".join(p.text for p in doc.paragraphs)
-
-    # Fallback: bytes -> hex length notice (avoid sending binary)
-    return f"[Unsupported/binary file: {path}]"
-
-
-
-
+        raise InvalidClassCodeException() from e
