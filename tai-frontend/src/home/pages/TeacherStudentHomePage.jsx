@@ -43,8 +43,12 @@ const TeacherStudentHomePage = () => {
     const handleClassSelect = async (classID) => { 
         try {  
             console.log("hANDLE CLASS SELECT CALLED"); 
-            if (!classID) {
+            if (!classID && user.role === 'teacher') {
                 navigate('/createclass');
+                return;
+            }
+            else if (!classID && user.role === 'student') {
+                navigate('/joinclass');
                 return;
             }
             await setCurrentClass(classID); 
