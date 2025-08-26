@@ -53,7 +53,12 @@ const TeacherStudentHomePage = () => {
         catch (error) { 
             console.error('Error selecting class:', error);
         }
-    };
+    }; 
+
+    const handleClassSettings = async (classID) => { 
+        //TODO Add settings modal logic here  
+        console.log("hANDLE CLASS SETTINGS CALLED");  
+    }; 
 
     /**
      * populateClassCards
@@ -71,7 +76,8 @@ const TeacherStudentHomePage = () => {
                         key={classroom.id} 
                         classID={classroom.id}
                         classname={classroom.name}  
-                        onClick={handleClassSelect}
+                        onClick={handleClassSelect} 
+                        onClickSettings={handleClassSettings}
                     />
                 ))} 
             </>

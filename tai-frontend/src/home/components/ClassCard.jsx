@@ -1,4 +1,4 @@
-
+import SettingsIcon from '@mui/icons-material/Settings';
 /**
  * ClassCard Component
  * This component represents a card for a class. It displays the class name
@@ -9,13 +9,16 @@
  * - userID: ID of the current user
  * - role: Role of the user (e.g., "teacher" or "student")
  */
-const ClassCard = ( {classID, classname, onClick }  ) => {
+const ClassCard = ( {classID, classname, onClick, onClickSettings }  ) => {
      
     
     const handleClick = () => { 
         onClick(classID, classname);
     };
 
+    const handleClickSettings = () => { 
+        onClickSettings(classID, classname);
+    };
 
     // Logo for the class card 
     // TODO: change this to allow teacher to upload or select from a list of logos
@@ -26,7 +29,14 @@ const ClassCard = ( {classID, classname, onClick }  ) => {
     // Render the class card based on the classname prop
     if (classname !== "newClass") { 
         return(  
-            <div className="overflow-hidden p-12">  
+            <div className="overflow-hidden p-12">   
+
+                <button 
+                    onClick={ () => handleClickSettings() }
+                    className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
+                >
+                    <SettingsIcon />   
+                </button>
                 <button 
                     className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
                     onClick={ () => handleClick() }
