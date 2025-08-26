@@ -30,13 +30,15 @@ const ClassCard = ( {classID, classname, onClick, onClickSettings }  ) => {
     if (classname !== "newClass") { 
         return(  
             <div className="overflow-hidden p-12">   
+                {onClickSettings && (
+                    <button 
+                        onClick={ () => handleClickSettings() }
+                        className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
+                    >
+                        <SettingsIcon />   
+                    </button>
+                )}
 
-                <button 
-                    onClick={ () => handleClickSettings() }
-                    className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
-                >
-                    <SettingsIcon />   
-                </button>
                 <button 
                     className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
                     onClick={ () => handleClick() }

@@ -1,10 +1,12 @@
-import React, { useEffect } from "react";   
+import React, { useEffect, useState } from "react";   
 import { useNavigate } from 'react-router-dom';   
 import ClassCard from "../components/ClassCard"; 
 import { TitleCard } from "../../shared/components/TitleCard";    
 import "react-icons/fa"; 
 import { useCurrentUser, useIsAuthenticated } from "../../store/user-store"; 
 import { useClass, useAllClasses, useClassesLoading, useClassesError } from "../../store/class-store";
+import { SettingsModal } from "../../shared/modals/SettingsModal";
+import { useSettingsModal } from "../../shared/hooks/useSettingsModal";
 
 /**
  * TeacherStudentHomePage Component
@@ -25,6 +27,14 @@ const TeacherStudentHomePage = () => {
     const { isLoading } = useClassesLoading();
     const { error } = useClassesError();
     const [state, { setCurrentClass, fetchClasses }] = useClass();
+    
+    // State for managing settings modal
+    const [currentSettingsClass, setCurrentSettingsClass] = useState(null);
+    
+    // Settings modal hook with handlers
+    const settingsModal = useSettingsModal(
+        currentSettingsClass?.id 
+    );
 
     // Redirect to login if not authenticated
     useEffect(() => {
@@ -55,10 +65,26 @@ const TeacherStudentHomePage = () => {
         }
     }; 
 
-    const handleClassSettings = async (classID) => { 
-        //TODO Add settings modal logic here  
-        console.log("hANDLE CLASS SETTINGS CALLED");  
-    }; 
+    const handleClassSettings = async (classID, classname) => { 
+        console.log("Handle class settings called for:", classID, classname);
+        setCurrentSettingsClass({ id: classID, name: classname });
+        settingsModal.openModal();
+    };
+
+    // Success handler for settings save
+    const handleSettingsSuccess = (response, settingsData) => {
+        console.log('Settings saved successfully:', response);
+        // Optionally refresh classes or update local state
+        if (user.id && user.role) {
+            fetchClasses(user.id, user.role);
+        }
+    };
+
+    // Error handler for settings save
+    const handleSettingsError = (error) => {
+        console.error('Settings save failed:', error);
+        // Could add toast notification or error display here
+    };  
 
     /**
      * populateClassCards
@@ -77,7 +103,7 @@ const TeacherStudentHomePage = () => {
                         classID={classroom.id}
                         classname={classroom.name}  
                         onClick={handleClassSelect} 
-                        onClickSettings={handleClassSettings}
+                        onClickSettings={() => handleClassSettings(classroom.id, classroom.name)}
                     />
                 ))} 
             </>
@@ -108,7 +134,17 @@ const TeacherStudentHomePage = () => {
                 />   
                 
             </div>  
+            
         </div>
+        
+        {/* Settings Modal */}
+        {settingsModal.isOpen && (
+            <SettingsModal
+                onSave={settingsModal.saveSettings}
+                onCancel={settingsModal.closeModal}
+                isLoading={settingsModal.isLoading}
+            />
+        )}
         </>
     );
 };  
