@@ -45,7 +45,7 @@ const TeacherStudentHomePage = () => {
         // Could add toast notification or error display here
     };   
 
-    
+
     // Settings modal hook with handlers
     const settingsModal = useSettingsModal(
         currentSettingsClass?.id,
@@ -100,13 +100,15 @@ const TeacherStudentHomePage = () => {
         
         return ( 
             <>   
-                {Array.isArray(classes) && classes.map(classroom => (
+                {Array.isArray(classes) && classes.map(classroom => ( 
+                    
                     <ClassCard   
                         key={classroom.id} 
                         classID={classroom.id}
                         classname={classroom.name}  
-                        onClick={handleClassSelect} 
+                        onClick={handleClassSelect}   
                         onClickSettings={() => handleClassSettings(classroom.id, classroom.name)}
+                        showSettings={user.role === 'teacher'}
                     />
                 ))} 
             </>
