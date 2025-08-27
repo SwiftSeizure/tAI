@@ -3,7 +3,7 @@ import axios from "axios";
 import { TitleCard } from "../../shared/components/TitleCard";  
 import { useNavigate, useLocation } from "react-router-dom"; 
 import { postJoinClass } from "../services/post-join-class";
-import { useCurrentClass } from "../../store/class-store";
+import { useCurrentClass, useClass } from "../../store/class-store";
 import { useCurrentUser } from "../../store/user-store";
 
 /**
@@ -16,7 +16,8 @@ const JoinClassPage = () => {
 
     // TODO: Add the functionality to join a class here  
     const [classCode, setClassCode] = useState(""); 
-    const { setCurrentClass, fetchClasses } = useCurrentClass();
+    const { setCurrentClass, fetchClasses } = useCurrentClass(); 
+    const { currentClass } = useClass(); 
     const { user } = useCurrentUser(); 
     const navigate = useNavigate();  
 
@@ -26,12 +27,14 @@ const JoinClassPage = () => {
        try {   
             console.log(user); 
             const code = parseInt(classCode, 10); 
-            console.log(code); 
-            const requestBody = { 
-                studentID: user.id, 
-                classCode: code
-            }
-            await postJoinClass(code, requestBody);   
+            console.log("This is the classID in the URL Param code: ", code); 
+            const requestBody = {  
+                classCode: code,
+                studentID: user.id
+            } 
+            console.log("This is the requestBody for joining a classroom: ", requestBody);  
+            console.log("This is the currentClass.id: ", currentClass.id); 
+            await postJoinClass(currentClass.id, requestBody);   
             await fetchClasses(user.id); 
             await setCurrentClass(code);   
             navigate('/unitpage'); 
