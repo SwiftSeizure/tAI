@@ -1,10 +1,12 @@
-import React, { useEffect } from "react";   
+import React, { useEffect, useState } from "react";   
 import { useNavigate } from 'react-router-dom';   
 import ClassCard from "../components/ClassCard"; 
 import { TitleCard } from "../../shared/components/TitleCard";    
 import "react-icons/fa"; 
 import { useCurrentUser, useIsAuthenticated } from "../../store/user-store"; 
 import { useClass, useAllClasses, useClassesLoading, useClassesError } from "../../store/class-store";
+import { SettingsModal } from "../../shared/modals/SettingsModal";
+import { useSettingsModal } from "../../shared/hooks/useSettingsModal";
 
 /**
  * TeacherStudentHomePage Component
@@ -25,6 +27,31 @@ const TeacherStudentHomePage = () => {
     const { isLoading } = useClassesLoading();
     const { error } = useClassesError();
     const [state, { setCurrentClass, fetchClasses }] = useClass();
+    
+    // State for managing settings modal
+    const [currentSettingsClass, setCurrentSettingsClass] = useState(null);
+    
+
+    const handleSettingsSuccess = (response, settingsData) => {
+        console.log('Settings saved successfully:', response);
+        // Optionally refresh classes or update local state
+        if (user.id && user.role) {
+            fetchClasses(user.id, user.role);
+        }
+    };
+
+    const handleSettingsError = (error) => {
+        console.error('Settings save failed:', error);
+        // Could add toast notification or error display here
+    };   
+
+
+    // Settings modal hook with handlers
+    const settingsModal = useSettingsModal(
+        currentSettingsClass?.id,
+        handleSettingsSuccess,
+        handleSettingsError
+    );
 
     // Redirect to login if not authenticated
     useEffect(() => {
@@ -53,7 +80,14 @@ const TeacherStudentHomePage = () => {
         catch (error) { 
             console.error('Error selecting class:', error);
         }
+    }; 
+
+    const handleClassSettings = async (classID, classname) => { 
+        console.log("Handle class settings called for:", classID, classname);
+        setCurrentSettingsClass({ id: classID, name: classname });
+        settingsModal.openModal();
     };
+ 
 
     /**
      * populateClassCards
@@ -66,12 +100,15 @@ const TeacherStudentHomePage = () => {
         
         return ( 
             <>   
-                {Array.isArray(classes) && classes.map(classroom => (
+                {Array.isArray(classes) && classes.map(classroom => ( 
+                    
                     <ClassCard   
                         key={classroom.id} 
                         classID={classroom.id}
                         classname={classroom.name}  
-                        onClick={handleClassSelect}
+                        onClick={handleClassSelect}   
+                        onClickSettings={() => handleClassSettings(classroom.id, classroom.name)}
+                        showSettings={user.role === 'teacher'}
                     />
                 ))} 
             </>
@@ -102,7 +139,17 @@ const TeacherStudentHomePage = () => {
                 />   
                 
             </div>  
+            
         </div>
+        
+        {/* Settings Modal */}
+        {settingsModal.isOpen && user.role === 'teacher' && (
+            <SettingsModal
+                onSave={settingsModal.saveSettings}
+                onCancel={settingsModal.closeModal}
+                isLoading={settingsModal.isLoading}
+            />
+        )}
         </>
     );
 };  

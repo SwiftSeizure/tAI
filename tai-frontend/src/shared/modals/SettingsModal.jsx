@@ -21,8 +21,6 @@ export const SettingsModal = ({ onSave, onCancel, isLoading }) => {
             return;
         } 
 
-        
-        
         onSave(formData);
     };
 
