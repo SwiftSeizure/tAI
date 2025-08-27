@@ -31,9 +31,26 @@ const TeacherStudentHomePage = () => {
     // State for managing settings modal
     const [currentSettingsClass, setCurrentSettingsClass] = useState(null);
     
+
+    const handleSettingsSuccess = (response, settingsData) => {
+        console.log('Settings saved successfully:', response);
+        // Optionally refresh classes or update local state
+        if (user.id && user.role) {
+            fetchClasses(user.id, user.role);
+        }
+    };
+
+    const handleSettingsError = (error) => {
+        console.error('Settings save failed:', error);
+        // Could add toast notification or error display here
+    };   
+
+    
     // Settings modal hook with handlers
     const settingsModal = useSettingsModal(
-        currentSettingsClass?.id 
+        currentSettingsClass?.id,
+        handleSettingsSuccess,
+        handleSettingsError
     );
 
     // Redirect to login if not authenticated
@@ -70,21 +87,7 @@ const TeacherStudentHomePage = () => {
         setCurrentSettingsClass({ id: classID, name: classname });
         settingsModal.openModal();
     };
-
-    // Success handler for settings save
-    const handleSettingsSuccess = (response, settingsData) => {
-        console.log('Settings saved successfully:', response);
-        // Optionally refresh classes or update local state
-        if (user.id && user.role) {
-            fetchClasses(user.id, user.role);
-        }
-    };
-
-    // Error handler for settings save
-    const handleSettingsError = (error) => {
-        console.error('Settings save failed:', error);
-        // Could add toast notification or error display here
-    };  
+ 
 
     /**
      * populateClassCards
@@ -138,7 +141,7 @@ const TeacherStudentHomePage = () => {
         </div>
         
         {/* Settings Modal */}
-        {settingsModal.isOpen && (
+        {settingsModal.isOpen && user.role === 'teacher' && (
             <SettingsModal
                 onSave={settingsModal.saveSettings}
                 onCancel={settingsModal.closeModal}
