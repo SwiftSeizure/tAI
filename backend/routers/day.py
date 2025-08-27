@@ -55,7 +55,9 @@ def getDayMaterials(dayID:int, session:DBSession) -> DayMaterialResponse:
 BASE_DIR = Path(__file__).parent.parent.parent
 
 
-@router.delete("/{dayId}", status_code=204)
+# TODO handle exceptions here
+@router.delete("/{dayId}", status_code=204, 
+               summary="Delete a day and all its associated data.")
 def delete_day(dayId: int, session: DBSession):
     try:
         db_day.delete_day(dayId, BASE_DIR, session)
