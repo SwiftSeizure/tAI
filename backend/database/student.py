@@ -50,6 +50,9 @@ def get_student_classes(studentID: int, session: Session) -> list[DBClass]:
     
     result = session.execute(stmt)
     classes = list(result.scalars().all())
+    for c in classes:
+        if c.published is False:
+            classes.remove(c) 
     return classes
 
 def enroll(studentID: int, classCode: int, session: Session) -> None:
