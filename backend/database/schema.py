@@ -43,7 +43,7 @@ class DBClass(Base):
     name = Column(String(25), nullable=False)
     
     ownerID = Column(Integer, ForeignKey("teacher.id", ondelete="CASCADE"))
-    classCode = Column(Integer, nullable = False)
+    classCode = Column(String(6), nullable=False, unique=True)  # Changed to String(6) for alphanumeric codes
     published = Column(Boolean,nullable = False)
 
     owner = relationship("DBTeacher", back_populates="classes")
