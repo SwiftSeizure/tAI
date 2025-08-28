@@ -3,6 +3,7 @@ from sqlalchemy.orm import selectinload, Session
 from backend.database.schema import DBClass, DBUnit
 from backend.exceptions import EntityNotFoundException, DuplicateNameException
 from backend.models import CreateUnit, ClassroomUpdate
+from backend.database.day import delete_day_files
 
 def get_classroom(classroomID: int, session: Session) -> DBClass | None:
     """Get a DBClass object by its ID.
@@ -138,6 +139,13 @@ def delete_classroom(classroomID: int, session: Session) -> None:
         EntityNotFoundException: If the classroom with the given ID does not exist.
     """
     classroom = get_classroom(classroomID, session)
+    if not classroom:
+        return
+    
+    for unit in classroom.units:
+        for module in unit.modules:
+            for day in module.days:
+                delete_day_files(day.id)
 
     session.delete(classroom)
     session.commit()
