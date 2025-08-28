@@ -82,3 +82,22 @@ def update_chat(classroomID: int, classroomUpdate: ClassroomUpdate, session: DBS
     """
     classroom_db.update_classroom(classroomID, classroomUpdate, session)
 
+
+@router.delete("/{classroomID}",
+               status_code=204,
+               responses={404: {"model": ClientErrorResponse}},
+               summary="Delete a classroom.")
+def delete_classroom(classroomID: int, session: DBSession):
+    """Delete a classroom by its ID.
+
+    Args:
+        classroomID (int): The ID of the classroom to delete.
+        session (DBSession): The database session.
+
+    Raises:
+        404: If the classroom with the given ID is not found.
+
+    Returns:
+        None
+    """
+    classroom_db.delete_classroom(classroomID, session)

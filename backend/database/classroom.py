@@ -18,7 +18,10 @@ def get_classroom(classroomID: int, session: Session) -> DBClass | None:
         DBClass: The DBClass object if found, otherwise None.
     """
     stmt = select(DBClass).filter(DBClass.id == classroomID)
-    return session.execute(stmt).scalar_one_or_none()
+    classroom = session.execute(stmt).scalar_one_or_none()
+    if not classroom:
+        raise EntityNotFoundException("classroom", classroomID)
+    return classroom
 
 def get_class_units(classroomID: int, session: Session) -> list[DBClass]:
     """Get all units in a classroom.
@@ -123,3 +126,18 @@ def update_classroom(classroomID: int, classroomUpdates: ClassroomUpdate, sessio
     session.commit()
     return classroom
 
+
+def delete_classroom(classroomID: int, session: Session) -> None:
+    """Delete a classroom by its ID.
+
+    Args:
+        classroomID (int): The ID of the classroom to delete.
+        session (Session): The SQLAlchemy session to use for the query.
+
+    Raises:
+        EntityNotFoundException: If the classroom with the given ID does not exist.
+    """
+    classroom = get_classroom(classroomID, session)
+
+    session.delete(classroom)
+    session.commit()
