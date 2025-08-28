@@ -127,13 +127,15 @@ def is_safe_path(base_dir: Path, directory: Path) -> bool:
         print(f"Security check failed: {e}")
         return False
 
-def delete_day_files(base_dir: Path, dayId: int) -> None:
+def delete_day_files(dayId: int) -> None:
     """Delete all physical files and folders associated with a day.
     
     Args:
         base_dir (Path): Base directory of the application
         dayId (int): The ID of the day being deleted
     """
+    base_dir = Path(__file__).parent.parent.parent
+    
     # Define paths to day folders
     assignment_dir = base_dir / "uploads" / "assignment" / str(dayId)
     material_dir = base_dir / "uploads" / "material" / str(dayId)
@@ -157,7 +159,7 @@ def delete_day_files(base_dir: Path, dayId: int) -> None:
         print(f"Skipping unsafe material path: {material_dir}")
 
 
-def delete_day(dayId: int, base_dir: Path, session: Session) -> None:
+def delete_day(dayId: int, session: Session) -> None:
     """Delete a day and all its associated files.
     
     Args:
@@ -165,8 +167,9 @@ def delete_day(dayId: int, base_dir: Path, session: Session) -> None:
         base_dir (Path): Base directory of the application
         session (Session): Database session
     """
+    
     # Delete the day's folders and files
-    delete_day_files(base_dir, dayId)
+    delete_day_files(dayId)
     
     # Delete database entry (will cascade to assignments and materials)
     day = session.get(DBDay, dayId)
