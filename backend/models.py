@@ -25,6 +25,13 @@ class HomeClass(BaseModel):
 class ClassroomUpdate(BaseModel):
     name: str
     settings: dict
+
+class ClassroomUpdateReturn(BaseModel):
+    id: int
+    name: str
+    settings: dict
+    published: bool
+
 class CreateUnit(BaseModel):
     name: str
     settings: dict
