@@ -1,18 +1,33 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, File, UploadFile
 from fastapi.responses import FileResponse
-from backend.exceptions import FileNotFoundException
+from backend.exceptions import UploadNotFoundException, ClientErrorResponse, DuplicateNameException
+from backend.database import material as db_material
+from backend.dependencies import DBSession
 from pathlib import Path
+import shutil
+from datetime import datetime
+from backend.validators import DocumentValidator
 import mimetypes
+import os
 # import backend.path_fetch as path_fetch
 
 router=APIRouter(prefix="/material", tags=["material"])
+
 # Get the absolute path to one directory above the current file
 BASE_DIR = Path(__file__).parent.parent.parent
 
-@router.get("/{day_id}/{filename}")
-def get_file(day_id: int, filename: str):
+#Create a validator instance
+doc_validator = DocumentValidator(max_size= 25 * 1024 * 1024)
+
+@router.get("/{dayID}/{filename}",
+            status_code=200,
+            responses={
+                404: {"model": ClientErrorResponse}
+            },
+            summary="Get a material file for a specific day.",)
+def get_file(dayID: int, filename: str):
     # Start from BASE_DIR and navigate to uploads
-    file_path = BASE_DIR / "uploads" / "material" / str(day_id) / filename
+    file_path = BASE_DIR / "uploads" / "material" / str(dayID) / filename
     base_uploads = BASE_DIR / "uploads"
     
     print(f"Checking path: {file_path}")
@@ -21,7 +36,7 @@ def get_file(day_id: int, filename: str):
     try:
         # Check if file exists and is within uploads directory
         if not file_path.is_file() or not file_path.resolve().is_relative_to(base_uploads.resolve()):
-            raise FileNotFoundException(filename)
+            raise UploadNotFoundException(dayID, filename)
         
         # Check for path traversal attempts
         if '..' in str(file_path.relative_to(base_uploads)):
@@ -34,17 +49,92 @@ def get_file(day_id: int, filename: str):
             filename=filename
         )
     except (ValueError, RuntimeError):
-        raise FileNotFoundException(filename)
+        raise UploadNotFoundException(dayID, filename)
 
-"""
-from fastapi import APIRouter
-from fastapi.responses import FileResponse
-import backend.path_fetch as path_fetch
 
-router=APIRouter(prefix="/material", tags=["material"])
+@router.delete("/{dayID}/{filename}",
+                status_code=204,
+                responses={
+                    404: {"model": ClientErrorResponse},
+                    403: {"model": ClientErrorResponse}
+                },
+                summary="Delete a file for a specific day.")
+def delete_file(dayID: int, filename: str, session: DBSession):
+    # Start from BASE_DIR and navigate to uploads
+    file_path = BASE_DIR / "uploads" / "material" / str(dayID) / filename
+    base_uploads = BASE_DIR / "uploads"
+    
+     # Security checks
+    try:
+        # Check if file exists and is within uploads directory
+        if not file_path.is_file() or not file_path.resolve().is_relative_to(base_uploads.resolve()):
+            raise UploadNotFoundException(dayID, filename)
+        
+        # Check for path traversal attempts
+        if '..' in str(file_path.relative_to(base_uploads)):
+            raise HTTPException(status_code=403, detail="Invalid path")
+        
+        db_material.delete_material(dayID, filename, session)
+        
+        # Delete the actual file
+        try:
+            os.remove(file_path)
+        except FileNotFoundError:
+            # File already deleted from disk, that's okay
+            pass
+        
+        return None
+        
+    except (ValueError, RuntimeError):
+        raise UploadNotFoundException(dayID, filename)
 
-@router.get("/{day_id}/{filename}")
-def get_file(day_id: int, filename: str):
-    path = path_fetch.get_safe_path("material", day_id, filename)
-    return FileResponse(path=path, filename=filename)
-    """
+
+@router.post("{dayID}/{filename}",
+                status_code=201,
+                responses={
+                    409: {"model": ClientErrorResponse},
+                    },
+                summary="Upload a material file for a specific day.")
+async def upload_single_file(dayID: int, name: str, session: DBSession, file: UploadFile = File(...)):
+    """Upload a single file with basic validation"""
+    if file.filename == "":
+        raise HTTPException(status_code=400, detail="No file selected")
+
+    # Check if the folder exists, if not create it
+    UPLOAD_DIR = BASE_DIR / "uploads" / "material" / str(dayID)
+    UPLOAD_DIR.mkdir(exist_ok=True)
+    
+    # Use the original filename from the uploaded file
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="Invalid file: filename is missing")
+    safe_filename = Path(file.filename).name  # Remove any path components
+    file_path = UPLOAD_DIR / safe_filename
+
+    # Validate the file first
+    validation = await doc_validator.validate_file(file)
+
+    if not validation["valid"]:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "message": "File validation failed",
+                "errors": validation["errors"]
+            }
+        )
+
+    # Check if file already exists
+    if file_path.exists():
+        raise DuplicateNameException("file" , safe_filename)
+    
+    # Save the file
+    try:
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to save file: {str(e)}"
+        )
+
+    # Add the new material to the database and return the created entry.
+    return db_material.create_material(dayID, name, safe_filename, file.content_type, session)

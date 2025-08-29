@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Form
+from fastapi import APIRouter, Form, HTTPException
 from typing import Any, Annotated
 from backend.models import ClientErrorResponse,DayAssignmentResponse,DayMaterial,DayAssignment,DayMaterialResponse
 from backend.dependencies import DBSession
 import backend.database.day as db_day
+from pathlib import Path
 
 router = APIRouter(prefix="/day", tags=["day"])
 
@@ -51,3 +52,13 @@ def getDayMaterials(dayID:int, session:DBSession) -> DayMaterialResponse:
 
         return DayMaterialResponse(materials = materials)
 
+
+# TODO handle exceptions here
+@router.delete("/{dayId}", status_code=204, 
+               summary="Delete a day and all its associated data.")
+def delete_day(dayId: int, session: DBSession):
+    try:
+        db_day.delete_day(dayId, session)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    return None

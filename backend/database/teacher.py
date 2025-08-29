@@ -1,8 +1,10 @@
+import random
+import string
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload, Session
 from backend.database.schema import DBTeacher, DBClass
-from backend.models import CreateClassroom
-from backend.exceptions import EntityNotFoundException
+from backend.models import CreateClassroom, TeacherUpdate
+from backend.exceptions import EntityNotFoundException, DuplicateNameException
 
 def get_teacher(teacherID: int, session: Session) -> DBTeacher:
     """ Get a DBTeacher object by its ID.
@@ -67,10 +69,28 @@ def create_new_classroom(teacherID: int, classroom: CreateClassroom, session: Se
     if not teacher:
         raise EntityNotFoundException("teacher", teacherID)
     
+    duplicate_stmt = select(DBClass)\
+        .filter(
+            DBClass.name == classroom.name,
+            DBClass.ownerID == teacherID  # Add teacher check
+        )
+    existing_classroom = session.execute(duplicate_stmt).scalar_one_or_none()
+    if existing_classroom:
+        raise DuplicateNameException("classroom", classroom.name)
+    
+    while True:
+        class_code = generate_class_code()
+        # Check if code already exists
+        existing = session.query(DBClass).filter(DBClass.classCode == class_code).first()
+        if not existing:
+            break
+    
     new_class = DBClass(
         name=classroom.name,
         ownerID=teacherID,
-        settings=classroom.settings
+        settings=classroom.settings,
+        classCode=class_code,
+        published=True,
     )
     
     session.add(new_class)
@@ -79,3 +99,26 @@ def create_new_classroom(teacherID: int, classroom: CreateClassroom, session: Se
     
     return new_class
     
+def update_teacher(teacherID: int,  update: TeacherUpdate, session: Session) -> None:
+    """ Update a teacher's username and or name."""
+
+    stmnt = (
+        select(DBTeacher)
+        .filter(DBTeacher.id == teacherID)
+    )
+    teacher = session.execute(stmnt).scalar_one_or_none()
+    if not teacher:
+        raise EntityNotFoundException("teacher", teacherID)
+    if update.name is not None:
+        teacher.name = update.name #type: ignore
+    if update.username is not None:
+        teacher.userName = update.username #type: ignore
+    session.commit()
+
+    return None
+
+def generate_class_code() -> str:
+    """Generate a random 6-character alphanumeric code."""
+    chars = string.ascii_uppercase + string.digits
+
+    return ''.join(random.choices(chars, k=6))

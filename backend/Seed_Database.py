@@ -46,6 +46,9 @@ def PopulateDB(file: str = SEED_FILE_PATH):
         for c in data.get("class", []):
             db.add(DBClass(**c))
 
+        for e in data.get("enrolled", []):   # <-- moved here
+            db.add(DBEnrolled(**e))
+
         for u in data.get("unit", []):
             db.add(DBUnit(**u))
 
@@ -60,9 +63,6 @@ def PopulateDB(file: str = SEED_FILE_PATH):
 
         for m in data.get("material", []):
             db.add(DBMaterial(**m))
-
-        for e in data.get("enrolled", []):
-            db.add(DBEnrolled(**e))
 
         db.commit()
         print("Database seeded successfully.")

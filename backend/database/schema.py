@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, JSON
+from sqlalchemy import Column, Integer, String, ForeignKey, JSON,Boolean,Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -43,6 +43,8 @@ class DBClass(Base):
     name = Column(String(25), nullable=False)
     
     ownerID = Column(Integer, ForeignKey("teacher.id", ondelete="CASCADE"))
+    classCode = Column(String(6), nullable=False, unique=True)  # Changed to String(6) for alphanumeric codes
+    published = Column(Boolean,nullable = False)
 
     owner = relationship("DBTeacher", back_populates="classes")
     enrollment = relationship("DBEnrolled", back_populates="class_")
@@ -61,7 +63,7 @@ class DBUnit(Base):
     class_ = relationship("DBClass", back_populates="units")
     modules = relationship("DBModule", back_populates="unit")
     
-    settings = Column(JSON, nullable=False)
+    settings = Column(JSON, nullable=True)
 
 
 class DBModule(Base):
@@ -75,6 +77,7 @@ class DBModule(Base):
     unit = relationship("DBUnit",back_populates="modules")
     days = relationship("DBDay",back_populates="module",cascade="all, delete-orphan")
 
+    settings = Column(JSON, nullable=True)
 
 
 class DBDay(Base):
@@ -85,10 +88,12 @@ class DBDay(Base):
     sequence = Column(Integer, nullable=False)
     moduleID = Column(Integer, ForeignKey("module.id", ondelete="CASCADE"))
 
-    assignments = relationship("DBAssignment",back_populates="day")
-    materials = relationship("DBMaterial",back_populates="day")
+    assignments = relationship("DBAssignment",back_populates="day", cascade="all, delete-orphan")
+    materials = relationship("DBMaterial",back_populates="day", cascade="all, delete-orphan")
     module = relationship("DBModule",back_populates="days")
     
+    settings = Column(JSON, nullable=True)
+
 class DBAssignment(Base):
     __tablename__ = "assignment"
 
@@ -97,7 +102,7 @@ class DBAssignment(Base):
     filename = Column(String(225), nullable=False)
     sequence = Column(Integer, nullable=False)
     path = Column(String(255),nullable=False)
-    dayId = Column(ForeignKey("day.id"))
+    dayId = Column(ForeignKey("day.id", ondelete="CASCADE"))
 
     day = relationship("DBDay", back_populates="assignments")
 
@@ -109,7 +114,41 @@ class DBMaterial(Base):
     filename = Column(String(225), nullable=False)
     sequence = Column(Integer, nullable=False)
     path = Column(String(255),nullable=False)
-    dayId = Column(ForeignKey("day.id"))
+    dayId = Column(ForeignKey("day.id", ondelete="CASCADE"))
 
     day = relationship("DBDay", back_populates="materials")
+
+class DBConversation(Base):
+    __tablename__ = "conversation"
+
+    id = Column(Integer, primary_key=True, index=True)
+    studentID = Column(ForeignKey("student.id", ondelete="CASCADE"))
+    path = Column(String(255), nullable=True)
+
+    student = relationship("DBStudent")
+    messages = relationship("DBMessage", back_populates="conversation", cascade="all, delete-orphan")
+    responses = relationship("DBResponse", back_populates="conversation", cascade="all, delete-orphan")
+
+
+class DBMessage(Base):
+    __tablename__ = "message"
+
+    id = Column(Integer, primary_key=True, index=True)
+    content = Column(Text, nullable=False)
+    conversationID = Column(ForeignKey("conversation.id", ondelete="CASCADE"))
+    
+    conversation = relationship("DBConversation", back_populates="messages")
+
+    
+
+class DBResponse(Base):
+    __tablename__ = "response"
+
+    id = Column(Integer, primary_key=True, index=True)
+    content = Column(Text, nullable=False)
+    conversationID = Column(ForeignKey("conversation.id", ondelete="CASCADE"))
+    
+    conversation = relationship("DBConversation", back_populates="responses")    
+
+    
 
