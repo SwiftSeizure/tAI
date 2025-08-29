@@ -1,6 +1,6 @@
 from __future__ import annotations
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Dict, Any
 from backend.database.schema import DBMessage, DBResponse, DBConversation
 
 # Error Response Model --------------------------------------------
@@ -25,6 +25,13 @@ class HomeClass(BaseModel):
 class ClassroomUpdate(BaseModel):
     name: str
     settings: dict
+
+class ClassroomUpdateReturn(BaseModel):
+    id: int
+    name: str
+    settings: dict
+    published: bool
+
 class CreateUnit(BaseModel):
     name: str
     settings: dict
@@ -39,7 +46,7 @@ class ClassroomUnit(BaseModel):
 # Unit Input Models -----------------------------------------------
 class CreateModule(BaseModel):
     name: str
-    settings: dict
+    settings: Dict[str, Any]
 class UnitUpdate(BaseModel):
     name: str
     settings: dict

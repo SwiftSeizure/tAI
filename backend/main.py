@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 from backend.routers import home, classroom, unit,module,day,assignment, material,student,teacher,chat
 from backend.Seed_Database import PopulateDB
 from fastapi.middleware.cors import CORSMiddleware
-from backend.exceptions import EntityNotFoundException, UploadNotFoundException, DuplicateNameException
+from backend.exceptions import EntityNotFoundException, UploadNotFoundException, DuplicateNameException, InvalidClassCodeException
 
 PopulateDB()
 app = FastAPI(
@@ -51,6 +51,9 @@ def handle_file_not_found(request: Request, exception: EntityNotFoundException):
     return exception.response()
 @app.exception_handler(DuplicateNameException)
 def handle_duplicate_name(request: Request, exception: DuplicateNameException):
+    return exception.response()
+@app.exception_handler(InvalidClassCodeException)
+def handle_invalid_class_code(request: Request, exception: InvalidClassCodeException):
     return exception.response()
 
 """

@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session, selectinload
 from .schema import DBUnit, DBModule, DBDay
 from backend.models import CreateModule, UnitUpdate
 from backend.exceptions import EntityNotFoundException, DuplicateNameException
+from backend.database.day import delete_day_files
 
 def get_unit(unitID: int, session: Session) -> DBUnit:
     """ Get a DBUnit object by its ID.
@@ -137,6 +138,9 @@ def delete_unit(unitID: int, session: Session) -> None:
         EntityNotFoundException: If the unit with the given ID does not exist.
     """
     unit = get_unit(unitID, session)
-
+    for module in unit.modules:
+        for day in module.days:
+            delete_day_files(day.id)
+            
     session.delete(unit)
     session.commit()

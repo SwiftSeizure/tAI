@@ -3,7 +3,7 @@ import { putUpdateClassSettings } from '../../home/services/put-update-class-set
 
 export const useSettingsModal = (classID, onSuccess, onError) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false); 
 
     const openModal = () => setIsOpen(true);
 
@@ -18,7 +18,6 @@ export const useSettingsModal = (classID, onSuccess, onError) => {
         setIsLoading(true);
         try {
             const response = await putUpdateClassSettings(classID, settingsData);
-            
             // Call success callback if provided
             if (onSuccess) {
                 onSuccess(response.data, settingsData);

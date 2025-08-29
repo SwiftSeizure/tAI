@@ -20,7 +20,7 @@ def get_student(studentID: int, session: Session) -> DBStudent:
     stmt = select(DBStudent).filter(DBStudent.id == studentID)
     student = session.execute(stmt).scalar_one_or_none()
     if not student:
-        raise EntityNotFoundException("module",studentID)
+        raise EntityNotFoundException("student",studentID)
     
     return student
 
@@ -50,9 +50,12 @@ def get_student_classes(studentID: int, session: Session) -> list[DBClass]:
     
     result = session.execute(stmt)
     classes = list(result.scalars().all())
+    for c in classes:
+        if c.published is False:
+            classes.remove(c) 
     return classes
 
-def enroll(studentID: int, classID: int, classCode: int, session: Session) -> None:
+def enroll(studentID: int, classCode: int, session: Session) -> None:
     """Enroll a student in a class.
     
     Args:
@@ -71,15 +74,15 @@ def enroll(studentID: int, classID: int, classCode: int, session: Session) -> No
     if not student:
         raise EntityNotFoundException("student", studentID)
     
-    stmt = select(DBClass).filter(DBClass.id == classID)
+    stmt = select(DBClass).filter(DBClass.classCode == classCode)
     classroom = session.execute(stmt).scalar_one_or_none()
     if not classroom:
-        raise EntityNotFoundException("class", classID)
+        raise EntityNotFoundException("class", classCode)
     
     if classCode != classroom.classCode:
         raise InvalidClassCodeException()
     
-    enrollment = DBEnrolled(studentID=studentID, classID=classID)
+    enrollment = DBEnrolled(studentID=studentID, classID=classroom.id)
     session.add(enrollment)
     session.commit()
     session.refresh(enrollment)

@@ -80,16 +80,13 @@
       "classCode": 1003,
       "published": true
     }
+    
   ],
   "enrolled": [
-    {
-      "id": 1,
-      "studentID": 1,
-      "classID": 1
-    },
+   
     {
       "id": 2,
-      "studentID": 2,
+      "studentID": 1,
       "classID": 1
     },
     {
