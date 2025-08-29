@@ -20,9 +20,8 @@ const CreateClassPage = () => {
     const [newClassName, setNewClassName] = useState("");     
     const [selectedChatSetting, setSelectedChatSetting] = useState(null);
     
-    const { setCurrentClass } = useCurrentClass();
     const { user } = useCurrentUser(); 
-    const [state, { fetchClasses } ] = useClass();  
+    const [state, { fetchClasses, setCurrentClass } ] = useClass();  
     const navigate = useNavigate();
 
 
@@ -35,10 +34,8 @@ const CreateClassPage = () => {
                 settings: selectedChatSetting
             };
 
-            console.log("This is the requestBody: ", requestBody);
-            const response = await postCreateClass(user.id, requestBody);  
-            console.log("This is the response.data.id when creating a class: ", response.data.id); 
-            await fetchClasses(user.id);
+            const response = await postCreateClass(user.id, requestBody);
+            await fetchClasses(user.id, user.role);
             await setCurrentClass(response.data.id); 
             navigate('/unitpage');
         }

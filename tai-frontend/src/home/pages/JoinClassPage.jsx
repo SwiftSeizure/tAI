@@ -28,13 +28,12 @@ const JoinClassPage = () => {
             console.log(user); 
             const code = parseInt(classCode, 10); 
             console.log("This is the classID in the URL Param code: ", code); 
-            const requestBody = {  
+            const requestBody = {   
+                studentID: user.id,
                 classCode: code,
-                studentID: user.id
             } 
             console.log("This is the requestBody for joining a classroom: ", requestBody);  
-            console.log("This is the currentClass.id: ", currentClass.id); 
-            await postJoinClass(currentClass.id, requestBody);   
+            await postJoinClass(requestBody);   
             await fetchClasses(user.id); 
             await setCurrentClass(code);   
             navigate('/unitpage'); 
