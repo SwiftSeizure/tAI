@@ -162,7 +162,13 @@ const TeacherStudentModulePage = () => {
             setDisplayType('error'); 
         }
 
-    }
+    } 
+
+    const handleNewModule = () => { 
+        // Logic for createing a new module will go here  
+        console.log("New Module Button Clicked");   
+
+    } 
  
 
     /**
@@ -188,7 +194,10 @@ const TeacherStudentModulePage = () => {
                             onMaterialSelect={handleMaterialSelect} 
                             onAssignmentSelect={handleAssignmentSelect}
                         />
-                    ))}    
+                    ))}      
+                    {user.role === "teacher" && (
+                        <button onClick={handleNewModule}>Add Module</button>
+                    )}
 
                 </div>
                 </>
