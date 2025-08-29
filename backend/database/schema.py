@@ -43,7 +43,7 @@ class DBClass(Base):
     name = Column(String(25), nullable=False)
     
     ownerID = Column(Integer, ForeignKey("teacher.id", ondelete="CASCADE"))
-    classCode = Column(Integer, nullable = False)
+    classCode = Column(String(6), nullable=False, unique=True)  # Changed to String(6) for alphanumeric codes
     published = Column(Boolean,nullable = False)
 
     owner = relationship("DBTeacher", back_populates="classes")
@@ -88,8 +88,8 @@ class DBDay(Base):
     sequence = Column(Integer, nullable=False)
     moduleID = Column(Integer, ForeignKey("module.id", ondelete="CASCADE"))
 
-    assignments = relationship("DBAssignment",back_populates="day")
-    materials = relationship("DBMaterial",back_populates="day")
+    assignments = relationship("DBAssignment",back_populates="day", cascade="all, delete-orphan")
+    materials = relationship("DBMaterial",back_populates="day", cascade="all, delete-orphan")
     module = relationship("DBModule",back_populates="days")
     
     settings = Column(JSON, nullable=True)
@@ -102,7 +102,7 @@ class DBAssignment(Base):
     filename = Column(String(225), nullable=False)
     sequence = Column(Integer, nullable=False)
     path = Column(String(255),nullable=False)
-    dayId = Column(ForeignKey("day.id"))
+    dayId = Column(ForeignKey("day.id", ondelete="CASCADE"))
 
     day = relationship("DBDay", back_populates="assignments")
 
@@ -114,7 +114,7 @@ class DBMaterial(Base):
     filename = Column(String(225), nullable=False)
     sequence = Column(Integer, nullable=False)
     path = Column(String(255),nullable=False)
-    dayId = Column(ForeignKey("day.id"))
+    dayId = Column(ForeignKey("day.id", ondelete="CASCADE"))
 
     day = relationship("DBDay", back_populates="materials")
 

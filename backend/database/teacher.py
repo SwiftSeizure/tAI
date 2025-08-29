@@ -1,4 +1,5 @@
-
+import random
+import string
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload, Session
 from backend.database.schema import DBTeacher, DBClass
@@ -77,10 +78,19 @@ def create_new_classroom(teacherID: int, classroom: CreateClassroom, session: Se
     if existing_classroom:
         raise DuplicateNameException("classroom", classroom.name)
     
+    while True:
+        class_code = generate_class_code()
+        # Check if code already exists
+        existing = session.query(DBClass).filter(DBClass.classCode == class_code).first()
+        if not existing:
+            break
+    
     new_class = DBClass(
         name=classroom.name,
         ownerID=teacherID,
-        settings=classroom.settings
+        settings=classroom.settings,
+        classCode=class_code,
+        published=True,
     )
     
     session.add(new_class)
@@ -100,10 +110,15 @@ def update_teacher(teacherID: int,  update: TeacherUpdate, session: Session) -> 
     if not teacher:
         raise EntityNotFoundException("teacher", teacherID)
     if update.name is not None:
-        teacher.name = update.name
+        teacher.name = update.name #type: ignore
     if update.username is not None:
-        teacher.userName = update.username
+        teacher.userName = update.username #type: ignore
     session.commit()
 
     return None
 
+def generate_class_code() -> str:
+    """Generate a random 6-character alphanumeric code."""
+    chars = string.ascii_uppercase + string.digits
+
+    return ''.join(random.choices(chars, k=6))

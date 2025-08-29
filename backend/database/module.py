@@ -2,6 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 from backend.exceptions import EntityNotFoundException
 from backend.database.schema import DBModule,DBDay
+from backend.database.day import delete_day_files
 
 def get_module(moduleID: int, session:Session) -> DBModule:
     """Get a DBModule object by its ID.
@@ -95,6 +96,9 @@ def delete_module(moduleID: int, session: Session) -> None:
     Raises:
         EntityNotFoundException: If the module with the given ID does not exist.
     """
+    for day in get_module_days(moduleID, session):
+        delete_day_files(day.id)  # type: ignore
+    
     module = get_module(moduleID, session)
     session.delete(module)
     session.commit()
