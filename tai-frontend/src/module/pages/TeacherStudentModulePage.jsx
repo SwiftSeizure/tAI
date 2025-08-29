@@ -43,10 +43,11 @@ const TeacherStudentModulePage = () => {
     const [, setSelectedAssignmentID] = useState(null); // Tracks the selected assignment ID
     const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
     
-    
     const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
     const [assignmentContent, setAssignmentContent] = useState(null); // Stores the content of a selected assignment
     const [currentContentDisplay, setCurrentContentDisplay] = useState(null); // Tracks the current content being displayed
+
+    const [chatWidth, setChatWidth] = useState(600); // Default width in pixels
 
     const { user } = useCurrentUser(); 
     const { currentUnit } = useCurrentUnit();  
@@ -70,16 +71,16 @@ const TeacherStudentModulePage = () => {
     const toggleChatExpand = () => {
         setIsChatExpanded(!isChatExpanded);  
 
-        if (!isChatExpanded && user.role === "student") { 
-            setDisplayType('chat') 
-        } 
-        else if (!isChatExpanded && user.role === "teacher") { 
-            setDisplayType('chat-settings'); 
-        }  
+        // if (!isChatExpanded && user.role === "student") { 
+        //     setDisplayType('chat') 
+        // } 
+        // else if (!isChatExpanded && user.role === "teacher") { 
+        //     setDisplayType('chat-settings'); 
+        // }  
 
-        if (isChatExpanded) { 
-            setDisplayType(currentContentDisplay);
-        }
+        // if (isChatExpanded) { 
+        //     setDisplayType(currentContentDisplay);
+        // }
     };
 
 
@@ -254,13 +255,13 @@ const TeacherStudentModulePage = () => {
                     );
                     
 
-            case 'chat':  
-                return(  
-                    <div className="chat-container"> 
-                        <ChatFeature />
-                    </div>
+            // case 'chat':  
+            //     return(  
+            //         <div className="chat-container"> 
+            //             <ChatFeature />
+            //         </div>
                     
-                );   
+            //     );   
 
             case 'chat-settings': 
 
@@ -304,6 +305,58 @@ const TeacherStudentModulePage = () => {
         }
     };
 
+    /**
+     * startResizing
+     * Initiates the resizing of the chat overlay when the user starts dragging the resize handle.
+     * @param {object} e - The mouse down event.
+     */
+    const startResizing = (e) => {
+        // Prevent text selection while resizing
+        e.preventDefault();
+
+        // Add event listeners for mouse movement and release
+        window.addEventListener("mousemove", resizeOverlay);
+        window.addEventListener("mouseup", stopResizing);
+    };
+
+    const resizeOverlay = (e) => {
+        // Calculate the total available width for the grid
+        const totalWidth = window.innerWidth;
+
+        // Calculate the maximum width for the chat overlay
+        const maxChatWidth = totalWidth - 280; // Subtract the sidebar width (280px)
+
+        // Calculate the new width based on the mouse position
+        const newWidth = totalWidth - e.clientX;
+
+        // Set a minimum and maximum width for the overlay
+        if (newWidth >= 200 && newWidth <= maxChatWidth) {
+            setChatWidth(newWidth);
+        }
+    };
+
+    const stopResizing = () => {
+        // Remove event listeners when resizing is complete
+        window.removeEventListener("mousemove", resizeOverlay);
+        window.removeEventListener("mouseup", stopResizing);
+    };
+
+    // Adjust chatWidth dynamically when the window is resized
+    useEffect(() => {
+        const handleResize = () => {
+            const totalWidth = window.innerWidth;
+            const maxChatWidth = totalWidth - 280;
+
+            if (chatWidth > maxChatWidth) {
+                setChatWidth(maxChatWidth);
+            }
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, [chatWidth]);
 
     return(  
         <>   
@@ -327,10 +380,10 @@ const TeacherStudentModulePage = () => {
                 {/* Chat button for students or chat settings for teachers */}
                 {user.role === 'student' ? 
                     <button 
-                        className="fixed bottom-4 right-8 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out "  
+                        className="fixed bottom-4 right-8 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out z-50"  
                         onClick={toggleChatExpand} > 
                        <img 
-                        className={`rounded-md transition-all duration-300 ease-in-out ${isChatExpanded ? "w-12 h-12" : "w-8 h-8 hover:w-12 hover:h-12"}`}
+                        className={`rounded-md transition-all duration-200 ease-in-out w-10 h-10 hover:w-16 hover:h-16`}
                         src={chatImage}
                         /> 
                    </button>  
@@ -347,7 +400,36 @@ const TeacherStudentModulePage = () => {
 
                     </button> 
                 } 
-            </div>  
+            </div>
+            {/* Chat overlay */}
+            {/* <div
+              className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg transition-transform duration-300 ease-in-out z-40 ${
+                isChatExpanded ? "translate-x-0" : "translate-x-full"
+              }`}
+            >
+              <ChatFeature displayType={displayType} />
+            </div> */}
+            <div
+              className={`fixed top-40 right-0 h-[calc(90vh-120px)] bg-white shadow-lg transition-transform duration-300 ease-in-out z-40 ${
+                isChatExpanded ? "translate-x-0" : "translate-x-full"
+                }`}
+                // style={{ width: `${chatWidth}px` }} // Dynamically set the width
+                style={{
+                    width: `${chatWidth}px`, // Dynamically set the width
+                    border: "5px solid #a5a5a5ff", // Add a border
+                    borderRight: "none", // Remove the border on the right edge
+                    borderRadius: "10px 0 0 10px", // Rounded edges on the top-left and bottom-left corners
+                    // boxShadow: "inset 0 0 0 7px transparent, 0 0 0 7px linear-gradient(to bottom, #efcefcef, rgba(104, 96, 214, 1), #cf2)",
+                }}
+            >
+                {/* Resize handle */}
+                <div
+                    className="absolute left-0 top-0 h-full w-2 cursor-ew-resize"
+                    onMouseDown={startResizing}
+                ></div>
+
+                <ChatFeature />
+            </div>
         </div>
     
         </>
