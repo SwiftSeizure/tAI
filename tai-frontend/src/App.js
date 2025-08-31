@@ -5,7 +5,8 @@ import TeacherStudentUnitPage from '../src/unit/pages/TeacherStudentUnitPage';
 import TeacherStudentModulePage from '../src/module/pages/TeacherStudentModulePage'; 
 import CreateClassPage from '../src/home/pages/CreateClassPage'; 
 import JoinClassPage from '../src/home/pages/JoinClassPage'; 
-import CreateUnitPage from '../src/unit/pages/CreateUnitPage'; 
+import CreateUnitPage from '../src/unit/pages/CreateUnitPage';  
+import TeacherCreateModulePage from '../src/module/pages/TeacherCreateModulePage'; 
 
 function App() { 
 
@@ -29,6 +30,9 @@ function App() {
 
           {/* Unit Specific Routes */}
           <Route path="/createunit" element={ <CreateUnitPage /> } />
+
+          {/* Module Specific Routes */}
+          <Route path="/createmodule" element={ <TeacherCreateModulePage /> } />
 
           
         </Routes>

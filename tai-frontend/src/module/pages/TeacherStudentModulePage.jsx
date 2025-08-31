@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";  
+import React, { useEffect, useState } from "react";   
+import { useNavigate } from 'react-router-dom';  
 import { TitleCard } from "../../shared/components/TitleCard";
 import ChatFeature from "../components/ChatFeature";
 import ModuleComponent from "../components/ModuleComponent";  
@@ -47,6 +48,8 @@ const TeacherStudentModulePage = () => {
     const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
     const [assignmentContent, setAssignmentContent] = useState(null); // Stores the content of a selected assignment
     const [currentContentDisplay, setCurrentContentDisplay] = useState(null); // Tracks the current content being displayed
+
+    const navigate = useNavigate(); 
 
     const { user } = useCurrentUser(); 
     const { currentUnit } = useCurrentUnit();  
@@ -167,7 +170,7 @@ const TeacherStudentModulePage = () => {
     const handleNewModule = () => { 
         // Logic for createing a new module will go here  
         console.log("New Module Button Clicked");   
-
+        navigate('/createmodule');
     } 
  
 
