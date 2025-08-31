@@ -1,9 +1,22 @@
-import React from 'react'; 
+import React, { useState } from 'react'; 
 import { useNavigate } from 'react-router-dom';
 
-const TeacherCreateModulePage = () => {  
+const TeacherCreateModulePage = () => {   
 
-    const navigate = useNavigate();
+    const [days, setDays] = useState(1); 
+
+    const navigate = useNavigate();  
+
+
+    const handleAddDay = () => { 
+        setDays(days + 1); 
+    }; 
+
+    const handleCancel = () => { 
+        navigate('/modulepage');
+    };  
+
+
     const handleOnCreateModule = () => {  
 
         navigate('/modulepage');
@@ -18,10 +31,27 @@ const TeacherCreateModulePage = () => {
                 Create a Module 
             </h2> 
 
-            <input type="text" placeholder="Module Name" />
+            <input type="text" placeholder="Module Name" />  
 
-            <button> 
+            <button onClick={handleAddDay}> 
+                Add Day 
+            </button>  
+
+            <div> 
+                {Array.from({ length: days }, (_, index) => (
+                    <div key={index}>
+                        <input type="text" placeholder="Day Name" /> 
+                        {/* Add other day-specific fields here */}
+                    </div>
+                ))}
+            </div>
+
+
+            <button onClick={handleOnCreateModule}> 
                 Create Module 
+            </button> 
+            <button onClick={handleCancel}> 
+                Cancel 
             </button>
  
 
