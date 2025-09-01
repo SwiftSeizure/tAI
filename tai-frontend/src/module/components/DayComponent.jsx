@@ -44,7 +44,7 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
         setIsExpanded(newExpandedState); 
 
         // Fetch materials and assignments only if expanding for the first time
-        if (newExpandedState && materials.length === 0 && !loading) {  
+        if (newExpandedState && !materials && !loading) {  
             setLoading(true); 
 
             try {   
@@ -52,9 +52,11 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
                 const materials = await getDayMaterials(day);
                 setMaterials(materials);  
 
-                // Fetch Assignments 
-                const assignments = await getDayAssignments(day); 
-                setAssignments(assignments);
+                // Fetch Assignments  
+                if (day) {
+                    const assignments = await getDayAssignments(day); 
+                    setAssignments(assignments);
+                }
             }  
 
             // Handle errors during API requests
@@ -123,7 +125,18 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
                                         </li>
                                     ))}
                                 </ul> 
-                                </motion.div>
+                                </motion.div> 
+
+
+                                {/* Add new material button */}
+                                <button 
+                                    className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
+                                    onClick={() => {}}
+                                >
+                                    <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Material</span>
+                                </button> 
+
+
                             </AnimatePresence>
                         )} 
                         {/* Display assignments if available */}
@@ -152,7 +165,17 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
                                         </li>
                                     ))}
                                 </ul>
-                                </motion.div>
+                                </motion.div> 
+
+                                {/* Add new assignment button */}
+                                <button 
+                                    className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
+                                    onClick={() => {}}
+                                >
+                                    <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Assignment</span>
+                                </button> 
+
+
                             </AnimatePresence>
                         )} 
                         {/* Display message if no resources are available */}
