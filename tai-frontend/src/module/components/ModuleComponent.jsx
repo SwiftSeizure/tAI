@@ -1,6 +1,7 @@
 import React, { useState } from "react";  
 import DayComponent from "./DayComponent";
 import { FaBookOpen } from "react-icons/fa"; 
+import { useCurrentUser } from "../../store/user-store"; 
 
 
 /**
@@ -15,16 +16,12 @@ import { FaBookOpen } from "react-icons/fa";
  * - onMaterialSelect: Callback function triggered when a material is selected.
  * - onAssignmentSelect: Callback function triggered when an assignment is selected.
  */
-const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentSelect } ) => {   
+const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentSelect, onAddDay } ) => {   
  
     // State to track whether the module is expanded or not
     const [isExpanded, setIsExpanded] = useState(false);   
 
-    // do something for onNewDaySelect  
-    // TODO Make modal for onNewDaySelect  
-    const onNewDaySelect = () => { 
-        
-    };
+    const { user } = useCurrentUser(); 
     
 
     /**
@@ -71,13 +68,17 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
                             > 
                                 <DayComponent  
                                     day={day} 
-                                    onDaySelect={day ? () => onDaySelect(module.id, day.id) : () => onNewDaySelect()} 
-                                    onMaterialSelect={day ? onMaterialSelect : null}  
-                                    onAssignmentSelect={day ? onAssignmentSelect : null}
+                                    onDaySelect={() => onDaySelect(module.id, day.id)} 
+                                    onMaterialSelect={onMaterialSelect}  
+                                    onAssignmentSelect={onAssignmentSelect}
                                 /> 
                             </li> 
-                        ))}
-
+                        ))}  
+                        {user.role === "teacher" && (
+                            <div>
+                                <button onClick={() => onAddDay(module.id)}>Add Day</button>
+                            </div>
+                        )}
                     </ul>
                 </div>
             )}

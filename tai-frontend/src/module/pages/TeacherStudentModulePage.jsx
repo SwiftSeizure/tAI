@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { TitleCard } from "../../shared/components/TitleCard";
 import ChatFeature from "../components/ChatFeature";
 import ModuleComponent from "../components/ModuleComponent";  
-import AddModuleModal from "../modals/AddModuleModal";  
+import AddModuleModal from "../modals/AddModuleModal";   
+import AddDayModal from "../modals/AddDayModal"; 
 import { useCurrentUser } from "../../store/user-store"; 
 import { useCurrentUnit } from "../../store/unit-store";
 import { useModule } from "../../store/module-store"; 
@@ -11,6 +12,7 @@ import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import SettingsIcon from '@mui/icons-material/Settings'; 
 import { postCreateModule } from "../services/post-createmodule";
+import { postCreateDay } from "../services/post-create-day"; 
 
 import { pdfjs } from 'react-pdf';
 import { getMaterialURL } from "../services/get-material-url";
@@ -59,7 +61,9 @@ const TeacherStudentModulePage = () => {
     const { fetchModules } = actions; 
 
     // State variables for managing the add module modal
-    const [showAddModal, setShowAddModal] = useState(false); 
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [showAddDayModal, setShowAddDayModal] = useState(false);
+    const [selectedModuleId, setSelectedModuleId] = useState(null); 
 
     // Fetch modules when the component mounts or when currentUnit changes 
     useEffect(() => {
@@ -181,7 +185,25 @@ const TeacherStudentModulePage = () => {
         } 
         setShowAddModal(false); 
     } 
- 
+
+    const handleAddDay = (moduleId) => {
+        setSelectedModuleId(moduleId);
+        setShowAddDayModal(true);
+    };
+
+    const handleNewDay = async (dayName) => {
+        
+        console.log(`Creating day ${dayName} for module ${selectedModuleId}`); 
+        try { 
+            await postCreateDay(selectedModuleId, dayName);
+            await fetchModules(currentUnit.id);
+        } 
+        catch (error) { 
+            console.error('Error creating day:', error);
+        } 
+        setShowAddDayModal(false);
+    }; 
+
 
     /**
      * renderModules
@@ -205,6 +227,7 @@ const TeacherStudentModulePage = () => {
                             onDaySelect={handleDaySelect}  
                             onMaterialSelect={handleMaterialSelect} 
                             onAssignmentSelect={handleAssignmentSelect}
+                            onAddDay={handleAddDay}
                         />
                     ))}      
                     {user.role === "teacher" && (
@@ -214,6 +237,11 @@ const TeacherStudentModulePage = () => {
                                 isOpen={showAddModal}
                                 onClose={() => setShowAddModal(false)}
                                 onAddModule={handleNewModule}
+                            />
+                            <AddDayModal
+                                isOpen={showAddDayModal}
+                                onClose={() => setShowAddDayModal(false)}
+                                onAddDay={handleNewDay}
                             />
                         </div>
                     )}
