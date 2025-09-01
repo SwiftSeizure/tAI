@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { TitleCard } from "../../shared/components/TitleCard";
 import ChatFeature from "../components/ChatFeature";
 import ModuleComponent from "../components/ModuleComponent";  
+import AddModuleModal from "../modals/AddModuleModal";  
 import { useCurrentUser } from "../../store/user-store"; 
 import { useCurrentUnit } from "../../store/unit-store";
 import { useModule } from "../../store/module-store"; 
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
-import SettingsIcon from '@mui/icons-material/Settings';
+import SettingsIcon from '@mui/icons-material/Settings'; 
+import { postCreateModule } from "../services/post-createmodule";
 
 import { pdfjs } from 'react-pdf';
 import { getMaterialURL } from "../services/get-material-url";
@@ -44,7 +46,6 @@ const TeacherStudentModulePage = () => {
     const [, setSelectedAssignmentID] = useState(null); // Tracks the selected assignment ID
     const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
     
-    
     const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
     const [assignmentContent, setAssignmentContent] = useState(null); // Stores the content of a selected assignment
     const [currentContentDisplay, setCurrentContentDisplay] = useState(null); // Tracks the current content being displayed
@@ -55,11 +56,12 @@ const TeacherStudentModulePage = () => {
     const { currentUnit } = useCurrentUnit();  
     const [state, actions] = useModule();
     const { modules, isLoading, error } = state;
-    const { fetchModules } = actions;
+    const { fetchModules } = actions; 
+
+    // State variables for managing the add module modal
+    const [showAddModal, setShowAddModal] = useState(false); 
 
     // Fetch modules when the component mounts or when currentUnit changes 
-
-    console.log("This is the currentUnit.id: ", currentUnit);
     useEffect(() => {
         fetchModules(currentUnit.id);
     }, [currentUnit?.id, fetchModules]);
@@ -165,12 +167,19 @@ const TeacherStudentModulePage = () => {
             setDisplayType('error'); 
         }
 
-    } 
+    }  
 
-    const handleNewModule = () => { 
-        // Logic for createing a new module will go here  
-        console.log("New Module Button Clicked");   
-        navigate('/createmodule');
+    const handleNewModule = async (newModalName) => {  
+        console.log("handleNewModule clicked with module name: ", newModalName);  
+        try { 
+            const settings = {};
+            await postCreateModule(currentUnit.id, newModalName, settings);
+            await fetchModules(currentUnit.id);
+        } 
+        catch (error) { 
+            console.error('Error creating module:', error);
+        } 
+        setShowAddModal(false); 
     } 
  
 
@@ -199,7 +208,14 @@ const TeacherStudentModulePage = () => {
                         />
                     ))}      
                     {user.role === "teacher" && (
-                        <button onClick={handleNewModule}>Add Module</button>
+                        <div>
+                            <button onClick={() => setShowAddModal(true)}>Add Module</button>
+                            <AddModuleModal 
+                                isOpen={showAddModal}
+                                onClose={() => setShowAddModal(false)}
+                                onAddModule={handleNewModule}
+                            />
+                        </div>
                     )}
 
                 </div>

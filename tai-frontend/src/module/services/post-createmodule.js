@@ -1,11 +1,10 @@
 
 import axios from 'axios';
 
-export const postCreateModule = async (unitID, moduleName) => { 
+export const postCreateModule = async (unitID, moduleName, settings) => { 
     
-    const url = `http://localhost:8000/unit/${unitID}/modules`;
-    const response = await axios.post(url, { name: moduleName });
-    return response.data; 
-    
+    const url = `http://localhost:8000/unit/${unitID}/module`;
+    await axios.post(url, { name: moduleName, settings: settings });
+    return;
 };
 
