@@ -64,9 +64,9 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
                         isExpanded ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}`}>   
                     <ul className="">        
                         {/* Map through the days in the module and render DayComponent for each day in the module*/}      
-                        {Array.isArray(module.days) && [...module.days, null].map((day, index) => (   
+                        {Array.isArray(module.days) && [...module.days].map((day, index) => (   
                             <li 
-                                key={day?.id || 'new-day'}
+                                key={day.id}
                                 style={{ animationDelay: `${index * 100}ms`}}
                             > 
                                 <DayComponent  

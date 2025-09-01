@@ -44,7 +44,7 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
         setIsExpanded(newExpandedState); 
 
         // Fetch materials and assignments only if expanding for the first time
-        if (newExpandedState && !materials && !loading) {  
+        if (newExpandedState && !loading) {  
             setLoading(true); 
 
             try {   
@@ -87,102 +87,100 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
 
             {/* Content section for the day */}
             {isExpanded && (
-                <div className="p-2 bg-white rounded-lg"> 
-
-                    {/* Display loading spinner while fetching data */}
+                <div className="p-2 bg-white rounded-lg">
                     {loading ? (
                         <div className="flex items-center pl-4 gap-3">
                             <div className="w-5 h-5 border-[3px] border-blue-400 border-opacity-30 border-t-blue-500 rounded-full animate-spin"></div>
                             <span>Loading resources...</span>
                         </div>
                     ) : (
-                        <> 
-                        {/* Display materials if available */}
-                        {materials && materials.length > 0 && (
-                            <AnimatePresence> 
-                                <motion.div 
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: "auto", opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    transition={{ duration: 0.4 }}
-                                >
-                                <h5 className="font-nunito font-bold text-md text-gray-500 uppercase tracking-wide m-2 ">
-                                    Materials
-                                </h5>
-                                <ul className=""> 
-                                    { /* Map through materials and display them */}
-                                    {materials.map(material => (
-                                        <li
-                                            key={material.id}
-                                            className={`flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300 ${material.name === selected ? 'bg-slate-400 translate-x-1' : ''} `}
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                onMaterialSelect(day.id, material.id, material.filename, material.name);
-                                                setSelected(material.name)}}
+                        <AnimatePresence>
+                            <>
+                                {materials && materials.length > 0 && (
+                                    <motion.div 
+                                        key="materials-section"
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: "auto", opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.4 }}
+                                    >
+                                        <h5 className="font-nunito font-bold text-md text-gray-500 uppercase tracking-wide m-2">
+                                            Materials
+                                        </h5>
+                                        <ul>
+                                            {materials.map(material => (
+                                                <li
+                                                    key={`material-${material.id}`}
+                                                    className={`flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300 ${material.name === selected ? 'bg-slate-400 translate-x-1' : ''}`}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        onMaterialSelect(day.id, material.id, material.filename, material.name);
+                                                        setSelected(material.name);
+                                                    }}
+                                                >
+                                                    <FaFile className="mr-3 text-base text-yellow-500" />
+                                                    <span className="font-sans text-sm text-gray-600 font-md tracking-wide">{material.name}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        <button 
+                                            className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
+                                            onClick={(e) => e.stopPropagation()}
                                         >
-                                            <FaFile className="mr-3 text-base text-yellow-500" />
-                                            <span className="font-sans text-sm text-gray-600 font-md tracking-wide">{material.name}</span>
-                                        </li>
-                                    ))}
-                                </ul> 
-                                </motion.div> 
-
-
-                                {/* Add new material button */}
-                                <button 
-                                    className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
-                                    onClick={() => {}}
-                                >
-                                    <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Material</span>
-                                </button> 
-
-
-                            </AnimatePresence>
-                        )} 
-                        {/* Display assignments if available */}
-                        {assignments && assignments.length > 0 && (
-                            <AnimatePresence> 
-                                <motion.div 
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: "auto", opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    transition={{ duration: 0.4 }}
-                                >
-                                <h5 className="font-nunito font-bold text-md text-gray-500 uppercase tracking-wide m-2 ">Assignments</h5>
-                                <ul className=""> 
-                                    { /* Map through assignments and display them */}
-                                    {assignments.map(assignment => (
-                                        <li
-                                            key={assignment.id}
-                                            className={`flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300 ${assignment.name === selected ? 'bg-slate-400 translate-x-1' : ''} `}
-                                            onClick={(e) => { 
-                                                e.stopPropagation();
-                                                onAssignmentSelect(day.id, assignment.id, assignment.filename, assignment.name); 
-                                                setSelected(assignment.name); }}
-                                        >   
-                                            <MdAssignment className="mr-3 text-base text-red-500" />
-                                            <span className="font-sans text-sm text-gray-600 font-md tracking-wide">{assignment.name}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                                </motion.div> 
-
-                                {/* Add new assignment button */}
-                                <button 
-                                    className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
-                                    onClick={() => {}}
-                                >
-                                    <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Assignment</span>
-                                </button> 
-
-
-                            </AnimatePresence>
-                        )} 
-                        {/* Display message if no resources are available */}
-                        {(!materials || materials.length === 0) && (!assignments || assignments.length === 0) && (
-                            <p className="no-resources-message">No resources available for this day.</p>
-                        )}
-                        </>
+                                            <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Material</span>
+                                        </button>
+                                    </motion.div>
+                                )}
+            
+                                {assignments && assignments.length > 0 && (
+                                    <motion.div 
+                                        key="assignments-section"
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: "auto", opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.4 }}
+                                    >
+                                        <h5 className="font-nunito font-bold text-md text-gray-500 uppercase tracking-wide m-2">
+                                            Assignments
+                                        </h5>
+                                        <ul>
+                                            {assignments.map(assignment => (
+                                                <li
+                                                    key={`assignment-${assignment.id}`}
+                                                    className={`flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300 ${assignment.name === selected ? 'bg-slate-400 translate-x-1' : ''}`}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        onAssignmentSelect(day.id, assignment.id, assignment.filename, assignment.name);
+                                                        setSelected(assignment.name);
+                                                    }}
+                                                >
+                                                    <MdAssignment className="mr-3 text-base text-red-500" />
+                                                    <span className="font-sans text-sm text-gray-600 font-md tracking-wide">{assignment.name}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        <button 
+                                            className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Assignment</span>
+                                        </button>
+                                    </motion.div>
+                                )}
+            
+                                {(!materials || materials.length === 0) && (!assignments || assignments.length === 0) && (
+                                    <motion.p 
+                                        key="no-resources"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        className="no-resources-message"
+                                    >
+                                        No resources available for this day.
+                                    </motion.p>
+                                )}
+                            </>
+                        </AnimatePresence>
                     )}
                 </div>
             )}
