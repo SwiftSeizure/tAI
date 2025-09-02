@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import { FaChevronDown, FaChevronUp, FaFile, FaClipboard } from "react-icons/fa";
 import { MdAssignment } from "react-icons/md"; 
 import { motion, AnimatePresence } from 'framer-motion'; 
+import { useCurrentUser } from "../../store/user-store";
 
 import { getDayAssignments } from "../services/get-day-assignments"; 
 import { getDayMaterials } from "../services/get-day-materials";
@@ -32,6 +33,8 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
 
     // State to store loading state
     const [loading, setLoading] = useState(false);
+
+    const { user } = useCurrentUser();
 
 
     /**
@@ -122,13 +125,15 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
                                                     <span className="font-sans text-sm text-gray-600 font-md tracking-wide">{material.name}</span>
                                                 </li>
                                             ))}
-                                        </ul>
-                                        <button 
-                                            className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Material</span>
-                                        </button>
+                                        </ul> 
+                                        {user.role === "teacher" && (
+                                            <button 
+                                                className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
+                                                onClick={(e) => e.stopPropagation()}
+                                            >
+                                                <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Material</span>
+                                            </button> 
+                                        )}
                                     </motion.div>
                                 )}
             
@@ -158,13 +163,15 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
                                                     <span className="font-sans text-sm text-gray-600 font-md tracking-wide">{assignment.name}</span>
                                                 </li>
                                             ))}
-                                        </ul>
-                                        <button 
-                                            className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Assignment</span>
-                                        </button>
+                                        </ul> 
+                                        {user.role === "teacher" && (
+                                            <button 
+                                                className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
+                                                onClick={(e) => e.stopPropagation()}
+                                            >
+                                                <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Assignment</span>
+                                            </button>
+                                        )}
                                     </motion.div>
                                 )}
             
