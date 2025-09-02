@@ -269,7 +269,7 @@ const TeacherStudentModulePage = () => {
                                 onClose={() => setShowAddDayModal(false)}
                                 onAddDay={handleNewDay}
                             />
-                            {'Material will be the same as assignment and go here '}
+                            {/* {'Material will be the same as assignment and go here '} */}
                             <AddAssignmentModal
                                 isOpen={showAddAssignmentModal}
                                 onClose={() => setShowAddAssignmentModal(false)}
