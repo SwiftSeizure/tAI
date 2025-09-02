@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';   
 
-export default function AddAssignmentModal({ isOpen, onClose, onAddAssignment }) {   
+export default function AddAssignmentModal({ isOpen, onClose, onAddAssignment }) {    
+
     const [newAssignmentName, setNewAssignmentName] = useState('');  
     const [selectedFile, setSelectedFile] = useState(null);
-    const [assignment, setAssignment] = useState({});
 
     useEffect(() => {
         if (isOpen) {
@@ -61,7 +61,7 @@ export default function AddAssignmentModal({ isOpen, onClose, onAddAssignment })
                 </div>
                 <div>
                     <button 
-                        onClick={handleAddAssignment}
+                        onClick={(assignment) => handleAddAssignment(assignment)}
                         disabled={!selectedFile}
                     >
                         Upload Assignment

@@ -273,7 +273,7 @@ const TeacherStudentModulePage = () => {
                             <AddAssignmentModal
                                 isOpen={showAddAssignmentModal}
                                 onClose={() => setShowAddAssignmentModal(false)}
-                                onAddAssignment={handleNewAssignment}
+                                onAddAssignment={(assignment) => handleNewAssignment(assignment)}
                             />
                         </div>
                     )}
