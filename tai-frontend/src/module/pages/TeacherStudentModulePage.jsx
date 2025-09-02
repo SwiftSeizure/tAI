@@ -12,7 +12,8 @@ import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import SettingsIcon from '@mui/icons-material/Settings'; 
 import { postCreateModule } from "../services/post-createmodule";
-import { postCreateDay } from "../services/post-create-day"; 
+import { postCreateDay } from "../services/post-create-day";  
+import AddAssignmentModal from "../modals/AddAssignmentModal";
 
 import { pdfjs } from 'react-pdf';
 import { getMaterialURL } from "../services/get-material-url";
@@ -61,9 +62,11 @@ const TeacherStudentModulePage = () => {
     const { fetchModules } = actions; 
 
     // State variables for managing the add module modal
-    const [showAddModal, setShowAddModal] = useState(false);
+    const [showAddModuleModal, setShowAddModuleModal] = useState(false);
     const [showAddDayModal, setShowAddDayModal] = useState(false);
-    const [selectedModuleId, setSelectedModuleId] = useState(null); 
+    const [selectedModuleId, setSelectedModuleId] = useState(null);  
+
+    const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false);
 
     // Fetch modules when the component mounts or when currentUnit changes 
     useEffect(() => {
@@ -183,7 +186,7 @@ const TeacherStudentModulePage = () => {
         catch (error) { 
             console.error('Error creating module:', error);
         } 
-        setShowAddModal(false); 
+        setShowAddModuleModal(false); 
     } 
 
     const handleAddDay = (moduleId) => {
@@ -204,6 +207,27 @@ const TeacherStudentModulePage = () => {
         setShowAddDayModal(false);
     }; 
 
+    const handleAddMaterial = (dayId) => {
+        console.log(`Creating material for day ${dayId} This is where the logic for this will go `);
+        
+    }; 
+
+    const handleAddAssignment = (dayId) => {
+        console.log(`Creating assignment for day ${dayId} This is where the logic for this will go `);
+        setShowAddAssignmentModal(true);
+    }; 
+ 
+    const handleNewAssignment = async (dayId, assignmentName, assignment) => {
+        console.log(`Creating assignment ${assignmentName} for day ${dayId}`); 
+        try {  
+            
+            await fetchModules(currentUnit.id);
+        } 
+        catch (error) { 
+            console.error('Error creating assignment:', error);
+        } 
+        setShowAddAssignmentModal(false);
+    }; 
 
     /**
      * renderModules
@@ -228,20 +252,28 @@ const TeacherStudentModulePage = () => {
                             onMaterialSelect={handleMaterialSelect} 
                             onAssignmentSelect={handleAssignmentSelect}
                             onAddDay={handleAddDay}
+                            onAddMaterial={handleAddMaterial}
+                            onAddAssignment={handleAddAssignment}
                         />
                     ))}      
                     {user.role === "teacher" && (
                         <div>
-                            <button onClick={() => setShowAddModal(true)}>Add Module</button>
+                            <button onClick={() => setShowAddModuleModal(true)}>Add Module</button>
                             <AddModuleModal 
-                                isOpen={showAddModal}
-                                onClose={() => setShowAddModal(false)}
+                                isOpen={showAddModuleModal}
+                                onClose={() => setShowAddModuleModal(false)}
                                 onAddModule={handleNewModule}
                             />
                             <AddDayModal
                                 isOpen={showAddDayModal}
                                 onClose={() => setShowAddDayModal(false)}
                                 onAddDay={handleNewDay}
+                            />
+                            {'Material will be the same as assignment and go here '}
+                            <AddAssignmentModal
+                                isOpen={showAddAssignmentModal}
+                                onClose={() => setShowAddAssignmentModal(false)}
+                                onAddAssignment={handleNewAssignment}
                             />
                         </div>
                     )}

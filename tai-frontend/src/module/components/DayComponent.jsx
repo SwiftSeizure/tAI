@@ -18,7 +18,7 @@ import { getDayMaterials } from "../services/get-day-materials";
  * - onAssignmentSelect: Callback function triggered when an assignment is selected.
  */ 
 
-const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect}  ) => { 
+const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect, handleAddMaterial, handleAddAssignment}  ) => { 
 
     // State to track whether the day is expanded or not
     const [isExpanded, setIsExpanded] = useState(false);   
@@ -129,7 +129,7 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
                                         {user.role === "teacher" && (
                                             <button 
                                                 className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
-                                                onClick={(e) => e.stopPropagation()}
+                                                onClick={ () => {handleAddMaterial(day.id)}}
                                             >
                                                 <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Material</span>
                                             </button> 
@@ -167,7 +167,7 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
                                         {user.role === "teacher" && (
                                             <button 
                                                 className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
-                                                onClick={(e) => e.stopPropagation()}
+                                                onClick={ () => {handleAddAssignment(day.id)}}
                                             >
                                                 <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Assignment</span>
                                             </button>
