@@ -228,7 +228,8 @@ const TeacherStudentModulePage = () => {
         } 
         catch (error) { 
             console.error('Error creating material:', error);
-        } 
+        }  
+        //TODO set newly added material as selected material
         setShowAddMaterialModal(false);
     }; 
 
@@ -249,7 +250,8 @@ const TeacherStudentModulePage = () => {
         } 
         catch (error) { 
             console.error('Error creating assignment:', error);
-        } 
+        }  
+        //TODO set newly added assignment as selected assignment
         setShowAddAssignmentModal(false);
     }; 
 
