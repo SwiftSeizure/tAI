@@ -1,8 +1,8 @@
 import axios from "axios"; 
 
-const postCreateAssignment = async ({dayID, assignmentData}) => { 
+export const postCreateAssignment = async ({dayID, fileName, file}) => { 
     try { 
-        await axios.post(`/module/${dayID}/assignment`, assignmentData); 
+        await axios.post(`/module/${dayID}/${fileName}`, file); 
     } 
     catch (error) { 
         console.error('Error creating assignment:', error);
