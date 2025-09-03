@@ -32,7 +32,5 @@ export const updateClass = (updatedClass) => ({ setState, getState }) => {
     ...newState
   })); 
 
-  console.log("Updated class:", updatedClass);
-
   return updatedClass;
 };

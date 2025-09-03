@@ -29,7 +29,9 @@ export default function AddAssignmentModal({ isOpen, onClose, onAddAssignment })
         const assignmentData = {
             name: newAssignmentName.trim(),
             file: selectedFile
-        };
+        }; 
+
+        console.log("Assignment Data in modal: ", assignmentData); 
         
         onAddAssignment(assignmentData);
         onClose();
@@ -61,7 +63,7 @@ export default function AddAssignmentModal({ isOpen, onClose, onAddAssignment })
                 </div>
                 <div>
                     <button 
-                        onClick={(assignment) => handleAddAssignment(assignment)}
+                        onClick={handleAddAssignment}
                         disabled={!selectedFile}
                     >
                         Upload Assignment

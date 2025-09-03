@@ -67,6 +67,7 @@ const TeacherStudentModulePage = () => {
     const [selectedModuleId, setSelectedModuleId] = useState(null);  
 
     const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false);
+    const [dayId, setDayId] = useState(null); 
 
     // Fetch modules when the component mounts or when currentUnit changes 
     useEffect(() => {
@@ -177,7 +178,6 @@ const TeacherStudentModulePage = () => {
     }  
 
     const handleNewModule = async (newModalName) => {  
-        console.log("handleNewModule clicked with module name: ", newModalName);  
         try { 
             const settings = {};
             await postCreateModule(currentUnit.id, newModalName, settings);
@@ -195,8 +195,6 @@ const TeacherStudentModulePage = () => {
     };
 
     const handleNewDay = async (dayName) => {
-        
-        console.log(`Creating day ${dayName} for module ${selectedModuleId}`); 
         try { 
             await postCreateDay(selectedModuleId, dayName);
             await fetchModules(currentUnit.id);
@@ -213,14 +211,16 @@ const TeacherStudentModulePage = () => {
     }; 
 
     const handleAddAssignment = (dayId) => {
-        console.log(`Creating assignment for day ${dayId} This is where the logic for this will go `);
+        setDayId(dayId);
         setShowAddAssignmentModal(true);
     }; 
  
-    const handleNewAssignment = async (dayId, assignmentName, assignment) => {
-        console.log(`Creating assignment ${assignmentName} for day ${dayId}`); 
+    const handleNewAssignment = async (assignmentData) => {
         try {  
+            console.log("Create post request and call it here. we have dayId: ", dayId, " and assignmentData: ", assignmentData);
             
+            
+            // await postCreateAssignment(dayId, assignmentData);
             await fetchModules(currentUnit.id);
         } 
         catch (error) { 
@@ -273,7 +273,7 @@ const TeacherStudentModulePage = () => {
                             <AddAssignmentModal
                                 isOpen={showAddAssignmentModal}
                                 onClose={() => setShowAddAssignmentModal(false)}
-                                onAddAssignment={(assignment) => handleNewAssignment(assignment)}
+                                onAddAssignment={handleNewAssignment}
                             />
                         </div>
                     )}
