@@ -11,10 +11,12 @@ import { useModule } from "../../store/module-store";
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import SettingsIcon from '@mui/icons-material/Settings'; 
-import { postCreateModule } from "../services/post-createmodule";
-import { postCreateDay } from "../services/post-create-day";  
+import { postCreateModule } from "../services/post-create-module";
+import { postCreateDay } from "../services/post-create-day";   
+import { postCreateMaterial } from "../services/post-create-material"; 
 import { postCreateAssignment } from "../services/post-create-assignment"; 
-import AddAssignmentModal from "../modals/AddAssignmentModal";
+import AddAssignmentModal from "../modals/AddAssignmentModal"; 
+import AddMaterialModal from "../modals/AddMaterialModal"; 
 
 import { pdfjs } from 'react-pdf';
 import { getMaterialURL } from "../services/get-material-url";
@@ -67,7 +69,9 @@ const TeacherStudentModulePage = () => {
     const [showAddDayModal, setShowAddDayModal] = useState(false);
     const [selectedModuleId, setSelectedModuleId] = useState(null);  
 
-    const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false);
+    const [showAddMaterialModal, setShowAddMaterialModal] = useState(false); 
+    const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false); 
+
     const [dayId, setDayId] = useState(null); 
 
     // Fetch modules when the component mounts or when currentUnit changes 
@@ -208,7 +212,24 @@ const TeacherStudentModulePage = () => {
 
     const handleAddMaterial = (dayId) => {
         console.log(`Creating material for day ${dayId} This is where the logic for this will go `);
-        
+        setDayId(dayId);
+        setShowAddMaterialModal(true);
+    };  
+
+    const handleNewMaterial = async (materialData) => {
+        try {  
+            const formData = new FormData();
+            formData.append('file', materialData.file);  
+
+            const fileName = materialData.name;
+            await postCreateMaterial(dayId, fileName, formData); 
+             
+            await fetchModules(currentUnit.id);
+        } 
+        catch (error) { 
+            console.error('Error creating material:', error);
+        } 
+        setShowAddMaterialModal(false);
     }; 
 
     const handleAddAssignment = (dayId) => {
@@ -218,12 +239,8 @@ const TeacherStudentModulePage = () => {
  
     const handleNewAssignment = async (assignmentData) => {
         try {  
-            console.log("Create post request and call it here. we have dayId: ", dayId, " and assignmentData: ", assignmentData);
             const formData = new FormData();
             formData.append('file', assignmentData.file);  
-            console.log("Form data: ", formData); 
-            console.log("Assignment name: ", assignmentData.name); 
-            console.log("Day ID: ", dayId);  
 
             const fileName = assignmentData.name;
             await postCreateAssignment(dayId, fileName, formData); 
@@ -276,7 +293,11 @@ const TeacherStudentModulePage = () => {
                                 onClose={() => setShowAddDayModal(false)}
                                 onAddDay={handleNewDay}
                             />
-                            {/* {'Material will be the same as assignment and go here '} */}
+                            <AddMaterialModal
+                                isOpen={showAddMaterialModal}
+                                onClose={() => setShowAddMaterialModal(false)}
+                                onAddMaterial={handleNewMaterial}
+                            />
                             <AddAssignmentModal
                                 isOpen={showAddAssignmentModal}
                                 onClose={() => setShowAddAssignmentModal(false)}
