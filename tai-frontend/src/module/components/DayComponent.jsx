@@ -126,15 +126,15 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect, 
                                                 </li>
                                             ))}
                                         </ul> 
-                                        {user.role === "teacher" && (
-                                            <button 
-                                                className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
-                                                onClick={ () => {handleAddMaterial(day.id)}}
-                                            >
-                                                <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Material</span>
-                                            </button> 
-                                        )}
                                     </motion.div>
+                                )} 
+                                {user.role === "teacher" && (
+                                    <button 
+                                        className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
+                                        onClick={ () => {handleAddMaterial(day.id)}}
+                                    >
+                                        <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Material</span>
+                                    </button> 
                                 )}
             
                                 {assignments && assignments.length > 0 && (
@@ -164,27 +164,15 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect, 
                                                 </li>
                                             ))}
                                         </ul> 
-                                        {user.role === "teacher" && (
-                                            <button 
-                                                className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
-                                                onClick={ () => {handleAddAssignment(day.id)}}
-                                            >
-                                                <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Assignment</span>
-                                            </button>
-                                        )}
                                     </motion.div>
-                                )}
-            
-                                {(!materials || materials.length === 0) && (!assignments || assignments.length === 0) && (
-                                    <motion.p 
-                                        key="no-resources"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                        className="no-resources-message"
+                                )}  
+                                {user.role === "teacher" && (
+                                    <button 
+                                        className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
+                                        onClick={ () => {handleAddAssignment(day.id)}}
                                     >
-                                        No resources available for this day.
-                                    </motion.p>
+                                        <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Assignment</span>
+                                    </button>
                                 )}
                             </>
                         </AnimatePresence>
