@@ -9,7 +9,8 @@ export const postCreateAssignment = async (dayID, fileName, formData) => {
                 headers: {
                     'Content-Type': 'multipart/form-data', // Explicit header
                 },
-                params: { 
+                params: {  
+                    dayID: dayID,
                     name: fileName // Send name as query parameter
                 }
             }
