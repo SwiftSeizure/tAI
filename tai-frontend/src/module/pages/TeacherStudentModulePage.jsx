@@ -13,6 +13,7 @@ import 'react-pdf/dist/esm/Page/TextLayer.css';
 import SettingsIcon from '@mui/icons-material/Settings'; 
 import { postCreateModule } from "../services/post-createmodule";
 import { postCreateDay } from "../services/post-create-day";  
+import { postCreateAssignment } from "../services/post-create-assignment"; 
 import AddAssignmentModal from "../modals/AddAssignmentModal";
 
 import { pdfjs } from 'react-pdf';
@@ -218,9 +219,15 @@ const TeacherStudentModulePage = () => {
     const handleNewAssignment = async (assignmentData) => {
         try {  
             console.log("Create post request and call it here. we have dayId: ", dayId, " and assignmentData: ", assignmentData);
-            
-            
-            // await postCreateAssignment(dayId, assignmentData);
+            const formData = new FormData();
+            formData.append('file', assignmentData.file);  
+            console.log("Form data: ", formData); 
+            console.log("Assignment name: ", assignmentData.name); 
+            console.log("Day ID: ", dayId);  
+
+            const fileName = assignmentData.name;
+            await postCreateAssignment(dayId, fileName, formData); 
+             
             await fetchModules(currentUnit.id);
         } 
         catch (error) { 
