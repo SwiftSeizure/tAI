@@ -9,9 +9,19 @@ from backend.database.schema import DBConversation, DBMessage, DBResponse
 from backend.database.student import get_student
 from backend.exceptions import EntityNotFoundException, InvalidClassCodeException
 from backend.routers.material import get_file  # unchanged
+from pathlib import Path
+
+# Get the project root directory (3 levels up from this file)
+ROOT_DIR = Path(__file__).parent.parent.parent
+
+# Load .env file from project root
+load_dotenv(ROOT_DIR / ".env")
 
 load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+api_key = os.getenv("OPENAI_API_KEY")
+if not api_key:
+    raise ValueError("OPENAI_API_KEY environment variable is not set")
+client = OpenAI(api_key=api_key)
 
 
 RESPONSES_TEXT_MODEL = os.getenv("RESPONSES_TEXT_MODEL", "gpt-4.1-mini")

@@ -9,13 +9,32 @@ Usage:
 
 from fastapi import FastAPI
 from fastapi.requests import Request
-import os
-import requests
-from dotenv import load_dotenv
 from backend.routers import home, classroom, unit,module,day,assignment, material,student,teacher,chat
 from backend.Seed_Database import PopulateDB
 from fastapi.middleware.cors import CORSMiddleware
 from backend.exceptions import EntityNotFoundException, UploadNotFoundException, DuplicateNameException, InvalidClassCodeException
+#import os
+#import requests
+
+
+
+""" 
+https://medium.com/%40gabriel.cournelle/firebase-authentication-in-the-backend-with-fastapi-4ff3d5db55ca
+Firebase Auth Flow implimented from the above link
+Mixed with some troubleshooting from AI
+"""
+import firebase_admin
+from firebase_admin import credentials
+from dotenv import load_dotenv
+import pathlib
+# we need to load the env file because it contains the GOOGLE_APPLICATION_CREDENTIALS
+basedir = pathlib.Path(__file__).parent
+load_dotenv(basedir / ".env")
+cred = credentials.Certificate(basedir / "service-account.json")
+firebase_admin.initialize_app(cred)
+print("TAI:",firebase_admin.get_app().project_id)
+
+
 
 PopulateDB()
 app = FastAPI(

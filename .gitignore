@@ -1,5 +1,7 @@
 .env
 
+backend/service-account.json
+
 # macOS stystem files
 .DS_Store
 **/.DS_Store
