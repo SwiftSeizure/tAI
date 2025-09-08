@@ -90,7 +90,13 @@ const TeacherStudentHomePage = () => {
         console.log("Handle class settings called for:", classID, classname);
         setCurrentSettingsClass({ id: classID, name: classname });
         settingsModal.openModal();
-    };
+    }; 
+
+    const handleClassPublished = async (classID, classname) => {  
+
+        console.log("Handle class publish called for:", classID, classname);
+        
+    }; 
  
 
     /**
@@ -100,11 +106,15 @@ const TeacherStudentHomePage = () => {
      */
     const populateClassCards = () => {
         if (isLoading) return <div>Loading classes...</div>;
-        if (error) return <div>Error loading classes: {error}</div>; 
+        if (error) return <div>Error loading classes: {error}</div>;  
+
+        console.log(classes);
         
+        //TODO, True is just a placeholder
         return ( 
             <>   
                 {Array.isArray(classes) && classes.map(classroom => ( 
+                    
                     
                     <ClassCard   
                         key={classroom.id} 
@@ -112,7 +122,10 @@ const TeacherStudentHomePage = () => {
                         classname={classroom.name}  
                         onClick={handleClassSelect}   
                         onClickSettings={() => handleClassSettings(classroom.id, classroom.name)}
-                        showSettings={user.role === 'teacher'}
+                        onClickPublished={() => handleClassPublished(classroom.id, classroom.name)} 
+                        showPublished={true}  
+                        teacher={user.role === 'teacher'} 
+                        
                     />
                 ))} 
             </>

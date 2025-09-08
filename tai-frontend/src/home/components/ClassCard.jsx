@@ -1,4 +1,6 @@
-import SettingsIcon from '@mui/icons-material/Settings';
+import SettingsIcon from '@mui/icons-material/Settings'; 
+import VisibilityIcon from '@mui/icons-material/Visibility'; 
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 /**
  * ClassCard Component
  * This component represents a card for a class. It displays the class name
@@ -9,7 +11,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
  * - userID: ID of the current user
  * - role: Role of the user (e.g., "teacher" or "student")
  */
-const ClassCard = ( {classID, classname, onClick, onClickSettings, showSettings }  ) => {
+const ClassCard = ( {classID, classname, onClick, onClickSettings, onClickPublished, showPublished, teacher }  ) => {
      
     
     const handleClick = () => { 
@@ -30,12 +32,21 @@ const ClassCard = ( {classID, classname, onClick, onClickSettings, showSettings 
     if (classname !== "newClass") { 
         return(  
             <div className="overflow-hidden p-12">   
-                {onClickSettings && showSettings && (
+                {onClickSettings && teacher && (
                     <button 
                         onClick={ () => handleClickSettings() }
                         className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
                     >
                         <SettingsIcon />   
+                    </button>
+                )} 
+
+                {onClickPublished && teacher && (
+                    <button 
+                        onClick={ () => onClickPublished() }
+                        className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
+                    >
+                        {showPublished ? <VisibilityIcon /> : <VisibilityOffIcon />}
                     </button>
                 )}
 
