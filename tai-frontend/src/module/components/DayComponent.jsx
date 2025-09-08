@@ -18,7 +18,7 @@ import { getDayMaterials } from "../services/get-day-materials";
  * - onAssignmentSelect: Callback function triggered when an assignment is selected.
  */ 
 
-const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect, handleAddMaterial, handleAddAssignment}  ) => { 
+const DayComponent = ( {day, onMaterialSelect, onAssignmentSelect, handleAddMaterial, handleAddAssignment}  ) => { 
 
     // State to track whether the day is expanded or not
     const [isExpanded, setIsExpanded] = useState(false);   
@@ -117,7 +117,7 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect, 
                                                     className={`flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300 ${material.name === selected ? 'bg-slate-400 translate-x-1' : ''}`}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        onMaterialSelect(day.id, material.id, material.filename, material.name);
+                                                        onMaterialSelect(day.id, material.filename, material.name);
                                                         setSelected(material.name);
                                                     }}
                                                 >
@@ -155,7 +155,7 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect, 
                                                     className={`flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300 ${assignment.name === selected ? 'bg-slate-400 translate-x-1' : ''}`}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        onAssignmentSelect(day.id, assignment.id, assignment.filename, assignment.name);
+                                                        onAssignmentSelect(day.id, assignment.filename, assignment.name);
                                                         setSelected(assignment.name);
                                                     }}
                                                 >

@@ -46,10 +46,9 @@ const TeacherStudentModulePage = () => {
     const [displayType, setDisplayType] = useState('welcome'); // Tracks the type of content to display
     
     const [, setSelectedDay] = useState(null); // Tracks the selected day
-    const [, setSelectedMaterialID] = useState(null); // Tracks the selected material ID
+
     const [selectedMaterialName, setSelectedMaterialName] = useState(null); // Tracks the selected material name
     
-    const [, setSelectedAssignmentID] = useState(null); // Tracks the selected assignment ID
     const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
     
     const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
@@ -130,16 +129,13 @@ const TeacherStudentModulePage = () => {
      * handleAssignmentSelect
      * Handles the selection of an assignment and fetches its content.
      * @param {number} dayID - The ID of the day containing the assignment.
-     * @param {number} assignmentID - The ID of the selected assignment.
      * @param {string} fileName - The filename of the assignment.
      * @param {string} assignmentName - The name of the assignment.
      */
-    const handleAssignmentSelect = async (dayID, assignmentID, fileName, assignmentName) => {
+    const handleAssignmentSelect = async (dayID, fileName, assignmentName) => {
         try { 
             // Update the selected assignment and set the display type to 'assignment'
-            setSelectedMaterialID(null); 
             setSelectedMaterialName(null);
-            setSelectedAssignmentID(assignmentID);   
             setSelectedAssignmentName(assignmentName);
             setDisplayType('assignment'); 
 
@@ -158,17 +154,16 @@ const TeacherStudentModulePage = () => {
      * handleMaterialSelect
      * Handles the selection of a material and fetches its content.
      * @param {number} dayID - The ID of the day containing the material.
-     * @param {number} materialID - The ID of the selected material.
      * @param {string} fileName - The filename of the material.
      * @param {string} materialName - The name of the material.
      */
-    const handleMaterialSelect = async ( dayID, materialID, fileName, materialName ) => { 
+    const handleMaterialSelect = async ( dayID, fileName, materialName ) => {   
+
+        console.log(dayID, "fileName", fileName, "materialName", materialName);
 
         try {
             // Update the selected material and set the display type to 'material'
-            setSelectedAssignmentID(null);   
             setSelectedAssignmentName(null);
-            setSelectedMaterialID(materialID);  
             setSelectedMaterialName(materialName);
             setDisplayType('material'); 
 
@@ -229,7 +224,11 @@ const TeacherStudentModulePage = () => {
         catch (error) { 
             console.error('Error creating material:', error);
         }  
-        //TODO set newly added material as selected material
+        //TODO set newly added material as selected material  
+        const fileName = materialData.file.name;
+        handleMaterialSelect(dayId, fileName, materialData.name); 
+
+        
         setShowAddMaterialModal(false);
     }; 
 
@@ -251,7 +250,10 @@ const TeacherStudentModulePage = () => {
         catch (error) { 
             console.error('Error creating assignment:', error);
         }  
-        //TODO set newly added assignment as selected assignment
+        //TODO set newly added assignment as selected assignment   
+        const fileName = assignmentData.file.name;
+        handleAssignmentSelect(dayId, fileName, assignmentData.name);
+
         setShowAddAssignmentModal(false);
     }; 
 
