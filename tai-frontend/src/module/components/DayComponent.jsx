@@ -131,7 +131,10 @@ const DayComponent = ( {day, onMaterialSelect, onAssignmentSelect, handleAddMate
                                 {user.role === "teacher" && (
                                     <button 
                                         className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
-                                        onClick={ () => {handleAddMaterial(day.id)}}
+                                        onClick={ (e) => {
+                                            e.stopPropagation();
+                                            handleAddMaterial(day.id)
+                                        }}
                                     >
                                         <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Material</span>
                                     </button> 
@@ -169,7 +172,10 @@ const DayComponent = ( {day, onMaterialSelect, onAssignmentSelect, handleAddMate
                                 {user.role === "teacher" && (
                                     <button 
                                         className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
-                                        onClick={ () => {handleAddAssignment(day.id)}}
+                                        onClick={ (e) => {
+                                            e.stopPropagation();
+                                            handleAddAssignment(day.id); 
+                                        }}
                                     >
                                         <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Assignment</span>
                                     </button>

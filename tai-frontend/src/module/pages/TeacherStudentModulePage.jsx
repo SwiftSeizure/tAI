@@ -219,14 +219,14 @@ const TeacherStudentModulePage = () => {
             const fileName = materialData.name;
             await postCreateMaterial(dayId, fileName, formData); 
              
-            await fetchModules(currentUnit.id);
+            await fetchModules(currentUnit.id); 
+
+            handleMaterialSelect(dayId, materialData.file.name, materialData.name); 
         } 
         catch (error) { 
             console.error('Error creating material:', error);
         }  
         //TODO set newly added material as selected material  
-        const fileName = materialData.file.name;
-        handleMaterialSelect(dayId, fileName, materialData.name); 
 
         
         setShowAddMaterialModal(false);
@@ -245,14 +245,13 @@ const TeacherStudentModulePage = () => {
             const fileName = assignmentData.name;
             await postCreateAssignment(dayId, fileName, formData); 
              
-            await fetchModules(currentUnit.id);
+            await fetchModules(currentUnit.id); 
+
+            handleAssignmentSelect(dayId, assignmentData.file.name, assignmentData.name); 
         } 
         catch (error) { 
             console.error('Error creating assignment:', error);
         }  
-        //TODO set newly added assignment as selected assignment   
-        const fileName = assignmentData.file.name;
-        handleAssignmentSelect(dayId, fileName, assignmentData.name);
 
         setShowAddAssignmentModal(false);
     }; 
