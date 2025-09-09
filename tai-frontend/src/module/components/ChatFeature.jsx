@@ -104,10 +104,10 @@ const ChatFeature = () => {
     <textarea
       value={message}
       onChange={(e) => {
-        // setMessage(e.target.value);
-        // // Auto-resize logic
-        // e.target.style.height = 'auto';
-        // e.target.style.height = e.target.scrollHeight + 'px';
+        setMessage(e.target.value);
+        // Auto-resize logic
+        e.target.style.height = 'auto';
+        e.target.style.height = e.target.scrollHeight + 'px';
       }}
       rows={1}
       className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none overflow-hidden min-h-[80px]"
