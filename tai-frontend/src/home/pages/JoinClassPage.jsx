@@ -16,8 +16,7 @@ const JoinClassPage = () => {
 
     // TODO: Add the functionality to join a class here  
     const [classCode, setClassCode] = useState(""); 
-    const { setCurrentClass, fetchClasses } = useCurrentClass(); 
-    const { currentClass } = useClass(); 
+    const [state, { fetchClasses, setCurrentClass } ] = useClass();   
     const { user } = useCurrentUser(); 
     const navigate = useNavigate();  
 
@@ -30,9 +29,9 @@ const JoinClassPage = () => {
                 studentID: user.id,
                 classCode: code,
             } 
-            await postJoinClass(requestBody);   
-            await fetchClasses(user.id); 
-            await setCurrentClass(code);   
+            const classID = await postJoinClass(requestBody);   
+            await fetchClasses(user.id, user.role);
+            await setCurrentClass(classID);   
             navigate('/unitpage'); 
        } 
        catch (error) {  

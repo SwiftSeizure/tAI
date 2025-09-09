@@ -83,12 +83,6 @@
     
   ],
   "enrolled": [
-   
-    {
-      "id": 2,
-      "studentID": 1,
-      "classID": 1
-    },
     {
       "id": 3,
       "studentID": 1,

@@ -82,6 +82,11 @@ def enroll(studentID: int, classCode: int, session: Session) -> int:
     # if classCode != classroom.classCode:
     #     raise InvalidClassCodeException()
     
+    classes = get_student_classes(studentID, session)
+    for c in classes:
+        if int(c.classCode) == classCode: # type: ignore
+            return c.id #type: ignore
+
     enrollment = DBEnrolled(studentID=studentID, classID=classroom.id)
     session.add(enrollment)
     session.commit()
