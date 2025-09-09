@@ -14,7 +14,8 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { postCreateModule } from "../services/post-create-module";
 import { postCreateDay } from "../services/post-create-day";   
 import { postCreateMaterial } from "../services/post-create-material"; 
-import { postCreateAssignment } from "../services/post-create-assignment"; 
+import { postCreateAssignment } from "../services/post-create-assignment";  
+import { putChatMessage } from "../services/put-chat-message"; 
 import AddAssignmentModal from "../modals/AddAssignmentModal"; 
 import AddMaterialModal from "../modals/AddMaterialModal"; 
 
@@ -45,7 +46,7 @@ const TeacherStudentModulePage = () => {
     const [isChatExpanded, setIsChatExpanded] = useState(false); // Tracks chat expansion state
     const [displayType, setDisplayType] = useState('welcome'); // Tracks the type of content to display
     
-    const [, setSelectedDay] = useState(null); // Tracks the selected day
+    const [selectedDay, setSelectedDay] = useState(null); // Tracks the selected day
 
     const [selectedMaterialName, setSelectedMaterialName] = useState(null); // Tracks the selected material name
     
@@ -69,7 +70,9 @@ const TeacherStudentModulePage = () => {
     const [selectedModuleId, setSelectedModuleId] = useState(null);  
 
     const [showAddMaterialModal, setShowAddMaterialModal] = useState(false); 
-    const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false); 
+    const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false);  
+
+    const [chatResponse, setChatResponse] = useState('Response will appear here ');
 
     const [dayId, setDayId] = useState(null); 
 
@@ -138,6 +141,7 @@ const TeacherStudentModulePage = () => {
             setSelectedMaterialName(null);
             setSelectedAssignmentName(assignmentName);
             setDisplayType('assignment'); 
+            setDayId(dayID);
 
             // Fetch the content of the selected assignment
             const fileURL = await getAssignmentURL(dayID, fileName); 
@@ -165,7 +169,8 @@ const TeacherStudentModulePage = () => {
             // Update the selected material and set the display type to 'material'
             setSelectedAssignmentName(null);
             setSelectedMaterialName(materialName);
-            setDisplayType('material'); 
+            setDisplayType('material');  
+            setDayId(dayID);
 
             // Fetch the content of the selected material
             const fileURL = await getMaterialURL(dayID, fileName);
@@ -206,7 +211,6 @@ const TeacherStudentModulePage = () => {
     }; 
 
     const handleAddMaterial = (dayId) => {
-        console.log(`Creating material for day ${dayId} This is where the logic for this will go `);
         setDayId(dayId);
         setShowAddMaterialModal(true);
     };  
@@ -219,7 +223,9 @@ const TeacherStudentModulePage = () => {
             const fileName = materialData.name;
             await postCreateMaterial(dayId, fileName, formData); 
              
-            await fetchModules(currentUnit.id); 
+            await fetchModules(currentUnit.id);  
+            
+            //force refresh here 
 
             handleMaterialSelect(dayId, materialData.file.name, materialData.name); 
         } 
@@ -367,16 +373,7 @@ const TeacherStudentModulePage = () => {
                             {renderPDFContent(assignmentContent)}
 
                         </div>
-                    );
-                    
-
-            // case 'chat':  
-            //     return(  
-            //         <div className="chat-container"> 
-            //             <ChatFeature />
-            //         </div>
-                    
-            //     );   
+                    ); 
 
             case 'chat-settings': 
 
@@ -471,7 +468,39 @@ const TeacherStudentModulePage = () => {
         return () => {
             window.removeEventListener("resize", handleResize);
         };
-    }, [chatWidth]);
+    }, [chatWidth]); 
+
+    const handleChatMessageSend = async (message) => {  
+        //displayType 
+
+        //TODO make this state for the while file 
+        let currentFileName = null; 
+        if(displayType === 'material') {
+            currentFileName = selectedMaterialName;
+        }
+        else if(displayType === 'assignment') {
+            currentFileName = selectedAssignmentName;
+        }
+        
+        console.log("displayType", displayType, "dayId", dayId, "currentFileName", currentFileName, "message", message);  
+        try {  
+            if (currentFileName) {
+                await putChatMessage(displayType, dayId, currentFileName, message);
+            }
+            else { 
+                //Something about returning 
+                await putChatMessage(displayType, dayId, message);
+            }
+        }
+        catch (error) { 
+            console.error('Error updating chat message:', error);
+        }
+    };
+
+    const handleChatResponseReceived = (response) => {
+        console.log(response); 
+        setChatResponse(response);
+    };
 
     return(  
         <>   
@@ -543,7 +572,10 @@ const TeacherStudentModulePage = () => {
                     onMouseDown={startResizing}
                 ></div>
 
-                <ChatFeature />
+                <ChatFeature 
+                    onMessageSend={handleChatMessageSend} 
+                    displayResponse={chatResponse}
+                />
             </div>
         </div>
     
