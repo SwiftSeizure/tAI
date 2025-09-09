@@ -55,7 +55,7 @@ def get_student_classes(studentID: int, session: Session) -> list[DBClass]:
             classes.remove(c) 
     return classes
 
-def enroll(studentID: int, classCode: int, session: Session) -> None:
+def enroll(studentID: int, classCode: int, session: Session) -> int:
     """Enroll a student in a class.
     
     Args:
@@ -67,7 +67,7 @@ def enroll(studentID: int, classCode: int, session: Session) -> None:
         EntityNotFoundException: If the student or class with the given ID does not exist.
         
     Returns:    
-        None
+        
     """
 
     student = get_student(studentID, session)
@@ -79,8 +79,8 @@ def enroll(studentID: int, classCode: int, session: Session) -> None:
     if not classroom:
         raise EntityNotFoundException("class", classCode)
     
-    if classCode != classroom.classCode:
-        raise InvalidClassCodeException()
+    # if classCode != classroom.classCode:
+    #     raise InvalidClassCodeException()
     
     enrollment = DBEnrolled(studentID=studentID, classID=classroom.id)
     session.add(enrollment)
@@ -89,7 +89,7 @@ def enroll(studentID: int, classCode: int, session: Session) -> None:
     session.refresh(student)
     session.refresh(classroom)
     
-    return None
+    return classroom.id
 
 def updateStudent(studentID: int, update: StudentUpdate, session: Session) -> None:
     """Update a student's information.
