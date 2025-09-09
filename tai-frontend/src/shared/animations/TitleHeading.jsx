@@ -29,21 +29,12 @@ export default function TitleHeading( {title, transitionTime, intro} ) {
   
   return (
 
-    <h1 className="text-[3.5rem] font-extrabold font-nunito relative overflow-hidden py-8">
+    <h1 className={`h1-title-title-card ${intro ? 'intro' : ''}`}>
         {headingText && headingText.split('').map((letter, index) => (
           <span 
             key={index}
-            className={`inline-block transition-all duration-500  ${
-              visibleLetters.includes(index) 
-                ? 'transform translate-y-0 opacity-100' 
-                : 'transform -translate-y-16 opacity-0'
-            }`}
-            style={{ 
-              transitionDelay: `${index * 0.05}s`,
-              width: letter === ' ' ? '0.5em' : 'auto',  
-              fontFamily: 'Nunito',  
-              fontSize: intro ? '8rem' : '5rem',
-            }}
+            className={`${visibleLetters.includes(index) ? 'visible' : 'hidden'} ${letter === ' ' ? 'space' : ''}`}
+            style={{ '--char-index': index }}
           >
             {letter}
           </span>

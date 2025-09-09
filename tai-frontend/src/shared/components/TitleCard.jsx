@@ -7,7 +7,9 @@ import '../../App.css';
 import TitleHeading from "../animations/TitleHeading";
 import { useSettingsModal } from "../hooks/useSettingsModal";
 import { SettingsModal } from "../modals/SettingsModal";
-import { useCurrentClass } from "../../store/class-store";
+import { useCurrentClass } from "../../store/class-store"; 
+
+import '../../styles/titles.css';
 
 /**
  * TitleCard Component

@@ -1,0 +1,37 @@
+
+.h1-title-title-card {
+    font-size: 5rem;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    position: relative;
+    overflow: hidden;
+    padding: 2rem 0;
+    margin: 0;
+}
+
+.h1-title-title-card span {
+    display: inline-block;
+    transition: all 0.5s ease;
+    transition-property: transform, opacity;
+    transition-delay: calc(var(--char-index, 0) * 0.05s);
+}
+
+.h1-title-title-card span.visible {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.h1-title-title-card span.hidden {
+    transform: translateY(-16px);
+    opacity: 0;
+}
+
+.h1-title-title-card span.space {
+    width: 0.5em;
+}
+
+/* For the intro variant */
+.h1-title-title-card.intro {
+    font-size: 8rem;
+}
+

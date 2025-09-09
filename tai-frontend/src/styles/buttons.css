@@ -1,0 +1,65 @@
+/* Base button style */
+.text-button {
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    border: none;
+    background-color: #e6f0fa; /* light blue base */
+    color: #1a1a1a;           /* dark text for contrast */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Size variants */
+  .text-button-sm {
+    padding: 6px 12px;
+    font-size: 0.875rem; /* ~14px */
+  }
+  
+  .text-button-md {
+    padding: 8px 16px;
+    font-size: 1rem; /* ~16px */
+  }
+  
+  .text-button-lg {
+    padding: 10px 20px;
+    font-size: 1.125rem; /* ~18px */
+  }
+  
+  .text-button-xl {
+    padding: 12px 24px;
+    font-size: 1.25rem; /* ~20px */
+  }
+  
+  .text-button-xxl {
+    padding: 16px 32px;
+    font-size: 1.5rem; /* ~24px */
+  }
+  
+  /* Hover / Focus */
+  .text-button:hover,
+  .text-button:focus {
+    background-color: #cde4fa; /* slightly darker blue */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    outline: none;
+  }
+  
+  /* Active (pressed) */
+  .text-button:active {
+    transform: translateY(0);
+    background-color: #b5d8f7;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Disabled state */
+  .text-button:disabled {
+    background-color: #f0f4f8;
+    color: #a0a0a0;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+  
