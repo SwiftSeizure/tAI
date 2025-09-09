@@ -226,9 +226,6 @@ const TeacherStudentModulePage = () => {
         catch (error) { 
             console.error('Error creating material:', error);
         }  
-        //TODO set newly added material as selected material  
-
-        
         setShowAddMaterialModal(false);
     }; 
 

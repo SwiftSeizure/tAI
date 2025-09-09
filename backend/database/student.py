@@ -73,19 +73,22 @@ def enroll(studentID: int, classCode: int, session: Session) -> int:
     student = get_student(studentID, session)
     if not student:
         raise EntityNotFoundException("student", studentID)
-    
+
     stmt = select(DBClass).filter(DBClass.classCode == classCode)
     classroom = session.execute(stmt).scalar_one_or_none()
+
     if not classroom:
         raise EntityNotFoundException("class", classCode)
-    
-    # if classCode != classroom.classCode:
-    #     raise InvalidClassCodeException()
-    
-    classes = get_student_classes(studentID, session)
-    for c in classes:
-        if int(c.classCode) == classCode: # type: ignore
-            return c.id #type: ignore
+
+    # Check if already enrolled using relationship
+    stmt = select(DBEnrolled).filter(
+        DBEnrolled.studentID == studentID,
+        DBEnrolled.classID == classroom.id
+    )
+    existing_enrollment = session.execute(stmt).scalar_one_or_none()
+
+    if existing_enrollment:
+        return classroom.id  # Already enrolled
 
     enrollment = DBEnrolled(studentID=studentID, classID=classroom.id)
     session.add(enrollment)
@@ -93,7 +96,7 @@ def enroll(studentID: int, classCode: int, session: Session) -> int:
     session.refresh(enrollment)
     session.refresh(student)
     session.refresh(classroom)
-    
+
     return classroom.id
 
 def updateStudent(studentID: int, update: StudentUpdate, session: Session) -> None:
