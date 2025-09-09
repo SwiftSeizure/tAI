@@ -19,7 +19,18 @@ RUN pip install --no-cache-dir poetry && poetry config virtualenvs.create false 
 
 COPY . /app
 
-COPY tai-frontend/build/ /app/tai-frontend/build/
+# Install Node.js (if not already present)
+RUN apt-get update && apt-get install -y curl && \
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g npm
+
+# Copy frontend and build it
+COPY tai-frontend/ /app/tai-frontend/
+WORKDIR /app/tai-frontend
+RUN npm install && npm run build
+WORKDIR /app
+
 
 ENV DATA_ROOT="/var/appdata" \
     PORT=8080
