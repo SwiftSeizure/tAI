@@ -9,6 +9,7 @@ class DBStudent(Base):
     __tablename__ = "student" 
 
     id = Column(Integer, primary_key=True, index=True)
+    firebase_uid = Column(String(128), unique=True, nullable=False)  # Add Firebase UID
     name = Column(String(25), nullable=False)
     userName = Column(String(25), nullable=False)
     password_hash = Column(String(255), nullable=False)
@@ -19,6 +20,7 @@ class DBTeacher(Base):
     __tablename__ = "teacher"
 
     id = Column(Integer, primary_key=True, index=True)
+    firebase_uid = Column(String(128), unique=True, nullable=False)  # Add Firebase UID
     name = Column(String(25), nullable=False)
     userName = Column(String(25), nullable=False)
     password_hash = Column(String(255), nullable=False)

@@ -2,12 +2,14 @@
   "teacher": [
     {
       "id": 1,
+      "firebase_uid": "1",
       "name": "Ms. Smith",
       "userName": "smithman",
       "password_hash": "hashed_pw_1"
     },
     {
       "id": 2,
+      "firebase_uid": "2",
       "name": "Mr. Johnson",
       "userName": "bigJ",
       "password_hash": "hashed_pw_2"
@@ -16,24 +18,28 @@
   "student": [
     {
       "id": 1,
+      "firebase_uid": "3",
       "name": "Alice",
       "userName": "madhatter",
       "password_hash": "hashed_pw_3"
     },
     {
       "id": 2,
+      "firebase_uid": "4",
       "name": "Bob",
       "userName": "bobthebuilder",
       "password_hash": "hashed_pw_4"
     },
     {
       "id": 3,
+      "firebase_uid": "5",
       "name": "Charlie",
       "userName": "charliebrown",
       "password_hash": "hashed_pw_5"
     },
     {
       "id": 4,
+      "firebase_uid": "6",
       "name": "David",
       "userName": "davidthegreat",
       "password_hash": "hashed_pw_6"
