@@ -45,7 +45,6 @@ const TeacherStudentUnitPage = () => {
 
     const handleUnitSelect = async (unitID) => {
         try { 
-            console.log("hANDLE UNIT SELECT CALLED", unitID);  
             if (!unitID && user.role === "teacher") {
                 navigate('/createunit');
                 return;

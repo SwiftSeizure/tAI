@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import { FaChevronDown, FaChevronUp, FaFile, FaClipboard } from "react-icons/fa";
 import { MdAssignment } from "react-icons/md"; 
 import { motion, AnimatePresence } from 'framer-motion'; 
+import { useCurrentUser } from "../../store/user-store";
 
 import { getDayAssignments } from "../services/get-day-assignments"; 
 import { getDayMaterials } from "../services/get-day-materials";
@@ -17,7 +18,7 @@ import { getDayMaterials } from "../services/get-day-materials";
  * - onAssignmentSelect: Callback function triggered when an assignment is selected.
  */ 
 
-const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect}  ) => { 
+const DayComponent = ( {day, onMaterialSelect, onAssignmentSelect, handleAddMaterial, handleAddAssignment}  ) => { 
 
     // State to track whether the day is expanded or not
     const [isExpanded, setIsExpanded] = useState(false);   
@@ -32,6 +33,8 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
 
     // State to store loading state
     const [loading, setLoading] = useState(false);
+
+    const { user } = useCurrentUser();
 
 
     /**
@@ -114,7 +117,7 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
                                                     className={`flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300 ${material.name === selected ? 'bg-slate-400 translate-x-1' : ''}`}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        onMaterialSelect(day.id, material.id, material.filename, material.name);
+                                                        onMaterialSelect(day.id, material.filename, material.name);
                                                         setSelected(material.name);
                                                     }}
                                                 >
@@ -122,14 +125,19 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
                                                     <span className="font-sans text-sm text-gray-600 font-md tracking-wide">{material.name}</span>
                                                 </li>
                                             ))}
-                                        </ul>
-                                        <button 
-                                            className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Material</span>
-                                        </button>
+                                        </ul> 
                                     </motion.div>
+                                )} 
+                                {user.role === "teacher" && (
+                                    <button 
+                                        className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
+                                        onClick={ (e) => {
+                                            e.stopPropagation();
+                                            handleAddMaterial(day.id)
+                                        }}
+                                    >
+                                        <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Material</span>
+                                    </button> 
                                 )}
             
                                 {assignments && assignments.length > 0 && (
@@ -150,7 +158,7 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
                                                     className={`flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300 ${assignment.name === selected ? 'bg-slate-400 translate-x-1' : ''}`}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        onAssignmentSelect(day.id, assignment.id, assignment.filename, assignment.name);
+                                                        onAssignmentSelect(day.id, assignment.filename, assignment.name);
                                                         setSelected(assignment.name);
                                                     }}
                                                 >
@@ -158,26 +166,19 @@ const DayComponent = ( {day, onDaySelect, onMaterialSelect, onAssignmentSelect} 
                                                     <span className="font-sans text-sm text-gray-600 font-md tracking-wide">{assignment.name}</span>
                                                 </li>
                                             ))}
-                                        </ul>
-                                        <button 
-                                            className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Assignment</span>
-                                        </button>
+                                        </ul> 
                                     </motion.div>
-                                )}
-            
-                                {(!materials || materials.length === 0) && (!assignments || assignments.length === 0) && (
-                                    <motion.p 
-                                        key="no-resources"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                        className="no-resources-message"
+                                )}  
+                                {user.role === "teacher" && (
+                                    <button 
+                                        className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
+                                        onClick={ (e) => {
+                                            e.stopPropagation();
+                                            handleAddAssignment(day.id); 
+                                        }}
                                     >
-                                        No resources available for this day.
-                                    </motion.p>
+                                        <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Assignment</span>
+                                    </button>
                                 )}
                             </>
                         </AnimatePresence>

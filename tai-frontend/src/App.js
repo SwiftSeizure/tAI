@@ -9,8 +9,6 @@ import CreateUnitPage from '../src/unit/pages/CreateUnitPage';
 
 function App() { 
 
-
-
   return (
     <BrowserRouter>
       <div className="App">

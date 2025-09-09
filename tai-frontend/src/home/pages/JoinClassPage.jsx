@@ -25,14 +25,11 @@ const JoinClassPage = () => {
         e.preventDefault(); 
 
        try {   
-            console.log(user); 
             const code = parseInt(classCode, 10); 
-            console.log("This is the classID in the URL Param code: ", code); 
             const requestBody = {   
                 studentID: user.id,
                 classCode: code,
             } 
-            console.log("This is the requestBody for joining a classroom: ", requestBody);  
             await postJoinClass(requestBody);   
             await fetchClasses(user.id); 
             await setCurrentClass(code);   

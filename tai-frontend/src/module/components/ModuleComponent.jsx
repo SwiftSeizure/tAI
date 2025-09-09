@@ -16,7 +16,7 @@ import { useCurrentUser } from "../../store/user-store";
  * - onMaterialSelect: Callback function triggered when a material is selected.
  * - onAssignmentSelect: Callback function triggered when an assignment is selected.
  */
-const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentSelect, onAddDay } ) => {   
+const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentSelect, onAddDay, onAddMaterial, onAddAssignment } ) => {   
  
     // State to track whether the module is expanded or not
     const [isExpanded, setIsExpanded] = useState(false);   
@@ -71,6 +71,8 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
                                     onDaySelect={() => onDaySelect(module.id, day.id)} 
                                     onMaterialSelect={onMaterialSelect}  
                                     onAssignmentSelect={onAssignmentSelect}
+                                    handleAddMaterial={onAddMaterial}
+                                    handleAddAssignment={onAddAssignment}
                                 /> 
                             </li> 
                         ))}  

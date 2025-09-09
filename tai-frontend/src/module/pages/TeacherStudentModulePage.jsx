@@ -11,8 +11,12 @@ import { useModule } from "../../store/module-store";
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import SettingsIcon from '@mui/icons-material/Settings'; 
-import { postCreateModule } from "../services/post-createmodule";
-import { postCreateDay } from "../services/post-create-day"; 
+import { postCreateModule } from "../services/post-create-module";
+import { postCreateDay } from "../services/post-create-day";   
+import { postCreateMaterial } from "../services/post-create-material"; 
+import { postCreateAssignment } from "../services/post-create-assignment"; 
+import AddAssignmentModal from "../modals/AddAssignmentModal"; 
+import AddMaterialModal from "../modals/AddMaterialModal"; 
 
 import { pdfjs } from 'react-pdf';
 import { getMaterialURL } from "../services/get-material-url";
@@ -42,10 +46,9 @@ const TeacherStudentModulePage = () => {
     const [displayType, setDisplayType] = useState('welcome'); // Tracks the type of content to display
     
     const [, setSelectedDay] = useState(null); // Tracks the selected day
-    const [, setSelectedMaterialID] = useState(null); // Tracks the selected material ID
+
     const [selectedMaterialName, setSelectedMaterialName] = useState(null); // Tracks the selected material name
     
-    const [, setSelectedAssignmentID] = useState(null); // Tracks the selected assignment ID
     const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
     
     const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
@@ -61,9 +64,14 @@ const TeacherStudentModulePage = () => {
     const { fetchModules } = actions; 
 
     // State variables for managing the add module modal
-    const [showAddModal, setShowAddModal] = useState(false);
+    const [showAddModuleModal, setShowAddModuleModal] = useState(false);
     const [showAddDayModal, setShowAddDayModal] = useState(false);
-    const [selectedModuleId, setSelectedModuleId] = useState(null); 
+    const [selectedModuleId, setSelectedModuleId] = useState(null);  
+
+    const [showAddMaterialModal, setShowAddMaterialModal] = useState(false); 
+    const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false); 
+
+    const [dayId, setDayId] = useState(null); 
 
     // Fetch modules when the component mounts or when currentUnit changes 
     useEffect(() => {
@@ -121,16 +129,13 @@ const TeacherStudentModulePage = () => {
      * handleAssignmentSelect
      * Handles the selection of an assignment and fetches its content.
      * @param {number} dayID - The ID of the day containing the assignment.
-     * @param {number} assignmentID - The ID of the selected assignment.
      * @param {string} fileName - The filename of the assignment.
      * @param {string} assignmentName - The name of the assignment.
      */
-    const handleAssignmentSelect = async (dayID, assignmentID, fileName, assignmentName) => {
+    const handleAssignmentSelect = async (dayID, fileName, assignmentName) => {
         try { 
             // Update the selected assignment and set the display type to 'assignment'
-            setSelectedMaterialID(null); 
             setSelectedMaterialName(null);
-            setSelectedAssignmentID(assignmentID);   
             setSelectedAssignmentName(assignmentName);
             setDisplayType('assignment'); 
 
@@ -149,17 +154,16 @@ const TeacherStudentModulePage = () => {
      * handleMaterialSelect
      * Handles the selection of a material and fetches its content.
      * @param {number} dayID - The ID of the day containing the material.
-     * @param {number} materialID - The ID of the selected material.
      * @param {string} fileName - The filename of the material.
      * @param {string} materialName - The name of the material.
      */
-    const handleMaterialSelect = async ( dayID, materialID, fileName, materialName ) => { 
+    const handleMaterialSelect = async ( dayID, fileName, materialName ) => {   
+
+        console.log(dayID, "fileName", fileName, "materialName", materialName);
 
         try {
             // Update the selected material and set the display type to 'material'
-            setSelectedAssignmentID(null);   
             setSelectedAssignmentName(null);
-            setSelectedMaterialID(materialID);  
             setSelectedMaterialName(materialName);
             setDisplayType('material'); 
 
@@ -174,7 +178,6 @@ const TeacherStudentModulePage = () => {
     }  
 
     const handleNewModule = async (newModalName) => {  
-        console.log("handleNewModule clicked with module name: ", newModalName);  
         try { 
             const settings = {};
             await postCreateModule(currentUnit.id, newModalName, settings);
@@ -183,7 +186,7 @@ const TeacherStudentModulePage = () => {
         catch (error) { 
             console.error('Error creating module:', error);
         } 
-        setShowAddModal(false); 
+        setShowAddModuleModal(false); 
     } 
 
     const handleAddDay = (moduleId) => {
@@ -192,8 +195,6 @@ const TeacherStudentModulePage = () => {
     };
 
     const handleNewDay = async (dayName) => {
-        
-        console.log(`Creating day ${dayName} for module ${selectedModuleId}`); 
         try { 
             await postCreateDay(selectedModuleId, dayName);
             await fetchModules(currentUnit.id);
@@ -204,6 +205,56 @@ const TeacherStudentModulePage = () => {
         setShowAddDayModal(false);
     }; 
 
+    const handleAddMaterial = (dayId) => {
+        console.log(`Creating material for day ${dayId} This is where the logic for this will go `);
+        setDayId(dayId);
+        setShowAddMaterialModal(true);
+    };  
+
+    const handleNewMaterial = async (materialData) => {
+        try {  
+            const formData = new FormData();
+            formData.append('file', materialData.file);  
+
+            const fileName = materialData.name;
+            await postCreateMaterial(dayId, fileName, formData); 
+             
+            await fetchModules(currentUnit.id); 
+
+            handleMaterialSelect(dayId, materialData.file.name, materialData.name); 
+        } 
+        catch (error) { 
+            console.error('Error creating material:', error);
+        }  
+        //TODO set newly added material as selected material  
+
+        
+        setShowAddMaterialModal(false);
+    }; 
+
+    const handleAddAssignment = (dayId) => {
+        setDayId(dayId);
+        setShowAddAssignmentModal(true);
+    }; 
+ 
+    const handleNewAssignment = async (assignmentData) => {
+        try {  
+            const formData = new FormData();
+            formData.append('file', assignmentData.file);  
+
+            const fileName = assignmentData.name;
+            await postCreateAssignment(dayId, fileName, formData); 
+             
+            await fetchModules(currentUnit.id); 
+
+            handleAssignmentSelect(dayId, assignmentData.file.name, assignmentData.name); 
+        } 
+        catch (error) { 
+            console.error('Error creating assignment:', error);
+        }  
+
+        setShowAddAssignmentModal(false);
+    }; 
 
     /**
      * renderModules
@@ -228,20 +279,32 @@ const TeacherStudentModulePage = () => {
                             onMaterialSelect={handleMaterialSelect} 
                             onAssignmentSelect={handleAssignmentSelect}
                             onAddDay={handleAddDay}
+                            onAddMaterial={handleAddMaterial}
+                            onAddAssignment={handleAddAssignment}
                         />
                     ))}      
                     {user.role === "teacher" && (
                         <div>
-                            <button onClick={() => setShowAddModal(true)}>Add Module</button>
+                            <button onClick={() => setShowAddModuleModal(true)}>Add Module</button>
                             <AddModuleModal 
-                                isOpen={showAddModal}
-                                onClose={() => setShowAddModal(false)}
+                                isOpen={showAddModuleModal}
+                                onClose={() => setShowAddModuleModal(false)}
                                 onAddModule={handleNewModule}
                             />
                             <AddDayModal
                                 isOpen={showAddDayModal}
                                 onClose={() => setShowAddDayModal(false)}
                                 onAddDay={handleNewDay}
+                            />
+                            <AddMaterialModal
+                                isOpen={showAddMaterialModal}
+                                onClose={() => setShowAddMaterialModal(false)}
+                                onAddMaterial={handleNewMaterial}
+                            />
+                            <AddAssignmentModal
+                                isOpen={showAddAssignmentModal}
+                                onClose={() => setShowAddAssignmentModal(false)}
+                                onAddAssignment={handleNewAssignment}
                             />
                         </div>
                     )}
