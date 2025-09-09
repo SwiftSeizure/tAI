@@ -60,7 +60,7 @@ def _ask_with_txt_file_search(file_id: str, prompt: str) -> str:
             "role": "user",
             "content": [{"type": "input_text", "text": prompt}],
         }],
-    )
+    ) # type: ignore
     return resp.output_text
 
 def _ask_with_png_data_url(data_url: str, prompt: str) -> str:
@@ -73,7 +73,7 @@ def _ask_with_png_data_url(data_url: str, prompt: str) -> str:
                 {"type": "input_text", "text": f"Use the attached image as context.\n\nQuestion: {prompt}"},
                 {"type": "input_image", "image_url": data_url},
             ],
-        }],
+        }], # type: ignore
     )
     return resp.output_text
 
@@ -140,7 +140,7 @@ def queryBot(studentID: int, path: str, prompt: str, session: Session) -> ChatRe
         session.refresh(response)
 
         return ChatResponse(
-            conversationID=conversation.id,
+            conversationID=conversation.id, # type: ignore
             studentID=studentID,
             messages=[ChatMessage.model_validate(m) for m in conversation.messages],
             responses=[ChatResponseMessage.model_validate(r) for r in conversation.responses],

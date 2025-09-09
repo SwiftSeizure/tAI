@@ -124,7 +124,7 @@ def delete_file(dayID: int, filename: str, session: DBSession):
         raise UploadNotFoundException(dayID, filename)
     
 
-@router.post("{dayID}/{filename}",
+@router.post("/{dayID}/{filename}",
                 status_code=201,
                 responses={
                     409: {"model": ClientErrorResponse},

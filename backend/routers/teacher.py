@@ -6,6 +6,10 @@ from backend.exceptions import EntityNotFoundException
 from backend.models import TeacherResponse, TeacherUpdate
 from backend.database.teacher import get_teacher, update_teacher
 
+from typing import Annotated
+from fastapi import Depends
+from backend.auth import get_firebase_user_from_token
+
 router = APIRouter(prefix="/teacher", tags=["teacher"])
 
 @router.get("/{teacherID}",
@@ -16,12 +20,17 @@ router = APIRouter(prefix="/teacher", tags=["teacher"])
                 409: {"model": ClientErrorResponse},
             },
             summary="Get a teacher.")
-def get_teacher_ID(teacherID: int, session: DBSession) -> TeacherResponse:
+def get_teacher_ID(teacherID: int, 
+                   user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                   session: DBSession
+                   ) -> TeacherResponse:
+    print("fuck")
+    print(user)
     teacher = get_teacher(teacherID, session)
     if not teacher:
         raise EntityNotFoundException("teacher", teacherID)
     
-    return TeacherResponse(name=teacher.name, username=teacher.userName)
+    return TeacherResponse(name=teacher.name, username=teacher.userName) # type: ignore
 
 @router.put(
             "/{teacherID}",

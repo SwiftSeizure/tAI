@@ -35,7 +35,6 @@ firebase_admin.initialize_app(cred)
 print("TAI:",firebase_admin.get_app().project_id)
 
 
-
 PopulateDB()
 app = FastAPI(
     title="TAi",
@@ -52,6 +51,7 @@ app.include_router(material.router)
 app.include_router(student.router)
 app.include_router(teacher.router)
 app.include_router(chat.router)
+
 
 app.add_middleware(
     CORSMiddleware,
