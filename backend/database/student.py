@@ -55,7 +55,7 @@ def get_student_classes(studentID: int, session: Session) -> list[DBClass]:
             classes.remove(c) 
     return classes
 
-def enroll(studentID: int, classCode: int, session: Session) -> int:
+def enroll(studentID: int, classCode: str, session: Session) -> int:
     """Enroll a student in a class.
     
     Args:
