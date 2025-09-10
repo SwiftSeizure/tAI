@@ -3,6 +3,7 @@ import axios from "axios";
 import { TitleCard } from "../../shared/components/TitleCard";  
 import { useNavigate, useLocation } from "react-router-dom"; 
 import { postJoinClass } from "../services/post-join-class";
+import { useCurrentClass, useClass } from "../../store/class-store";
 import { useCurrentUser } from "../../store/user-store";
 
 /**
@@ -14,24 +15,29 @@ import { useCurrentUser } from "../../store/user-store";
 const JoinClassPage = () => {  
 
     // TODO: Add the functionality to join a class here  
-    const [classCode, setClassCode] = useState("");
-
+    const [classCode, setClassCode] = useState(""); 
+    const [state, { fetchClasses, setCurrentClass } ] = useClass();   
+    const { user } = useCurrentUser(); 
     const navigate = useNavigate();  
-
-    const {user } = useCurrentUser();
 
     const handleJoinClass = async (e) => { 
         e.preventDefault(); 
 
-       const requestBody = { /* Whatever will be in body */ };
-       const response = await postJoinClass(classCode, requestBody);  
-
-       
-       const classID = response.data.id; 
-       const classname = response.data.name;
-       navigate('/unitpage', {state: { classID, classname}});
-
-       // Figure out what to do with response 
+       try {   
+            const code = parseInt(classCode, 10); 
+            const requestBody = {   
+                studentID: user.id,
+                classCode: code,
+            } 
+            const classID = await postJoinClass(requestBody);   
+            await fetchClasses(user.id, user.role);
+            await setCurrentClass(classID);   
+            navigate('/unitpage'); 
+       } 
+       catch (error) {  
+            //TODO Add error message for user here 
+            console.log("Error joining class:", error); 
+       }
     };
 
 

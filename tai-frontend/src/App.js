@@ -5,12 +5,19 @@ import TeacherStudentUnitPage from '../src/unit/pages/TeacherStudentUnitPage';
 import TeacherStudentModulePage from '../src/module/pages/TeacherStudentModulePage'; 
 import CreateClassPage from '../src/home/pages/CreateClassPage'; 
 import JoinClassPage from '../src/home/pages/JoinClassPage'; 
+<<<<<<< HEAD
 import CreateUnitPage from '../src/unit/pages/CreateUnitPage'; 
 
 function App() { 
 
 
 
+=======
+import CreateUnitPage from '../src/unit/pages/CreateUnitPage';  
+
+function App() { 
+
+>>>>>>> origin/Development-Frontend
   return (
     <BrowserRouter>
       <div className="App">

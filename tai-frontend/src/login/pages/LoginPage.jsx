@@ -1,7 +1,8 @@
 import { useState } from 'react'; 
 import { useNavigate } from 'react-router-dom';   
 import { TitleCard } from '../../shared/components/TitleCard';   
-import { useUser } from '../../store/user-store';
+import { useUser } from '../../store/user-store'; 
+import { AuthModal } from '../modals/AuthModal';
 import '../../App.css'  
 
 
@@ -18,8 +19,10 @@ const studentImage = require('../../images/student-login-image.png');
 const LoginPage = () => {  
 
     // State to manage the selected role (teacher or student)
-    const [teacherOrStudent, setTeacherOrStudent] = useState('');   
-    const [error, setError] = useState('');  
+    const [selectedRole, setSelectedRole] = useState('');   
+    const [error, setError] = useState('');   
+
+    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
     const [, { setUser }] = useUser();
 
@@ -28,52 +31,22 @@ const LoginPage = () => {
 
 
     //TODO: Need to chance with USER AUTH  
-    /* logIn
-     * Handles the login process by checking the selected role and navigating to the home page,
-     * passing the user ID, name, and role as state.
-     */
-    const logIn = async () => { 
-        try {   
-            // Set user data in the store based on the selected role
-            if (teacherOrStudent === 'teacher1') { 
-                setUser({
-                    id: 1,
-                    name: 'Mr. Professor',
-                    role: 'teacher',
-                    email: 'prof1@example.com'
-                });
-                navigate('/home');
-            }    
-            else if (teacherOrStudent === 'teacher2'){ 
-                setUser({
-                    id: 2,
-                    name: 'Mrs. Professor',
-                    role: 'teacher',
-                    email: 'prof2@example.com'
-                });
-                navigate('/home');
-            } 
-            else if (teacherOrStudent === 'student1'){ 
-                setUser({
-                    id: 1,
-                    name: 'Student Struggling',
-                    role: 'student',
-                    email: 'student1@example.com'
-                });
-                navigate('/home');
-            } else {
-                setError('Please select a role to log in');
-            }  
-            
-        } catch (e) { 
-            console.error("There was an error while logging in:", e);
-            setError('An error occurred during login');
-        }
-    } 
+    /* logIn */
 
 
-    // END CHANGE 
+    // END CHANGE  
 
+    const handleAuthTrial = () => { 
+        console.log('Auth is not working but implementation will go here:'); 
+        setIsAuthModalOpen(false);
+        navigate('/home');
+    }; 
+
+    const handleCloseAuthModal = () => { 
+        setIsAuthModalOpen(false);
+    }; 
+ 
+    console.log(selectedRole);
 
     return ( 
         <>   
@@ -91,12 +64,21 @@ const LoginPage = () => {
                     hover:border-[#a0a0a0] hover:-translate-y-1 hover:shadow-[0_5px_15px_rgba(0,0,0,0.1)] 
                     focus-within:outline-[6px] focus-within:outline-lightblue focus-within:outline-offset-2"> 
                     {/* Radio button for teacher role */}
-                    <input
+                    <button
                         className="absolute opacity-0 cursor-pointer"
                         type="radio"
                         name="role"
                         value="teacher1"
-                        onChange={() => setTeacherOrStudent('teacher1')}
+                        onClick={() => {
+                            setSelectedRole('teacher1');
+                            setUser({
+                                id: 1,
+                                name: 'Mr. Professor',
+                                role: 'teacher',
+                                email: 'prof1@example.com'
+                            });
+                            setIsAuthModalOpen(true);
+                        }}
                     />
                     <div className="flex flex-col items-center justify-center">
                         <img
@@ -111,12 +93,21 @@ const LoginPage = () => {
                     hover:border-[#a0a0a0] hover:-translate-y-1 hover:shadow-[0_5px_15px_rgba(0,0,0,0.1)] 
                     focus-within:outline-[6px] focus-within:outline-lightblue focus-within:outline-offset-2"> 
                     {/* Radio button for student role */}
-                    <input 
+                    <button 
                         className="absolute opacity-0 cursor-pointer"
                         type="radio"
                         name="role"
                         value="student1"
-                        onChange={() => setTeacherOrStudent('student1')}
+                        onClick={() => {
+                            setSelectedRole('student1');
+                            setUser({
+                                id: 1,
+                                name: 'Student Struggling',
+                                role: 'student',
+                                email: 'student1@example.com'
+                            });
+                            setIsAuthModalOpen(true);
+                        }}
                     />  
                     <div className="flex flex-col items-center justify-center"> 
                         <img 
@@ -135,11 +126,20 @@ const LoginPage = () => {
             {/* Radio button for demo teacher role */}
             <div>
                 <label>
-                    <input
+                    <button
                         type="radio"
                         name="role"
                         value="teacher2"
-                        onChange={() => setTeacherOrStudent('teacher2')}
+                        onClick={() => {
+                            setSelectedRole('teacher2');
+                            setUser({
+                                id: 2,
+                                name: 'Mrs. Professor',
+                                role: 'teacher',
+                                email: 'prof2@example.com'
+                            });
+                            setIsAuthModalOpen(true);
+                        }}
                     />
                     Demo teacher
                 </label>
@@ -152,7 +152,7 @@ const LoginPage = () => {
                     {error}
                 </div>
             )}
-            <div className="flex justify-center items-center"> 
+            {/* <div className="flex justify-center items-center"> 
                 <button 
                     className="inline-block w-[200px] cursor-pointer border-2 border-gray-300 rounded-lg p-4 m-2 bg-transparent
                     font-medium text-[1.1rem] text-gray-800 text-center font-nunito
@@ -164,8 +164,15 @@ const LoginPage = () => {
                     >
                     Log In
                 </button> 
-            </div>
-        </div>
+            </div> */}
+        </div> 
+
+        <AuthModal 
+            isOpen={isAuthModalOpen} 
+            onClose={handleCloseAuthModal}  
+            role={selectedRole} 
+            onAuthTrial={handleAuthTrial}
+        />
         
         </>
     );

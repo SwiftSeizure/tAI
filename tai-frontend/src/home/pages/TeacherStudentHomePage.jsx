@@ -33,7 +33,6 @@ const TeacherStudentHomePage = () => {
     
 
     const handleSettingsSuccess = (response, settingsData) => {
-        console.log('Settings saved successfully:', response);
         // Optionally refresh classes or update local state
         if (user.id && user.role) {
             fetchClasses(user.id, user.role);
@@ -69,9 +68,12 @@ const TeacherStudentHomePage = () => {
 
     const handleClassSelect = async (classID) => { 
         try {  
-            console.log("hANDLE CLASS SELECT CALLED"); 
-            if (!classID) {
+            if (!classID && user.role === 'teacher') {
                 navigate('/createclass');
+                return;
+            }
+            else if (!classID && user.role === 'student') {
+                navigate('/joinclass');
                 return;
             }
             await setCurrentClass(classID); 
@@ -83,7 +85,6 @@ const TeacherStudentHomePage = () => {
     }; 
 
     const handleClassSettings = async (classID, classname) => { 
-        console.log("Handle class settings called for:", classID, classname);
         setCurrentSettingsClass({ id: classID, name: classname });
         settingsModal.openModal();
     };

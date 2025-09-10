@@ -4,10 +4,16 @@ from sqlalchemy.orm import sessionmaker, Session
 from backend.database.schema import DBClass,DBEnrolled,DBStudent,DBTeacher,Base
 from typing import Annotated
 from fastapi  import Depends
+<<<<<<< HEAD
 import os
 
 # Database connection URL
 DB_URL = os.getenv("DATABASE_URL")
+=======
+
+# Database connection URL
+DB_URL = "mysql+mysqlconnector://developer:password@localhost/TestDB"
+>>>>>>> origin/Development-Frontend
 
 # Create an engine that will connect to the database
 engine = create_engine(DB_URL, pool_size=5, max_overflow=10)

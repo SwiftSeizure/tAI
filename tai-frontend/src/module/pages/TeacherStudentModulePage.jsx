@@ -1,13 +1,34 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from "react";  
 import { TitleCard } from "../../shared/components/TitleCard";
 import ChatFeature from "../components/ChatFeature";
 import ModuleComponent from "../components/ModuleComponent";  
+=======
+import React, { useEffect, useState } from "react";   
+import { useNavigate } from 'react-router-dom';  
+import { TitleCard } from "../../shared/components/TitleCard";
+import ChatFeature from "../components/ChatFeature";
+import ModuleComponent from "../components/ModuleComponent";  
+import AddModuleModal from "../modals/AddModuleModal";   
+import AddDayModal from "../modals/AddDayModal"; 
+>>>>>>> origin/Development-Frontend
 import { useCurrentUser } from "../../store/user-store"; 
 import { useCurrentUnit } from "../../store/unit-store";
 import { useModule } from "../../store/module-store"; 
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
+<<<<<<< HEAD
 import SettingsIcon from '@mui/icons-material/Settings';
+=======
+import SettingsIcon from '@mui/icons-material/Settings'; 
+import { postCreateModule } from "../services/post-create-module";
+import { postCreateDay } from "../services/post-create-day";   
+import { postCreateMaterial } from "../services/post-create-material"; 
+import { postCreateAssignment } from "../services/post-create-assignment";  
+import { putChatMessage } from "../services/put-chat-message"; 
+import AddAssignmentModal from "../modals/AddAssignmentModal"; 
+import AddMaterialModal from "../modals/AddMaterialModal"; 
+>>>>>>> origin/Development-Frontend
 
 import { pdfjs } from 'react-pdf';
 import { getMaterialURL } from "../services/get-material-url";
@@ -36,6 +57,7 @@ const TeacherStudentModulePage = () => {
     const [isChatExpanded, setIsChatExpanded] = useState(false); // Tracks chat expansion state
     const [displayType, setDisplayType] = useState('welcome'); // Tracks the type of content to display
     
+<<<<<<< HEAD
     const [, setSelectedDay] = useState(null); // Tracks the selected day
     const [, setSelectedMaterialID] = useState(null); // Tracks the selected material ID
     const [selectedMaterialName, setSelectedMaterialName] = useState(null); // Tracks the selected material name
@@ -44,19 +66,50 @@ const TeacherStudentModulePage = () => {
     const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
     
     
+=======
+    const [selectedDay, setSelectedDay] = useState(null); // Tracks the selected day
+
+    const [selectedMaterialName, setSelectedMaterialName] = useState(null); // Tracks the selected material name
+    
+    const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
+    
+>>>>>>> origin/Development-Frontend
     const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
     const [assignmentContent, setAssignmentContent] = useState(null); // Stores the content of a selected assignment
     const [currentContentDisplay, setCurrentContentDisplay] = useState(null); // Tracks the current content being displayed
 
+<<<<<<< HEAD
+=======
+    const [chatWidth, setChatWidth] = useState(600); // Default width in pixels
+
+>>>>>>> origin/Development-Frontend
     const { user } = useCurrentUser(); 
     const { currentUnit } = useCurrentUnit();  
     const [state, actions] = useModule();
     const { modules, isLoading, error } = state;
+<<<<<<< HEAD
     const { fetchModules } = actions;
 
     // Fetch modules when the component mounts or when currentUnit changes 
 
     console.log("This is the currentUnit.id: ", currentUnit);
+=======
+    const { fetchModules } = actions; 
+
+    // State variables for managing the add module modal
+    const [showAddModuleModal, setShowAddModuleModal] = useState(false);
+    const [showAddDayModal, setShowAddDayModal] = useState(false);
+    const [selectedModuleId, setSelectedModuleId] = useState(null);  
+
+    const [showAddMaterialModal, setShowAddMaterialModal] = useState(false); 
+    const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false);  
+
+    const [chatResponse, setChatResponse] = useState('Response will appear here ');
+
+    const [dayId, setDayId] = useState(null); 
+
+    // Fetch modules when the component mounts or when currentUnit changes 
+>>>>>>> origin/Development-Frontend
     useEffect(() => {
         fetchModules(currentUnit.id);
     }, [currentUnit?.id, fetchModules]);
@@ -70,6 +123,7 @@ const TeacherStudentModulePage = () => {
     const toggleChatExpand = () => {
         setIsChatExpanded(!isChatExpanded);  
 
+<<<<<<< HEAD
         if (!isChatExpanded && user.role === "student") { 
             setDisplayType('chat') 
         } 
@@ -80,6 +134,18 @@ const TeacherStudentModulePage = () => {
         if (isChatExpanded) { 
             setDisplayType(currentContentDisplay);
         }
+=======
+        // if (!isChatExpanded && user.role === "student") { 
+        //     setDisplayType('chat') 
+        // } 
+        // else if (!isChatExpanded && user.role === "teacher") { 
+        //     setDisplayType('chat-settings'); 
+        // }  
+
+        // if (isChatExpanded) { 
+        //     setDisplayType(currentContentDisplay);
+        // }
+>>>>>>> origin/Development-Frontend
     };
 
 
@@ -112,6 +178,7 @@ const TeacherStudentModulePage = () => {
      * handleAssignmentSelect
      * Handles the selection of an assignment and fetches its content.
      * @param {number} dayID - The ID of the day containing the assignment.
+<<<<<<< HEAD
      * @param {number} assignmentID - The ID of the selected assignment.
      * @param {string} fileName - The filename of the assignment.
      * @param {string} assignmentName - The name of the assignment.
@@ -124,6 +191,18 @@ const TeacherStudentModulePage = () => {
             setSelectedAssignmentID(assignmentID);   
             setSelectedAssignmentName(assignmentName);
             setDisplayType('assignment'); 
+=======
+     * @param {string} fileName - The filename of the assignment.
+     * @param {string} assignmentName - The name of the assignment.
+     */
+    const handleAssignmentSelect = async (dayID, fileName, assignmentName) => {
+        try { 
+            // Update the selected assignment and set the display type to 'assignment'
+            setSelectedMaterialName(null);
+            setSelectedAssignmentName(assignmentName);
+            setDisplayType('assignment'); 
+            setDayId(dayID);
+>>>>>>> origin/Development-Frontend
 
             // Fetch the content of the selected assignment
             const fileURL = await getAssignmentURL(dayID, fileName); 
@@ -140,6 +219,7 @@ const TeacherStudentModulePage = () => {
      * handleMaterialSelect
      * Handles the selection of a material and fetches its content.
      * @param {number} dayID - The ID of the day containing the material.
+<<<<<<< HEAD
      * @param {number} materialID - The ID of the selected material.
      * @param {string} fileName - The filename of the material.
      * @param {string} materialName - The name of the material.
@@ -153,6 +233,21 @@ const TeacherStudentModulePage = () => {
             setSelectedMaterialID(materialID);  
             setSelectedMaterialName(materialName);
             setDisplayType('material'); 
+=======
+     * @param {string} fileName - The filename of the material.
+     * @param {string} materialName - The name of the material.
+     */
+    const handleMaterialSelect = async ( dayID, fileName, materialName ) => {   
+
+        console.log(dayID, "fileName", fileName, "materialName", materialName);
+
+        try {
+            // Update the selected material and set the display type to 'material'
+            setSelectedAssignmentName(null);
+            setSelectedMaterialName(materialName);
+            setDisplayType('material');  
+            setDayId(dayID);
+>>>>>>> origin/Development-Frontend
 
             // Fetch the content of the selected material
             const fileURL = await getMaterialURL(dayID, fileName);
@@ -162,8 +257,89 @@ const TeacherStudentModulePage = () => {
             setDisplayType('error'); 
         }
 
+<<<<<<< HEAD
     }
  
+=======
+    }  
+
+    const handleNewModule = async (newModalName) => {  
+        try { 
+            const settings = {};
+            await postCreateModule(currentUnit.id, newModalName, settings);
+            await fetchModules(currentUnit.id);
+        } 
+        catch (error) { 
+            console.error('Error creating module:', error);
+        } 
+        setShowAddModuleModal(false); 
+    } 
+
+    const handleAddDay = (moduleId) => {
+        setSelectedModuleId(moduleId);
+        setShowAddDayModal(true);
+    };
+
+    const handleNewDay = async (dayName) => {
+        try { 
+            await postCreateDay(selectedModuleId, dayName);
+            await fetchModules(currentUnit.id);
+        } 
+        catch (error) { 
+            console.error('Error creating day:', error);
+        } 
+        setShowAddDayModal(false);
+    }; 
+
+    const handleAddMaterial = (dayId) => {
+        setDayId(dayId);
+        setShowAddMaterialModal(true);
+    };  
+
+    const handleNewMaterial = async (materialData) => {
+        try {  
+            const formData = new FormData();
+            formData.append('file', materialData.file);  
+
+            const fileName = materialData.name;
+            await postCreateMaterial(dayId, fileName, formData); 
+             
+            await fetchModules(currentUnit.id);  
+            
+            //force refresh here 
+
+            handleMaterialSelect(dayId, materialData.file.name, materialData.name); 
+        } 
+        catch (error) { 
+            console.error('Error creating material:', error);
+        }  
+        setShowAddMaterialModal(false);
+    }; 
+
+    const handleAddAssignment = (dayId) => {
+        setDayId(dayId);
+        setShowAddAssignmentModal(true);
+    }; 
+ 
+    const handleNewAssignment = async (assignmentData) => {
+        try {  
+            const formData = new FormData();
+            formData.append('file', assignmentData.file);  
+
+            const fileName = assignmentData.name;
+            await postCreateAssignment(dayId, fileName, formData); 
+             
+            await fetchModules(currentUnit.id); 
+
+            handleAssignmentSelect(dayId, assignmentData.file.name, assignmentData.name); 
+        } 
+        catch (error) { 
+            console.error('Error creating assignment:', error);
+        }  
+
+        setShowAddAssignmentModal(false);
+    }; 
+>>>>>>> origin/Development-Frontend
 
     /**
      * renderModules
@@ -187,8 +363,41 @@ const TeacherStudentModulePage = () => {
                             onDaySelect={handleDaySelect}  
                             onMaterialSelect={handleMaterialSelect} 
                             onAssignmentSelect={handleAssignmentSelect}
+<<<<<<< HEAD
                         />
                     ))}    
+=======
+                            onAddDay={handleAddDay}
+                            onAddMaterial={handleAddMaterial}
+                            onAddAssignment={handleAddAssignment}
+                        />
+                    ))}      
+                    {user.role === "teacher" && (
+                        <div>
+                            <button onClick={() => setShowAddModuleModal(true)}>Add Module</button>
+                            <AddModuleModal 
+                                isOpen={showAddModuleModal}
+                                onClose={() => setShowAddModuleModal(false)}
+                                onAddModule={handleNewModule}
+                            />
+                            <AddDayModal
+                                isOpen={showAddDayModal}
+                                onClose={() => setShowAddDayModal(false)}
+                                onAddDay={handleNewDay}
+                            />
+                            <AddMaterialModal
+                                isOpen={showAddMaterialModal}
+                                onClose={() => setShowAddMaterialModal(false)}
+                                onAddMaterial={handleNewMaterial}
+                            />
+                            <AddAssignmentModal
+                                isOpen={showAddAssignmentModal}
+                                onClose={() => setShowAddAssignmentModal(false)}
+                                onAddAssignment={handleNewAssignment}
+                            />
+                        </div>
+                    )}
+>>>>>>> origin/Development-Frontend
 
                 </div>
                 </>
@@ -251,6 +460,7 @@ const TeacherStudentModulePage = () => {
                             {renderPDFContent(assignmentContent)}
 
                         </div>
+<<<<<<< HEAD
                     );
                     
 
@@ -261,6 +471,9 @@ const TeacherStudentModulePage = () => {
                     </div>
                     
                 );   
+=======
+                    ); 
+>>>>>>> origin/Development-Frontend
 
             case 'chat-settings': 
 
@@ -304,6 +517,93 @@ const TeacherStudentModulePage = () => {
         }
     };
 
+<<<<<<< HEAD
+=======
+    /**
+     * startResizing
+     * Initiates the resizing of the chat overlay when the user starts dragging the resize handle.
+     * @param {object} e - The mouse down event.
+     */
+    const startResizing = (e) => {
+        // Prevent text selection while resizing
+        e.preventDefault();
+
+        // Add event listeners for mouse movement and release
+        window.addEventListener("mousemove", resizeOverlay);
+        window.addEventListener("mouseup", stopResizing);
+    };
+
+    const resizeOverlay = (e) => {
+        // Calculate the total available width for the grid
+        const totalWidth = window.innerWidth;
+
+        // Calculate the maximum width for the chat overlay
+        const maxChatWidth = totalWidth - 280; // Subtract the sidebar width (280px)
+
+        // Calculate the new width based on the mouse position
+        const newWidth = totalWidth - e.clientX;
+
+        // Set a minimum and maximum width for the overlay
+        if (newWidth >= 200 && newWidth <= maxChatWidth) {
+            setChatWidth(newWidth);
+        }
+    };
+
+    const stopResizing = () => {
+        // Remove event listeners when resizing is complete
+        window.removeEventListener("mousemove", resizeOverlay);
+        window.removeEventListener("mouseup", stopResizing);
+    };
+
+    // Adjust chatWidth dynamically when the window is resized
+    useEffect(() => {
+        const handleResize = () => {
+            const totalWidth = window.innerWidth;
+            const maxChatWidth = totalWidth - 280;
+
+            if (chatWidth > maxChatWidth) {
+                setChatWidth(maxChatWidth);
+            }
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, [chatWidth]); 
+
+    const handleChatMessageSend = async (message) => {  
+        //displayType 
+
+        //TODO make this state for the while file 
+        let currentFileName = null; 
+        if(displayType === 'material') {
+            currentFileName = selectedMaterialName;
+        }
+        else if(displayType === 'assignment') {
+            currentFileName = selectedAssignmentName;
+        }
+        
+        console.log("displayType", displayType, "dayId", dayId, "currentFileName", currentFileName, "message", message);  
+        try {  
+            if (currentFileName) {
+                await putChatMessage(displayType, dayId, currentFileName, message);
+            }
+            else { 
+                //Something about returning 
+                await putChatMessage(displayType, dayId, message);
+            }
+        }
+        catch (error) { 
+            console.error('Error updating chat message:', error);
+        }
+    };
+
+    const handleChatResponseReceived = (response) => {
+        console.log(response); 
+        setChatResponse(response);
+    };
+>>>>>>> origin/Development-Frontend
 
     return(  
         <>   
@@ -327,10 +627,17 @@ const TeacherStudentModulePage = () => {
                 {/* Chat button for students or chat settings for teachers */}
                 {user.role === 'student' ? 
                     <button 
+<<<<<<< HEAD
                         className="fixed bottom-4 right-8 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out "  
                         onClick={toggleChatExpand} > 
                        <img 
                         className={`rounded-md transition-all duration-300 ease-in-out ${isChatExpanded ? "w-12 h-12" : "w-8 h-8 hover:w-12 hover:h-12"}`}
+=======
+                        className="fixed bottom-4 right-8 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out z-50"  
+                        onClick={toggleChatExpand} > 
+                       <img 
+                        className={`rounded-md transition-all duration-200 ease-in-out w-10 h-10 hover:w-16 hover:h-16`}
+>>>>>>> origin/Development-Frontend
                         src={chatImage}
                         /> 
                    </button>  
@@ -347,7 +654,43 @@ const TeacherStudentModulePage = () => {
 
                     </button> 
                 } 
+<<<<<<< HEAD
             </div>  
+=======
+            </div>
+            {/* Chat overlay */}
+            {/* <div
+              className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg transition-transform duration-300 ease-in-out z-40 ${
+                isChatExpanded ? "translate-x-0" : "translate-x-full"
+              }`}
+            >
+              <ChatFeature displayType={displayType} />
+            </div> */}
+            <div
+              className={`fixed top-40 right-0 h-[calc(90vh-120px)] bg-white shadow-lg transition-transform duration-300 ease-in-out z-40 ${
+                isChatExpanded ? "translate-x-0" : "translate-x-full"
+                }`}
+                // style={{ width: `${chatWidth}px` }} // Dynamically set the width
+                style={{
+                    width: `${chatWidth}px`, // Dynamically set the width
+                    border: "5px solid #a5a5a5ff", // Add a border
+                    borderRight: "none", // Remove the border on the right edge
+                    borderRadius: "10px 0 0 10px", // Rounded edges on the top-left and bottom-left corners
+                    // boxShadow: "inset 0 0 0 7px transparent, 0 0 0 7px linear-gradient(to bottom, #efcefcef, rgba(104, 96, 214, 1), #cf2)",
+                }}
+            >
+                {/* Resize handle */}
+                <div
+                    className="absolute left-0 top-0 h-full w-2 cursor-ew-resize"
+                    onMouseDown={startResizing}
+                ></div>
+
+                <ChatFeature 
+                    onMessageSend={handleChatMessageSend} 
+                    displayResponse={chatResponse}
+                />
+            </div>
+>>>>>>> origin/Development-Frontend
         </div>
     
         </>

@@ -1,6 +1,10 @@
 import React, { useState } from "react";  
 import DayComponent from "./DayComponent";
 import { FaBookOpen } from "react-icons/fa"; 
+<<<<<<< HEAD
+=======
+import { useCurrentUser } from "../../store/user-store"; 
+>>>>>>> origin/Development-Frontend
 
 
 /**
@@ -15,16 +19,24 @@ import { FaBookOpen } from "react-icons/fa";
  * - onMaterialSelect: Callback function triggered when a material is selected.
  * - onAssignmentSelect: Callback function triggered when an assignment is selected.
  */
+<<<<<<< HEAD
 const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentSelect } ) => {   
+=======
+const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentSelect, onAddDay, onAddMaterial, onAddAssignment } ) => {   
+>>>>>>> origin/Development-Frontend
  
     // State to track whether the module is expanded or not
     const [isExpanded, setIsExpanded] = useState(false);   
 
+<<<<<<< HEAD
     // do something for onNewDaySelect  
     // TODO Make modal for onNewDaySelect  
     const onNewDaySelect = () => { 
         
     };
+=======
+    const { user } = useCurrentUser(); 
+>>>>>>> origin/Development-Frontend
     
 
     /**
@@ -64,13 +76,20 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
                         isExpanded ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}`}>   
                     <ul className="">        
                         {/* Map through the days in the module and render DayComponent for each day in the module*/}      
+<<<<<<< HEAD
                         {Array.isArray(module.days) && [...module.days, null].map((day, index) => (   
                             <li 
                                 key={day?.id || 'new-day'}
+=======
+                        {Array.isArray(module.days) && [...module.days].map((day, index) => (   
+                            <li 
+                                key={day.id}
+>>>>>>> origin/Development-Frontend
                                 style={{ animationDelay: `${index * 100}ms`}}
                             > 
                                 <DayComponent  
                                     day={day} 
+<<<<<<< HEAD
                                     onDaySelect={day ? () => onDaySelect(module.id, day.id) : () => onNewDaySelect()} 
                                     onMaterialSelect={day ? onMaterialSelect : null}  
                                     onAssignmentSelect={day ? onAssignmentSelect : null}
@@ -78,6 +97,21 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
                             </li> 
                         ))}
 
+=======
+                                    onDaySelect={() => onDaySelect(module.id, day.id)} 
+                                    onMaterialSelect={onMaterialSelect}  
+                                    onAssignmentSelect={onAssignmentSelect}
+                                    handleAddMaterial={onAddMaterial}
+                                    handleAddAssignment={onAddAssignment}
+                                /> 
+                            </li> 
+                        ))}  
+                        {user.role === "teacher" && (
+                            <div>
+                                <button onClick={() => onAddDay(module.id)}>Add Day</button>
+                            </div>
+                        )}
+>>>>>>> origin/Development-Frontend
                     </ul>
                 </div>
             )}

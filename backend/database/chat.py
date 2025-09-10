@@ -74,7 +74,7 @@ def queryBot(studentID: int, path: str, prompt: str, session: Session) -> ChatRe
     """
     
     ### TODO: Change hardcode file path to dynamic path 
-    full_path = os.path.join("uploads", "material", "1", path)
+    full_path = os.path.join("uploads",path)
     mime, _ = mimetypes.guess_type(full_path)
     ext = (os.path.splitext(full_path)[1] or "").lower()
 

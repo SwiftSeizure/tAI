@@ -1,13 +1,15 @@
 import axios from 'axios';
 
-export const postJoinClass = async (classCode, requestBody) => {
+export const postJoinClass = async (requestBody) => {
   try {
-    const response = await axios.put(`http://localhost:8000/classroom/${classCode}/join`, requestBody, {
+
+    const response = await axios.put(`http://localhost:8000/student/enroll`, requestBody, {
       headers: {
         'Content-Type': 'application/json'
       }
-    });
-    return response;
+    }); 
+    console.log("This is classID in postJoinClass: ", response.data);
+    return response.data;
   } catch (error) {
     throw error;
   }

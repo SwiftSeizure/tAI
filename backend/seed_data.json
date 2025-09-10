@@ -83,12 +83,15 @@
     
   ],
   "enrolled": [
+<<<<<<< HEAD
    
     {
       "id": 2,
       "studentID": 1,
       "classID": 1
     },
+=======
+>>>>>>> origin/Development-Frontend
     {
       "id": 3,
       "studentID": 1,

@@ -27,7 +27,10 @@ export const TitleCard = ({ title, intro, settings }) => {
     const handleSettingsSuccess = (responseData) => {
         console.log('Settings saved successfully:', responseData);   
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/Development-Frontend
         // Update the current class in the store  
         //TODO: Update class here for state managment 
         // updateClass(currentClass.id);

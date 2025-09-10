@@ -29,8 +29,11 @@ const CreateUnitPage = () => {
         if (response.success) { 
             await fetchUnits(currentClass.id);
             await setCurrentUnit(response.data.id); 
+<<<<<<< HEAD
             console.log("This is the response.data.id: ", response.data.id); 
             console.log("This is the currentUnit.id: ", currentUnit);
+=======
+>>>>>>> origin/Development-Frontend
             navigate(`/modulepage`);
         }
 
