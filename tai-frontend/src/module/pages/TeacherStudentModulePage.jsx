@@ -558,8 +558,7 @@ const TeacherStudentModulePage = () => {
                    </button>  
                    : 
                    <button 
-                   className="fixed bottom-4 right-8 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out " 
-                        onClick={toggleChatExpand}  
+                   className="fixed bottom-4 right-8 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out "                        
 
                     >  
                         <h2 className={`rounded-md transition-all duration-300 ease-in-out ${isChatExpanded ? "bg-red-600 p-2 fixed bottom-8 right-12 font-nunito" : "w-8 h-8 hover:w-12 hover:h-12"  }  `}>  
@@ -570,14 +569,7 @@ const TeacherStudentModulePage = () => {
                     </button> 
                 } 
             </div>
-            {/* Chat overlay */}
-            {/* <div
-              className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg transition-transform duration-300 ease-in-out z-40 ${
-                isChatExpanded ? "translate-x-0" : "translate-x-full"
-              }`}
-            >
-              <ChatFeature displayType={displayType} />
-            </div> */}
+
             <div
               className={`fixed top-40 right-0 h-[calc(90vh-120px)] bg-white shadow-lg transition-transform duration-300 ease-in-out z-40 ${
                 isChatExpanded ? "translate-x-0" : "translate-x-full"
