@@ -43,6 +43,16 @@ const CreateClassPage = () => {
             await fetchClasses(user.id, user.role);
             await setCurrentClass(response.data.id); 
             navigate('/unitpage');
+
+            // show class code if present in the response (try several common keys)
+            //const classCode = response?.data?.classCode ?? response?.data?.code ?? response?.data?.class_code;
+            const classCode = response.data.classCode;
+            if (classCode) {
+                alert(`Class code: ${classCode}`);
+            } else {
+                console.warn('CreateClassPage: class code not found in response', response);
+            }
+            
         }
 
         catch (error) { 

@@ -19,6 +19,7 @@ class HomeResponse(BaseModel):
 class HomeClass(BaseModel):
     id: int
     name: str
+    classCode: str
 
 
 # Classroom Input Models ------------------------------------------
@@ -87,7 +88,7 @@ class DayMaterial(BaseModel):
 
 class AddEnrollment(BaseModel):
     studentID: int
-    classCode: int
+    classCode: str
 
 # Teacher Input Models -----------------------------------
 class TeacherUpdate(BaseModel):

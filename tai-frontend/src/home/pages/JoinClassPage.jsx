@@ -27,7 +27,7 @@ const JoinClassPage = () => {
             const code = parseInt(classCode, 10); 
             const requestBody = {   
                 studentID: user.id,
-                classCode: code,
+                classCode: classCode,
             } 
             const classID = await postJoinClass(requestBody);   
             await fetchClasses(user.id, user.role);
