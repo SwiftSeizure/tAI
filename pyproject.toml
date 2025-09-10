@@ -1,0 +1,43 @@
+[project]
+name = "TAi"
+version = "0.1.0"
+description = "A teacher powered ai assistent designed by the sudent for the teacher."
+license = { text = "MIT" }
+requires-python = ">= 3.10"
+dynamic = [ "dependencies" ]
+authors = [
+  { name = "<your_name>", email = "<your_email>@<your_email>.com" }
+]
+
+[tool.poetry]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.111.0"
+uvicorn = {extras = ["standard"], version = "^0.35.0"}
+openai = "^1.101.0"
+requests = "^2.32.3"
+python-dotenv = "^1.1.0"
+pymysql = "^1.1.1"
+sqlalchemy = "^2.0.40"
+mysql-connector-python = "^9.2.0"
+protobuf = "^6.30.2"
+python-multipart = "^0.0.20"
+pillow = "^11.3.0"
+python-magic = "^0.4.27"
+pdfminer-six = "^20250506"
+python-docx = "^1.2.0"
+psycopg2-binary = "^2.9.10"
+
+[tool.poetry.group.dev.dependencies]
+sqlalchemy = "^2.0.40"
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
