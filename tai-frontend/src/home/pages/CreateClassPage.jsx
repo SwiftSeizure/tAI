@@ -27,9 +27,7 @@ const CreateClassPage = () => {
 
     const handleCreateClass = async (e) => {  
         e.preventDefault();
-
         if (selectedChatSetting === null) { 
-
             //TODO come up with a better cleaner alert system 
             alert("Please select a chat setting");
             return;
