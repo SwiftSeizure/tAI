@@ -97,17 +97,6 @@ const TeacherStudentModulePage = () => {
      */
     const toggleChatExpand = () => {
         setIsChatExpanded(!isChatExpanded);  
-
-        // if (!isChatExpanded && user.role === "student") { 
-        //     setDisplayType('chat') 
-        // } 
-        // else if (!isChatExpanded && user.role === "teacher") { 
-        //     setDisplayType('chat-settings'); 
-        // }  
-
-        // if (isChatExpanded) { 
-        //     setDisplayType(currentContentDisplay);
-        // }
     };
 
 
@@ -509,9 +498,7 @@ const TeacherStudentModulePage = () => {
     }, [chatWidth]); 
 
     const handleChatMessageSend = async (message) => {  
-        //displayType 
 
-        //TODO make this state for the while file 
         let currentFileName = null; 
         if(displayType === 'material') {
             currentFileName = selectedMaterialName;
