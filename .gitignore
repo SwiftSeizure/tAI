@@ -1,5 +1,6 @@
 .env
 
+backend/curl_tests
 backend/service-account.json
 
 # macOS stystem files
