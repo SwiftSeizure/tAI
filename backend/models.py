@@ -19,6 +19,7 @@ class HomeResponse(BaseModel):
 class HomeClass(BaseModel):
     id: int
     name: str
+    classCode: str
 
 
 # Classroom Input Models ------------------------------------------
