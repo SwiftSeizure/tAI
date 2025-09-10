@@ -16,7 +16,7 @@ import { useCurrentUser } from "../../store/user-store";
  * - onMaterialSelect: Callback function triggered when a material is selected.
  * - onAssignmentSelect: Callback function triggered when an assignment is selected.
  */
-const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentSelect, onAddDay, onAddMaterial, onAddAssignment } ) => {   
+const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentSelect, onAddDay, onAddMaterial, onAddAssignment, onClickDelete } ) => {   
  
     // State to track whether the module is expanded or not
     const [isExpanded, setIsExpanded] = useState(false);   
@@ -30,13 +30,25 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
      */
     const toggleExpand = () => { 
         setIsExpanded(!isExpanded);
+    }; 
+
+    const handleOnClickDelete = () => { 
+        onClickDelete(module.id, module.name);
     };
 
     return ( 
         <> 
 
         {/* Everything this module will be wrapped in */}
-        <div >
+        <div > 
+
+            {user.role === "teacher" && (
+                <div>
+                    <button onClick={handleOnClickDelete}>Delete Module</button>
+                </div>
+            )} 
+
+
             {/* Header section for the module */}
             <div  
                 className={`p-2 rounded-md cursor-pointer flex flex-row items-center transition-all duration-300 ease-in-out transform hover:scale-105 hover:font-bold
