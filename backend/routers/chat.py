@@ -7,7 +7,7 @@ from backend.database.schema import DBConversation, DBMessage, DBResponse
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 
-@router.put("/{studentID}/{path}",response_model=ChatResponse,responses= {404:{"model": ClientErrorResponse}} 
+@router.put("/{path:path}",response_model=ChatResponse,responses= {404:{"model": ClientErrorResponse}} 
            ,status_code=200, summary="Run query and update chat")
 async def queryResponse(studentID: int, path: str, session:DBSession, query: str = Form(...)) -> ChatResponse:
     """Run a query and update the chat.
@@ -19,10 +19,11 @@ async def queryResponse(studentID: int, path: str, session:DBSession, query: str
         query (str): The query to run.
 
     Returns:
-        ChatResponse: The response containing the conversation ID and name.
+        ChatResponse: The response containing the conversatiorint(path)n ID and name.
     """
     # Placeholder for actual logic to run the query and update the chat
+    print(path)
 
-    ret = queryBot(studentID, path, query,session)
+    ret = queryBot(studentID,path, query,session)
 
     return ChatResponse(studentID=studentID, conversationID=ret.conversationID,messages=ret.messages, responses=ret.responses)

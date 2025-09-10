@@ -28,6 +28,7 @@ pillow = "^11.3.0"
 python-magic = "^0.4.27"
 pdfminer-six = "^20250506"
 python-docx = "^1.2.0"
+pypdf2 = "^3.0.1"
 
 [tool.poetry.group.dev.dependencies]
 sqlalchemy = "^2.0.40"
