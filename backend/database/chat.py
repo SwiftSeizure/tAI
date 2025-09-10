@@ -73,26 +73,24 @@ def queryBot(studentID: int, path: str, prompt: str, session: Session) -> ChatRe
     (DB logic unchanged; only OpenAI call is different.)
     """
     
-    ### TODO: Change hardcode file path to dynamic path 
-    full_path = os.path.join("uploads", "material", "1", path)
-    mime, _ = mimetypes.guess_type(full_path)
-    ext = (os.path.splitext(full_path)[1] or "").lower()
+    mime, _ = mimetypes.guess_type(path)
+    ext = (os.path.splitext(path)[1] or "").lower()
 
     try:
-        if not os.path.exists(full_path):
+        if not os.path.exists(path):
             response_text = "[Context file not found]"
         elif (ext == ".pdf") or (mime == "application/pdf"):
-            uploaded = _upload_file(full_path)
+            uploaded = _upload_file(path)
             response_text = _ask_with_pdf(uploaded.id, prompt)
         elif (ext == ".txt") or (mime == "text/plain"):
-            uploaded = _upload_file(full_path)
+            uploaded = _upload_file(path)
             response_text = _ask_with_txt_file_search(uploaded.id, prompt)
         elif (ext == ".png") or (mime == "image/png"):
             try:
-                _upload_file(full_path)
+                _upload_file(path)
             except Exception:
                 pass
-            data_url = _png_to_data_url(full_path)
+            data_url = _png_to_data_url(path)
             response_text = _ask_with_png_data_url(data_url, prompt)
         else:
             response_text = "[Unsupported file type for direct scanning. Please use PDF, TXT, or PNG.]"
