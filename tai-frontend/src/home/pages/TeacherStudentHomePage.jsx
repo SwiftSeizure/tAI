@@ -6,7 +6,9 @@ import "react-icons/fa";
 import { useCurrentUser, useIsAuthenticated } from "../../store/user-store"; 
 import { useClass, useAllClasses, useClassesLoading, useClassesError } from "../../store/class-store";
 import { SettingsModal } from "../../shared/modals/SettingsModal";
-import { useSettingsModal } from "../../shared/hooks/useSettingsModal";
+import { useSettingsModal } from "../../shared/hooks/useSettingsModal"; 
+import { deleteClass } from "../services/delete-class"; 
+import DeleteModal from "../../shared/modals/DeleteModal";
 
 /**
  * TeacherStudentHomePage Component
@@ -29,7 +31,11 @@ const TeacherStudentHomePage = () => {
     const [state, { setCurrentClass, fetchClasses }] = useClass();
     
     // State for managing settings modal
-    const [currentSettingsClass, setCurrentSettingsClass] = useState(null);
+    const [currentSettingsClass, setCurrentSettingsClass] = useState(null); 
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); 
+
+    const [currentDeleteClassID, setCurrentDeleteClassID] = useState(null);  
+    const [currentDeleteClassName, setCurrentDeleteClassName] = useState(null); 
     
 
     const handleSettingsSuccess = (response, settingsData) => {
@@ -87,6 +93,26 @@ const TeacherStudentHomePage = () => {
     const handleClassSettings = async (classID, classname) => { 
         setCurrentSettingsClass({ id: classID, name: classname });
         settingsModal.openModal();
+    };  
+
+    const handleOpenDeleteModal = (classID, classname) => {
+        setCurrentDeleteClassID(classID);
+        setCurrentDeleteClassName(classname);
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleDeleteClass = async () => {  
+        try { 
+            await deleteClass(currentDeleteClassID); 
+            fetchClasses(user.id, user.role); 
+        } 
+        catch (error) { 
+            console.error('Error deleting class:', error); 
+        } 
+    };  
+
+    const handleCloseDeleteModal = () => {
+        setIsDeleteModalOpen(false);
     };
  
 
@@ -109,7 +135,8 @@ const TeacherStudentHomePage = () => {
                         classname={classroom.name}  
                         onClick={handleClassSelect}   
                         onClickSettings={() => handleClassSettings(classroom.id, classroom.name)}
-                        showSettings={user.role === 'teacher'}
+                        showSettings={user.role === 'teacher'} 
+                        onClickDelete={handleOpenDeleteModal}
                     />
                 ))} 
             </>
@@ -149,6 +176,16 @@ const TeacherStudentHomePage = () => {
                 onSave={settingsModal.saveSettings}
                 onCancel={settingsModal.closeModal}
                 isLoading={settingsModal.isLoading}
+            />
+        )} 
+
+        {/* Delete Modal */}
+        {isDeleteModalOpen && (
+            <DeleteModal
+                isOpen={isDeleteModalOpen}
+                onClose={handleCloseDeleteModal}
+                onConfirmDelete={handleDeleteClass}  
+                itemToDelete={currentDeleteClassName}
             />
         )}
         </>

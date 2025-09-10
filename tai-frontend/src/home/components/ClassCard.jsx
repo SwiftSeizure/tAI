@@ -1,4 +1,5 @@
 import SettingsIcon from '@mui/icons-material/Settings';
+import DeleteIcon from '@mui/icons-material/Delete';
 /**
  * ClassCard Component
  * This component represents a card for a class. It displays the class name
@@ -9,7 +10,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
  * - userID: ID of the current user
  * - role: Role of the user (e.g., "teacher" or "student")
  */
-const ClassCard = ( {classID, classname, onClick, onClickSettings, showSettings }  ) => {
+const ClassCard = ( {classID, classname, onClick, onClickSettings, showSettings, onClickDelete }  ) => {
      
     
     const handleClick = () => { 
@@ -18,7 +19,11 @@ const ClassCard = ( {classID, classname, onClick, onClickSettings, showSettings 
 
     const handleClickSettings = () => { 
         onClickSettings(classID, classname);
-    };
+    }; 
+
+    const handleClickDelete = () => { 
+        onClickDelete(classID, classname);
+    }; 
 
     // Logo for the class card 
     // TODO: change this to allow teacher to upload or select from a list of logos
@@ -36,6 +41,15 @@ const ClassCard = ( {classID, classname, onClick, onClickSettings, showSettings 
                         className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
                     >
                         <SettingsIcon />   
+                    </button>
+                )} 
+
+                {onClickDelete && (
+                    <button 
+                        onClick={ () => handleClickDelete() }
+                        className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
+                    >
+                        <DeleteIcon />   
                     </button>
                 )}
 
