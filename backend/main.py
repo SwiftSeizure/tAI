@@ -12,7 +12,7 @@ from fastapi.requests import Request
 from backend.routers import home, classroom, unit,module,day,assignment, material,student,teacher,chat
 from backend.Seed_Database import PopulateDB
 from fastapi.middleware.cors import CORSMiddleware
-from backend.exceptions import EntityNotFoundException, UploadNotFoundException, DuplicateNameException, InvalidClassCodeException
+from backend.exceptions import EntityNotFoundException, UploadNotFoundException, DuplicateNameException, InvalidClassCodeException, UnauthorizedException
 #import os
 #import requests
 
@@ -73,6 +73,9 @@ def handle_duplicate_name(request: Request, exception: DuplicateNameException):
     return exception.response()
 @app.exception_handler(InvalidClassCodeException)
 def handle_invalid_class_code(request: Request, exception: InvalidClassCodeException):
+    return exception.response()
+@app.exception_handler(UnauthorizedException)
+def handle_unauthorized(request: Request, exception: UnauthorizedException):
     return exception.response()
 
 """

@@ -2,7 +2,7 @@
 from backend.dependencies import DBSession
 from fastapi import APIRouter
 from backend.models import ClientErrorResponse
-from backend.exceptions import EntityNotFoundException
+from backend.exceptions import EntityNotFoundException, UnauthorizedException
 from backend.models import TeacherResponse, TeacherUpdate
 from backend.database.teacher import get_teacher, update_teacher
 
@@ -24,8 +24,9 @@ def get_teacher_ID(teacherID: str,
                    user: Annotated[dict, Depends(get_firebase_user_from_token)],
                    session: DBSession
                    ) -> TeacherResponse:
-    print("We in!")
     teacher = get_teacher(teacherID, session)
+    if user["uid"] != teacherID:
+        raise UnauthorizedException("view teacher")
     if not teacher:
         raise EntityNotFoundException("teacher", teacherID)
     

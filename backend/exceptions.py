@@ -58,3 +58,17 @@ class InvalidClassCodeException(Exception):
             status_code=self.status_code,
             content=ClientErrorResponse(error=self.error, message=self.message).model_dump(),
         )
+        
+class UnauthorizedException(Exception):
+    """Exception for unauthorized access."""
+    def __init__(self, action: str):
+        self.status_code = 401
+        self.error = f"unauthorized"
+        self.message = f"You do not have permission to {action}."
+        
+    def response(self) -> Response:
+        """HTTP response when unauthorized access is attempted."""
+        return JSONResponse(
+            status_code=self.status_code,
+            content=ClientErrorResponse(error=self.error, message=self.message).model_dump(),
+        )

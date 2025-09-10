@@ -15,7 +15,7 @@
   ],
   "student": [
     {
-      "id": "1",
+      "id": "P7eyfXks4ccuwl2fbLD11SyYiHp1",
       "name": "Alice",
       "userName": "madhatter",
       "password_hash": "hashed_pw_3"
@@ -86,12 +86,12 @@
    
     {
       "id": 2,
-      "studentID": "1",
+      "studentID": "P7eyfXks4ccuwl2fbLD11SyYiHp1",
       "classID": 1
     },
     {
       "id": 3,
-      "studentID": "1",
+      "studentID": "P7eyfXks4ccuwl2fbLD11SyYiHp1",
       "classID": 2
     },
     {
@@ -101,7 +101,7 @@
     },
     {
       "id": 5,
-      "studentID": "1",
+      "studentID": "P7eyfXks4ccuwl2fbLD11SyYiHp1",
       "classID": 3
     },
     {
@@ -111,7 +111,7 @@
     },
     {
       "id": 7,
-      "studentID": "1",
+      "studentID": "P7eyfXks4ccuwl2fbLD11SyYiHp1",
       "classID": 4
     },
     {
