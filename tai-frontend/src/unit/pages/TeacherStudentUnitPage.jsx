@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";   
+import React, { useEffect, useState } from "react";   
 import UnitCard from "../components/UnitCard";
 import { TitleCard } from "../../shared/components/TitleCard"; 
 import Loading from "../../shared/components/Loading"; 
@@ -7,7 +7,10 @@ import { useCurrentClass } from "../../store/class-store";
 import { useUnit } from "../../store/unit-store";
 import { useNavigate } from "react-router-dom";
 import { useIsAuthenticated } from "../../store/user-store";
-import { useAllUnits, useUnitLoading, useUnitError } from "../../store/unit-store";
+import { useAllUnits, useUnitLoading, useUnitError } from "../../store/unit-store"; 
+import DeleteModal from "../../shared/modals/DeleteModal";
+import { deleteUnit } from "../services/delete-unit";
+ 
 
 /**
  * TeacherStudentUnitPage 
@@ -30,7 +33,12 @@ const TeacherStudentUnitPage = () => {
     const isAuthenticated = useIsAuthenticated(); 
     const { units } = useAllUnits();
     const { isLoading } = useUnitLoading();
-    const { error } = useUnitError();
+    const { error } = useUnitError(); 
+
+    // State for managing delete modal
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); 
+    const [currentDeleteUnitID, setCurrentDeleteUnitID] = useState(null);  
+    const [currentDeleteUnitName, setCurrentDeleteUnitName] = useState(null); 
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -55,7 +63,27 @@ const TeacherStudentUnitPage = () => {
         catch (error) {
             console.error('Error selecting unit:', error);
         }
+    };  
+
+    const handleOpenDeleteModal = (unitID, unitName) => {
+        setCurrentDeleteUnitID(unitID);
+        setCurrentDeleteUnitName(unitName);
+        setIsDeleteModalOpen(true);
     };
+
+    const handleDeleteUnit = async () => {
+        try {
+            await deleteUnit(currentDeleteUnitID);
+            fetchUnits(currentClass.id);
+        } 
+        catch (error) {
+            console.error('Error deleting unit:', error);
+        }
+    };
+ 
+    const handleCloseDeleteModal = () => {
+        setIsDeleteModalOpen(false);
+    }; 
 
     /**
      * populateUnitCards
@@ -73,7 +101,8 @@ const TeacherStudentUnitPage = () => {
                     key={unit.id} 
                     unitID={unit.id} 
                     unitName={unit.name}  
-                    onClick={handleUnitSelect}
+                    onClick={handleUnitSelect} 
+                    onClickDelete={handleOpenDeleteModal}
                 />
             ))}  
 
@@ -109,7 +138,14 @@ const TeacherStudentUnitPage = () => {
                         }  
                     </div>
             }
-        </div>
+        </div> 
+
+        <DeleteModal
+            isOpen={isDeleteModalOpen}
+            onClose={handleCloseDeleteModal}
+            onConfirmDelete={handleDeleteUnit}
+            itemToDelete={currentDeleteUnitName}
+        />
             
         </>
 
