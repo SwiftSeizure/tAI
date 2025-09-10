@@ -31,7 +31,7 @@ const UnitCard = ( {unitID, unitName, onClick, onClickDelete } ) => {
     return(    
        <div className="overflow-hidden p-12"> 
 
-       {user.role === "teacher" && (
+       {user.role === "teacher" && unitID && (
             <button 
                 onClick={ () => handleClickDelete() }
                 className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 

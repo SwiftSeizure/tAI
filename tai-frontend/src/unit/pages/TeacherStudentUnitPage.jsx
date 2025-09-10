@@ -65,7 +65,8 @@ const TeacherStudentUnitPage = () => {
         }
     };  
 
-    const handleOpenDeleteModal = (unitID, unitName) => {
+    const handleOpenDeleteModal = (unitID, unitName) => { 
+        if (!unitID) return;
         setCurrentDeleteUnitID(unitID);
         setCurrentDeleteUnitName(unitName);
         setIsDeleteModalOpen(true);
@@ -133,7 +134,9 @@ const TeacherStudentUnitPage = () => {
                                 key={null} 
                                 unitID={null}
                                 unitName={null}  
-                                onClick={handleUnitSelect}/>
+                                onClick={handleUnitSelect} 
+                                onClickDelete={handleOpenDeleteModal}
+                            />
                             : null
                         }  
                     </div>

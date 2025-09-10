@@ -95,7 +95,8 @@ const TeacherStudentHomePage = () => {
         settingsModal.openModal();
     };  
 
-    const handleOpenDeleteModal = (classID, classname) => {
+    const handleOpenDeleteModal = (classID, classname) => { 
+        if (!classID) return;
         setCurrentDeleteClassID(classID);
         setCurrentDeleteClassName(classname);
         setIsDeleteModalOpen(true);
