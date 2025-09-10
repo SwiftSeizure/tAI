@@ -21,7 +21,10 @@ import AddMaterialModal from "../modals/AddMaterialModal";
 
 import { pdfjs } from 'react-pdf';
 import { getMaterialURL } from "../services/get-material-url";
-import { getAssignmentURL } from "../services/get-assignment-url"; 
+import { getAssignmentURL } from "../services/get-assignment-url";   
+
+import DeleteModal from "../../shared/modals/DeleteModal";
+import { deleteModule } from "../services/delete-module";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
 
@@ -75,6 +78,11 @@ const TeacherStudentModulePage = () => {
     const [chatResponse, setChatResponse] = useState('Response will appear here ');
 
     const [dayId, setDayId] = useState(null); 
+
+    // This is for the Module Only 
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [currentDeleteModuleID, setCurrentDeleteModuleID] = useState(null);  
+    const [currentDeleteModuleName, setCurrentDeleteModuleName] = useState(null); 
 
     // Fetch modules when the component mounts or when currentUnit changes 
     useEffect(() => {
@@ -257,7 +265,28 @@ const TeacherStudentModulePage = () => {
         }  
 
         setShowAddAssignmentModal(false);
+    };   
+
+
+    const handleOpenDeleteModal = (moduleID, moduleName) => {
+        setCurrentDeleteModuleID(moduleID);
+        setCurrentDeleteModuleName(moduleName);
+        setShowDeleteModal(true);
+    };
+
+    const handleCloseDeleteModal = () => {
+        setShowDeleteModal(false);
     }; 
+
+    const handleDeleteModule = async () => {
+        try {
+            await deleteModule(currentDeleteModuleID);
+            await fetchModules(currentUnit.id);
+        } catch (error) {
+            console.error('Error deleting module:', error);
+        }
+        setShowDeleteModal(false);
+    };
 
     /**
      * renderModules
@@ -283,7 +312,9 @@ const TeacherStudentModulePage = () => {
                             onAssignmentSelect={handleAssignmentSelect}
                             onAddDay={handleAddDay}
                             onAddMaterial={handleAddMaterial}
-                            onAddAssignment={handleAddAssignment}
+                            onAddAssignment={handleAddAssignment}  
+                            onClickDelete={handleOpenDeleteModal}
+
                         />
                     ))}      
                     {user.role === "teacher" && (
@@ -308,6 +339,13 @@ const TeacherStudentModulePage = () => {
                                 isOpen={showAddAssignmentModal}
                                 onClose={() => setShowAddAssignmentModal(false)}
                                 onAddAssignment={handleNewAssignment}
+                            /> 
+
+                            <DeleteModal
+                                isOpen={showDeleteModal}
+                                onClose={handleCloseDeleteModal}
+                                onConfirmDelete={handleDeleteModule}
+                                itemToDelete={currentDeleteModuleName}
                             />
                         </div>
                     )}
