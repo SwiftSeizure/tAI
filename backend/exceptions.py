@@ -5,7 +5,7 @@ from backend.models import ClientErrorResponse
 
 class EntityNotFoundException(Exception):
     """Exception for a non-existent entity."""
-    def __init__(self, entity_name: str, entity_id: int):
+    def __init__(self, entity_name: str, entity_id: str):
         self.status_code = 404
         self.error = f"entity_not_found"
         self.message = f"Unable to find {entity_name} with id={entity_id}"
