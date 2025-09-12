@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-import React, { useEffect, useState } from "react";  
-import { TitleCard } from "../../shared/components/TitleCard";
-import ChatFeature from "../components/ChatFeature";
-import ModuleComponent from "../components/ModuleComponent";  
-=======
 import React, { useEffect, useState } from "react";   
 import { useNavigate } from 'react-router-dom';  
 import { TitleCard } from "../../shared/components/TitleCard";
@@ -11,15 +5,11 @@ import ChatFeature from "../components/ChatFeature";
 import ModuleComponent from "../components/ModuleComponent";  
 import AddModuleModal from "../modals/AddModuleModal";   
 import AddDayModal from "../modals/AddDayModal"; 
->>>>>>> origin/Development-Frontend
 import { useCurrentUser } from "../../store/user-store"; 
 import { useCurrentUnit } from "../../store/unit-store";
 import { useModule } from "../../store/module-store"; 
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
-<<<<<<< HEAD
-import SettingsIcon from '@mui/icons-material/Settings';
-=======
 import SettingsIcon from '@mui/icons-material/Settings'; 
 import { postCreateModule } from "../services/post-create-module";
 import { postCreateDay } from "../services/post-create-day";   
@@ -28,7 +18,6 @@ import { postCreateAssignment } from "../services/post-create-assignment";
 import { putChatMessage } from "../services/put-chat-message"; 
 import AddAssignmentModal from "../modals/AddAssignmentModal"; 
 import AddMaterialModal from "../modals/AddMaterialModal"; 
->>>>>>> origin/Development-Frontend
 
 import { pdfjs } from 'react-pdf';
 import { getMaterialURL } from "../services/get-material-url";
@@ -57,43 +46,22 @@ const TeacherStudentModulePage = () => {
     const [isChatExpanded, setIsChatExpanded] = useState(false); // Tracks chat expansion state
     const [displayType, setDisplayType] = useState('welcome'); // Tracks the type of content to display
     
-<<<<<<< HEAD
-    const [, setSelectedDay] = useState(null); // Tracks the selected day
-    const [, setSelectedMaterialID] = useState(null); // Tracks the selected material ID
-    const [selectedMaterialName, setSelectedMaterialName] = useState(null); // Tracks the selected material name
-    
-    const [, setSelectedAssignmentID] = useState(null); // Tracks the selected assignment ID
-    const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
-    
-    
-=======
     const [selectedDay, setSelectedDay] = useState(null); // Tracks the selected day
 
     const [selectedMaterialName, setSelectedMaterialName] = useState(null); // Tracks the selected material name
     
     const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
     
->>>>>>> origin/Development-Frontend
     const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
     const [assignmentContent, setAssignmentContent] = useState(null); // Stores the content of a selected assignment
     const [currentContentDisplay, setCurrentContentDisplay] = useState(null); // Tracks the current content being displayed
 
-<<<<<<< HEAD
-=======
     const [chatWidth, setChatWidth] = useState(600); // Default width in pixels
 
->>>>>>> origin/Development-Frontend
     const { user } = useCurrentUser(); 
     const { currentUnit } = useCurrentUnit();  
     const [state, actions] = useModule();
     const { modules, isLoading, error } = state;
-<<<<<<< HEAD
-    const { fetchModules } = actions;
-
-    // Fetch modules when the component mounts or when currentUnit changes 
-
-    console.log("This is the currentUnit.id: ", currentUnit);
-=======
     const { fetchModules } = actions; 
 
     // State variables for managing the add module modal
@@ -109,7 +77,6 @@ const TeacherStudentModulePage = () => {
     const [dayId, setDayId] = useState(null); 
 
     // Fetch modules when the component mounts or when currentUnit changes 
->>>>>>> origin/Development-Frontend
     useEffect(() => {
         fetchModules(currentUnit.id);
     }, [currentUnit?.id, fetchModules]);
@@ -123,18 +90,6 @@ const TeacherStudentModulePage = () => {
     const toggleChatExpand = () => {
         setIsChatExpanded(!isChatExpanded);  
 
-<<<<<<< HEAD
-        if (!isChatExpanded && user.role === "student") { 
-            setDisplayType('chat') 
-        } 
-        else if (!isChatExpanded && user.role === "teacher") { 
-            setDisplayType('chat-settings'); 
-        }  
-
-        if (isChatExpanded) { 
-            setDisplayType(currentContentDisplay);
-        }
-=======
         // if (!isChatExpanded && user.role === "student") { 
         //     setDisplayType('chat') 
         // } 
@@ -145,7 +100,6 @@ const TeacherStudentModulePage = () => {
         // if (isChatExpanded) { 
         //     setDisplayType(currentContentDisplay);
         // }
->>>>>>> origin/Development-Frontend
     };
 
 
@@ -178,20 +132,6 @@ const TeacherStudentModulePage = () => {
      * handleAssignmentSelect
      * Handles the selection of an assignment and fetches its content.
      * @param {number} dayID - The ID of the day containing the assignment.
-<<<<<<< HEAD
-     * @param {number} assignmentID - The ID of the selected assignment.
-     * @param {string} fileName - The filename of the assignment.
-     * @param {string} assignmentName - The name of the assignment.
-     */
-    const handleAssignmentSelect = async (dayID, assignmentID, fileName, assignmentName) => {
-        try { 
-            // Update the selected assignment and set the display type to 'assignment'
-            setSelectedMaterialID(null); 
-            setSelectedMaterialName(null);
-            setSelectedAssignmentID(assignmentID);   
-            setSelectedAssignmentName(assignmentName);
-            setDisplayType('assignment'); 
-=======
      * @param {string} fileName - The filename of the assignment.
      * @param {string} assignmentName - The name of the assignment.
      */
@@ -202,7 +142,6 @@ const TeacherStudentModulePage = () => {
             setSelectedAssignmentName(assignmentName);
             setDisplayType('assignment'); 
             setDayId(dayID);
->>>>>>> origin/Development-Frontend
 
             // Fetch the content of the selected assignment
             const fileURL = await getAssignmentURL(dayID, fileName); 
@@ -219,21 +158,6 @@ const TeacherStudentModulePage = () => {
      * handleMaterialSelect
      * Handles the selection of a material and fetches its content.
      * @param {number} dayID - The ID of the day containing the material.
-<<<<<<< HEAD
-     * @param {number} materialID - The ID of the selected material.
-     * @param {string} fileName - The filename of the material.
-     * @param {string} materialName - The name of the material.
-     */
-    const handleMaterialSelect = async ( dayID, materialID, fileName, materialName ) => { 
-
-        try {
-            // Update the selected material and set the display type to 'material'
-            setSelectedAssignmentID(null);   
-            setSelectedAssignmentName(null);
-            setSelectedMaterialID(materialID);  
-            setSelectedMaterialName(materialName);
-            setDisplayType('material'); 
-=======
      * @param {string} fileName - The filename of the material.
      * @param {string} materialName - The name of the material.
      */
@@ -247,7 +171,6 @@ const TeacherStudentModulePage = () => {
             setSelectedMaterialName(materialName);
             setDisplayType('material');  
             setDayId(dayID);
->>>>>>> origin/Development-Frontend
 
             // Fetch the content of the selected material
             const fileURL = await getMaterialURL(dayID, fileName);
@@ -257,10 +180,6 @@ const TeacherStudentModulePage = () => {
             setDisplayType('error'); 
         }
 
-<<<<<<< HEAD
-    }
- 
-=======
     }  
 
     const handleNewModule = async (newModalName) => {  
@@ -339,7 +258,6 @@ const TeacherStudentModulePage = () => {
 
         setShowAddAssignmentModal(false);
     }; 
->>>>>>> origin/Development-Frontend
 
     /**
      * renderModules
@@ -363,10 +281,6 @@ const TeacherStudentModulePage = () => {
                             onDaySelect={handleDaySelect}  
                             onMaterialSelect={handleMaterialSelect} 
                             onAssignmentSelect={handleAssignmentSelect}
-<<<<<<< HEAD
-                        />
-                    ))}    
-=======
                             onAddDay={handleAddDay}
                             onAddMaterial={handleAddMaterial}
                             onAddAssignment={handleAddAssignment}
@@ -397,7 +311,6 @@ const TeacherStudentModulePage = () => {
                             />
                         </div>
                     )}
->>>>>>> origin/Development-Frontend
 
                 </div>
                 </>
@@ -460,20 +373,7 @@ const TeacherStudentModulePage = () => {
                             {renderPDFContent(assignmentContent)}
 
                         </div>
-<<<<<<< HEAD
-                    );
-                    
-
-            case 'chat':  
-                return(  
-                    <div className="chat-container"> 
-                        <ChatFeature />
-                    </div>
-                    
-                );   
-=======
                     ); 
->>>>>>> origin/Development-Frontend
 
             case 'chat-settings': 
 
@@ -517,8 +417,6 @@ const TeacherStudentModulePage = () => {
         }
     };
 
-<<<<<<< HEAD
-=======
     /**
      * startResizing
      * Initiates the resizing of the chat overlay when the user starts dragging the resize handle.
@@ -603,7 +501,6 @@ const TeacherStudentModulePage = () => {
         console.log(response); 
         setChatResponse(response);
     };
->>>>>>> origin/Development-Frontend
 
     return(  
         <>   
@@ -627,17 +524,10 @@ const TeacherStudentModulePage = () => {
                 {/* Chat button for students or chat settings for teachers */}
                 {user.role === 'student' ? 
                     <button 
-<<<<<<< HEAD
-                        className="fixed bottom-4 right-8 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out "  
-                        onClick={toggleChatExpand} > 
-                       <img 
-                        className={`rounded-md transition-all duration-300 ease-in-out ${isChatExpanded ? "w-12 h-12" : "w-8 h-8 hover:w-12 hover:h-12"}`}
-=======
                         className="fixed bottom-4 right-8 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out z-50"  
                         onClick={toggleChatExpand} > 
                        <img 
                         className={`rounded-md transition-all duration-200 ease-in-out w-10 h-10 hover:w-16 hover:h-16`}
->>>>>>> origin/Development-Frontend
                         src={chatImage}
                         /> 
                    </button>  
@@ -654,9 +544,6 @@ const TeacherStudentModulePage = () => {
 
                     </button> 
                 } 
-<<<<<<< HEAD
-            </div>  
-=======
             </div>
             {/* Chat overlay */}
             {/* <div
@@ -690,7 +577,6 @@ const TeacherStudentModulePage = () => {
                     displayResponse={chatResponse}
                 />
             </div>
->>>>>>> origin/Development-Frontend
         </div>
     
         </>

@@ -32,10 +32,5 @@ export const updateClass = (updatedClass) => ({ setState, getState }) => {
     ...newState
   })); 
 
-<<<<<<< HEAD
-  console.log("Updated class:", updatedClass);
-
-=======
->>>>>>> origin/Development-Frontend
   return updatedClass;
 };

@@ -45,10 +45,6 @@ const TeacherStudentUnitPage = () => {
 
     const handleUnitSelect = async (unitID) => {
         try { 
-<<<<<<< HEAD
-            console.log("hANDLE UNIT SELECT CALLED", unitID);  
-=======
->>>>>>> origin/Development-Frontend
             if (!unitID && user.role === "teacher") {
                 navigate('/createunit');
                 return;
