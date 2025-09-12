@@ -82,11 +82,13 @@ def queryBot(studentID: int, path: str, prompt: str, session: Session) -> ChatRe
     (DB logic unchanged; only OpenAI call is different.)
     """
     
+ Development-Frontend
     print("Incoming path:", path)
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     full_path = os.path.normpath(os.path.join(BASE_DIR, "..", "..", path))
     print("Resolved path:", full_path)
+
 
     mime, _ = mimetypes.guess_type(full_path)
     ext = (os.path.splitext(full_path)[1] or "").lower()

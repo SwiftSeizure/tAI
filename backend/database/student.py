@@ -55,7 +55,9 @@ def get_student_classes(studentID: int, session: Session) -> list[DBClass]:
             classes.remove(c) 
     return classes
 
+Development-Frontend
 def enroll(studentID: int, classCode: str, session: Session) -> int:
+
     """Enroll a student in a class.
     
     Args:
@@ -67,12 +69,23 @@ def enroll(studentID: int, classCode: str, session: Session) -> int:
         EntityNotFoundException: If the student or class with the given ID does not exist.
         
     Returns:    
-        
+
     """
 
     student = get_student(studentID, session)
     if not student:
         raise EntityNotFoundException("student", studentID)
+
+    
+    stmt = select(DBClass).filter(DBClass.classCode == classCode)
+    classroom = session.execute(stmt).scalar_one_or_none()
+    if not classroom:
+        raise EntityNotFoundException("class", classCode)
+    
+    if classCode != classroom.classCode:
+        raise InvalidClassCodeException()
+    
+
 
     stmt = select(DBClass).filter(DBClass.classCode == classCode)
     classroom = session.execute(stmt).scalar_one_or_none()
@@ -90,6 +103,7 @@ def enroll(studentID: int, classCode: str, session: Session) -> int:
     if existing_enrollment:
         return classroom.id  # Already enrolled
 
+
     enrollment = DBEnrolled(studentID=studentID, classID=classroom.id)
     session.add(enrollment)
     session.commit()
@@ -97,7 +111,12 @@ def enroll(studentID: int, classCode: str, session: Session) -> int:
     session.refresh(student)
     session.refresh(classroom)
 
+    
+    return None
+
+
     return classroom.id
+
 
 def updateStudent(studentID: int, update: StudentUpdate, session: Session) -> None:
     """Update a student's information.
