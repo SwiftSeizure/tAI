@@ -6,6 +6,8 @@ from typing import Annotated
 from fastapi  import Depends
 import os
 
+from dotenv import load_dotenv
+load_dotenv()
 # Database connection URL
 DB_URL = os.getenv("DATABASE_URL")
 

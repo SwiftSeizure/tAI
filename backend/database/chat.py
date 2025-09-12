@@ -82,7 +82,7 @@ def queryBot(studentID: int, path: str, prompt: str, session: Session) -> ChatRe
     (DB logic unchanged; only OpenAI call is different.)
     """
     
- Development-Frontend
+ 
     print("Incoming path:", path)
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))

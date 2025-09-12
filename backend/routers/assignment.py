@@ -12,15 +12,11 @@ import shutil
 
 router=APIRouter(prefix="/assignment", tags=["assignment"])
 # Get the absolute path to one directory above the current file
-<<<<<<< HEAD
 
 #BASE_DIR = Path(__file__).parent.parent.parent
 
 DATA_ROOT = Path(os.getenv("DATA_ROOT", Path(__file__).parent.parent.parent))
 
-=======
-BASE_DIR = Path(__file__).parent.parent.parent
->>>>>>> origin/Development-Frontend
 
 # Create a validator instance
 doc_validator = DocumentValidator(max_size= 25 * 1024 * 1024)
@@ -45,13 +41,8 @@ def get_file(dayID: int, filename: str):
         FileResponse: A response containing the file.
     """
     # Start from BASE_DIR and navigate to uploads
-<<<<<<< HEAD
     file_path = DATA_ROOT / "uploads" / "assignment" / str(dayID) / filename
     base_uploads = DATA_ROOT / "uploads"
-=======
-    file_path = BASE_DIR / "uploads" / "assignment" / str(dayID) / filename
-    base_uploads = BASE_DIR / "uploads"
->>>>>>> origin/Development-Frontend
     
     print(f"Checking path: {file_path}")
     
@@ -106,13 +97,8 @@ def delete_file(dayID: int, filename: str, session: DBSession):
     """
     print("=== Starting delete operation ===")  # Add this
     
-<<<<<<< HEAD
     file_path = DATA_ROOT / "uploads" / "assignment" / str(dayID) / filename
     base_uploads = DATA_ROOT / "uploads"
-=======
-    file_path = BASE_DIR / "uploads" / "assignment" / str(dayID) / filename
-    base_uploads = BASE_DIR / "uploads"
->>>>>>> origin/Development-Frontend
     
     print(f"Checking path: {file_path}")  # Add this
     print(f"Base uploads: {base_uploads}")  # Add this
@@ -142,11 +128,7 @@ def delete_file(dayID: int, filename: str, session: DBSession):
         raise UploadNotFoundException(dayID, filename)
     
 
-<<<<<<< HEAD
 @router.post("{dayID}/{filename}",
-=======
-@router.post("/{dayID}/{filename}",
->>>>>>> origin/Development-Frontend
                 status_code=201,
                 responses={
                     409: {"model": ClientErrorResponse},
@@ -158,11 +140,7 @@ async def upload_assignment(dayID: int, name: str, session: DBSession, file: Upl
         raise HTTPException(status_code=400, detail="No file selected")
 
     # Check if the folder exists, if not create it
-<<<<<<< HEAD
     UPLOAD_DIR = DATA_ROOT / "uploads" / "assignment" / str(dayID)
-=======
-    UPLOAD_DIR = BASE_DIR / "uploads" / "assignment" / str(dayID)
->>>>>>> origin/Development-Frontend
     UPLOAD_DIR.mkdir(exist_ok=True)
     
     # Use the original filename from the uploaded file
