@@ -55,11 +55,9 @@ def get_student_classes(studentID: int, session: Session) -> list[DBClass]:
             classes.remove(c) 
     return classes
 
-<<<<<<< HEAD
-def enroll(studentID: int, classCode: int, session: Session) -> None:
-=======
-def enroll(studentID: int, classCode: int, session: Session) -> int:
->>>>>>> origin/Development-Frontend
+Development-Frontend
+def enroll(studentID: int, classCode: str, session: Session) -> int:
+
     """Enroll a student in a class.
     
     Args:
@@ -71,17 +69,13 @@ def enroll(studentID: int, classCode: int, session: Session) -> int:
         EntityNotFoundException: If the student or class with the given ID does not exist.
         
     Returns:    
-<<<<<<< HEAD
-        None
-=======
-        
->>>>>>> origin/Development-Frontend
+
     """
 
     student = get_student(studentID, session)
     if not student:
         raise EntityNotFoundException("student", studentID)
-<<<<<<< HEAD
+
     
     stmt = select(DBClass).filter(DBClass.classCode == classCode)
     classroom = session.execute(stmt).scalar_one_or_none()
@@ -91,7 +85,7 @@ def enroll(studentID: int, classCode: int, session: Session) -> int:
     if classCode != classroom.classCode:
         raise InvalidClassCodeException()
     
-=======
+
 
     stmt = select(DBClass).filter(DBClass.classCode == classCode)
     classroom = session.execute(stmt).scalar_one_or_none()
@@ -109,20 +103,20 @@ def enroll(studentID: int, classCode: int, session: Session) -> int:
     if existing_enrollment:
         return classroom.id  # Already enrolled
 
->>>>>>> origin/Development-Frontend
+
     enrollment = DBEnrolled(studentID=studentID, classID=classroom.id)
     session.add(enrollment)
     session.commit()
     session.refresh(enrollment)
     session.refresh(student)
     session.refresh(classroom)
-<<<<<<< HEAD
+
     
     return None
-=======
+
 
     return classroom.id
->>>>>>> origin/Development-Frontend
+
 
 def updateStudent(studentID: int, update: StudentUpdate, session: Session) -> None:
     """Update a student's information.

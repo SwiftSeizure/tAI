@@ -9,15 +9,16 @@ import React, { useState } from 'react';
  */
 
 const ChatFeature = ({onMessageSend, displayResponse}) => {
-    // State to handle the completion result, user message, loading state, and error messages
-    const [completionResult, setCompletionResult] = useState("");
+    // State to handle the user message, loading state, and error messages
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
     const handleMessageSend = () => {
-        onMessageSend(message);
-        setMessage(displayResponse);
+        if (message.trim()) {
+            onMessageSend(message);
+            setMessage(''); // Clear the input after sending
+        }
     };
 
     return (
@@ -55,14 +56,14 @@ const ChatFeature = ({onMessageSend, displayResponse}) => {
             {/* Display the response from OpenAI in a read-only textarea */}
             <div>
                 <textarea
-                    value={completionResult}
+                    value={displayResponse || ''}
                     readOnly
                     rows={1}
                     className="w-full p-2 border border-gray-300 rounded-md bg-gray-50 resize-none overflow-hidden min-h-[120px]"
                     placeholder="Response will appear here..."
-                    style={{ height: completionResult ? 'auto' : '120px' }}
+                    style={{ height: displayResponse ? 'auto' : '120px' }}
                     ref={(ref) => {
-                        if (ref && completionResult) {
+                        if (ref && displayResponse) {
                             ref.style.height = 'auto';
                             ref.style.height = ref.scrollHeight + 'px';
                         }

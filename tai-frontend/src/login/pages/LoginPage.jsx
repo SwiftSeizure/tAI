@@ -73,7 +73,7 @@ const LoginPage = () => {
                             setSelectedRole('teacher1');
                             setUser({
                                 id: 1,
-                                name: 'Mr. Professor',
+                                name: 'Mr. Smith',
                                 role: 'teacher',
                                 email: 'prof1@example.com'
                             });
@@ -102,7 +102,7 @@ const LoginPage = () => {
                             setSelectedRole('student1');
                             setUser({
                                 id: 1,
-                                name: 'Student Struggling',
+                                name: 'Henry Winkler',
                                 role: 'student',
                                 email: 'student1@example.com'
                             });

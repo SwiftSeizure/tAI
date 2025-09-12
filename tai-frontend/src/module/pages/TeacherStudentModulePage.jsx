@@ -21,7 +21,10 @@ import AddMaterialModal from "../modals/AddMaterialModal";
 
 import { pdfjs } from 'react-pdf';
 import { getMaterialURL } from "../services/get-material-url";
-import { getAssignmentURL } from "../services/get-assignment-url"; 
+import { getAssignmentURL } from "../services/get-assignment-url";   
+
+import DeleteModal from "../../shared/modals/DeleteModal";
+import { deleteModule } from "../services/delete-module";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
 
@@ -76,6 +79,11 @@ const TeacherStudentModulePage = () => {
 
     const [dayId, setDayId] = useState(null); 
 
+    // This is for the Module Only 
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [currentDeleteModuleID, setCurrentDeleteModuleID] = useState(null);  
+    const [currentDeleteModuleName, setCurrentDeleteModuleName] = useState(null); 
+
     // Fetch modules when the component mounts or when currentUnit changes 
     useEffect(() => {
         fetchModules(currentUnit.id);
@@ -89,17 +97,6 @@ const TeacherStudentModulePage = () => {
      */
     const toggleChatExpand = () => {
         setIsChatExpanded(!isChatExpanded);  
-
-        // if (!isChatExpanded && user.role === "student") { 
-        //     setDisplayType('chat') 
-        // } 
-        // else if (!isChatExpanded && user.role === "teacher") { 
-        //     setDisplayType('chat-settings'); 
-        // }  
-
-        // if (isChatExpanded) { 
-        //     setDisplayType(currentContentDisplay);
-        // }
     };
 
 
@@ -257,7 +254,28 @@ const TeacherStudentModulePage = () => {
         }  
 
         setShowAddAssignmentModal(false);
+    };   
+
+
+    const handleOpenDeleteModal = (moduleID, moduleName) => {
+        setCurrentDeleteModuleID(moduleID);
+        setCurrentDeleteModuleName(moduleName);
+        setShowDeleteModal(true);
+    };
+
+    const handleCloseDeleteModal = () => {
+        setShowDeleteModal(false);
     }; 
+
+    const handleDeleteModule = async () => {
+        try {
+            await deleteModule(currentDeleteModuleID);
+            await fetchModules(currentUnit.id);
+        } catch (error) {
+            console.error('Error deleting module:', error);
+        }
+        setShowDeleteModal(false);
+    };
 
     /**
      * renderModules
@@ -283,7 +301,9 @@ const TeacherStudentModulePage = () => {
                             onAssignmentSelect={handleAssignmentSelect}
                             onAddDay={handleAddDay}
                             onAddMaterial={handleAddMaterial}
-                            onAddAssignment={handleAddAssignment}
+                            onAddAssignment={handleAddAssignment}  
+                            onClickDelete={handleOpenDeleteModal}
+
                         />
                     ))}      
                     {user.role === "teacher" && (
@@ -308,6 +328,13 @@ const TeacherStudentModulePage = () => {
                                 isOpen={showAddAssignmentModal}
                                 onClose={() => setShowAddAssignmentModal(false)}
                                 onAddAssignment={handleNewAssignment}
+                            /> 
+
+                            <DeleteModal
+                                isOpen={showDeleteModal}
+                                onClose={handleCloseDeleteModal}
+                                onConfirmDelete={handleDeleteModule}
+                                itemToDelete={currentDeleteModuleName}
                             />
                         </div>
                     )}
@@ -471,9 +498,7 @@ const TeacherStudentModulePage = () => {
     }, [chatWidth]); 
 
     const handleChatMessageSend = async (message) => {  
-        //displayType 
 
-        //TODO make this state for the while file 
         let currentFileName = null; 
         if(displayType === 'material') {
             currentFileName = selectedMaterialName;
@@ -533,8 +558,7 @@ const TeacherStudentModulePage = () => {
                    </button>  
                    : 
                    <button 
-                   className="fixed bottom-4 right-8 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out " 
-                        onClick={toggleChatExpand}  
+                   className="fixed bottom-4 right-8 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out "                        
 
                     >  
                         <h2 className={`rounded-md transition-all duration-300 ease-in-out ${isChatExpanded ? "bg-red-600 p-2 fixed bottom-8 right-12 font-nunito" : "w-8 h-8 hover:w-12 hover:h-12"  }  `}>  
@@ -545,14 +569,7 @@ const TeacherStudentModulePage = () => {
                     </button> 
                 } 
             </div>
-            {/* Chat overlay */}
-            {/* <div
-              className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg transition-transform duration-300 ease-in-out z-40 ${
-                isChatExpanded ? "translate-x-0" : "translate-x-full"
-              }`}
-            >
-              <ChatFeature displayType={displayType} />
-            </div> */}
+
             <div
               className={`fixed top-40 right-0 h-[calc(90vh-120px)] bg-white shadow-lg transition-transform duration-300 ease-in-out z-40 ${
                 isChatExpanded ? "translate-x-0" : "translate-x-full"

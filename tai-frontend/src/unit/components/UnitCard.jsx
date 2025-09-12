@@ -1,5 +1,6 @@
 import React from "react";   
-import { useCurrentUser } from "../../store/user-store"; 
+import { useCurrentUser } from "../../store/user-store";  
+import DeleteIcon from "@mui/icons-material/Delete";
 
 /**
  * UnitCard Component
@@ -11,7 +12,7 @@ import { useCurrentUser } from "../../store/user-store";
  * - unitName: Name of the unit to display on the card.
  */
 
-const UnitCard = ( {unitID, unitName, onClick } ) => {   
+const UnitCard = ( {unitID, unitName, onClick, onClickDelete } ) => {   
 
     // Placeholder logo for the unit card 
     // TODO: Change this so that it pulls the logo from the backend
@@ -21,11 +22,25 @@ const UnitCard = ( {unitID, unitName, onClick } ) => {
 
     const handleOnClick = () => { 
         onClick(unitID);
-    };
+    };  
 
+    const handleClickDelete = () => { 
+        onClickDelete(unitID, unitName);
+    }; 
 
     return(    
-       <div className="overflow-hidden p-12">
+       <div className="overflow-hidden p-12"> 
+
+       {user.role === "teacher" && unitID && (
+            <button 
+                onClick={ () => handleClickDelete() }
+                className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
+            >
+                <DeleteIcon />   
+            </button>
+       )}
+
+
             {/* Conditionally render based on null values */}
             {(!unitID || !unitName) && user.role === "teacher" ? (
                 // Content to show when unitID or unitName is null (for teachers only)
