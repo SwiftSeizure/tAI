@@ -166,7 +166,8 @@ const TeacherStudentModulePage = () => {
             setDisplayType('material');
             setDayId(dayId); 
 
-            const fileURL = await getMaterialURL(dayId, material.name); 
+            const fileURL = await getMaterialURL(dayId, material.filename);  
+            console.log("This is the material data", material.filename, "and this is the file URL", fileURL);
             setMaterialContent(fileURL); 
             setCurrentContentDisplay('material'); 
         }
