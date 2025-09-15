@@ -385,7 +385,7 @@ const TeacherStudentModulePage = () => {
                             <div className="content-header">   
                                 <h2 className="content-title"> {selectedMaterial.name} </h2> 
                             </div>
-                            {renderPDFContent(selectedMaterial.filename)} 
+                            {renderPDFContent(selectedMaterial.name)} 
                         </div>
                     );
      
