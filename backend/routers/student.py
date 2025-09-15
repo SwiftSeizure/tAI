@@ -2,8 +2,11 @@ from backend.dependencies import DBSession
 from fastapi import APIRouter
 from backend.models import ClientErrorResponse, AddEnrollment,StudentUpdate, StudentResponse
 from backend.database.student import enroll, updateStudent,get_student  
-from backend.exceptions import EntityNotFoundException, InvalidClassCodeException
+from backend.exceptions import EntityNotFoundException, InvalidClassCodeException, UnauthorizedException
 
+from typing import Annotated
+from fastapi import Depends
+from backend.auth import get_firebase_user_from_token
 
 
 router = APIRouter(prefix="/student", tags=["student"])
@@ -14,9 +17,15 @@ router = APIRouter(prefix="/student", tags=["student"])
                 404: {"model": ClientErrorResponse},
                 409: {"model": ClientErrorResponse},
             },
-            summary="Enroll a student in a class.")
-def enroll_student(update:AddEnrollment , session: DBSession) -> None:
-    enroll(studentID=update.studentID, classCode=update.classCode, session=session)
+            summary="Enroll a student in a class. Must be an authenticated student.")
+def enroll_student(update:AddEnrollment , 
+                   user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                   session: DBSession) -> None:
+    
+    if user["uid"] != update.studentID:
+        raise UnauthorizedException("enroll student")
+    
+    enroll(studentID=update.studentID, classCode=update.classCode, session=session) # type: ignore
 
     return None
 
@@ -27,9 +36,16 @@ def enroll_student(update:AddEnrollment , session: DBSession) -> None:
                 404: {"model": ClientErrorResponse},
                 409: {"model": ClientErrorResponse},
             },
-            summary="Update a student.")
-def update_student(studentID: int, update: StudentUpdate, session: DBSession) -> None:
-    updateStudent(studentID=studentID, update=update, session=session)
+            summary="Update a student. Must be an authenticated student.")
+def update_student(studentID: int, 
+                   update: StudentUpdate, 
+                   user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                   session: DBSession) -> None:
+    
+    if user["uid"] != studentID:
+        raise UnauthorizedException("update student")
+    
+    updateStudent(studentID=studentID, update=update, session=session) # type: ignore
     return None
 
 @router.get("/{studentID}",
@@ -39,10 +55,16 @@ def update_student(studentID: int, update: StudentUpdate, session: DBSession) ->
                 404: {"model": ClientErrorResponse},
                 409: {"model": ClientErrorResponse},
             },
-            summary="Get a student.")
-def get_student_ID(studentID: int, session: DBSession) -> StudentResponse:
-    student = get_student(studentID, session)
-    if not student:
-        raise EntityNotFoundException("student", studentID)
+            summary="Get a student. Must be an authenticated student.")
+def get_student_ID(studentID: int, 
+                   user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                   session: DBSession) -> StudentResponse:
     
-    return StudentResponse(name=student.name, username=student.userName)
+    if user["uid"] != studentID:
+        raise UnauthorizedException("view student")
+
+    student = get_student(studentID, session) # type: ignore
+    if not student:
+        raise EntityNotFoundException("student", studentID) # type: ignore
+    
+    return StudentResponse(name=student.name, username=student.userName) # type: ignore
