@@ -6,6 +6,11 @@ from backend.database.schema import DBTeacher, DBUnit, DBClass
 from backend.dependencies import DBSession
 from backend.models import ClientErrorResponse, ClassroomResponse, ClassroomUnit, CreateUnit, ClassroomUpdate,ClassroomUpdateReturn
 
+from backend.exceptions import UnauthorizedException
+from typing import Annotated
+from fastapi import Depends
+from backend.auth import get_firebase_user_from_token
+
 router = APIRouter(prefix="/classroom", tags=["classroom"])
 
 @router.get("/{classID}/units",
@@ -14,8 +19,10 @@ router = APIRouter(prefix="/classroom", tags=["classroom"])
             responses={
                  404: {"model": ClientErrorResponse}
              },
-            summary="Retrieve units for the given classroom.")
-def get_teacher_home(classID: int, session: DBSession) -> ClassroomResponse:
+            summary="Retrieve units for the given classroom. Must be the authenticated teacher.")
+def get_teacher_home(classID: int, 
+                     user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                     session: DBSession) -> ClassroomResponse:
     """ Retrieve all of a teachers classes for their home page.
     
     Args: 
@@ -28,6 +35,10 @@ def get_teacher_home(classID: int, session: DBSession) -> ClassroomResponse:
     Returns:
         ClassroomResponse: A response model containing the units for the classroom.
     """
+    #teacherID = classroom_db.get_teacher_id_by_class_id(classID, session)
+    #if user["uid"] != teacherID:
+    #    raise UnauthorizedException("view classroom")
+    
     db_units = classroom_db.get_class_units(classID, session) 
     units = [ClassroomUnit(id=c.id, name=c.name) for c in db_units] # type: ignore
     return ClassroomResponse(units=units)
@@ -40,8 +51,11 @@ def get_teacher_home(classID: int, session: DBSession) -> ClassroomResponse:
                  404: {"model": ClientErrorResponse},
                  409: {"model": ClientErrorResponse},
              },
-             summary="Create a new unit within a class.")
-def create_new_unit(classID: int, unit: CreateUnit, session: DBSession) -> ClassroomUnit:
+             summary="Create a new unit within a class. Must be an authenticated teacher.")
+def create_new_unit(classID: int, 
+                    unit: CreateUnit, 
+                    user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                    session: DBSession) -> ClassroomUnit:
     """ Create a new unit within a class.
     
     Args:
@@ -55,6 +69,10 @@ def create_new_unit(classID: int, unit: CreateUnit, session: DBSession) -> Class
     Returns:
         HomeClass: A response model containing the created classroom.
     """
+    teacherID = classroom_db.get_teacher_id_by_class_id(classID, session)
+    if user["uid"] != teacherID:
+        raise UnauthorizedException("create unit")
+    
     db_class = classroom_db.create_new_unit(classID, unit, session)
     return(ClassroomUnit(id=db_class.id, name=db_class.name)) # type: ignore
 
@@ -65,8 +83,11 @@ def create_new_unit(classID: int, unit: CreateUnit, session: DBSession) -> Class
             status_code= 200,
             responses={404: {"model": ClientErrorResponse},
                        422: {"model": ClientErrorResponse}},
-            summary="Update a classrooms's name and/or settings.")
-def update_chat(classroomID: int, classroomUpdate: ClassroomUpdate, session: DBSession):
+            summary="Update a classrooms's name and/or settings. Must be an authenticated owner of the classroom.")
+def update_chat(classroomID: int, 
+                classroomUpdate: ClassroomUpdate, 
+                user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                session: DBSession):
     """Update a classrooms name and/or settings
 
     Args:
@@ -81,6 +102,10 @@ def update_chat(classroomID: int, classroomUpdate: ClassroomUpdate, session: DBS
     Returns:
         ClassroomUpdateReturn: The updated classroom data.
     """
+    teacherID = classroom_db.get_teacher_id_by_class_id(classroomID, session)
+    if user["uid"] != teacherID:
+        raise UnauthorizedException("update classroom")
+    
     ret = classroom_db.update_classroom(classroomID, classroomUpdate, session)
     return ClassroomUpdateReturn(id=ret.id, name=ret.name, settings=ret.settings, published=ret.published) # type: ignore
 
@@ -88,8 +113,10 @@ def update_chat(classroomID: int, classroomUpdate: ClassroomUpdate, session: DBS
 @router.delete("/{classroomID}",
                status_code=204,
                responses={404: {"model": ClientErrorResponse}},
-               summary="Delete a classroom.")
-def delete_classroom(classroomID: int, session: DBSession):
+               summary="Delete a classroom. Must be the authenticated owner of the classroom.")
+def delete_classroom(classroomID: int, 
+                     user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                     session: DBSession):
     """Delete a classroom by its ID.
 
     Args:
@@ -102,4 +129,8 @@ def delete_classroom(classroomID: int, session: DBSession):
     Returns:
         None
     """
+    teacherID = classroom_db.get_teacher_id_by_class_id(classroomID, session)
+    if user["uid"] != teacherID:
+        raise UnauthorizedException("delete classroom")
+    
     classroom_db.delete_classroom(classroomID, session)

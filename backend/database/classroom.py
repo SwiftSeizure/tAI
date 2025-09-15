@@ -149,3 +149,13 @@ def delete_classroom(classroomID: int, session: Session) -> None:
 
     session.delete(classroom)
     session.commit()
+    
+def get_teacher_id_by_class_id(classID : int, session: Session) -> str:
+    """Get a teacher's user ID by a class ID.
+    Args: 
+        classID (int): The ID of the class.
+        session (Session): The SQLAlchemy session to use for the query.
+    Raises:
+        EntityNotFoundException: If the class with the given ID does not exist."""
+    classroom = get_classroom(classID, session)
+    return classroom.ownerID # type: ignore
