@@ -51,10 +51,10 @@ const TeacherStudentModulePage = () => {
     
     const [selectedDay, setSelectedDay] = useState(null); // Tracks the selected day
 
-    const [selectedMaterialName, setSelectedMaterialName] = useState(null); // Tracks the selected material name
+    const [selectedMaterial, setSelectedMaterial] = useState(null); // Tracks the selected material
     
-    const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
-    
+    const [selectedAssignment, setSelectedAssignment] = useState(null); // Tracks the selected assignment
+
     const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
     const [assignmentContent, setAssignmentContent] = useState(null); // Stores the content of a selected assignment
     const [currentContentDisplay, setCurrentContentDisplay] = useState(null); // Tracks the current content being displayed
@@ -132,16 +132,17 @@ const TeacherStudentModulePage = () => {
      * @param {string} fileName - The filename of the assignment.
      * @param {string} assignmentName - The name of the assignment.
      */
-    const handleAssignmentSelect = async (dayID, fileName, assignmentName) => {
+    const handleAssignmentSelect = async (dayID, assignment) => {
         try { 
             // Update the selected assignment and set the display type to 'assignment'
-            setSelectedMaterialName(null);
-            setSelectedAssignmentName(assignmentName);
+            setSelectedMaterial(null);
+            setSelectedAssignment(assignment);
             setDisplayType('assignment'); 
             setDayId(dayID);
 
-            // Fetch the content of the selected assignment
-            const fileURL = await getAssignmentURL(dayID, fileName); 
+            // Fetch the content of the selected assignment 
+            console.log("This is the assignment data", assignment);
+            const fileURL = await getAssignmentURL(dayID, assignment.name); 
             setAssignmentContent(fileURL); 
             setCurrentContentDisplay('assignment'); 
         } catch (error) {
@@ -155,29 +156,26 @@ const TeacherStudentModulePage = () => {
      * handleMaterialSelect
      * Handles the selection of a material and fetches its content.
      * @param {number} dayID - The ID of the day containing the material.
-     * @param {string} fileName - The filename of the material.
-     * @param {string} materialName - The name of the material.
+     * @param {object} material - The material object.
      */
-    const handleMaterialSelect = async ( dayID, fileName, materialName ) => {   
+    const handleMaterialSelect = async (dayId, material) => {
+        
+        try { 
+            setSelectedAssignment(null);
+            setSelectedMaterial(material);
+            setDisplayType('material');
+            setDayId(dayId); 
 
-        console.log(dayID, "fileName", fileName, "materialName", materialName);
-
-        try {
-            // Update the selected material and set the display type to 'material'
-            setSelectedAssignmentName(null);
-            setSelectedMaterialName(materialName);
-            setDisplayType('material');  
-            setDayId(dayID);
-
-            // Fetch the content of the selected material
-            const fileURL = await getMaterialURL(dayID, fileName);
-            setMaterialContent(fileURL);  
+            const fileURL = await getMaterialURL(dayId, material.name); 
+            setMaterialContent(fileURL); 
             setCurrentContentDisplay('material'); 
-        } catch (error) {
+        }
+        catch (error) { 
+            console.error('Error fetching material:', error);
             setDisplayType('error'); 
         }
+    };   
 
-    }  
 
     const handleNewModule = async (newModalName) => {  
         try { 
@@ -224,7 +222,7 @@ const TeacherStudentModulePage = () => {
             
             //force refresh here 
 
-            handleMaterialSelect(dayId, materialData.file.name, materialData.name); 
+            handleMaterialSelect(dayId, materialData);
         } 
         catch (error) { 
             console.error('Error creating material:', error);
@@ -247,7 +245,7 @@ const TeacherStudentModulePage = () => {
              
             await fetchModules(currentUnit.id); 
 
-            handleAssignmentSelect(dayId, assignmentData.file.name, assignmentData.name); 
+            handleAssignmentSelect(dayId, assignmentData); 
         } 
         catch (error) { 
             console.error('Error creating assignment:', error);
@@ -385,9 +383,9 @@ const TeacherStudentModulePage = () => {
                     return (
                         <div className="content-container material-container"> 
                             <div className="content-header">   
-                                <h2 className="content-title"> {selectedMaterialName} </h2> 
+                                <h2 className="content-title"> {selectedMaterial.name} </h2> 
                             </div>
-                            {renderPDFContent(materialContent)} 
+                            {renderPDFContent(selectedMaterial.filename)} 
                         </div>
                     );
      
@@ -395,7 +393,7 @@ const TeacherStudentModulePage = () => {
                     return( 
                         <div className="content-container material-container"> 
                             <div className="content-header"> 
-                                <h2 className="content-title"> {selectedAssignmentName} </h2> 
+                                <h2 className="content-title"> {selectedAssignment.name} </h2> 
                             </div>  
                             {renderPDFContent(assignmentContent)}
 
@@ -429,7 +427,7 @@ const TeacherStudentModulePage = () => {
             case 'error': 
                return( 
                    <div > 
-                       <h1 > Error loading {selectedMaterialName || selectedAssignmentName || 'content'} </h1>
+                       <h1 > Error loading {selectedMaterial.name || selectedAssignment.name || 'content'} </h1>
                        <p >An error occurred while loading the material.</p>
                    </div>
                );
@@ -500,21 +498,27 @@ const TeacherStudentModulePage = () => {
     const handleChatMessageSend = async (message) => {  
 
         let currentFileName = null; 
-        if(displayType === 'material') {
-            currentFileName = selectedMaterialName;
+        if(displayType === 'material' && selectedMaterial) {
+            currentFileName = selectedMaterial.filename;
         }
-        else if(displayType === 'assignment') {
-            currentFileName = selectedAssignmentName;
+        else if(displayType === 'assignment' && selectedAssignment) {
+            currentFileName = selectedAssignment.filename;
         }
         
         console.log("displayType", displayType, "dayId", dayId, "currentFileName", currentFileName, "message", message);  
+        
+        const requestBody = {
+           query: message,
+        };
+        
         try {  
             if (currentFileName) {
-                await putChatMessage(displayType, dayId, currentFileName, message);
+                const response = await putChatMessage(displayType, dayId, currentFileName, requestBody); 
+                console.log("Response from putChatMessage:", response); 
             }
             else { 
                 //Something about returning 
-                await putChatMessage(displayType, dayId, message);
+                // await putChatMessage(displayType, dayId, message);
             }
         }
         catch (error) { 
@@ -559,6 +563,7 @@ const TeacherStudentModulePage = () => {
                    : 
                    <button 
                    className="fixed bottom-4 right-8 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out "                        
+                        onClick={toggleChatExpand}   
 
                     >  
                         <h2 className={`rounded-md transition-all duration-300 ease-in-out ${isChatExpanded ? "bg-red-600 p-2 fixed bottom-8 right-12 font-nunito" : "w-8 h-8 hover:w-12 hover:h-12"  }  `}>  
