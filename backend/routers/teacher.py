@@ -19,7 +19,7 @@ router = APIRouter(prefix="/teacher", tags=["teacher"])
                 404: {"model": ClientErrorResponse},
                 409: {"model": ClientErrorResponse},
             },
-            summary="Get a teacher.")
+            summary="Get a teacher. Must be the authenticated teacher.",)
 def get_teacher_ID(teacherID: str, 
                    user: Annotated[dict, Depends(get_firebase_user_from_token)],
                    session: DBSession
@@ -27,6 +27,7 @@ def get_teacher_ID(teacherID: str,
     teacher = get_teacher(teacherID, session)
     if user["uid"] != teacherID:
         raise UnauthorizedException("view teacher")
+    
     if not teacher:
         raise EntityNotFoundException("teacher", teacherID)
     
@@ -39,7 +40,12 @@ def get_teacher_ID(teacherID: str,
                 404: {"model": ClientErrorResponse},
                 409: {"model": ClientErrorResponse},
             },
-            summary="Update a teacher.")
-def updateTeacher(teacherID: str, update: TeacherUpdate, session: DBSession) -> None:
+            summary="Update a teacher. Must be the authenticated teacher.",)
+def updateTeacher(teacherID: str, 
+                  update: TeacherUpdate, 
+                  user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                  session: DBSession) -> None:
+    if user["uid"] != teacherID:
+        raise UnauthorizedException("update teacher")
     update_teacher(teacherID=teacherID, update=update, session=session)
     return None
