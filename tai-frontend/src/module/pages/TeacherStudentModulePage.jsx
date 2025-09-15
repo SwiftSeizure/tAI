@@ -428,7 +428,7 @@ const TeacherStudentModulePage = () => {
             case 'error': 
                return( 
                    <div > 
-                       <h1 > Error loading {selectedMaterial.name || selectedAssignment.name || 'content'} </h1>
+                       <h1 > Error loading {selectedMaterial?.name || selectedAssignment?.name || 'content'} </h1>
                        <p >An error occurred while loading the material.</p>
                    </div>
                );
