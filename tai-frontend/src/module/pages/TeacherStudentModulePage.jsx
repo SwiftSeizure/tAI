@@ -140,9 +140,9 @@ const TeacherStudentModulePage = () => {
             setDisplayType('assignment'); 
             setDayId(dayID);
 
-            // Fetch the content of the selected assignment 
+            // Fetch the content of the selected assignment
             console.log("This is the assignment data", assignment);
-            const fileURL = await getAssignmentURL(dayID, assignment.name); 
+            const fileURL = await getAssignmentURL(dayID, assignment.filename); 
             setAssignmentContent(fileURL); 
             setCurrentContentDisplay('assignment'); 
         } catch (error) {
