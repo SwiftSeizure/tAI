@@ -11,10 +11,7 @@ from backend.dependencies import engine, SessionLocal
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SEED_FILE_PATH = os.path.join(BASE_DIR, "seed_data.json")
 
-<<<<<<< HEAD
-=======
 Base.metadata.drop_all(bind=engine)   
->>>>>>> origin/Development-Frontend
 Base.metadata.create_all(bind=engine)
 
 def PopulateDB(file: str = SEED_FILE_PATH): 

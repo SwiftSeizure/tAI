@@ -7,7 +7,7 @@ from fastapi  import Depends
 import os
 
 # Database connection URL
-DB_URL = os.getenv("DATABASE_URL")
+DB_URL = "mysql+mysqlconnector://developer:password@localhost/TestDB"
 
 # Create an engine that will connect to the database
 engine = create_engine(DB_URL, pool_size=5, max_overflow=10)

@@ -9,26 +9,15 @@ from backend.exceptions import EntityNotFoundException, InvalidClassCodeExceptio
 router = APIRouter(prefix="/student", tags=["student"])
 
 @router.put("/enroll",
-<<<<<<< HEAD
-            status_code=204,
-=======
             status_code=200,
->>>>>>> origin/Development-Frontend
             responses={
                 404: {"model": ClientErrorResponse},
                 409: {"model": ClientErrorResponse},
             },
             summary="Enroll a student in a class.")
-<<<<<<< HEAD
-def enroll_student(update:AddEnrollment , session: DBSession) -> None:
-    enroll(studentID=update.studentID, classCode=update.classCode, session=session)
-
-    return None
-=======
 def enroll_student(update:AddEnrollment , session: DBSession) -> int:
     return enroll(studentID=update.studentID, classCode=update.classCode, session=session)
 
->>>>>>> origin/Development-Frontend
 
 @router.put(
             "/{studentID}",
