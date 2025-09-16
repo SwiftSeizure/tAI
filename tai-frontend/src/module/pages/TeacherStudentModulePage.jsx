@@ -84,6 +84,8 @@ const TeacherStudentModulePage = () => {
     const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false);  
 
     const [chatResponse, setChatResponse] = useState('Response will appear here ');
+    const [conversation, setConversation] = useState([]); // array of {message, response}
+    const [chatLoading, setChatLoading] = useState(false);
 
     const [dayId, setDayId] = useState(null); 
 
@@ -521,16 +523,24 @@ const TeacherStudentModulePage = () => {
         
         console.log("displayType", displayType, "dayId", dayId, "currentFileName", currentFileName, "message", message);  
         try {  
-            if (currentFileName) {
-                await putChatMessage(studentID,displayType, dayId, fileName, message);
+            // Always call putChatMessage with the same signature: (studentID, displayType, dayId, currentFileName, message)
+            const currentFileArg = currentFileName ? fileName : '';
+            setChatLoading(true);
+            const res = await putChatMessage(studentID, displayType, dayId, currentFileArg, message);
+
+            // Backend returns ChatResponse with messages: [{content}], responses: [{content}]
+            if (res && (res.messages || res.responses)) {
+                const msgs = res.messages || [];
+                const responses = res.responses || [];
+                const conv = msgs.map((m, i) => ({ message: m?.content || '', response: responses[i]?.content || '' }));
+                setConversation(conv);
+                // also set latest display response for backward compatibility
+                setChatResponse(responses[responses.length - 1]?.content || '');
             }
-            else { 
-                //Something about returning 
-                await putChatMessage(studentID,displayType, dayId, message);
-            }
-        }
-        catch (error) { 
+        } catch (error) { 
             console.error('Error updating chat message:', error);
+        } finally {
+            setChatLoading(false);
         }
     };
 
@@ -604,6 +614,8 @@ const TeacherStudentModulePage = () => {
                 <ChatFeature 
                     onMessageSend={handleChatMessageSend} 
                     displayResponse={chatResponse}
+                    conversation={conversation}
+                    loading={chatLoading}
                 />
             </div>
         </div>
