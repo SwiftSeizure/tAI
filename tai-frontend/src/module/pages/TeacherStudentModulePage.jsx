@@ -29,6 +29,9 @@ import { deleteModule } from "../services/delete-module";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
 
 
+
+
+
 /**
  * TeacherStudentModulePage Component
  * This page displays the modules, days, materials, and assignments for a specific unit.
@@ -48,12 +51,15 @@ const TeacherStudentModulePage = () => {
     const [ , setSelectedModule] = useState(null); // Tracks the selected module
     const [isChatExpanded, setIsChatExpanded] = useState(false); // Tracks chat expansion state
     const [displayType, setDisplayType] = useState('welcome'); // Tracks the type of content to display
+
     
     const [selectedDay, setSelectedDay] = useState(null); // Tracks the selected day
 
     const [selectedMaterialName, setSelectedMaterialName] = useState(null); // Tracks the selected material name
     
     const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
+    const [fileName, setFileName] = useState(null);
+
     
     const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
     const [assignmentContent, setAssignmentContent] = useState(null); // Stores the content of a selected assignment
@@ -135,6 +141,8 @@ const TeacherStudentModulePage = () => {
     const handleAssignmentSelect = async (dayID, fileName, assignmentName) => {
         try { 
             // Update the selected assignment and set the display type to 'assignment'
+            setFileName(fileName);
+
             setSelectedMaterialName(null);
             setSelectedAssignmentName(assignmentName);
             setDisplayType('assignment'); 
@@ -163,6 +171,8 @@ const TeacherStudentModulePage = () => {
         console.log(dayID, "fileName", fileName, "materialName", materialName);
 
         try {
+            setFileName(fileName);
+
             // Update the selected material and set the display type to 'material'
             setSelectedAssignmentName(null);
             setSelectedMaterialName(materialName);
@@ -510,7 +520,7 @@ const TeacherStudentModulePage = () => {
         console.log("displayType", displayType, "dayId", dayId, "currentFileName", currentFileName, "message", message);  
         try {  
             if (currentFileName) {
-                await putChatMessage(displayType, dayId, currentFileName, message);
+                await putChatMessage(displayType, dayId, fileName, message);
             }
             else { 
                 //Something about returning 
