@@ -8,7 +8,7 @@ export const putChatMessage = async (studentID,displayType, dayID, currentFileNa
 
     await axios.put(url, formData, {
       headers: { "Content-Type": "multipart/form-data" },
-      params: { studentID } // replace with real student ID
+      params: { studentID:1 } // replace with real student ID
     });
   } catch (error) {
     console.error('Error updating chat message:', error);

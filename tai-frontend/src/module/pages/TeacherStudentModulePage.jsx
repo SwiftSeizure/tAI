@@ -50,7 +50,7 @@ const TeacherStudentModulePage = () => {
     // const [modulesData, setModulesData] = useState(null); // Stores module data  
     const [ , setSelectedModule] = useState(null); // Tracks the selected module
     const [isChatExpanded, setIsChatExpanded] = useState(false); // Tracks chat expansion state
-    const [displayType, setDisplayType] = useState('welcome'); // Tracks the type of content to display
+    const [displayType, setDisplayType] = useState('welcome'); // Tracks the typeof content to display
 
     
     const [selectedDay, setSelectedDay] = useState(null); // Tracks the selected day
