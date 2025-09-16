@@ -68,6 +68,8 @@ const TeacherStudentModulePage = () => {
     const [chatWidth, setChatWidth] = useState(600); // Default width in pixels
 
     const { user } = useCurrentUser(); 
+    
+    const studentID = user.id;
     const { currentUnit } = useCurrentUnit();  
     const [state, actions] = useModule();
     const { modules, isLoading, error } = state;
@@ -520,11 +522,11 @@ const TeacherStudentModulePage = () => {
         console.log("displayType", displayType, "dayId", dayId, "currentFileName", currentFileName, "message", message);  
         try {  
             if (currentFileName) {
-                await putChatMessage(displayType, dayId, fileName, message);
+                await putChatMessage(studentID,displayType, dayId, fileName, message);
             }
             else { 
                 //Something about returning 
-                await putChatMessage(displayType, dayId, message);
+                await putChatMessage(studentID,displayType, dayId, message);
             }
         }
         catch (error) { 
