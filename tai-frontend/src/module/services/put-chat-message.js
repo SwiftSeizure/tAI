@@ -7,6 +7,7 @@ export const putChatMessage = async (studentID, displayType, dayID, currentFileN
         formData.append("query", message); 
 
         console.log(url);
+        console.log(formData);
 
         const response = await axios.put(url, formData, {
             headers: { "Content-Type": "multipart/form-data" },

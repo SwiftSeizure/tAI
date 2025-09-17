@@ -287,16 +287,39 @@ const TeacherStudentModulePage = () => {
                 dayId,
                 displayType === 'material' ? selectedMaterial.id : selectedAssignment.id,
                 message
-            ); 
+            );
 
-            console.log(response);
+            console.log("This is the response in the TeacherStudentModulePage", response);
             
-            // Add AI response to chat
-            if (response) {
-                addMessage({ 
-                    role: 'assistant', 
-                    content: response 
-                });
+            // Process the response to pair messages with their responses
+            if (response && response.messages && response.responses) {
+                // First, clear existing messages to avoid duplicates
+                // Then add all message-response pairs
+                const messagesToAdd = [];
+                for (let i = 0; i < response.messages.length; i++) {
+                    // Add user message
+                    messagesToAdd.push({
+                        id: response.messages[i].id,
+                        role: 'user',
+                        content: response.messages[i].content,
+                        timestamp: Date.now()
+                    });
+                    
+                    // Add corresponding AI response if it exists
+                    if (response.responses[i]) {
+                        messagesToAdd.push({
+                            id: `response_${response.responses[i].id}`,
+                            role: 'assistant',
+                            content: response.responses[i].content,
+                            timestamp: Date.now()
+                        });
+                    }
+                }
+                
+                // Clear existing messages and add all new ones
+                // This ensures we don't have duplicate messages
+                setCurrentChat(chatId); // Reset the chat
+                messagesToAdd.forEach(msg => addMessage(msg));
             }
             
             return response;
