@@ -109,9 +109,9 @@ def queryBot(studentID: int, path: str, prompt: str, session: Session) -> ChatRe
     except Exception as e:
         response_text = f"[Failed to process file: {e}]"
 
-    student = get_student(studentID, session)
+    student = get_student(studentID, session) #type: ignore
     if not student:
-        raise EntityNotFoundException("student", studentID)
+        raise EntityNotFoundException("student", studentID) # type: ignore
 
     stmnt = select(DBConversation).filter(
         DBConversation.studentID == studentID,
