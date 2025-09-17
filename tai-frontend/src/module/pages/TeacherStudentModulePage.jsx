@@ -276,8 +276,13 @@ const TeacherStudentModulePage = () => {
             : `assignment_${selectedAssignment.id}`;
         
         try {
-            // Add user message to chat
-            addMessage({ role: 'user', content: message });
+            // Add user message to chat with a unique ID
+            const messageId = `msg-${Date.now()}`;
+            addMessage({ 
+                id: messageId,
+                role: 'user', 
+                content: message 
+            });
             setLoading(true);
             
             // Get the response from the server
@@ -316,10 +321,16 @@ const TeacherStudentModulePage = () => {
                     }
                 }
                 
-                // Clear existing messages and add all new ones
-                // This ensures we don't have duplicate messages
+                // Clear existing messages and add all new ones with unique IDs
                 setCurrentChat(chatId); // Reset the chat
-                messagesToAdd.forEach(msg => addMessage(msg));
+                messagesToAdd.forEach(msg => {
+                    // Ensure each message has a unique ID
+                    const messageWithId = {
+                        ...msg,
+                        id: msg.id || `msg-${Date.now()}`
+                    };
+                    addMessage(messageWithId);
+                });
             }
             
             return response;
