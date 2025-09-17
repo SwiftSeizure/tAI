@@ -1,14 +1,14 @@
 export const addMessage = (chatId, { role, content }) => ({ setState, getState }) => {
-    const { chats } = getState();
-    const chat = chats[chatId] || { messages: [], isLoading: false, error: null };
+    const state = getState();
+    const chat = state.chats[chatId] || { messages: [], isLoading: false, error: null };
     
     setState({
+        ...state,
         chats: {
-            ...chats,
+            ...state.chats,
             [chatId]: {
                 ...chat,
-                messages: 
-                [
+                messages: [
                     ...chat.messages,
                     {
                         id: Date.now().toString(),

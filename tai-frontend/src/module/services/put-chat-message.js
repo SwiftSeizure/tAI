@@ -4,12 +4,16 @@ export const putChatMessage = async (studentID, displayType, dayID, currentFileN
     try {
         const url = `http://localhost:8000/chat/uploads/${displayType}/${dayID}/${currentFileName}`;
         const formData = new FormData();
-        formData.append("query", message);
+        formData.append("query", message); 
+
+        console.log(url);
 
         const response = await axios.put(url, formData, {
             headers: { "Content-Type": "multipart/form-data" },
             params: { studentID } // replace with real student ID
-        });
+        }); 
+
+        console.log(response);
 
         return response.data;
     } catch (error) {

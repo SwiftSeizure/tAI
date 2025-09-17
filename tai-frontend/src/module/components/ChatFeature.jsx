@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useChat } from '../../store/chat-store';
+import { useCurrentChat } from '../../store/chat-store';
 
 /**
  * ChatFeature Component
@@ -10,11 +10,23 @@ import { useChat } from '../../store/chat-store';
 
 const ChatFeature = ({ chatId, onSendMessage }) => {
     const [message, setMessage] = useState('');
-    const { chat, addMessage, setLoading, setError } = useChat(chatId);
-    const messages = chat?.messages || [];
-    const isLoading = chat?.isLoading || false;
+    const { currentChat, setCurrentChat } = useCurrentChat();
+    
+    // Use the chat from currentChat if chatId matches, otherwise use a fallback
+    const chat = (currentChat.currentChatId === chatId) ? currentChat : 
+        { messages: [], isLoading: false, error: null };
+    
+    const messages = chat.messages || [];
+    const isLoading = chat.isLoading || false;
     
     const convoRef = useRef(null);
+
+    // Set current chat when component mounts or chatId changes
+    useEffect(() => {
+        if (chatId) {
+            setCurrentChat(chatId);
+        }
+    }, [chatId, setCurrentChat]);
 
     // Auto-scroll to bottom when messages change
     useEffect(() => {
@@ -30,25 +42,11 @@ const ChatFeature = ({ chatId, onSendMessage }) => {
         setMessage('');
         
         try {
-            // Add user message to chat
-            addMessage({ role: 'user', content: userMessage });
-            setLoading(true);
-            
-            // Send message and get response
-            const response = await onSendMessage(userMessage);
-            
-            // Add AI response to chat
-            if (response) {
-                addMessage({ 
-                    role: 'assistant', 
-                    content: response 
-                });
-            }
+            // The message will be added by the parent component through onSendMessage
+            // which should handle the API call and state updates
+            await onSendMessage(userMessage);
         } catch (error) {
             console.error('Error sending message:', error);
-            setError('Failed to send message. Please try again.');
-        } finally {
-            setLoading(false);
         }
     };
 

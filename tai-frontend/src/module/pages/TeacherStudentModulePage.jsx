@@ -8,7 +8,7 @@ import AddDayModal from "../modals/AddDayModal";
 import { useCurrentUser } from "../../store/user-store"; 
 import { useCurrentUnit } from "../../store/unit-store";
 import { useModule } from "../../store/module-store"; 
-import { useChat } from '../../store/chat-store';
+import { useCurrentChat } from "../../store/chat-store";
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import SettingsIcon from '@mui/icons-material/Settings'; 
@@ -76,10 +76,7 @@ const TeacherStudentModulePage = () => {
     const [showAddMaterialModal, setShowAddMaterialModal] = useState(false); 
     const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false);  
 
-    const [shatState, chatActions] = useChat();   
-    const { chat } = shatState;
-    const { initializeChat } = chatActions;
-
+    const { currentChat, setCurrentChat, addMessage, setLoading, setError } = useCurrentChat();   
     const [dayId, setDayId] = useState(null); 
 
     // This is for the Module Only 
@@ -93,14 +90,16 @@ const TeacherStudentModulePage = () => {
     }, [currentUnit?.id, fetchModules]);
 
     useEffect(() => {
-        if (displayType === 'material' && selectedMaterialName) {
-            const chatId = `material_${selectedMaterialName}`;
-            initializeChat(chatId);
-        } else if (displayType === 'assignment' && selectedAssignmentName) {
-            const chatId = `assignment_${selectedAssignmentName}`;
-            initializeChat(chatId);
+        if (displayType === 'material' && selectedMaterial) {
+            const chatId = `material_${selectedMaterial.id}`;
+            setCurrentChat(chatId);
+        } else if (displayType === 'assignment' && selectedAssignment) {
+            const chatId = `assignment_${selectedAssignment.id}`;
+            setCurrentChat(chatId);
+        } else {
+            setCurrentChat(null);
         }
-    }, [displayType, selectedMaterialName, selectedAssignmentName, initializeChat]);
+    }, [displayType, selectedMaterial, selectedAssignment, setCurrentChat]);
 
     const chatImage = require("../../images/chat-message-dots.png");  
 
@@ -269,6 +268,46 @@ const TeacherStudentModulePage = () => {
         setShowAddAssignmentModal(false);
     };   
 
+    const handleChatMessage = async (message) => {
+        if (!message.trim() || !displayType) return '';
+
+        const chatId = displayType === 'material' 
+            ? `material_${selectedMaterial.id}`
+            : `assignment_${selectedAssignment.id}`;
+        
+        try {
+            // Add user message to chat
+            addMessage({ role: 'user', content: message });
+            setLoading(true);
+            
+            // Get the response from the server
+            const response = await putChatMessage(
+                user.id,
+                displayType,
+                dayId,
+                displayType === 'material' ? selectedMaterial.id : selectedAssignment.id,
+                message
+            ); 
+
+            console.log(response);
+            
+            // Add AI response to chat
+            if (response) {
+                addMessage({ 
+                    role: 'assistant', 
+                    content: response 
+                });
+            }
+            
+            return response;
+        } catch (error) {
+            console.error('Error sending chat message:', error);
+            setError('Failed to send message. Please try again.');
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleOpenDeleteModal = (moduleID, moduleName) => {
         setCurrentDeleteModuleID(moduleID);
@@ -288,41 +327,6 @@ const TeacherStudentModulePage = () => {
             console.error('Error deleting module:', error);
         }
         setShowDeleteModal(false);
-    };
-
-    const handleChatMessage = async (message) => {
-        if (!message.trim() || !displayType) return;
-
-        const chatId = displayType === 'material' 
-            ? selectedMaterial.id 
-            : selectedAssignment.id;
-        
-        try {
-            // Add user message to chat
-            // Removed addMessage function call
-            
-            // Set loading state
-            // Removed setLoading function call
-            
-            // Get the response from the server
-            const response = await putChatMessage(
-                user.id,
-                displayType,
-                dayId,
-                displayType === 'material' ? selectedMaterial.id : selectedAssignment.id,
-                message
-            );
-            
-            // Add AI response to chat
-            if (response) {
-                // Removed addMessage function call
-            }
-        } catch (error) {
-            console.error('Error sending chat message:', error);
-            // Removed setError function call
-        } finally {
-            // Removed setLoading function call
-        }
     };
 
     /**
@@ -492,6 +496,22 @@ const TeacherStudentModulePage = () => {
         }
     };
 
+    const renderChatFeature = () => {
+        if (displayType === 'material' || displayType === 'assignment') {
+            const chatId = displayType === 'material' 
+                ? `material_${selectedMaterial?.id}` 
+                : `assignment_${selectedAssignment?.id}`;
+                
+            return (
+                <ChatFeature 
+                    chatId={chatId}
+                    onSendMessage={handleChatMessage}
+                />
+            );
+        }
+        return null;
+    };
+
     /**
      * startResizing
      * Initiates the resizing of the chat overlay when the user starts dragging the resize handle.
@@ -601,14 +621,7 @@ const TeacherStudentModulePage = () => {
                             </button>
                         </div>
                         <div className="flex-1 overflow-hidden">
-                            <ChatFeature 
-                                chatId={displayType === 'material' 
-                                    ? `material_${selectedMaterial.id}` 
-                                    : displayType === 'assignment' 
-                                        ? `assignment_${selectedAssignment.id}` 
-                                        : null}
-                                onSendMessage={handleChatMessage}
-                            />
+                            {renderChatFeature()}
                         </div>
                     </div>
                 </div>
