@@ -543,7 +543,7 @@ const TeacherStudentModulePage = () => {
                 />
             );
         }
-        return null;
+        return <div> Please select an assignment or material to use the Chat feature </div>;
     };
 
     /**
