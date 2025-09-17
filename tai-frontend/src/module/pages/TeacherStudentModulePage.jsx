@@ -158,15 +158,15 @@ const TeacherStudentModulePage = () => {
      * @param {number} dayID - The ID of the day containing the material.
      * @param {object} material - The material object.
      */
-    const handleMaterialSelect = async (dayId, material) => {
+    const handleMaterialSelect = async (dayID, material) => {
         
         try { 
             setSelectedAssignment(null);
             setSelectedMaterial(material);
             setDisplayType('material');
-            setDayId(dayId); 
+            setDayId(dayID); 
 
-            const fileURL = await getMaterialURL(dayId, material.filename);  
+            const fileURL = await getMaterialURL(dayID, material.filename);  
             console.log("This is the material data", material.filename, "and this is the file URL", fileURL);
             setMaterialContent(fileURL); 
             setCurrentContentDisplay('material'); 

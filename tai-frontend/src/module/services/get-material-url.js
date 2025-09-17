@@ -6,7 +6,7 @@ export const getMaterialURL = async (dayID, filename) => {
   }
 
   try {
-    const url = `http://localhost:8000/material/${dayID}/${encodeURIComponent(filename)}`;  
+    const url = `http://localhost:8000/material/${dayID}/${filename}`;  
 
     console.log("URL that is going into the get", url);
     const response = await axios.get(url, { responseType: 'blob' });
