@@ -286,7 +286,7 @@ const TeacherStudentModulePage = () => {
             setLoading(true);
             
             // Get the response from the server
-            const response = await putChatMessage(
+            const serverResponse = await putChatMessage(
                 user.id,
                 displayType,
                 dayId,
@@ -294,28 +294,28 @@ const TeacherStudentModulePage = () => {
                 message
             );
 
-            console.log("This is the response in the TeacherStudentModulePage", response);
+            console.log("This is the response in the TeacherStudentModulePage", serverResponse);
             
             // Process the response to pair messages with their responses
-            if (response && response.messages && response.responses) {
+            if (serverResponse && serverResponse.messages && serverResponse.responses) {
                 // First, clear existing messages to avoid duplicates
                 // Then add all message-response pairs
                 const messagesToAdd = [];
-                for (let i = 0; i < response.messages.length; i++) {
+                for (let i = 0; i < serverResponse.messages.length; i++) {
                     // Add user message
                     messagesToAdd.push({
-                        id: response.messages[i].id,
+                        id: serverResponse.messages[i].id,
                         role: 'user',
-                        content: response.messages[i].content,
+                        content: serverResponse.messages[i].content,
                         timestamp: Date.now()
                     });
                     
                     // Add corresponding AI response if it exists
-                    if (response.responses[i]) {
+                    if (serverResponse.responses[i]) {
                         messagesToAdd.push({
-                            id: `response_${response.responses[i].id}`,
+                            id: `response_${serverResponse.responses[i].id}`,
                             role: 'assistant',
-                            content: response.responses[i].content,
+                            content: serverResponse.responses[i].content,
                             timestamp: Date.now()
                         });
                     }
@@ -333,7 +333,7 @@ const TeacherStudentModulePage = () => {
                 });
             }
             
-            return response;
+            return serverResponse;
         } catch (error) {
             console.error('Error sending chat message:', error);
             setError('Failed to send message. Please try again.');
