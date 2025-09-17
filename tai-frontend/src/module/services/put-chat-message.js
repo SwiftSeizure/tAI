@@ -1,13 +1,15 @@
 import axios from 'axios';
 
 export const putChatMessage = async (studentID, displayType, dayID, currentFileName, message) => {
-    try {
+    try { 
+ 
+        
         const url = `http://localhost:8000/chat/uploads/${displayType}/${dayID}/${currentFileName}`;
         const formData = new FormData();
         formData.append("query", message); 
 
-        console.log(url);
-        console.log(formData);
+        console.log("URL in put-chat-message", url);
+        console.log("Form data in put-chat-message", formData);
 
         const response = await axios.put(url, formData, {
             headers: { "Content-Type": "multipart/form-data" },

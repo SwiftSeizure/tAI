@@ -285,7 +285,7 @@ const TeacherStudentModulePage = () => {
                 user.id,
                 displayType,
                 dayId,
-                displayType === 'material' ? selectedMaterial.id : selectedAssignment.id,
+                displayType === 'material' ? selectedMaterial.filename : selectedAssignment.filename,
                 message
             );
 
