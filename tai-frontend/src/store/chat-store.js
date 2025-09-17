@@ -4,7 +4,7 @@ import * as actions from './chat-actions';
 // Initial state
 const initialState = {
     chats: {},          // Keyed by chatId (e.g., 'material_123' or 'assignment_456')
-    currentChatId: null  // ID of the currently active chat
+    currentChatId: null  // This is going to be the same thing as the material.id or the assignment.id
 };
 
 // Create the chat store
