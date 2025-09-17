@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";   
 import { useNavigate } from 'react-router-dom';  
 import { TitleCard } from "../../shared/components/TitleCard";
-import { ChatFeature } from "../components/ChatFeature";
+import ChatFeature from "../components/ChatFeature";
 import ModuleComponent from "../components/ModuleComponent";  
 import AddModuleModal from "../modals/AddModuleModal";   
 import AddDayModal from "../modals/AddDayModal"; 
 import { useCurrentUser } from "../../store/user-store"; 
 import { useCurrentUnit } from "../../store/unit-store";
 import { useModule } from "../../store/module-store"; 
+import { useChat } from '../../store/chat-store';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 import SettingsIcon from '@mui/icons-material/Settings'; 
@@ -27,10 +28,6 @@ import DeleteModal from "../../shared/modals/DeleteModal";
 import { deleteModule } from "../services/delete-module";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
-
-
-
-
 
 /**
  * TeacherStudentModulePage Component
@@ -54,7 +51,9 @@ const TeacherStudentModulePage = () => {
     const [selectedMaterialName, setSelectedMaterialName] = useState(null); // Tracks the selected material name
     
     const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
-    const [fileName, setFileName] = useState(null);
+
+    const [selectedMaterial, setSelectedMaterial] = useState(null); // Tracks the selected material
+    const [selectedAssignment, setSelectedAssignment] = useState(null); // Tracks the selected assignment
 
     
     const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
@@ -65,9 +64,9 @@ const TeacherStudentModulePage = () => {
     const { user } = useCurrentUser(); 
     
     const { currentUnit } = useCurrentUnit();  
-    const [state, actions] = useModule();
-    const { modules, isLoading, error } = state;
-    const { fetchModules } = actions; 
+    const [moduleState, moduleActions] = useModule();
+    const { modules, isLoading, error } = moduleState;
+    const { fetchModules } = moduleActions; 
 
     // State variables for managing the add module modal
     const [showAddModuleModal, setShowAddModuleModal] = useState(false);
@@ -77,9 +76,9 @@ const TeacherStudentModulePage = () => {
     const [showAddMaterialModal, setShowAddMaterialModal] = useState(false); 
     const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false);  
 
-    const [chatResponse, setChatResponse] = useState('Response will appear here ');
-    const [conversation, setConversation] = useState([]); // array of {message, response}
-    const [chatLoading, setChatLoading] = useState(false);
+    const [shatState, chatActions] = useChat();   
+    const { chat } = shatState;
+    const { initializeChat } = chatActions;
 
     const [dayId, setDayId] = useState(null); 
 
@@ -92,6 +91,16 @@ const TeacherStudentModulePage = () => {
     useEffect(() => {
         fetchModules(currentUnit.id);
     }, [currentUnit?.id, fetchModules]);
+
+    useEffect(() => {
+        if (displayType === 'material' && selectedMaterialName) {
+            const chatId = `material_${selectedMaterialName}`;
+            initializeChat(chatId);
+        } else if (displayType === 'assignment' && selectedAssignmentName) {
+            const chatId = `assignment_${selectedAssignmentName}`;
+            initializeChat(chatId);
+        }
+    }, [displayType, selectedMaterialName, selectedAssignmentName, initializeChat]);
 
     const chatImage = require("../../images/chat-message-dots.png");  
 
@@ -135,10 +144,11 @@ const TeacherStudentModulePage = () => {
     const handleAssignmentSelect = async (dayID, assignment) => {
         try { 
             // Update the selected assignment and set the display type to 'assignment'
-            setFileName(assignment.filename);
 
-            setSelectedMaterialName(null);
-            setSelectedAssignmentName(assignment.name);
+            setSelectedMaterialName(null); 
+            setSelectedMaterial(null); 
+            setSelectedAssignmentName(assignment.name); 
+            setSelectedAssignment(assignment); 
             setDisplayType('assignment'); 
             setDayId(dayID);
 
@@ -164,11 +174,12 @@ const TeacherStudentModulePage = () => {
         console.log(dayID, "fileName", material.filename, "materialName", material.name);
 
         try {
-            setFileName(material.filename);
 
             // Update the selected material and set the display type to 'material'
-            setSelectedAssignmentName(null);
-            setSelectedMaterialName(material.name);
+            setSelectedAssignmentName(null); 
+            setSelectedAssignment(null); 
+            setSelectedMaterialName(material.name); 
+            setSelectedMaterial(material);
             setDisplayType('material');  
             setDayId(dayID);
 
@@ -277,6 +288,41 @@ const TeacherStudentModulePage = () => {
             console.error('Error deleting module:', error);
         }
         setShowDeleteModal(false);
+    };
+
+    const handleChatMessage = async (message) => {
+        if (!message.trim() || !displayType) return;
+
+        const chatId = displayType === 'material' 
+            ? selectedMaterial.id 
+            : selectedAssignment.id;
+        
+        try {
+            // Add user message to chat
+            // Removed addMessage function call
+            
+            // Set loading state
+            // Removed setLoading function call
+            
+            // Get the response from the server
+            const response = await putChatMessage(
+                user.id,
+                displayType,
+                dayId,
+                displayType === 'material' ? selectedMaterial.id : selectedAssignment.id,
+                message
+            );
+            
+            // Add AI response to chat
+            if (response) {
+                // Removed addMessage function call
+            }
+        } catch (error) {
+            console.error('Error sending chat message:', error);
+            // Removed setError function call
+        } finally {
+            // Removed setLoading function call
+        }
     };
 
     /**
@@ -499,39 +545,6 @@ const TeacherStudentModulePage = () => {
         };
     }, [chatWidth]); 
 
-    const handleChatMessageSend = async (message) => {  
-
-        let currentFileName = null; 
-        if(displayType === 'material') {
-            currentFileName = selectedMaterialName;
-        }
-        else if(displayType === 'assignment') {
-            currentFileName = selectedAssignmentName;
-        }
-        
-        console.log("displayType", displayType, "dayId", dayId, "currentFileName", currentFileName, "message", message);  
-        try {  
-            // Always call putChatMessage with the same signature: (studentID, displayType, dayId, currentFileName, message)
-            const currentFileArg = currentFileName ? fileName : '';
-            setChatLoading(true);
-            const res = await putChatMessage(user.id, displayType, dayId, currentFileArg, message);
-
-            // Backend returns ChatResponse with messages: [{content}], responses: [{content}]
-            if (res && (res.messages || res.responses)) {
-                const msgs = res.messages || [];
-                const responses = res.responses || [];
-                const conv = msgs.map((m, i) => ({ message: m?.content || '', response: responses[i]?.content || '' }));
-                setConversation(conv);
-                // also set latest display response for backward compatibility
-                setChatResponse(responses[responses.length - 1]?.content || '');
-            }
-        } catch (error) { 
-            console.error('Error updating chat message:', error);
-        } finally {
-            setChatLoading(false);
-        }
-    };
-
     return(  
         <>   
         <div className="h-screen w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient">
@@ -575,32 +588,31 @@ const TeacherStudentModulePage = () => {
                 } 
             </div>
 
-            <div
-              className={`fixed top-40 right-0 h-[calc(90vh-120px)] bg-white shadow-lg transition-transform duration-300 ease-in-out z-40 ${
-                isChatExpanded ? "translate-x-0" : "translate-x-full"
-                }`}
-                // style={{ width: `${chatWidth}px` }} // Dynamically set the width
-                style={{
-                    width: `${chatWidth}px`, // Dynamically set the width
-                    border: "5px solid #a5a5a5ff", // Add a border
-                    borderRight: "none", // Remove the border on the right edge
-                    borderRadius: "10px 0 0 10px", // Rounded edges on the top-left and bottom-left corners
-                    // boxShadow: "inset 0 0 0 7px transparent, 0 0 0 7px linear-gradient(to bottom, #efcefcef, rgba(104, 96, 214, 1), #cf2)",
-                }}
-            >
-                {/* Resize handle */}
-                <div
-                    className="absolute left-0 top-0 h-full w-2 cursor-ew-resize"
-                    onMouseDown={startResizing}
-                ></div>
-
-                <ChatFeature 
-                    onMessageSend={handleChatMessageSend} 
-                    displayResponse={chatResponse}
-                    conversation={conversation}
-                    loading={chatLoading}
-                />
-            </div>
+            {isChatExpanded && (
+                <div className="fixed right-0 top-0 h-full bg-white shadow-lg z-50" style={{ width: `${chatWidth}px` }}>
+                    <div className="flex flex-col h-full">
+                        <div className="flex justify-between items-center p-4 border-b">
+                            <h3 className="text-lg font-semibold">Chat</h3>
+                            <button 
+                                onClick={toggleChatExpand} 
+                                className="text-gray-500 hover:text-gray-700"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        <div className="flex-1 overflow-hidden">
+                            <ChatFeature 
+                                chatId={displayType === 'material' 
+                                    ? `material_${selectedMaterial.id}` 
+                                    : displayType === 'assignment' 
+                                        ? `assignment_${selectedAssignment.id}` 
+                                        : null}
+                                onSendMessage={handleChatMessage}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     
         </>
