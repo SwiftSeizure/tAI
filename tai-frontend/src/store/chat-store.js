@@ -23,7 +23,8 @@ export const ChatStore = createStore({
                 chats: {
                     ...state.chats,
                     [chatId]: state.chats[chatId] || { 
-                        messages: [], 
+                        messages: [],  
+                        responses: [],
                         isLoading: false, 
                         error: null 
                     }
@@ -43,9 +44,10 @@ export const useCurrentChat = () => {
     
     return { 
         currentChatId: state.currentChatId,
-        currentChat: currentChat || { messages: [], isLoading: false, error: null },
+        currentChat: currentChat || { messages: [], responses: [], isLoading: false, error: null },
         setCurrentChat: actions.setCurrentChat,
-        addMessage: (message) => state.currentChatId && actions.addMessage(state.currentChatId, message),
+        addMessage: (message) => state.currentChatId && actions.addMessage(state.currentChatId, message), 
+        addResponse: (response) => state.currentChatId && actions.addResponse(state.currentChatId, response),
         setLoading: (isLoading) => state.currentChatId && actions.setLoading(state.currentChatId, isLoading),
         setError: (error) => state.currentChatId && actions.setError(state.currentChatId, error)
     };
