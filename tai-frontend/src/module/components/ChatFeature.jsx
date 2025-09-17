@@ -82,7 +82,7 @@ const ChatFeature = ({ chatId, onSendMessage }) => {
             >
                 {messages.map((msg, index) => (
                     <div 
-                        key={msg.id || index}
+                        key={`msg-${index}`}
                         className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
                         <div 
