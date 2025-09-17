@@ -8,7 +8,7 @@ import React, { useState, useRef, useEffect } from 'react';
  * API integration, and error handling.
  */
 
-const ChatFeature = ({ onMessageSend, displayResponse, conversation = [], loading = false }) => {
+export const ChatFeature = ({ onMessageSend, displayResponse, conversation, loading }) => {
     // State to handle the user message, loading state, and error messages
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
@@ -103,5 +103,3 @@ const ChatFeature = ({ onMessageSend, displayResponse, conversation = [], loadin
         </div>
     );
 };
-
-export default ChatFeature;
