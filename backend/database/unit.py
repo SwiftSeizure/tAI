@@ -20,7 +20,7 @@ def get_unit(unitID: int, session: Session) -> DBUnit:
     stmt = select(DBUnit).filter(DBUnit.id == unitID)
     unit = session.execute(stmt).scalar_one_or_none()
     if not unit:
-        raise EntityNotFoundException("unit", unitID)
+        raise EntityNotFoundException("unit", unitID) # type: ignore
     
     return unit
 
@@ -44,7 +44,7 @@ def get_unit_modules(unitID: int, session: Session) -> list[DBModule]:
     )
     unit = session.execute(stmt).scalar_one_or_none()
     if not unit:
-        raise EntityNotFoundException("unit", unitID)
+        raise EntityNotFoundException("unit", unitID) # type: ignore
     
     return list(unit.modules)
 

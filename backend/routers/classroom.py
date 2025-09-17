@@ -7,7 +7,6 @@ from backend.dependencies import DBSession
 from backend.models import ClientErrorResponse, ClassroomResponse, ClassroomUnit, CreateUnit, ClassroomUpdate,ClassroomUpdateReturn
 
 from backend.exceptions import UnauthorizedException
-from typing import Annotated
 from fastapi import Depends
 from backend.auth import get_firebase_user_from_token
 
@@ -20,7 +19,7 @@ router = APIRouter(prefix="/classroom", tags=["classroom"])
                  404: {"model": ClientErrorResponse}
              },
             summary="Retrieve units for the given classroom. Must be the authenticated teacher.")
-def get_teacher_home(classID: int, 
+def get_class_units(classID: int, 
                      user: Annotated[dict, Depends(get_firebase_user_from_token)],
                      session: DBSession) -> ClassroomResponse:
     """ Retrieve all of a teachers classes for their home page.
@@ -35,9 +34,6 @@ def get_teacher_home(classID: int,
     Returns:
         ClassroomResponse: A response model containing the units for the classroom.
     """
-    #teacherID = classroom_db.get_teacher_id_by_class_id(classID, session)
-    #if user["uid"] != teacherID:
-    #    raise UnauthorizedException("view classroom")
     
     db_units = classroom_db.get_class_units(classID, session) 
     units = [ClassroomUnit(id=c.id, name=c.name) for c in db_units] # type: ignore

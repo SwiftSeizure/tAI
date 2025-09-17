@@ -20,7 +20,7 @@ def get_module(moduleID: int, session:Session) -> DBModule:
     stmnt = select(DBModule).filter(DBModule.id == moduleID)
     module = session.execute(stmnt).scalar_one_or_none()
     if not module:
-        raise EntityNotFoundException("module",moduleID)
+        raise EntityNotFoundException("module",moduleID) # type: ignore
     return module
 
 def get_module_days(moduleID:int,session:Session) -> list[DBDay]:
@@ -39,7 +39,7 @@ def get_module_days(moduleID:int,session:Session) -> list[DBDay]:
     module = get_module(moduleID,session)
 
     if not module:
-        raise EntityNotFoundException("module",moduleID)
+        raise EntityNotFoundException("module",moduleID) # type: ignore
     
     return module.days
 
@@ -102,3 +102,22 @@ def delete_module(moduleID: int, session: Session) -> None:
     module = get_module(moduleID, session)
     session.delete(module)
     session.commit()
+    
+    
+def get_teacher_by_module_id(moduleID: int, session: Session) -> str:
+    """Get the teacher ID associated with a module by its ID.
+
+    Args:
+        moduleID (int): The ID of the module.
+        session (Session): The SQLAlchemy session to use for the query.
+
+    Raises:
+        EntityNotFoundException: If the module with the given ID does not exist.
+
+    Returns:
+        str: The teacher ID associated with the module.
+    """
+    module = get_module(moduleID, session)
+    if not module:
+        raise EntityNotFoundException("module", moduleID) # type: ignore
+    return module.unit.class_.ownerID
