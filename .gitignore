@@ -3,11 +3,10 @@
 backend/service-account.json
 backend/curl_tests
 
-# macOS stystem files
+# macOS system files
 .DS_Store
-**/.DS_Store
 
-# Python byecode
+# Python bytecode
 *.pyc
 */__pycache__/
 *.py[cod]
