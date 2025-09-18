@@ -82,24 +82,12 @@ const TeacherStudentModulePage = () => {
     // This is for the Module Only 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [currentDeleteModuleID, setCurrentDeleteModuleID] = useState(null);  
-    const [currentDeleteModuleName, setCurrentDeleteModuleName] = useState(null); 
+    const [currentDeleteModuleName, setCurrentDeleteModuleName] = useState(null);
 
     // Fetch modules when the component mounts or when currentUnit changes 
     useEffect(() => {
         fetchModules(currentUnit.id);
     }, [currentUnit?.id, fetchModules]);
-
-    useEffect(() => {
-        if (displayType === 'material' && selectedMaterial) {
-            const chatId = `material_${selectedMaterial.id}`;
-            setCurrentChat(chatId);
-        } else if (displayType === 'assignment' && selectedAssignment) {
-            const chatId = `assignment_${selectedAssignment.id}`;
-            setCurrentChat(chatId);
-        } else {
-            setCurrentChat(null);
-        }
-    }, [displayType, selectedMaterial, selectedAssignment, setCurrentChat]);
 
     const chatImage = require("../../images/chat-message-dots.png");  
 
@@ -151,6 +139,9 @@ const TeacherStudentModulePage = () => {
             setDisplayType('assignment'); 
             setDayId(dayID);
 
+            const chatId = `assignment_${assignment.id}`;
+            setCurrentChat(chatId);
+
             // Fetch the content of the selected assignment
             const fileURL = await getAssignmentURL(dayID, assignment.filename); 
             setAssignmentContent(fileURL);
@@ -181,6 +172,9 @@ const TeacherStudentModulePage = () => {
             setSelectedMaterial(material);
             setDisplayType('material');  
             setDayId(dayID);
+
+            const chatId = `material_${material.id}`;
+            setCurrentChat(chatId);
 
             // Fetch the content of the selected material
             const fileURL = await getMaterialURL(dayID, material.filename);
@@ -276,14 +270,6 @@ const TeacherStudentModulePage = () => {
             : `assignment_${selectedAssignment.id}`;
         
         try {
-            // Add user message to chat with a unique ID
-            const messageId = `msg-${Date.now()}`;
-            addMessage({ 
-                id: messageId,
-                role: 'user', 
-                content: message 
-            });
-            setLoading(true);
             
             // Get the response from the server
             const serverResponse = await putChatMessage(
@@ -313,7 +299,7 @@ const TeacherStudentModulePage = () => {
                     // Add corresponding AI response if it exists
                     if (serverResponse.responses[i]) {
                         messagesToAdd.push({
-                            id: `response_${serverResponse.responses[i].id}`,
+                            id: serverResponse.responses[i].id,
                             role: 'assistant',
                             content: serverResponse.responses[i].content,
                             timestamp: Date.now()
@@ -323,11 +309,22 @@ const TeacherStudentModulePage = () => {
                 
                 // Clear existing messages and add all new ones with unique IDs
                 setCurrentChat(chatId); // Reset the chat
-                messagesToAdd.forEach(msg => {
-                    // Ensure each message has a unique ID
+                let messageCount = 1;
+                
+                messagesToAdd.forEach((msg, index) => {
+                    // For even indices (0, 2, 4, ...) use numeric ID, for odd use response_#
+                    const messageId = index % 2 === 0 
+                        ? messageCount.toString() 
+                        : `response_${messageCount}`;
+                    
+                    // Only increment the counter after processing a pair (user + assistant)
+                    if (index % 2 === 1) {
+                        messageCount++;
+                    }
+                    
                     const messageWithId = {
                         ...msg,
-                        id: msg.id || `msg-${Date.now()}`
+                        id: messageId
                     };
                     addMessage(messageWithId);
                 });
