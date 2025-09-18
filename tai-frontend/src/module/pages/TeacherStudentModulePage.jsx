@@ -615,38 +615,32 @@ const TeacherStudentModulePage = () => {
                 </div>  
 
 
-                {/* Chat button for students or chat settings for teachers */}
-                {user.role === 'student' ? 
+                {/* Chat button for students */}
+                {user.role === 'student' && !isChatExpanded && (
                     <button 
-                        className="fixed bottom-4 right-8 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out z-50"  
-                        onClick={toggleChatExpand} > 
-                       <img 
-                        className={`rounded-md transition-all duration-200 ease-in-out w-10 h-10 hover:w-16 hover:h-16`}
-                        src={chatImage}
+                        className="fixed bottom-4 right-8 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out z-50 bg-white shadow-lg hover:scale-110"  
+                        onClick={toggleChatExpand} 
+                        aria-label="Toggle chat"
+                    > 
+                        <img 
+                            className="rounded-md transition-all duration-200 ease-in-out w-10 h-10 hover:w-12 hover:h-12"
+                            src={chatImage}
+                            alt="Chat"
                         /> 
-                   </button>  
-                   : 
-                   <button 
-                   className="fixed bottom-4 right-8 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out "                        
-
-                    >  
-                        <h2 className={`rounded-md transition-all duration-300 ease-in-out ${isChatExpanded ? "bg-red-600 p-2 fixed bottom-8 right-12 font-nunito" : "w-8 h-8 hover:w-12 hover:h-12"  }  `}>  
-                            {isChatExpanded ? "Save Changes" : <SettingsIcon />} 
-                        </h2>
-                        
-
-                    </button> 
-                } 
+                    </button>
+                )}
             </div>
 
-            {isChatExpanded && (
-                <div className="fixed right-0 top-0 h-full bg-white shadow-lg z-50" style={{ width: `${chatWidth}px` }}>
+            {/* Chat panel for students */}
+            {user.role === 'student' && isChatExpanded && (
+                <div className="fixed right-0 top-0 h-full bg-white shadow-lg z-40 w-1/3 min-w-[400px]">
                     <div className="flex flex-col h-full">
                         <div className="flex justify-between items-center p-4 border-b">
                             <h3 className="text-lg font-semibold">Chat</h3>
                             <button 
                                 onClick={toggleChatExpand} 
-                                className="text-gray-500 hover:text-gray-700"
+                                className="text-gray-500 hover:text-gray-700 text-xl"
+                                aria-label="Close chat"
                             >
                                 ✕
                             </button>
