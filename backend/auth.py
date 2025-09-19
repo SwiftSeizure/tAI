@@ -3,6 +3,8 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from firebase_admin.auth import verify_id_token
 
+ACTIVE = True
+
 # Bearer scheme setup
 bearer_scheme = HTTPBearer(auto_error=False)
 
@@ -17,6 +19,9 @@ def get_firebase_user_from_token(
     Raises:
         HTTPException 401 if user does not exist or token is invalid
     """
+    if not ACTIVE:
+        return {"uid": "test-user"}
+    
     try:
         if not token:
             raise ValueError("No token")
