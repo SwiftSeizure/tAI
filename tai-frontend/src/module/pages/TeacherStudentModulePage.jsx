@@ -510,6 +510,9 @@ const TeacherStudentModulePage = () => {
                             onAddAssignment={handleAddAssignment}  
                             onClickDeleteModule={handleOpenDeleteModuleModal}
                             onClickDeleteDay={handleOpenDeleteDayModal}
+                            onClickDeleteMaterial={handleOpenDeleteMaterialModal}
+                            onClickDeleteAssignment={handleOpenDeleteAssignmentModal}
+
 
                         />
                     ))}      

@@ -25,7 +25,9 @@ const ModuleComponent = ( {
     onAddMaterial, 
     onAddAssignment, 
     onClickDeleteModule,
-    onClickDeleteDay
+    onClickDeleteDay, 
+    onClickDeleteMaterial, 
+    onClickDeleteAssignment
 } ) => {   
  
     // State to track whether the module is expanded or not
@@ -48,7 +50,15 @@ const ModuleComponent = ( {
 
     const handleOnClickDeleteDay = (day) => { 
         onClickDeleteDay(day);
-    };
+    }; 
+
+    const handleOnClickDeleteMaterial = (material) => { 
+        onClickDeleteMaterial(material);
+    }; 
+
+    const handleOnClickDeleteAssignment = (assignment) => { 
+        onClickDeleteAssignment(assignment);
+    }; 
 
     return ( 
         <> 
@@ -99,7 +109,9 @@ const ModuleComponent = ( {
                                     onAssignmentSelect={onAssignmentSelect}
                                     handleAddMaterial={onAddMaterial}
                                     handleAddAssignment={onAddAssignment}
-                                    handleOnClickDeleteDay={handleOnClickDeleteDay}
+                                    handleOnClickDeleteDay={handleOnClickDeleteDay} 
+                                    handleOnClickDeleteMaterial={handleOnClickDeleteMaterial} 
+                                    handleOnClickDeleteAssignment={handleOnClickDeleteAssignment}
                                 /> 
                             </li> 
                         ))}  
