@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";   
-import { useNavigate } from 'react-router-dom';  
+import React, { useEffect, useState } from "react";
 import { TitleCard } from "../../shared/components/TitleCard";
 import ChatFeature from "../components/ChatFeature";
 import ModuleComponent from "../components/ModuleComponent";  
@@ -11,7 +10,6 @@ import { useModule } from "../../store/module-store";
 import { useCurrentChat } from "../../store/chat-store";
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
-import SettingsIcon from '@mui/icons-material/Settings'; 
 import { postCreateModule } from "../services/post-create-module";
 import { postCreateDay } from "../services/post-create-day";   
 import { postCreateMaterial } from "../services/post-create-material"; 
@@ -65,7 +63,7 @@ const TeacherStudentModulePage = () => {
     
     const { currentUnit } = useCurrentUnit();  
     const [moduleState, moduleActions] = useModule();
-    const { modules, isLoading, error } = moduleState;
+    const { modules } = moduleState;
     const { fetchModules } = moduleActions; 
 
     // State variables for managing the add module modal
@@ -76,7 +74,7 @@ const TeacherStudentModulePage = () => {
     const [showAddMaterialModal, setShowAddMaterialModal] = useState(false); 
     const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false);  
 
-    const { currentChat, setCurrentChat, addMessage, setLoading, setError } = useCurrentChat();   
+    const { setCurrentChat, addMessage, setLoading, setError } = useCurrentChat();   
     const [dayId, setDayId] = useState(null); 
 
     // This is for the Module Only 
