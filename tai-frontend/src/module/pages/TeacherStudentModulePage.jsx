@@ -47,48 +47,44 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2
  * - Dynamically updates content based on user interactions.
  */
 
-const TeacherStudentModulePage = () => {     
+const TeacherStudentModulePage = () => {      
 
-    // State variables for managing data and UI state 
-
+    // UI State
     const [isChatExpanded, setIsChatExpanded] = useState(false); // Tracks chat expansion state
-    const [displayType, setDisplayType] = useState('welcome'); // Tracks the typeof content to display
-
-    const [selectedMaterialName, setSelectedMaterialName] = useState(null); // Tracks the selected material name
-    
-    const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
-
-    const [selectedMaterial, setSelectedMaterial] = useState(null); // Tracks the selected material
-    const [selectedAssignment, setSelectedAssignment] = useState(null); // Tracks the selected assignment
-
-    const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
-    const [assignmentContent, setAssignmentContent] = useState(null); // Stores the content of a selected assignment
-
+    const [displayType, setDisplayType] = useState('welcome'); // Tracks the type of content to display
     const [chatWidth, setChatWidth] = useState(600); // Default width in pixels
 
-    const { user } = useCurrentUser(); 
-    
-    const { currentUnit } = useCurrentUnit();  
-    const [moduleState, moduleActions] = useModule();
-    const { modules } = moduleState;
-    const { fetchModules } = moduleActions; 
+    // Selected Content State
+    const [selectedMaterial, setSelectedMaterial] = useState(null); // Tracks the selected material
+    const [selectedMaterialName, setSelectedMaterialName] = useState(null); // Tracks the selected material name
+    const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
 
-    // State variables for managing the add module modal
+    const [selectedAssignment, setSelectedAssignment] = useState(null); // Tracks the selected assignment
+    const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
+    const [assignmentContent, setAssignmentContent] = useState(null); // Stores the content of a selected assignment
+
+    // Modal States
     const [showAddModuleModal, setShowAddModuleModal] = useState(false);
     const [showAddDayModal, setShowAddDayModal] = useState(false);
-    const [selectedModuleId, setSelectedModuleId] = useState(null);  
-
-    const [showAddMaterialModal, setShowAddMaterialModal] = useState(false); 
-    const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false);  
-
-    const { setCurrentChat, addMessage, setLoading, setError } = useCurrentChat();   
-    const [dayId, setDayId] = useState(null); 
-
-    // This is for the Module Only 
+    const [showAddMaterialModal, setShowAddMaterialModal] = useState(false);
+    const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false);
     const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false);
-    const [currentDeleteModuleID, setCurrentDeleteModuleID] = useState(null);  
-    const [currentDeleteModuleName, setCurrentDeleteModuleName] = useState(null);
 
+    // Module Management
+    const [selectedModuleId, setSelectedModuleId] = useState(null);
+    const [currentDeleteModuleID, setCurrentDeleteModuleID] = useState(null);
+    const [currentDeleteModuleName, setCurrentDeleteModuleName] = useState(null);
+    const [dayId, setDayId] = useState(null);
+
+    // Store Hooks
+    const { user } = useCurrentUser();
+    const { currentUnit } = useCurrentUnit();
+    const [moduleState, moduleActions] = useModule();
+    const { modules } = moduleState;
+    const { fetchModules } = moduleActions;
+    const { setCurrentChat, addMessage, setLoading, setError } = useCurrentChat();
+
+    
     // Fetch modules when the component mounts or when currentUnit changes 
     useEffect(() => {
         fetchModules(currentUnit.id);
