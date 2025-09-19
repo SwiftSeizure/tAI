@@ -69,7 +69,9 @@ const TeacherStudentModulePage = () => {
     const [showAddMaterialModal, setShowAddMaterialModal] = useState(false);
     const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false);
     const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false); 
-    const [showDeleteDayModal, setShowDeleteDayModal] = useState(false);
+    const [showDeleteDayModal, setShowDeleteDayModal] = useState(false); 
+    const [showDeleteMaterialModal, setShowDeleteMaterialModal] = useState(false); 
+    const [showDeleteAssignmentModal, setShowDeleteAssignmentModal] = useState(false); 
 
     // Module Management
     const [selectedModuleId, setSelectedModuleId] = useState(null); 
@@ -79,7 +81,13 @@ const TeacherStudentModulePage = () => {
     const [dayId, setDayId] = useState(null); 
 
     // Delete Day Management
-    const [currentDeleteDay, setCurrentDeleteDay] = useState(null); 
+    const [currentDeleteDay, setCurrentDeleteDay] = useState(null);  
+
+    // Delete Material Management
+    const [currentDeleteMaterial, setCurrentDeleteMaterial] = useState(null); 
+
+    // Delete Assignment Management
+    const [currentDeleteAssignment, setCurrentDeleteAssignment] = useState(null); 
 
 
     // Store Hooks
@@ -376,6 +384,43 @@ const TeacherStudentModulePage = () => {
             console.error('Error deleting day:', error);
         }
         setShowDeleteDayModal(false);
+    }; 
+
+    const handleOpenDeleteMaterialModal = (material) => {
+        setCurrentDeleteMaterial(material);
+        setShowDeleteMaterialModal(true);
+    };
+
+    const handleCloseDeleteMaterialModal = () => {
+        setShowDeleteMaterialModal(false);
+    };
+
+    const handleDeleteMaterial = async () => {
+        try { 
+            console.log('Deleting material:', currentDeleteMaterial);
+            
+        } catch (error) {
+            console.error('Error deleting material:', error);
+        }
+        setShowDeleteMaterialModal(false);
+    }; 
+
+    const handleOpenDeleteAssignmentModal = (assignment) => {
+        setCurrentDeleteAssignment(assignment);
+        setShowDeleteAssignmentModal(true);
+    };
+
+    const handleCloseDeleteAssignmentModal = () => {
+        setShowDeleteAssignmentModal(false);
+    };
+
+    const handleDeleteAssignment = async () => {
+        try {
+            console.log('Deleting assignment:', currentDeleteAssignment);
+        } catch (error) {
+            console.error('Error deleting assignment:', error);
+        }
+        setShowDeleteAssignmentModal(false);
     };
 
 
@@ -508,6 +553,24 @@ const TeacherStudentModulePage = () => {
                                     onClose={handleCloseDeleteDayModal}
                                     onConfirmDelete={handleDeleteDay}
                                     itemToDelete={currentDeleteDay.name}
+                                />
+                            )} 
+
+                            {currentDeleteMaterial && (
+                                <DeleteModal
+                                    isOpen={showDeleteMaterialModal}
+                                    onClose={handleCloseDeleteMaterialModal}
+                                    onConfirmDelete={handleDeleteMaterial}
+                                    itemToDelete={currentDeleteMaterial.name}
+                                />
+                            )} 
+
+                            {currentDeleteAssignment && (
+                                <DeleteModal
+                                    isOpen={showDeleteAssignmentModal}
+                                    onClose={handleCloseDeleteAssignmentModal}
+                                    onConfirmDelete={handleDeleteAssignment}
+                                    itemToDelete={currentDeleteAssignment.name}
                                 />
                             )}
                             
