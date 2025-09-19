@@ -2,8 +2,9 @@ import { createStore, createHook } from 'react-sweet-state';
 import * as actions from './content-actions';
 
 const initialState = { 
-    selectedContent: null, 
-    selectedContentTypeURL: null, 
+    selectedContent: null,
+    selectedContentType: null,
+    selectedContentURL: null, 
 }; 
 
 export const ContentStore = createStore({
@@ -15,7 +16,10 @@ export const ContentStore = createStore({
 export const useContent = createHook(ContentStore); 
 
 export const useSelectedContent = () => {
-    const [state] = useContent();
-    return { selectedContent: state.selectedContent, selectedContentTypeURL: state.selectedContentTypeURL };
+    const [state, actions] = useContent();
+    return { 
+        ...state,
+        ...actions
+    };
 };
 

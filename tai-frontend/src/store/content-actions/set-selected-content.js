@@ -1,6 +1,6 @@
-export const setSelectedContent = (content, contentURL) => ({ setState }) => { 
+export const setSelectedContent = (content, contentType, contentURL) => ({ setState }) => { 
 
-    const newState = { selectedContent: content, selectedContentTypeURL: contentURL };
+    const newState = { selectedContent: content, selectedContentType: contentType, selectedContentURL: contentURL };
 
     setState(newState);
 

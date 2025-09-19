@@ -55,13 +55,13 @@ const TeacherStudentModulePage = () => {
     const [chatWidth, setChatWidth] = useState(600); // Default width in pixels
 
     // Selected Content State
-    const [selectedMaterial, setSelectedMaterial] = useState(null); // Tracks the selected material
-    const [selectedMaterialName, setSelectedMaterialName] = useState(null); // Tracks the selected material name
-    const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
+    // const [selectedMaterial, setSelectedMaterial] = useState(null); // Tracks the selected material
+    // const [selectedMaterialName, setSelectedMaterialName] = useState(null); // Tracks the selected material name
+    // const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
 
-    const [selectedAssignment, setSelectedAssignment] = useState(null); // Tracks the selected assignment
-    const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
-    const [assignmentContent, setAssignmentContent] = useState(null); // Stores the content of a selected assignment
+    // const [selectedAssignment, setSelectedAssignment] = useState(null); // Tracks the selected assignment
+    // const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
+    // const [assignmentContent, setAssignmentContent] = useState(null); // Stores the content of a selected assignment
 
     // Modal States
     const [showAddModuleModal, setShowAddModuleModal] = useState(false);
@@ -83,6 +83,9 @@ const TeacherStudentModulePage = () => {
     const { modules } = moduleState;
     const { fetchModules } = moduleActions;
     const { setCurrentChat, addMessage, setLoading, setError } = useCurrentChat();
+    const [contentState, contentActions] = useContent();
+    const { selectedContent, selectedContentURL } = contentState;
+    const { setSelectedContent } = contentActions;
 
     
     // Fetch modules when the component mounts or when currentUnit changes 
@@ -129,21 +132,14 @@ const TeacherStudentModulePage = () => {
      */
     const handleAssignmentSelect = async (dayID, assignment) => {
         try { 
-            // Update the selected assignment and set the display type to 'assignment'
 
-            setSelectedMaterialName(null); 
-            setSelectedMaterial(null); 
-            setSelectedAssignmentName(assignment.name); 
-            setSelectedAssignment(assignment); 
+            const fileURL = await getAssignmentURL(dayID, assignment.filename); 
+            await setSelectedContent(assignment, 'assignment', fileURL);
             setDisplayType('assignment'); 
             setDayId(dayID);
-
             const chatId = `assignment_${assignment.id}`;
             setCurrentChat(chatId);
 
-            // Fetch the content of the selected assignment
-            const fileURL = await getAssignmentURL(dayID, assignment.filename); 
-            setAssignmentContent(fileURL);
         } catch (error) {
             console.error('Error fetching assignment:', error);
             setDisplayType('error'); 
@@ -164,20 +160,19 @@ const TeacherStudentModulePage = () => {
 
         try {
 
+            console.log("selectedContent before set", selectedContent);
             // Update the selected material and set the display type to 'material'
-            setSelectedAssignmentName(null); 
-            setSelectedAssignment(null); 
-            setSelectedMaterialName(material.name); 
-            setSelectedMaterial(material);
+            const fileURL = await getMaterialURL(dayID, material.filename); 
+            await setSelectedContent(material, 'material', fileURL); 
+ 
+            console.log("selectedContent after set", selectedContent); 
+
             setDisplayType('material');  
             setDayId(dayID);
 
             const chatId = `material_${material.id}`;
             setCurrentChat(chatId);
 
-            // Fetch the content of the selected material
-            const fileURL = await getMaterialURL(dayID, material.filename);
-            setMaterialContent(fileURL); 
         } catch (error) {
             setDisplayType('error'); 
         }
@@ -265,8 +260,8 @@ const TeacherStudentModulePage = () => {
         if (!message.trim() || !displayType) return '';
 
         const chatId = displayType === 'material' 
-            ? `material_${selectedMaterial.id}`
-            : `assignment_${selectedAssignment.id}`;
+            ? `material_${selectedContent.id}`
+            : `assignment_${selectedContent.id}`;
         
         try {
             
@@ -275,7 +270,7 @@ const TeacherStudentModulePage = () => {
                 user.id,
                 displayType,
                 dayId,
-                displayType === 'material' ? selectedMaterial.filename : selectedAssignment.filename,
+                selectedContent.filename,
                 message
             );
 
@@ -525,9 +520,9 @@ const TeacherStudentModulePage = () => {
                     return (
                         <div className="content-container material-container"> 
                             <div className="content-header">   
-                                <h2 className="content-title"> {selectedMaterialName} </h2> 
+                                <h2 className="content-title"> {selectedContent.name} </h2> 
                             </div>
-                            {renderPDFContent(materialContent)} 
+                            {renderPDFContent(selectedContentURL)} 
                         </div>
                     );
      
@@ -535,9 +530,9 @@ const TeacherStudentModulePage = () => {
                     return( 
                         <div className="content-container material-container"> 
                             <div className="content-header"> 
-                                <h2 className="content-title"> {selectedAssignmentName} </h2> 
+                                <h2 className="content-title"> {selectedContent.name} </h2> 
                             </div>  
-                            {renderPDFContent(assignmentContent)}
+                            {renderPDFContent(selectedContentURL)}
 
                         </div>
                     ); 
@@ -569,7 +564,7 @@ const TeacherStudentModulePage = () => {
             case 'error': 
                return( 
                    <div > 
-                       <h1 > Error loading {selectedMaterialName || selectedAssignmentName || 'content'} </h1>
+                       <h1 > Error loading {selectedContent.name || 'content'} </h1>
                        <p >An error occurred while loading the material.</p>
                    </div>
                );
@@ -587,8 +582,8 @@ const TeacherStudentModulePage = () => {
     const renderChatFeature = () => {
         if (displayType === 'material' || displayType === 'assignment') {
             const chatId = displayType === 'material' 
-                ? `material_${selectedMaterial?.id}` 
-                : `assignment_${selectedAssignment?.id}`;
+                ? `material_${selectedContent?.id}` 
+                : `assignment_${selectedContent?.id}`;
                 
             return (
                 <ChatFeature 
