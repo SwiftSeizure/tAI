@@ -1,28 +1,36 @@
+// React & Dependencies
 import React, { useEffect, useState } from "react";
+import { pdfjs } from 'react-pdf';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import 'react-pdf/dist/esm/Page/TextLayer.css';
+
+// Components
 import { TitleCard } from "../../shared/components/TitleCard";
 import ChatFeature from "../components/ChatFeature";
-import ModuleComponent from "../components/ModuleComponent";  
+import ModuleComponent from "../components/ModuleComponent";
+
+// Modals
 import AddModuleModal from "../modals/AddModuleModal";   
-import AddDayModal from "../modals/AddDayModal"; 
+import AddDayModal from "../modals/AddDayModal";
+import AddAssignmentModal from "../modals/AddAssignmentModal"; 
+import AddMaterialModal from "../modals/AddMaterialModal";
+import DeleteModal from "../../shared/modals/DeleteModal";
+
+// Store Hooks
 import { useCurrentUser } from "../../store/user-store"; 
 import { useCurrentUnit } from "../../store/unit-store";
 import { useModule } from "../../store/module-store"; 
-import { useCurrentChat } from "../../store/chat-store";
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import 'react-pdf/dist/esm/Page/TextLayer.css';
+import { useCurrentChat } from "../../store/chat-store"; 
+import { useContent } from "../../store/content-store"; 
+
+// API Calls (Services)
 import { postCreateModule } from "../services/post-create-module";
 import { postCreateDay } from "../services/post-create-day";   
 import { postCreateMaterial } from "../services/post-create-material"; 
 import { postCreateAssignment } from "../services/post-create-assignment";  
-import { putChatMessage } from "../services/put-chat-message"; 
-import AddAssignmentModal from "../modals/AddAssignmentModal"; 
-import AddMaterialModal from "../modals/AddMaterialModal"; 
-
-import { pdfjs } from 'react-pdf';
+import { putChatMessage } from "../services/put-chat-message";
 import { getMaterialURL } from "../services/get-material-url";
 import { getAssignmentURL } from "../services/get-assignment-url";   
-
-import DeleteModal from "../../shared/modals/DeleteModal";
 import { deleteModule } from "../services/delete-module";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
@@ -53,7 +61,6 @@ const TeacherStudentModulePage = () => {
     const [selectedMaterial, setSelectedMaterial] = useState(null); // Tracks the selected material
     const [selectedAssignment, setSelectedAssignment] = useState(null); // Tracks the selected assignment
 
-    
     const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
     const [assignmentContent, setAssignmentContent] = useState(null); // Stores the content of a selected assignment
 
@@ -78,7 +85,7 @@ const TeacherStudentModulePage = () => {
     const [dayId, setDayId] = useState(null); 
 
     // This is for the Module Only 
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false);
     const [currentDeleteModuleID, setCurrentDeleteModuleID] = useState(null);  
     const [currentDeleteModuleName, setCurrentDeleteModuleName] = useState(null);
 
@@ -339,11 +346,11 @@ const TeacherStudentModulePage = () => {
     const handleOpenDeleteModal = (moduleID, moduleName) => {
         setCurrentDeleteModuleID(moduleID);
         setCurrentDeleteModuleName(moduleName);
-        setShowDeleteModal(true);
+        setShowDeleteModuleModal(true);
     };
 
-    const handleCloseDeleteModal = () => {
-        setShowDeleteModal(false);
+    const handleCloseDeleteModuleModal = () => {
+        setShowDeleteModuleModal(false);
     }; 
 
     const handleDeleteModule = async () => {
@@ -353,8 +360,66 @@ const TeacherStudentModulePage = () => {
         } catch (error) {
             console.error('Error deleting module:', error);
         }
-        setShowDeleteModal(false);
+        setShowDeleteModuleModal(false);
+    }; 
+
+
+    //Move 
+    /**
+     * startResizing
+     * Initiates the resizing of the chat overlay when the user starts dragging the resize handle.
+     * @param {object} e - The mouse down event.
+     */
+    const startResizing = (e) => {
+        // Prevent text selection while resizing
+        e.preventDefault();
+
+        // Add event listeners for mouse movement and release
+        window.addEventListener("mousemove", resizeOverlay);
+        window.addEventListener("mouseup", stopResizing);
     };
+
+    const resizeOverlay = (e) => {
+        // Calculate the total available width for the grid
+        const totalWidth = window.innerWidth;
+
+        // Calculate the maximum width for the chat overlay
+        const maxChatWidth = totalWidth - 280; // Subtract the sidebar width (280px)
+
+        // Calculate the new width based on the mouse position
+        const newWidth = totalWidth - e.clientX;
+
+        // Set a minimum and maximum width for the overlay
+        if (newWidth >= 200 && newWidth <= maxChatWidth) {
+            setChatWidth(newWidth);
+        }
+    };
+
+    const stopResizing = () => {
+        // Remove event listeners when resizing is complete
+        window.removeEventListener("mousemove", resizeOverlay);
+        window.removeEventListener("mouseup", stopResizing);
+    };
+
+    // Adjust chatWidth dynamically when the window is resized
+    useEffect(() => {
+        const handleResize = () => {
+            const totalWidth = window.innerWidth;
+            const maxChatWidth = totalWidth - 280;
+
+            if (chatWidth > maxChatWidth) {
+                setChatWidth(maxChatWidth);
+            }
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, [chatWidth]);  
+    // End Move
+
+
 
     /**
      * renderModules
@@ -410,8 +475,8 @@ const TeacherStudentModulePage = () => {
                             /> 
 
                             <DeleteModal
-                                isOpen={showDeleteModal}
-                                onClose={handleCloseDeleteModal}
+                                isOpen={showDeleteModuleModal}
+                                onClose={handleCloseDeleteModuleModal}
                                 onConfirmDelete={handleDeleteModule}
                                 itemToDelete={currentDeleteModuleName}
                             />
@@ -538,59 +603,6 @@ const TeacherStudentModulePage = () => {
         }
         return <div> Please select an assignment or material to use the Chat feature </div>;
     };
-
-    /**
-     * startResizing
-     * Initiates the resizing of the chat overlay when the user starts dragging the resize handle.
-     * @param {object} e - The mouse down event.
-     */
-    const startResizing = (e) => {
-        // Prevent text selection while resizing
-        e.preventDefault();
-
-        // Add event listeners for mouse movement and release
-        window.addEventListener("mousemove", resizeOverlay);
-        window.addEventListener("mouseup", stopResizing);
-    };
-
-    const resizeOverlay = (e) => {
-        // Calculate the total available width for the grid
-        const totalWidth = window.innerWidth;
-
-        // Calculate the maximum width for the chat overlay
-        const maxChatWidth = totalWidth - 280; // Subtract the sidebar width (280px)
-
-        // Calculate the new width based on the mouse position
-        const newWidth = totalWidth - e.clientX;
-
-        // Set a minimum and maximum width for the overlay
-        if (newWidth >= 200 && newWidth <= maxChatWidth) {
-            setChatWidth(newWidth);
-        }
-    };
-
-    const stopResizing = () => {
-        // Remove event listeners when resizing is complete
-        window.removeEventListener("mousemove", resizeOverlay);
-        window.removeEventListener("mouseup", stopResizing);
-    };
-
-    // Adjust chatWidth dynamically when the window is resized
-    useEffect(() => {
-        const handleResize = () => {
-            const totalWidth = window.innerWidth;
-            const maxChatWidth = totalWidth - 280;
-
-            if (chatWidth > maxChatWidth) {
-                setChatWidth(maxChatWidth);
-            }
-        };
-
-        window.addEventListener("resize", handleResize);
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        };
-    }, [chatWidth]); 
 
     return(  
         <>   
