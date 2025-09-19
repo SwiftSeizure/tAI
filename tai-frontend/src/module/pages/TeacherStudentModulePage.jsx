@@ -31,7 +31,10 @@ import { postCreateAssignment } from "../services/post-create-assignment";
 import { putChatMessage } from "../services/put-chat-message";
 import { getMaterialURL } from "../services/get-material-url";
 import { getAssignmentURL } from "../services/get-assignment-url";   
-import { deleteModule } from "../services/delete-module";
+import { deleteModule } from "../services/delete-module"; 
+import { deleteDay } from "../services/delete-day";
+import { deleteMaterial } from "../services/delete-material";
+import { deleteAssignment } from "../services/delete-assignment";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
 
@@ -168,18 +171,12 @@ const TeacherStudentModulePage = () => {
      * @param {string} fileName - The filename of the material.
      * @param {string} materialName - The name of the material.
      */
-    const handleMaterialSelect = async ( dayID, material ) => {   
-
-        console.log(dayID, "fileName", material.filename, "materialName", material.name);
+    const handleMaterialSelect = async ( dayID, material ) => {
 
         try {
-
-            console.log("selectedContent before set", selectedContent);
             // Update the selected material and set the display type to 'material'
             const fileURL = await getMaterialURL(dayID, material.filename); 
             await setSelectedContent(material, 'material', fileURL); 
- 
-            console.log("selectedContent after set", selectedContent); 
 
             setDisplayType('material');  
             setDayId(dayID);
@@ -379,7 +376,8 @@ const TeacherStudentModulePage = () => {
 
     const handleDeleteDay = async () => {
         try {
-            console.log('Deleting day:', currentDeleteDay);
+            console.log('Deleting day:', currentDeleteDay); 
+            await deleteDay(currentDeleteDay.id);
         } catch (error) {
             console.error('Error deleting day:', error);
         }
@@ -398,7 +396,7 @@ const TeacherStudentModulePage = () => {
     const handleDeleteMaterial = async () => {
         try { 
             console.log('Deleting material:', currentDeleteMaterial);
-            
+            // TODO need to get the day id from the material, could prolly use a local store, check if its there first 
         } catch (error) {
             console.error('Error deleting material:', error);
         }
@@ -416,7 +414,8 @@ const TeacherStudentModulePage = () => {
 
     const handleDeleteAssignment = async () => {
         try {
-            console.log('Deleting assignment:', currentDeleteAssignment);
+            console.log('Deleting assignment:', currentDeleteAssignment); 
+            // TODO need to get the day id from the assignment, could prolly use something else
         } catch (error) {
             console.error('Error deleting assignment:', error);
         }
