@@ -97,8 +97,6 @@ const TeacherStudentModulePage = () => {
         setIsChatExpanded(!isChatExpanded);  
     };
 
-
-
     /*  
      */
     useEffect(() => { 
@@ -226,7 +224,7 @@ const TeacherStudentModulePage = () => {
              
             await fetchModules(currentUnit.id);  
             
-            //force refresh here 
+            //force refresh here
 
             handleMaterialSelect(dayId, materialData.file.name, materialData.name); 
         } 
