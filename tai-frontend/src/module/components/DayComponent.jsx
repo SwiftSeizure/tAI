@@ -18,7 +18,14 @@ import { getDayMaterials } from "../services/get-day-materials";
  * - onAssignmentSelect: Callback function triggered when an assignment is selected.
  */ 
 
-const DayComponent = ( {day, onMaterialSelect, onAssignmentSelect, handleAddMaterial, handleAddAssignment}  ) => { 
+const DayComponent = ( {
+    day,
+    onMaterialSelect, 
+    onAssignmentSelect, 
+    handleAddMaterial, 
+    handleAddAssignment, 
+    handleOnClickDeleteDay
+}  ) => { 
 
     // State to track whether the day is expanded or not
     const [isExpanded, setIsExpanded] = useState(false);   
@@ -99,6 +106,9 @@ const DayComponent = ( {day, onMaterialSelect, onAssignmentSelect, handleAddMate
                     ) : (
                         <AnimatePresence>
                             <>
+                            {user.role === "teacher" && (
+                                <button onClick={() => handleOnClickDeleteDay(day)}>Delete Day</button>
+                            )}
                                 {materials && materials.length > 0 && (
                                     <motion.div 
                                         key="materials-section"

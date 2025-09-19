@@ -68,13 +68,19 @@ const TeacherStudentModulePage = () => {
     const [showAddDayModal, setShowAddDayModal] = useState(false);
     const [showAddMaterialModal, setShowAddMaterialModal] = useState(false);
     const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false);
-    const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false);
+    const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false); 
+    const [showDeleteDayModal, setShowDeleteDayModal] = useState(false);
 
     // Module Management
-    const [selectedModuleId, setSelectedModuleId] = useState(null);
-    const [currentDeleteModuleID, setCurrentDeleteModuleID] = useState(null);
-    const [currentDeleteModuleName, setCurrentDeleteModuleName] = useState(null);
-    const [dayId, setDayId] = useState(null);
+    const [selectedModuleId, setSelectedModuleId] = useState(null); 
+
+    // Delete Module Management
+    const [currentDeleteModule, setCurrentDeleteModule] = useState(null);
+    const [dayId, setDayId] = useState(null); 
+
+    // Delete Day Management
+    const [currentDeleteDay, setCurrentDeleteDay] = useState(null); 
+
 
     // Store Hooks
     const { user } = useCurrentUser();
@@ -334,9 +340,9 @@ const TeacherStudentModulePage = () => {
         }
     };
 
-    const handleOpenDeleteModal = (moduleID, moduleName) => {
-        setCurrentDeleteModuleID(moduleID);
-        setCurrentDeleteModuleName(moduleName);
+    const handleOpenDeleteModuleModal = (module) => { 
+        console.log('Opening delete module modal for:', module);
+        setCurrentDeleteModule(module);
         setShowDeleteModuleModal(true);
     };
 
@@ -346,13 +352,33 @@ const TeacherStudentModulePage = () => {
 
     const handleDeleteModule = async () => {
         try {
-            await deleteModule(currentDeleteModuleID);
+            await deleteModule(currentDeleteModule.id);
             await fetchModules(currentUnit.id);
         } catch (error) {
             console.error('Error deleting module:', error);
         }
         setShowDeleteModuleModal(false);
-    }; 
+    };   
+
+    const handleOpenDeleteDayModal = (day) => {
+        setCurrentDeleteDay(day);
+        setShowDeleteDayModal(true);
+    };
+
+    const handleCloseDeleteDayModal = () => {
+        setShowDeleteDayModal(false);
+    };
+
+    const handleDeleteDay = async () => {
+        try {
+            console.log('Deleting day:', currentDeleteDay);
+        } catch (error) {
+            console.error('Error deleting day:', error);
+        }
+        setShowDeleteDayModal(false);
+    };
+
+
 
 
     //Move 
@@ -437,7 +463,8 @@ const TeacherStudentModulePage = () => {
                             onAddDay={handleAddDay}
                             onAddMaterial={handleAddMaterial}
                             onAddAssignment={handleAddAssignment}  
-                            onClickDelete={handleOpenDeleteModal}
+                            onClickDeleteModule={handleOpenDeleteModuleModal}
+                            onClickDeleteDay={handleOpenDeleteDayModal}
 
                         />
                     ))}      
@@ -465,12 +492,25 @@ const TeacherStudentModulePage = () => {
                                 onAddAssignment={handleNewAssignment}
                             /> 
 
-                            <DeleteModal
-                                isOpen={showDeleteModuleModal}
-                                onClose={handleCloseDeleteModuleModal}
-                                onConfirmDelete={handleDeleteModule}
-                                itemToDelete={currentDeleteModuleName}
-                            />
+                            {currentDeleteModule && (
+                                <DeleteModal
+                                    isOpen={showDeleteModuleModal}
+                                    onClose={handleCloseDeleteModuleModal}
+                                    onConfirmDelete={handleDeleteModule}
+                                    itemToDelete={currentDeleteModule.name}
+                                />
+                            )}
+
+
+                            {currentDeleteDay && (
+                                <DeleteModal
+                                    isOpen={showDeleteDayModal}
+                                    onClose={handleCloseDeleteDayModal}
+                                    onConfirmDelete={handleDeleteDay}
+                                    itemToDelete={currentDeleteDay.name}
+                                />
+                            )}
+                            
                         </div>
                     )}
 
