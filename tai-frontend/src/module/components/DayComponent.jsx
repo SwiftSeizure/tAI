@@ -1,9 +1,10 @@
-import React, {useState} from "react";  
+import React, { useEffect, useState } from "react";  
 import { FaChevronDown, FaChevronUp, FaFile, FaClipboard, FaTrash } from "react-icons/fa";
 import { MdAssignment } from "react-icons/md"; 
 import { motion, AnimatePresence } from 'framer-motion'; 
 import { useCurrentUser } from "../../store/user-store"; 
 import { useDay } from "../../store/day-store"; 
+
 
 import { getDayAssignments } from "../services/get-day-assignments"; 
 import { getDayMaterials } from "../services/get-day-materials";
@@ -31,21 +32,21 @@ const DayComponent = ( {
     handleOnClickDeleteAssignment
 }  ) => { 
 
-    // State to track whether the day is expanded or not
-    const [isExpanded, setIsExpanded] = useState(false);   
-
     // State to store materials and assignments for the day
     const [materials, setMaterials] = useState([]);   
 
     // State to store assignments for the day
-    const [assignments, setAssignments] = useState([]) 
+    const [assignments, setAssignments] = useState([]);
 
     const [selected, setSelected] = useState([null]); 
 
     // State to store loading state
     const [loading, setLoading] = useState(false); 
 
-    const { selectedDay } = useDay();
+    // Use day store: get state and actions
+    const [dayState, dayActions] = useDay();
+    const { selectedDay } = dayState;
+    const { setSelectedDay } = dayActions;
 
     const { user } = useCurrentUser();
 
@@ -54,8 +55,8 @@ const DayComponent = ( {
     }; 
 
     const handleDayClicked = (e) => {
-        e.stopPropagation(); // Prevent event bubbling
-        toggleExpand();
+        // Set this day as the globally selected day
+        setSelectedDay(day);
         handleDaySelect();
     };
 
@@ -64,39 +65,43 @@ const DayComponent = ( {
      * Toggles the expanded state of the day. If expanding for the first time,
      * it fetches materials and assignments for the day from the API.
      */
-    const toggleExpand = async () =>  { 
-        const newExpandedState = !isExpanded;
-        setIsExpanded(newExpandedState); 
+    // Determine if this day is the currently selected/expanded day
+    const isExpanded = selectedDay?.id === day?.id;
 
-        // Fetch materials and assignments only if expanding for the first time
-        if (newExpandedState && !loading) {  
-            setLoading(true); 
+    // When this day becomes selected, fetch its materials and assignments
+    useEffect(() => {
+        let isCancelled = false;
 
-            try {   
-                // Fetch Materials
-                const materials = await getDayMaterials(day);
-                setMaterials(materials);  
-
-                // Fetch Assignments  
-                if (day) {
-                    const assignments = await getDayAssignments(day); 
-                    setAssignments(assignments);
+        const fetchData = async () => {
+            if (!isExpanded || !day || loading) return;
+            setLoading(true);
+            try {
+                const [materials, assignments] = await Promise.all([
+                    getDayMaterials(day),
+                    getDayAssignments(day)
+                ]);
+                if (!isCancelled) {
+                    setMaterials(materials || []);
+                    setAssignments(assignments || []);
                 }
-            }  
-
-            // Handle errors during API requests
-            catch (error) { 
+            } catch (error) {
                 console.log(error);
-            }  
-
-            // Reset loading state
-            finally { 
-                setLoading(false);
+            } finally {
+                if (!isCancelled) setLoading(false);
             }
-        }  
+        };
 
+        // Clear previous data when switching selection to avoid stale display
+        if (isExpanded) {
+            setMaterials([]);
+            setAssignments([]);
+            fetchData();
+        }
 
-    };
+        return () => {
+            isCancelled = true;
+        };
+    }, [isExpanded, day?.id]);
 
 
     return (
