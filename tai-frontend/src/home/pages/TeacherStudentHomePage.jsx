@@ -7,8 +7,11 @@ import { useCurrentUser, useIsAuthenticated } from "../../store/user-store";
 import { useClass, useAllClasses, useClassesLoading, useClassesError } from "../../store/class-store";
 import { SettingsModal } from "../../shared/modals/SettingsModal";
 import { useSettingsModal } from "../../shared/hooks/useSettingsModal"; 
-import { deleteClass } from "../services/delete-class"; 
-import DeleteModal from "../../shared/modals/DeleteModal";
+import { deleteClass } from "../services/delete-class";  
+import { getStudentsEnrolled } from "../services/get-students-enrolled";  
+import { deleteStudentFromClass } from "../services/delete-student-from-class"; 
+import DeleteModal from "../../shared/modals/DeleteModal"; 
+import RosterModal from "../modals/RosterModal";
 
 /**
  * TeacherStudentHomePage Component
@@ -34,10 +37,12 @@ const TeacherStudentHomePage = () => {
     const [currentSettingsClass, setCurrentSettingsClass] = useState(null); 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); 
 
-    const [currentDeleteClass, setCurrentDeleteClass] = useState(null);   
+    const [selectedClass, setSelectedClass] = useState(null);   
 
     const [currentRosterClass, setCurrentRosterClass] = useState(null);  
-    const [isRosterModalOpen, setIsRosterModalOpen] = useState(false); 
+    const [isRosterModalOpen, setIsRosterModalOpen] = useState(false);  
+
+    const [enrolledStudents, setEnrolledStudents] = useState({}); 
     
     const addClassClass = { 
         name: "newClass",
@@ -104,14 +109,16 @@ const TeacherStudentHomePage = () => {
     };  
 
     const handleOpenDeleteModal = (classroom) => { 
-        if (!classroom.id) return;
-        setCurrentDeleteClass(classroom);
+        if (!classroom.id){ 
+            return;
+        } 
+        setSelectedClass(classroom);
         setIsDeleteModalOpen(true);
     };
 
     const handleDeleteClass = async () => {  
         try { 
-            await deleteClass(currentDeleteClass.id); 
+            await deleteClass(selectedClass.id); 
             fetchClasses(user.id, user.role); 
         } 
         catch (error) { 
@@ -123,13 +130,33 @@ const TeacherStudentHomePage = () => {
         setIsDeleteModalOpen(false);
     }; 
 
-    const handleOpenRosterModal = (classID, classname) => { 
-        // if (!classID) return;
-        // setCurrentRosterClassID(classID);
-        // setCurrentRosterClassName(classname);
-        // setIsRosterModalOpen(true); 
-        console.log("This will be opening the roster modal for", classID, classname);
-    };
+    const handleOpenRosterModal = async (classroom) => {  
+        console.log("classroom", classroom); 
+        if (!classroom.id){ 
+            return;
+        } 
+        setSelectedClass(classroom); 
+        setIsRosterModalOpen(true);  
+
+        //TODO: get students from the classroom 
+        const serverResponse = await getStudentsEnrolled(classroom.id);  
+        console.log("Students enrolled:", serverResponse.students);
+        await setEnrolledStudents(serverResponse.students);
+    };  
+
+    const handleRemoveStudent = async (enrolledStudent) => { 
+        try { 
+           await deleteStudentFromClass(selectedClass.id, enrolledStudent.id);
+        }
+        catch (error) { 
+            console.error('Error deleting student from class:', error); 
+        } 
+        setIsRosterModalOpen(false);
+    }
+
+    const handleCloseRosterModal = () => {
+        setIsRosterModalOpen(false);
+    }; 
  
 
     /**
@@ -200,9 +227,20 @@ const TeacherStudentHomePage = () => {
                 isOpen={isDeleteModalOpen}
                 onClose={handleCloseDeleteModal}
                 onConfirmDelete={handleDeleteClass}  
-                itemToDelete={currentDeleteClass.name}
+                itemToDelete={selectedClass.name}
             />
-        )}
+        )} 
+
+        {/* Roster Modal */}
+        {isRosterModalOpen && (
+            <RosterModal
+                isOpen={isRosterModalOpen}
+                onClose={handleCloseRosterModal}
+                onRemoveStudent={handleRemoveStudent}    
+                classroom={selectedClass}
+                enrolledStudents={enrolledStudents}
+            />
+        )} 
         </>
     );
 };  
