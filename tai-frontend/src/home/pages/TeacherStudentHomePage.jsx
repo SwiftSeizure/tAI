@@ -35,8 +35,15 @@ const TeacherStudentHomePage = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); 
 
     const [currentDeleteClassID, setCurrentDeleteClassID] = useState(null);  
-    const [currentDeleteClassName, setCurrentDeleteClassName] = useState(null); 
+    const [currentDeleteClassName, setCurrentDeleteClassName] = useState(null);  
+
+    const [currentRosterClass, setCurrentRosterClass] = useState(null);  
+    const [isRosterModalOpen, setIsRosterModalOpen] = useState(false); 
     
+    const addClassClass = { 
+        name: "newClass",
+        id: null,
+    }
 
     const handleSettingsSuccess = (response, settingsData) => {
         // Optionally refresh classes or update local state
@@ -72,17 +79,19 @@ const TeacherStudentHomePage = () => {
         }
     }, [user, fetchClasses]); 
 
-    const handleClassSelect = async (classID) => { 
+
+    //TODO Change this to make it so it is a method for selecing a class, and adding a new class
+    const handleClassSelect = async (classroom) => { 
         try {  
-            if (!classID && user.role === 'teacher') {
+            if (!classroom.id && user.role === 'teacher') {
                 navigate('/createclass');
                 return;
             }
-            else if (!classID && user.role === 'student') {
+            else if (!classroom.id && user.role === 'student') {
                 navigate('/joinclass');
                 return;
             }
-            await setCurrentClass(classID); 
+            await setCurrentClass(classroom.id); 
             navigate('/unitpage');
         }
         catch (error) { 
@@ -90,15 +99,15 @@ const TeacherStudentHomePage = () => {
         }
     }; 
 
-    const handleClassSettings = async (classID, classname) => { 
-        setCurrentSettingsClass({ id: classID, name: classname });
+    const handleClassSettings = async (classroom) => { 
+        setCurrentSettingsClass({ id: classroom.id, name: classroom.name });
         settingsModal.openModal();
     };  
 
-    const handleOpenDeleteModal = (classID, classname) => { 
-        if (!classID) return;
-        setCurrentDeleteClassID(classID);
-        setCurrentDeleteClassName(classname);
+    const handleOpenDeleteModal = (classroom) => { 
+        if (!classroom.id) return;
+        setCurrentDeleteClassID(classroom.id);
+        setCurrentDeleteClassName(classroom.name);
         setIsDeleteModalOpen(true);
     };
 
@@ -114,6 +123,14 @@ const TeacherStudentHomePage = () => {
 
     const handleCloseDeleteModal = () => {
         setIsDeleteModalOpen(false);
+    }; 
+
+    const handleOpenRosterModal = (classID, classname) => { 
+        // if (!classID) return;
+        // setCurrentRosterClassID(classID);
+        // setCurrentRosterClassName(classname);
+        // setIsRosterModalOpen(true); 
+        console.log("This will be opening the roster modal for", classID, classname);
     };
  
 
@@ -132,12 +149,12 @@ const TeacherStudentHomePage = () => {
                     
                     <ClassCard   
                         key={classroom.id} 
-                        classID={classroom.id}
-                        classname={classroom.name}  
+                        classroom={classroom} 
                         onClick={handleClassSelect}   
                         onClickSettings={() => handleClassSettings(classroom.id, classroom.name)}
                         showSettings={user.role === 'teacher'} 
-                        onClickDelete={handleOpenDeleteModal}
+                        onClickDelete={handleOpenDeleteModal} 
+                        onClickRoster={handleOpenRosterModal}
                     />
                 ))} 
             </>
@@ -162,8 +179,7 @@ const TeacherStudentHomePage = () => {
 
                 {/* Add a "new class" card for creating or joining a class */}
                 <ClassCard   
-                    classID={null}
-                    classname={"newClass"}  
+                    classroom={addClassClass}
                     onClick={handleClassSelect}
                 />   
                 
