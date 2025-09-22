@@ -7,7 +7,8 @@ import 'react-pdf/dist/esm/Page/TextLayer.css';
 // Components
 import { TitleCard } from "../../shared/components/TitleCard";
 import ChatFeature from "../components/ChatFeature";
-import ModuleComponent from "../components/ModuleComponent";
+import ModuleComponent from "../components/ModuleComponent"; 
+import PDFContent from "../components/PDFContent";
 
 // Modals
 import AddModuleModal from "../modals/AddModuleModal";   
@@ -35,7 +36,9 @@ import { getAssignmentURL } from "../services/get-assignment-url";
 import { deleteModule } from "../services/delete-module"; 
 import { deleteDay } from "../services/delete-day";
 import { deleteMaterial } from "../services/delete-material";
-import { deleteAssignment } from "../services/delete-assignment";
+import { deleteAssignment } from "../services/delete-assignment"; 
+
+// Helper Methods
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
 
@@ -58,15 +61,6 @@ const TeacherStudentModulePage = () => {
     const [displayType, setDisplayType] = useState('welcome'); // Tracks the type of content to display
     const [chatWidth, setChatWidth] = useState(600); // Default width in pixels
 
-    // Selected Content State
-    // const [selectedMaterial, setSelectedMaterial] = useState(null); // Tracks the selected material
-    // const [selectedMaterialName, setSelectedMaterialName] = useState(null); // Tracks the selected material name
-    // const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
-
-    // const [selectedAssignment, setSelectedAssignment] = useState(null); // Tracks the selected assignment
-    // const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
-    // const [assignmentContent, setAssignmentContent] = useState(null); // Stores the content of a selected assignment
-
     // Modal States
     const [showAddModuleModal, setShowAddModuleModal] = useState(false);
     const [showAddDayModal, setShowAddDayModal] = useState(false);
@@ -78,10 +72,7 @@ const TeacherStudentModulePage = () => {
     const [showDeleteAssignmentModal, setShowDeleteAssignmentModal] = useState(false); 
 
     // Module Management
-    const [selectedModuleId, setSelectedModuleId] = useState(null);  
-
-    // Day Management
-    const [selectedDay, setSelectedDay] = useState(null); 
+    const [selectedModuleId, setSelectedModuleId] = useState(null);
 
     // Delete Module Management
     const [currentDeleteModule, setCurrentDeleteModule] = useState(null); 
@@ -96,16 +87,25 @@ const TeacherStudentModulePage = () => {
     const [currentDeleteAssignment, setCurrentDeleteAssignment] = useState(null); 
 
 
-    // Store Hooks
+    // Store Hooks 
+    // User
     const { user } = useCurrentUser();
+    // Unit
     const { currentUnit } = useCurrentUnit();
+    // Module
     const [moduleState, moduleActions] = useModule();
     const { modules } = moduleState;
-    const { fetchModules } = moduleActions;
+    const { fetchModules } = moduleActions; 
+    // Chat
     const { setCurrentChat, addMessage, setLoading, setError } = useCurrentChat();
+    // Content
     const [contentState, contentActions] = useContent();
     const { selectedContent, selectedContentURL } = contentState;
-    const { setSelectedContent } = contentActions;
+    const { setSelectedContent } = contentActions; 
+    // Day
+    const [dayStore, dayActions] = useDay();  
+    const { selectedDay } = dayStore;
+    const { setSelectedDay } = dayActions;
 
     
     // Fetch modules when the component mounts or when currentUnit changes 
@@ -587,28 +587,6 @@ const TeacherStudentModulePage = () => {
         }
     };   
 
-
-
-    /**
-     * renderPDFContent
-     * Renders a PDF viewer for the given file URL.
-     * @param {string} fileURL - The URL of the PDF file to display.
-     */
-    const renderPDFContent = (fileURL) => {
-        return (
-            <div className="pdf-container" style={{ width: '100%', height: '600px' }}>
-                <iframe 
-                    src={fileURL} 
-                    width="100%" 
-                    height="100%" 
-                    title="PDF Viewer"
-                    style={{ border: 'none' }}
-                />
-            </div>
-        );
-    };
-
-
     /**
      * renderContent
      * Renders the content based on the current display type (e.g., welcome, material, assignment, chat).
@@ -629,7 +607,7 @@ const TeacherStudentModulePage = () => {
                             <div className="content-header">   
                                 <h2 className="content-title"> {selectedContent.name} </h2> 
                             </div>
-                            {renderPDFContent(selectedContentURL)} 
+                            <PDFContent fileURL={selectedContentURL} />
                         </div>
                     );
      
@@ -639,7 +617,7 @@ const TeacherStudentModulePage = () => {
                             <div className="content-header"> 
                                 <h2 className="content-title"> {selectedContent.name} </h2> 
                             </div>  
-                            {renderPDFContent(selectedContentURL)}
+                            <PDFContent fileURL={selectedContentURL} />
 
                         </div>
                     ); 
