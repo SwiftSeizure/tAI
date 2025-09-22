@@ -452,71 +452,11 @@ const TeacherStudentModulePage = () => {
 
 
                         />
-                    ))}      
+                    ))}   
+
                     {user.role === "teacher" && (
-                        <div>
-                            <button onClick={() => setShowAddModuleModal(true)}>Add Module</button>
-                            <AddModuleModal 
-                                isOpen={showAddModuleModal}
-                                onClose={() => setShowAddModuleModal(false)}
-                                onAddModule={handleNewModule}
-                            />
-                            <AddDayModal
-                                isOpen={showAddDayModal}
-                                onClose={() => setShowAddDayModal(false)}
-                                onAddDay={handleNewDay}
-                            />
-                            <AddMaterialModal
-                                isOpen={showAddMaterialModal}
-                                onClose={() => setShowAddMaterialModal(false)}
-                                onAddMaterial={handleNewMaterial}
-                            />
-                            <AddAssignmentModal
-                                isOpen={showAddAssignmentModal}
-                                onClose={() => setShowAddAssignmentModal(false)}
-                                onAddAssignment={handleNewAssignment}
-                            /> 
-
-                            {currentDeleteModule && (
-                                <DeleteModal
-                                    isOpen={showDeleteModuleModal}
-                                    onClose={handleCloseDeleteModuleModal}
-                                    onConfirmDelete={handleDeleteModule}
-                                    itemToDelete={currentDeleteModule.name}
-                                />
-                            )}
-
-
-                            {currentDeleteDay && (
-                                <DeleteModal
-                                    isOpen={showDeleteDayModal}
-                                    onClose={handleCloseDeleteDayModal}
-                                    onConfirmDelete={handleDeleteDay}
-                                    itemToDelete={currentDeleteDay.name}
-                                />
-                            )} 
-
-                            {currentDeleteMaterial && (
-                                <DeleteModal
-                                    isOpen={showDeleteMaterialModal}
-                                    onClose={handleCloseDeleteMaterialModal}
-                                    onConfirmDelete={handleDeleteMaterial}
-                                    itemToDelete={currentDeleteMaterial.name}
-                                />
-                            )} 
-
-                            {currentDeleteAssignment && (
-                                <DeleteModal
-                                    isOpen={showDeleteAssignmentModal}
-                                    onClose={handleCloseDeleteAssignmentModal}
-                                    onConfirmDelete={handleDeleteAssignment}
-                                    itemToDelete={currentDeleteAssignment.name}
-                                />
-                            )}
-                            
-                        </div>
+                        <button onClick={() => setShowAddModuleModal(true)}>Add Module</button>
                     )}
-
                 </div>
                 </>
             )
@@ -659,7 +599,64 @@ const TeacherStudentModulePage = () => {
                     </div>
                 </div>
             )}
-        </div>
+        </div> 
+            {user.role === "teacher" && (
+                <div>
+                    <AddModuleModal 
+                        isOpen={showAddModuleModal}
+                        onClose={() => setShowAddModuleModal(false)}
+                        onAddModule={handleNewModule}
+                    />
+                    <AddDayModal
+                        isOpen={showAddDayModal}
+                        onClose={() => setShowAddDayModal(false)}
+                        onAddDay={handleNewDay}
+                    />
+                    <AddMaterialModal
+                        isOpen={showAddMaterialModal}
+                        onClose={() => setShowAddMaterialModal(false)}
+                        onAddMaterial={handleNewMaterial}
+                    />
+                    <AddAssignmentModal
+                        isOpen={showAddAssignmentModal}
+                        onClose={() => setShowAddAssignmentModal(false)}
+                        onAddAssignment={handleNewAssignment}
+                    /> 
+                    {currentDeleteModule && (
+                        <DeleteModal
+                            isOpen={showDeleteModuleModal}
+                            onClose={handleCloseDeleteModuleModal}
+                            onConfirmDelete={handleDeleteModule}
+                            itemToDelete={currentDeleteModule.name}
+                        />
+                    )}
+                    {currentDeleteDay && (
+                        <DeleteModal
+                            isOpen={showDeleteDayModal}
+                            onClose={handleCloseDeleteDayModal}
+                            onConfirmDelete={handleDeleteDay}
+                            itemToDelete={currentDeleteDay.name}
+                        />
+                    )} 
+                    {currentDeleteMaterial && (
+                        <DeleteModal
+                            isOpen={showDeleteMaterialModal}
+                            onClose={handleCloseDeleteMaterialModal}
+                            onConfirmDelete={handleDeleteMaterial}
+                            itemToDelete={currentDeleteMaterial.name}
+                        />
+                    )} 
+                    {currentDeleteAssignment && (
+                        <DeleteModal
+                            isOpen={showDeleteAssignmentModal}
+                            onClose={handleCloseDeleteAssignmentModal}
+                            onConfirmDelete={handleDeleteAssignment}
+                            itemToDelete={currentDeleteAssignment.name}
+                        />
+                    )}
+                    
+                </div>
+            )}
     
         </>
     )
