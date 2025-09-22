@@ -83,15 +83,6 @@
     
   ],
   "enrolled": [
-<<<<<<< HEAD
-   
-    {
-      "id": 2,
-      "studentID": 1,
-      "classID": 1
-    },
-=======
->>>>>>> origin/Development-Frontend
     {
       "id": 3,
       "studentID": 1,
@@ -3805,9 +3796,9 @@
     {
       "id": 1,
       "name": "Assignment 1",
-      "filename": "ws_a.pdf",
+      "filename": "math.pdf",
       "sequence": 1,
-      "path": "/assignment/1/ws_a.pdf",
+      "path": "/assignment/1/math.pdf",
       "dayId": 1
     },
     {

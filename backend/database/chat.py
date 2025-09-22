@@ -81,8 +81,7 @@ def queryBot(studentID: int, path: str, prompt: str, session: Session) -> ChatRe
     Queries the OpenAI API with the given prompt and returns the response.
     (DB logic unchanged; only OpenAI call is different.)
     """
-    
- 
+
     print("Incoming path:", path)
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
