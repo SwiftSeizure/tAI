@@ -21,7 +21,8 @@ import { useCurrentUser } from "../../store/user-store";
 import { useCurrentUnit } from "../../store/unit-store";
 import { useModule } from "../../store/module-store"; 
 import { useCurrentChat } from "../../store/chat-store"; 
-import { useContent } from "../../store/content-store"; 
+import { useContent } from "../../store/content-store";  
+import { useDay } from "../../store/day-store"; 
 
 // API Calls (Services)
 import { postCreateModule } from "../services/post-create-module";
@@ -77,11 +78,13 @@ const TeacherStudentModulePage = () => {
     const [showDeleteAssignmentModal, setShowDeleteAssignmentModal] = useState(false); 
 
     // Module Management
-    const [selectedModuleId, setSelectedModuleId] = useState(null); 
+    const [selectedModuleId, setSelectedModuleId] = useState(null);  
+
+    // Day Management
+    const [selectedDay, setSelectedDay] = useState(null); 
 
     // Delete Module Management
-    const [currentDeleteModule, setCurrentDeleteModule] = useState(null);
-    const [selectedDayId, setSelectedDayId] = useState(null); 
+    const [currentDeleteModule, setCurrentDeleteModule] = useState(null); 
 
     // Delete Day Management
     const [currentDeleteDay, setCurrentDeleteDay] = useState(null);  
@@ -135,8 +138,9 @@ const TeacherStudentModulePage = () => {
      * @param {number} moduleID - The ID of the selected module.
      * @param {number} dayID - The ID of the selected day.
      */
-    const handleDaySelect =  async (day) => {   
-        setSelectedDayId(day.id); 
+    const handleDaySelect =  async (day) => {    
+
+        await setSelectedDay(day); 
         console.log("Selected day ID:", day.id);
         setDisplayType('day'); 
     };    
@@ -154,8 +158,7 @@ const TeacherStudentModulePage = () => {
 
             const fileURL = await getAssignmentURL(dayID, assignment.filename); 
             await setSelectedContent(assignment, 'assignment', fileURL);
-            setDisplayType('assignment'); 
-            setSelectedDayId(dayID);
+            setDisplayType('assignment');
             const chatId = `assignment_${assignment.id}`;
             setCurrentChat(chatId);
 
@@ -181,7 +184,6 @@ const TeacherStudentModulePage = () => {
             await setSelectedContent(material, 'material', fileURL); 
 
             setDisplayType('material');  
-            setSelectedDayId(dayID);
 
             const chatId = `material_${material.id}`;
             setCurrentChat(chatId);
@@ -220,8 +222,7 @@ const TeacherStudentModulePage = () => {
         setShowAddDayModal(false);
     }; 
 
-    const handleAddMaterial = (dayId) => {
-        setSelectedDayId(dayId);
+    const handleAddMaterial = () => {
         setShowAddMaterialModal(true);
     };  
 
@@ -231,13 +232,13 @@ const TeacherStudentModulePage = () => {
             formData.append('file', materialData.file);  
 
             const fileName = materialData.name;
-            await postCreateMaterial(selectedDayId, fileName, formData); 
+            await postCreateMaterial(selectedDay.id, fileName, formData); 
              
             await fetchModules(currentUnit.id);  
             
             //force refresh here
 
-            handleMaterialSelect(selectedDayId, materialData.file.name, materialData.name); 
+            handleMaterialSelect(selectedDay.id, materialData.file.name, materialData.name); 
         } 
         catch (error) { 
             console.error('Error creating material:', error);
@@ -245,8 +246,7 @@ const TeacherStudentModulePage = () => {
         setShowAddMaterialModal(false);
     }; 
 
-    const handleAddAssignment = (dayId) => {
-        setSelectedDayId(dayId);
+    const handleAddAssignment = () => {
         setShowAddAssignmentModal(true);
     }; 
  
@@ -256,11 +256,11 @@ const TeacherStudentModulePage = () => {
             formData.append('file', assignmentData.file);  
 
             const fileName = assignmentData.name;
-            await postCreateAssignment(selectedDayId, fileName, formData); 
+            await postCreateAssignment(selectedDay.id, fileName, formData); 
              
             await fetchModules(currentUnit.id); 
 
-            handleAssignmentSelect(selectedDayId, assignmentData.filename, assignmentData.name); 
+            handleAssignmentSelect(selectedDay.id, assignmentData.filename, assignmentData.name); 
         } 
         catch (error) { 
             console.error('Error creating assignment:', error);
@@ -282,7 +282,7 @@ const TeacherStudentModulePage = () => {
             const serverResponse = await putChatMessage(
                 user.id,
                 displayType,
-                selectedDayId,
+                selectedDay.id,
                 selectedContent.filename,
                 message
             );
@@ -416,7 +416,7 @@ const TeacherStudentModulePage = () => {
     const handleDeleteAssignment = async () => {
         try {
             console.log('Deleting assignment:', currentDeleteAssignment); 
-            await deleteAssignment(selectedDayId, currentDeleteAssignment.filename);
+            await deleteAssignment(selectedDay.id, currentDeleteAssignment.filename);
             await fetchModules(currentUnit.id);
         } catch (error) {
             console.error('Error deleting assignment:', error);

@@ -2,7 +2,8 @@ import React, {useState} from "react";
 import { FaChevronDown, FaChevronUp, FaFile, FaClipboard, FaTrash } from "react-icons/fa";
 import { MdAssignment } from "react-icons/md"; 
 import { motion, AnimatePresence } from 'framer-motion'; 
-import { useCurrentUser } from "../../store/user-store";
+import { useCurrentUser } from "../../store/user-store"; 
+import { useDay } from "../../store/day-store"; 
 
 import { getDayAssignments } from "../services/get-day-assignments"; 
 import { getDayMaterials } from "../services/get-day-materials";
@@ -39,10 +40,12 @@ const DayComponent = ( {
     // State to store assignments for the day
     const [assignments, setAssignments] = useState([]) 
 
-    const [selected, setSelected] = useState([null]);
+    const [selected, setSelected] = useState([null]); 
 
     // State to store loading state
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false); 
+
+    const { selectedDay } = useDay();
 
     const { user } = useCurrentUser();
 
