@@ -1,11 +1,12 @@
 export const initializeChat = (chatId) => ({ setState, getState }) => {
-    const { chats } = getState();
+    const state = getState();
     
-    if (!chats[chatId]) {
+    // Only initialize if the chat doesn't exist yet
+    if (!state.chats[chatId]) {
         setState({
-            ...getState(),
+            ...state,
             chats: {
-                ...chats,
+                ...state.chats,
                 [chatId]: {
                     messages: [],
                     isLoading: false,

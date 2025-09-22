@@ -111,7 +111,7 @@ def enroll(studentID: int, classCode: str, session: Session) -> int:
     session.refresh(classroom)
 
     
-    return None
+    return student.id
 
 
     return classroom.id

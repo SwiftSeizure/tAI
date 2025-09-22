@@ -1,4 +1,4 @@
-export const setLoading = (chatId, isLoading) => ({ setState, getState }) => {
+export const setError = (chatId, error) => ({ setState, getState }) => {
     const state = getState();
     const chat = state.chats[chatId] || { messages: [], isLoading: false, error: null };
     
@@ -8,7 +8,8 @@ export const setLoading = (chatId, isLoading) => ({ setState, getState }) => {
             ...state.chats,
             [chatId]: {
                 ...chat,
-                isLoading
+                error,
+                isLoading: false
             }
         }
     });

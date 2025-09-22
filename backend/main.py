@@ -9,6 +9,12 @@ Usage:
 
 from fastapi import FastAPI
 from fastapi.requests import Request
+
+
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+
 import os
 import requests
 from dotenv import load_dotenv
@@ -17,16 +23,33 @@ from backend.Seed_Database import PopulateDB
 from fastapi.middleware.cors import CORSMiddleware
 from backend.exceptions import EntityNotFoundException, UploadNotFoundException, DuplicateNameException, InvalidClassCodeException
 
-PopulateDB()
+
 app = FastAPI(
     title="TAi",
     summary="An always available, class specific TA."
 )
 
-origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
+
+# Serve static files (React frontend build)
+app.mount("/static", StaticFiles(directory="tai-frontend/build/static"), name="static")
+
+
+@app.get("/health")
+def read_root():
+    return {"status": "ok"}
+
+@app.on_event("startup")
+def maybe_seed():
+    if os.getenv("INIT_DB_ON_STARTUP", "false").lower() == "true":
+        try:
+            PopulateDB()
+        except Exception as e:
+            print(f"[startup] PopulateDB failed: {e}")
+        
+@app.get("/")
+def serve_frontend():
+    return FileResponse("tai-frontend/build/index.html")
+
 
 app.add_middleware(
     CORSMiddleware,

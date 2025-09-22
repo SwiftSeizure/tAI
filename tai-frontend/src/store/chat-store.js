@@ -4,20 +4,51 @@ import * as actions from './chat-actions';
 // Initial state
 const initialState = {
     chats: {},          // Keyed by chatId (e.g., 'material_123' or 'assignment_456')
-    currentChatId: null  // ID of the currently active chat
+    currentChatId: null  // This is going to be the same thing as the material.id or the assignment.id
 };
 
 // Create the chat store
 export const ChatStore = createStore({
     name: 'chat',
     initialState,
-    actions
+    actions: {
+        ...actions,
+        // Add a wrapper to expose actions directly
+        setCurrentChat: (chatId) => ({ setState, getState }) => {
+            const state = getState();
+            setState({
+                ...state,
+                currentChatId: chatId,
+                // Initialize chat if it doesn't exist
+                chats: {
+                    ...state.chats,
+                    [chatId]: state.chats[chatId] || { 
+                        messages: [],  
+                        responses: [],
+                        isLoading: false, 
+                        error: null 
+                    }
+                }
+            });
+        }
+    }
 });
 
-// Create hooks
-export const useChat = (chatId) => {
-    const [state] = createHook(ChatStore)();
-    return {
-        chat: state.chats[chatId],
+// Base hook
+export const useChat = createHook(ChatStore);
+
+// Hook to get/set current chat
+export const useCurrentChat = () => {
+    const [state, actions] = useChat();
+    const currentChat = state.currentChatId ? state.chats[state.currentChatId] : null;
+    
+    return { 
+        currentChatId: state.currentChatId,
+        currentChat: currentChat || { messages: [], responses: [], isLoading: false, error: null },
+        setCurrentChat: actions.setCurrentChat,
+        addMessage: (message) => state.currentChatId && actions.addMessage(state.currentChatId, message), 
+        addResponse: (response) => state.currentChatId && actions.addResponse(state.currentChatId, response),
+        setLoading: (isLoading) => state.currentChatId && actions.setLoading(state.currentChatId, isLoading),
+        setError: (error) => state.currentChatId && actions.setError(state.currentChatId, error)
     };
 };
