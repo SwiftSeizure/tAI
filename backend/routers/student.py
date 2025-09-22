@@ -9,14 +9,18 @@ from backend.exceptions import EntityNotFoundException, InvalidClassCodeExceptio
 router = APIRouter(prefix="/student", tags=["student"])
 
 @router.put("/enroll",
+ fe-chat-store
             status_code=200,
+
             responses={
                 404: {"model": ClientErrorResponse},
                 409: {"model": ClientErrorResponse},
             },
             summary="Enroll a student in a class.")
+ fe-chat-store
 def enroll_student(update:AddEnrollment , session: DBSession) -> int:
     return enroll(studentID=update.studentID, classCode=update.classCode, session=session)
+
 
 
 @router.put(

@@ -14,7 +14,12 @@ import os
 router=APIRouter(prefix="/material", tags=["material"])
 
 # Get the absolute path to one directory above the current file
-BASE_DIR = Path(__file__).parent.parent.parent
+
+
+#BASE_DIR = Path(__file__).parent.parent.parent
+
+DATA_ROOT = Path(os.getenv("DATA_ROOT", Path(__file__).parent.parent.parent))
+
 
 #Create a validator instance
 doc_validator = DocumentValidator(max_size= 25 * 1024 * 1024)
@@ -27,8 +32,10 @@ doc_validator = DocumentValidator(max_size= 25 * 1024 * 1024)
             summary="Get a material file for a specific day.",)
 def get_file(dayID: int, filename: str):
     # Start from BASE_DIR and navigate to uploads
-    file_path = BASE_DIR / "uploads" / "material" / str(dayID) / filename
-    base_uploads = BASE_DIR / "uploads"
+
+    file_path = DATA_ROOT / "uploads" / "material" / str(dayID) / filename
+    base_uploads = DATA_ROOT / "uploads"
+
     
     print(f"Checking path: {file_path}")
     
@@ -61,8 +68,10 @@ def get_file(dayID: int, filename: str):
                 summary="Delete a file for a specific day.")
 def delete_file(dayID: int, filename: str, session: DBSession):
     # Start from BASE_DIR and navigate to uploads
-    file_path = BASE_DIR / "uploads" / "material" / str(dayID) / filename
-    base_uploads = BASE_DIR / "uploads"
+
+    file_path = DATA_ROOT / "uploads" / "material" / str(dayID) / filename
+    base_uploads = DATA_ROOT / "uploads"
+
     
      # Security checks
     try:
@@ -89,7 +98,9 @@ def delete_file(dayID: int, filename: str, session: DBSession):
         raise UploadNotFoundException(dayID, filename)
 
 
-@router.post("/{dayID}/{filename}",
+
+@router.post("{dayID}/{filename}",
+
                 status_code=201,
                 responses={
                     409: {"model": ClientErrorResponse},
@@ -101,7 +112,9 @@ async def upload_single_file(dayID: int, name: str, session: DBSession, file: Up
         raise HTTPException(status_code=400, detail="No file selected")
 
     # Check if the folder exists, if not create it
-    UPLOAD_DIR = BASE_DIR / "uploads" / "material" / str(dayID)
+
+    UPLOAD_DIR = DATA_ROOT / "uploads" / "material" / str(dayID)
+
     UPLOAD_DIR.mkdir(exist_ok=True)
     
     # Use the original filename from the uploaded file
