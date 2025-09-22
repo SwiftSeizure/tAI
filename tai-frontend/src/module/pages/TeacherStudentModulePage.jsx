@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";   
 import { useNavigate } from 'react-router-dom';  
 import { TitleCard } from "../../shared/components/TitleCard";
-import ChatFeature from "../components/ChatFeature";
+import { ChatFeature } from "../components/ChatFeature";
 import ModuleComponent from "../components/ModuleComponent";  
 import AddModuleModal from "../modals/AddModuleModal";   
 import AddDayModal from "../modals/AddDayModal"; 
@@ -29,6 +29,9 @@ import { deleteModule } from "../services/delete-module";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
 
 
+
+
+
 /**
  * TeacherStudentModulePage Component
  * This page displays the modules, days, materials, and assignments for a specific unit.
@@ -43,25 +46,24 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2
 
 const TeacherStudentModulePage = () => {     
 
-    // State variables for managing data and UI state
-    // const [modulesData, setModulesData] = useState(null); // Stores module data  
-    const [ , setSelectedModule] = useState(null); // Tracks the selected module
+    // State variables for managing data and UI state 
+
     const [isChatExpanded, setIsChatExpanded] = useState(false); // Tracks chat expansion state
-    const [displayType, setDisplayType] = useState('welcome'); // Tracks the type of content to display
-    
-    const [selectedDay, setSelectedDay] = useState(null); // Tracks the selected day
+    const [displayType, setDisplayType] = useState('welcome'); // Tracks the typeof content to display
 
     const [selectedMaterialName, setSelectedMaterialName] = useState(null); // Tracks the selected material name
     
     const [selectedAssignmentName, setSelectedAssignmentName] = useState(null); // Tracks the selected assignment name
+    const [fileName, setFileName] = useState(null);
+
     
     const [materialContent, setMaterialContent] = useState(null); // Stores the content of a selected material
     const [assignmentContent, setAssignmentContent] = useState(null); // Stores the content of a selected assignment
-    const [currentContentDisplay, setCurrentContentDisplay] = useState(null); // Tracks the current content being displayed
 
     const [chatWidth, setChatWidth] = useState(600); // Default width in pixels
 
     const { user } = useCurrentUser(); 
+    
     const { currentUnit } = useCurrentUnit();  
     const [state, actions] = useModule();
     const { modules, isLoading, error } = state;
@@ -76,6 +78,8 @@ const TeacherStudentModulePage = () => {
     const [showAddAssignmentModal, setShowAddAssignmentModal] = useState(false);  
 
     const [chatResponse, setChatResponse] = useState('Response will appear here ');
+    const [conversation, setConversation] = useState([]); // array of {message, response}
+    const [chatLoading, setChatLoading] = useState(false);
 
     const [dayId, setDayId] = useState(null); 
 
@@ -116,11 +120,7 @@ const TeacherStudentModulePage = () => {
      * @param {number} moduleID - The ID of the selected module.
      * @param {number} dayID - The ID of the selected day.
      */
-    const handleDaySelect = async ( moduleID, dayID ) => {   
-
-        // Update the selected module and day, and set the display type to 'day'
-        setSelectedModule(moduleID); 
-        setSelectedDay(dayID);
+    const handleDaySelect =  async (moduleID, dayID) => {   
         setDisplayType('day'); 
     };    
 
@@ -132,18 +132,19 @@ const TeacherStudentModulePage = () => {
      * @param {string} fileName - The filename of the assignment.
      * @param {string} assignmentName - The name of the assignment.
      */
-    const handleAssignmentSelect = async (dayID, fileName, assignmentName) => {
+    const handleAssignmentSelect = async (dayID, assignment) => {
         try { 
             // Update the selected assignment and set the display type to 'assignment'
+            setFileName(assignment.filename);
+
             setSelectedMaterialName(null);
-            setSelectedAssignmentName(assignmentName);
+            setSelectedAssignmentName(assignment.name);
             setDisplayType('assignment'); 
             setDayId(dayID);
 
             // Fetch the content of the selected assignment
-            const fileURL = await getAssignmentURL(dayID, fileName); 
-            setAssignmentContent(fileURL); 
-            setCurrentContentDisplay('assignment'); 
+            const fileURL = await getAssignmentURL(dayID, assignment.filename); 
+            setAssignmentContent(fileURL);
         } catch (error) {
             console.error('Error fetching assignment:', error);
             setDisplayType('error'); 
@@ -158,21 +159,22 @@ const TeacherStudentModulePage = () => {
      * @param {string} fileName - The filename of the material.
      * @param {string} materialName - The name of the material.
      */
-    const handleMaterialSelect = async ( dayID, fileName, materialName ) => {   
+    const handleMaterialSelect = async ( dayID, material ) => {   
 
-        console.log(dayID, "fileName", fileName, "materialName", materialName);
+        console.log(dayID, "fileName", material.filename, "materialName", material.name);
 
         try {
+            setFileName(material.filename);
+
             // Update the selected material and set the display type to 'material'
             setSelectedAssignmentName(null);
-            setSelectedMaterialName(materialName);
+            setSelectedMaterialName(material.name);
             setDisplayType('material');  
             setDayId(dayID);
 
             // Fetch the content of the selected material
-            const fileURL = await getMaterialURL(dayID, fileName);
-            setMaterialContent(fileURL);  
-            setCurrentContentDisplay('material'); 
+            const fileURL = await getMaterialURL(dayID, material.filename);
+            setMaterialContent(fileURL); 
         } catch (error) {
             setDisplayType('error'); 
         }
@@ -247,7 +249,7 @@ const TeacherStudentModulePage = () => {
              
             await fetchModules(currentUnit.id); 
 
-            handleAssignmentSelect(dayId, assignmentData.file.name, assignmentData.name); 
+            handleAssignmentSelect(dayId, assignmentData.filename, assignmentData.name); 
         } 
         catch (error) { 
             console.error('Error creating assignment:', error);
@@ -509,22 +511,25 @@ const TeacherStudentModulePage = () => {
         
         console.log("displayType", displayType, "dayId", dayId, "currentFileName", currentFileName, "message", message);  
         try {  
-            if (currentFileName) {
-                await putChatMessage(displayType, dayId, currentFileName, message);
-            }
-            else { 
-                //Something about returning 
-                await putChatMessage(displayType, dayId, message);
-            }
-        }
-        catch (error) { 
-            console.error('Error updating chat message:', error);
-        }
-    };
+            // Always call putChatMessage with the same signature: (studentID, displayType, dayId, currentFileName, message)
+            const currentFileArg = currentFileName ? fileName : '';
+            setChatLoading(true);
+            const res = await putChatMessage(user.id, displayType, dayId, currentFileArg, message);
 
-    const handleChatResponseReceived = (response) => {
-        console.log(response); 
-        setChatResponse(response);
+            // Backend returns ChatResponse with messages: [{content}], responses: [{content}]
+            if (res && (res.messages || res.responses)) {
+                const msgs = res.messages || [];
+                const responses = res.responses || [];
+                const conv = msgs.map((m, i) => ({ message: m?.content || '', response: responses[i]?.content || '' }));
+                setConversation(conv);
+                // also set latest display response for backward compatibility
+                setChatResponse(responses[responses.length - 1]?.content || '');
+            }
+        } catch (error) { 
+            console.error('Error updating chat message:', error);
+        } finally {
+            setChatLoading(false);
+        }
     };
 
     return(  
@@ -592,6 +597,8 @@ const TeacherStudentModulePage = () => {
                 <ChatFeature 
                     onMessageSend={handleChatMessageSend} 
                     displayResponse={chatResponse}
+                    conversation={conversation}
+                    loading={chatLoading}
                 />
             </div>
         </div>
