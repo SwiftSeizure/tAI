@@ -34,8 +34,7 @@ const TeacherStudentHomePage = () => {
     const [currentSettingsClass, setCurrentSettingsClass] = useState(null); 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); 
 
-    const [currentDeleteClassID, setCurrentDeleteClassID] = useState(null);  
-    const [currentDeleteClassName, setCurrentDeleteClassName] = useState(null);  
+    const [currentDeleteClass, setCurrentDeleteClass] = useState(null);   
 
     const [currentRosterClass, setCurrentRosterClass] = useState(null);  
     const [isRosterModalOpen, setIsRosterModalOpen] = useState(false); 
@@ -106,14 +105,13 @@ const TeacherStudentHomePage = () => {
 
     const handleOpenDeleteModal = (classroom) => { 
         if (!classroom.id) return;
-        setCurrentDeleteClassID(classroom.id);
-        setCurrentDeleteClassName(classroom.name);
+        setCurrentDeleteClass(classroom);
         setIsDeleteModalOpen(true);
     };
 
     const handleDeleteClass = async () => {  
         try { 
-            await deleteClass(currentDeleteClassID); 
+            await deleteClass(currentDeleteClass.id); 
             fetchClasses(user.id, user.role); 
         } 
         catch (error) { 
@@ -202,7 +200,7 @@ const TeacherStudentHomePage = () => {
                 isOpen={isDeleteModalOpen}
                 onClose={handleCloseDeleteModal}
                 onConfirmDelete={handleDeleteClass}  
-                itemToDelete={currentDeleteClassName}
+                itemToDelete={currentDeleteClass.name}
             />
         )}
         </>
