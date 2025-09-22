@@ -346,7 +346,6 @@ const TeacherStudentModulePage = () => {
     };
 
     const handleOpenDeleteModuleModal = (module) => { 
-        console.log('Opening delete module modal for:', module);
         setCurrentDeleteModule(module);
         setShowDeleteModuleModal(true);
     };
@@ -376,7 +375,6 @@ const TeacherStudentModulePage = () => {
 
     const handleDeleteDay = async () => {
         try {
-            console.log('Deleting day:', currentDeleteDay); 
             await deleteDay(currentDeleteDay.id);
         } catch (error) {
             console.error('Error deleting day:', error);
@@ -395,8 +393,9 @@ const TeacherStudentModulePage = () => {
 
     const handleDeleteMaterial = async () => {
         try { 
-            console.log('Deleting material:', currentDeleteMaterial);
-            // TODO need to get the day id from the material, could prolly use a local store, check if its there first 
+            console.log('Deleting material:', currentDeleteMaterial);  
+            await deleteMaterial(currentDeleteMaterial.day_id, currentDeleteMaterial.filename);
+            await fetchModules(currentUnit.id);
         } catch (error) {
             console.error('Error deleting material:', error);
         }
@@ -415,7 +414,8 @@ const TeacherStudentModulePage = () => {
     const handleDeleteAssignment = async () => {
         try {
             console.log('Deleting assignment:', currentDeleteAssignment); 
-            // TODO need to get the day id from the assignment, could prolly use something else
+            await deleteAssignment(currentDeleteAssignment.day_id, currentDeleteAssignment.filename);
+            await fetchModules(currentUnit.id);
         } catch (error) {
             console.error('Error deleting assignment:', error);
         }
@@ -669,8 +669,8 @@ const TeacherStudentModulePage = () => {
             case 'error': 
                return( 
                    <div > 
-                       <h1 > Error loading {selectedContent.name || 'content'} </h1>
-                       <p >An error occurred while loading the material.</p>
+                       <h1 > Error loading this content </h1>
+                       <p >An error occurred while loading this content, please try refreshing the page.</p>
                    </div>
                );
 
