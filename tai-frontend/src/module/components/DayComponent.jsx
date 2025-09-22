@@ -20,6 +20,7 @@ import { getDayMaterials } from "../services/get-day-materials";
 
 const DayComponent = ( {
     day,
+    onDaySelect,
     onMaterialSelect, 
     onAssignmentSelect, 
     handleAddMaterial, 
@@ -45,6 +46,15 @@ const DayComponent = ( {
 
     const { user } = useCurrentUser();
 
+    const handleDaySelect = () => {
+        onDaySelect(day);
+    }; 
+
+    const handleDayClicked = (e) => {
+        e.stopPropagation(); // Prevent event bubbling
+        toggleExpand();
+        handleDaySelect();
+    };
 
     /**
      * toggleExpand
@@ -92,7 +102,7 @@ const DayComponent = ( {
               ? "bg-pink-400 border-pink-400 font-bold pb-3"
               : "bg-blue-400 bg-opacity-30 hover:bg-pink-400 hover:border-pink-500 hover:font-bold hover:scale-105"}
           `}
-            onClick={toggleExpand} >
+            onClick={handleDayClicked}>
                 <h4 className={` pl-4 ${isExpanded ? "pb-2 font-bold": "pb-0"} `}>
                     {day?.name} 
                 </h4>

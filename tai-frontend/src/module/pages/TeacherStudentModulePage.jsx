@@ -81,7 +81,7 @@ const TeacherStudentModulePage = () => {
 
     // Delete Module Management
     const [currentDeleteModule, setCurrentDeleteModule] = useState(null);
-    const [dayId, setDayId] = useState(null); 
+    const [selectedDayId, setSelectedDayId] = useState(null); 
 
     // Delete Day Management
     const [currentDeleteDay, setCurrentDeleteDay] = useState(null);  
@@ -135,7 +135,9 @@ const TeacherStudentModulePage = () => {
      * @param {number} moduleID - The ID of the selected module.
      * @param {number} dayID - The ID of the selected day.
      */
-    const handleDaySelect =  async (moduleID, dayID) => {   
+    const handleDaySelect =  async (day) => {   
+        setSelectedDayId(day.id); 
+        console.log("Selected day ID:", day.id);
         setDisplayType('day'); 
     };    
 
@@ -153,7 +155,7 @@ const TeacherStudentModulePage = () => {
             const fileURL = await getAssignmentURL(dayID, assignment.filename); 
             await setSelectedContent(assignment, 'assignment', fileURL);
             setDisplayType('assignment'); 
-            setDayId(dayID);
+            setSelectedDayId(dayID);
             const chatId = `assignment_${assignment.id}`;
             setCurrentChat(chatId);
 
@@ -179,7 +181,7 @@ const TeacherStudentModulePage = () => {
             await setSelectedContent(material, 'material', fileURL); 
 
             setDisplayType('material');  
-            setDayId(dayID);
+            setSelectedDayId(dayID);
 
             const chatId = `material_${material.id}`;
             setCurrentChat(chatId);
@@ -219,7 +221,7 @@ const TeacherStudentModulePage = () => {
     }; 
 
     const handleAddMaterial = (dayId) => {
-        setDayId(dayId);
+        setSelectedDayId(dayId);
         setShowAddMaterialModal(true);
     };  
 
@@ -229,13 +231,13 @@ const TeacherStudentModulePage = () => {
             formData.append('file', materialData.file);  
 
             const fileName = materialData.name;
-            await postCreateMaterial(dayId, fileName, formData); 
+            await postCreateMaterial(selectedDayId, fileName, formData); 
              
             await fetchModules(currentUnit.id);  
             
             //force refresh here
 
-            handleMaterialSelect(dayId, materialData.file.name, materialData.name); 
+            handleMaterialSelect(selectedDayId, materialData.file.name, materialData.name); 
         } 
         catch (error) { 
             console.error('Error creating material:', error);
@@ -244,7 +246,7 @@ const TeacherStudentModulePage = () => {
     }; 
 
     const handleAddAssignment = (dayId) => {
-        setDayId(dayId);
+        setSelectedDayId(dayId);
         setShowAddAssignmentModal(true);
     }; 
  
@@ -254,11 +256,11 @@ const TeacherStudentModulePage = () => {
             formData.append('file', assignmentData.file);  
 
             const fileName = assignmentData.name;
-            await postCreateAssignment(dayId, fileName, formData); 
+            await postCreateAssignment(selectedDayId, fileName, formData); 
              
             await fetchModules(currentUnit.id); 
 
-            handleAssignmentSelect(dayId, assignmentData.filename, assignmentData.name); 
+            handleAssignmentSelect(selectedDayId, assignmentData.filename, assignmentData.name); 
         } 
         catch (error) { 
             console.error('Error creating assignment:', error);
@@ -280,7 +282,7 @@ const TeacherStudentModulePage = () => {
             const serverResponse = await putChatMessage(
                 user.id,
                 displayType,
-                dayId,
+                selectedDayId,
                 selectedContent.filename,
                 message
             );
@@ -414,7 +416,7 @@ const TeacherStudentModulePage = () => {
     const handleDeleteAssignment = async () => {
         try {
             console.log('Deleting assignment:', currentDeleteAssignment); 
-            await deleteAssignment(currentDeleteAssignment.day_id, currentDeleteAssignment.filename);
+            await deleteAssignment(selectedDayId, currentDeleteAssignment.filename);
             await fetchModules(currentUnit.id);
         } catch (error) {
             console.error('Error deleting assignment:', error);

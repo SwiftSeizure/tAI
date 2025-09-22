@@ -34,6 +34,10 @@ const ModuleComponent = ( {
     const [isExpanded, setIsExpanded] = useState(false);   
 
     const { user } = useCurrentUser(); 
+
+    const handleDaySelect = (day) => {
+        onDaySelect(day);
+    };
     
 
     /**
@@ -104,7 +108,7 @@ const ModuleComponent = ( {
                             > 
                                 <DayComponent  
                                     day={day} 
-                                    onDaySelect={() => onDaySelect(module.id, day.id)} 
+                                    onDaySelect={handleDaySelect} 
                                     onMaterialSelect={onMaterialSelect}  
                                     onAssignmentSelect={onAssignmentSelect}
                                     handleAddMaterial={onAddMaterial}
