@@ -7,18 +7,13 @@ Usage:
     run `fastapi dev` or `poetry run fastapi dev` to start the server
 """
 
-from fastapi import FastAPI
-from fastapi.requests import Request
-
-
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-
-
 import os
 import requests
 from dotenv import load_dotenv
-from backend.routers import home, classroom, unit,module,day,assignment, material,student,teacher,chat
+from backend.routers import home, classroom, unit, module, day, assignment, material, student, teacher, chat
 from backend.Seed_Database import PopulateDB
 from fastapi.middleware.cors import CORSMiddleware
 from backend.exceptions import EntityNotFoundException, UploadNotFoundException, DuplicateNameException, InvalidClassCodeException
@@ -30,8 +25,23 @@ app = FastAPI(
 )
 
 
-# Serve static files (React frontend build)
-app.mount("/static", StaticFiles(directory="tai-frontend/build/static"), name="static")
+# Configure CORS for development
+origins = [
+    "http://localhost:3000",  # Default React dev server
+    "http://127.0.0.1:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Only serve static files in production
+if os.getenv("NODE_ENV") == "production":
+    app.mount("/static", StaticFiles(directory="tai-frontend/build/static"), name="static")
 
 
 @app.get("/health")
@@ -50,14 +60,6 @@ def maybe_seed():
 def serve_frontend():
     return FileResponse("tai-frontend/build/index.html")
 
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 app.include_router(home.router)
 app.include_router(classroom.router)
