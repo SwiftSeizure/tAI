@@ -1,8 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload, Session
-from backend.database.schema import DBClass, DBUnit
+from backend.database.schema import DBClass, DBEnrolled, DBUnit,DBStudent
 from backend.exceptions import EntityNotFoundException, DuplicateNameException
-from backend.models import CreateUnit, ClassroomUpdate
+from backend.models import ClassroomStudent, CreateUnit, ClassroomUpdate
 from backend.database.day import delete_day_files
 
 def get_classroom(classroomID: int, session: Session) -> DBClass | None:
@@ -149,3 +149,37 @@ def delete_classroom(classroomID: int, session: Session) -> None:
 
     session.delete(classroom)
     session.commit()
+
+def delete_student_from_classroom(classroomID: int, studentID: int, session: Session) -> None:
+    """Delete a student from a classroom by its ID.
+    Args:
+        classroomID (int): The ID of the classroom to delete the student from.
+        studentID (int): The ID of the student to delete.
+        session (Session): The database session.
+    """
+    classroom = get_classroom(classroomID, session)
+    if not classroom:
+        raise EntityNotFoundException("classroom", classroomID)
+
+    stmt = select(DBEnrolled).filter(DBEnrolled.classID == classroomID, DBEnrolled.studentID == studentID)
+    enrolled = session.execute(stmt).scalar_one_or_none()
+    if not enrolled:
+        raise EntityNotFoundException("enrolled", studentID)
+
+    session.delete(enrolled)
+    session.commit()
+
+def get_students_in_classroom(classroomID: int, session: Session) -> list[ClassroomStudent]:
+    """Get all students in a classroom by its ID.
+    Args:
+        classroomID (int): The ID of the classroom to get the students from.
+        session (Session): The database session.
+    """
+    classroom = get_classroom(classroomID, session)
+    if not classroom:
+        raise EntityNotFoundException("classroom", classroomID)
+
+    stmt = select(DBStudent).join(DBEnrolled).filter(DBEnrolled.classID == classroomID)
+    students = session.execute(stmt).scalars().all()
+    classroom_students = [ClassroomStudent(id=student.id, name=student.name, username=student.userName) for student in students] # type: ignore
+    return sorted(classroom_students, key=lambda x: x.name.lower())
