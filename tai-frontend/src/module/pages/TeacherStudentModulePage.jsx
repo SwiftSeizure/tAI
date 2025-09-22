@@ -650,8 +650,7 @@ const TeacherStudentModulePage = () => {
                             </button>
                         </div>
                         <div className="flex-1 overflow-hidden">
-                            <ChatFeature  
-                                chatId={chatId}
+                            <ChatFeature
                                 displayType={displayType}
                                 selectedContent={selectedContent}
                                 onSendMessage={handleChatMessage}
