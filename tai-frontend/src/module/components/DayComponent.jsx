@@ -55,7 +55,11 @@ const DayComponent = ( {
     }; 
 
     const handleDayClicked = (e) => {
-        // Set this day as the globally selected day
+        // Set this day as the globally selected day 
+        if (selectedDay?.id === day?.id) {
+            setSelectedDay(null);
+            return;
+        }
         setSelectedDay(day);
         handleDaySelect();
     };

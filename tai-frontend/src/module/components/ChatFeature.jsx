@@ -8,17 +8,28 @@ import { useCurrentChat } from '../../store/chat-store';
  * API integration, and error handling.
  */
 
-const ChatFeature = ({ chatId, onSendMessage }) => {
+/**
+ * ChatFeature Component
+ * This component provides a chat interface where users can send messages
+ * and receive responses from the OpenAI API. It includes input handling,
+ * API integration, and error handling.
+ * 
+ * @param {string} [chatId] - Optional chat ID for the conversation
+ * @param {Function} onSendMessage - Function to handle sending messages
+ * @param {string} [displayType] - Type of content being displayed ('material' or 'assignment')
+ * @param {Object} [selectedContent] - Currently selected content
+ */
+const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent }) => {
     const [message, setMessage] = useState('');
     const { currentChat, currentChatId, setCurrentChat } = useCurrentChat();
     
-    // Use the chat from currentChat if chatId matches, otherwise use a fallback 
-    console.log("currentChatId", currentChatId); 
-    console.log("chatId", chatId); 
+    // If no chatId is provided but we have displayType and selectedContent, generate a chatId
+    const effectiveChatId = chatId || (displayType && selectedContent?.id 
+        ? `${displayType}_${selectedContent.id}` 
+        : null);
 
-    console.log("currentChat", currentChat);
-
-    const chat = (currentChatId === chatId) ? currentChat : 
+    // Use the chat from currentChat if chatId matches, otherwise use a fallback
+    const chat = (currentChatId === effectiveChatId) ? currentChat : 
         { messages: [], isLoading: false, error: null, responses: [] };
     
     const messages = chat.messages || [];
@@ -30,12 +41,12 @@ const ChatFeature = ({ chatId, onSendMessage }) => {
     console.log("messages", messages);
     console.log("responses", responses);
 
-    // Set current chat when component mounts or chatId changes
+    // Set current chat when component mounts or effectiveChatId changes
     useEffect(() => {
-        if (chatId) {
-            setCurrentChat(chatId);
+        if (effectiveChatId) {
+            setCurrentChat(effectiveChatId);
         }
-    }, [chatId, setCurrentChat]);
+    }, [effectiveChatId, setCurrentChat]);
 
     // Auto-scroll to bottom when messages change
     useEffect(() => {
@@ -45,7 +56,7 @@ const ChatFeature = ({ chatId, onSendMessage }) => {
     }, [messages]);
 
     const handleSend = async () => {
-        if (!message.trim() || !chatId) return;
+        if (!message.trim() || !effectiveChatId) return;
         
         const userMessage = message;
         setMessage('');
@@ -73,6 +84,30 @@ const ChatFeature = ({ chatId, onSendMessage }) => {
             handleSend();
         }
     };
+
+    // Show placeholder if no content is selected
+    if (!effectiveChatId) {
+        return (
+            <div className="flex flex-col items-center justify-center h-full p-4 text-center text-gray-500">
+                <svg 
+                    className="w-16 h-16 mb-4 text-gray-300" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24" 
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        strokeWidth={1.5} 
+                        d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" 
+                    />
+                </svg>
+                <h3 className="text-lg font-medium">No content selected</h3>
+                <p className="mt-1">Please select an assignment or material to start chatting</p>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col h-full bg-white rounded-lg shadow-md overflow-hidden">

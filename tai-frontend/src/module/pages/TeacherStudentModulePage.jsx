@@ -600,22 +600,6 @@ const TeacherStudentModulePage = () => {
         }
     };
 
-    const renderChatFeature = () => {
-        if (displayType === 'material' || displayType === 'assignment') {
-            const chatId = displayType === 'material' 
-                ? `material_${selectedContent?.id}` 
-                : `assignment_${selectedContent?.id}`;
-                
-            return (
-                <ChatFeature 
-                    chatId={chatId}
-                    onSendMessage={handleChatMessage}
-                />
-            );
-        }
-        return <div> Please select an assignment or material to use the Chat feature </div>;
-    };
-
     return(  
         <>   
         <div className="h-screen w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient">
@@ -666,7 +650,12 @@ const TeacherStudentModulePage = () => {
                             </button>
                         </div>
                         <div className="flex-1 overflow-hidden">
-                            {renderChatFeature()}
+                            <ChatFeature  
+                                chatId={chatId}
+                                displayType={displayType}
+                                selectedContent={selectedContent}
+                                onSendMessage={handleChatMessage}
+                            />
                         </div>
                     </div>
                 </div>
