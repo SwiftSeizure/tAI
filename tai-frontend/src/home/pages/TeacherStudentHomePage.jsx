@@ -157,6 +157,16 @@ const TeacherStudentHomePage = () => {
     const handleCloseRosterModal = () => {
         setIsRosterModalOpen(false);
     }; 
+
+    const handlePublishClass = async () => { 
+        try { 
+            // await publishClass(selectedClass.id); 
+            // fetchClasses(user.id, user.role); 
+        } 
+        catch (error) { 
+            console.error('Error publishing class:', error); 
+        } 
+    };  
  
 
     /**
@@ -177,9 +187,11 @@ const TeacherStudentHomePage = () => {
                         classroom={classroom} 
                         onClick={handleClassSelect}   
                         onClickSettings={() => handleClassSettings(classroom.id, classroom.name)}
-                        showSettings={user.role === 'teacher'} 
+                        admin={user.role === 'teacher'} 
                         onClickDelete={handleOpenDeleteModal} 
-                        onClickRoster={handleOpenRosterModal}
+                        onClickRoster={handleOpenRosterModal} 
+                        onPublishClass={handlePublishClass}
+
                     />
                 ))} 
             </>
