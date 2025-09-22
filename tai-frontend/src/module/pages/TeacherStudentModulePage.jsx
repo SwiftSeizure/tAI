@@ -30,8 +30,8 @@ import { postCreateModule } from "../services/post-create-module";
 import { postCreateDay } from "../services/post-create-day";   
 import { postCreateMaterial } from "../services/post-create-material"; 
 import { postCreateAssignment } from "../services/post-create-assignment";  
-import { putChatMessage } from "../services/put-chat-message";
 import { getMaterialURL } from "../services/get-material-url";
+import { sendChatMessage } from "../helper-methods/send-chat-message";
 import { getAssignmentURL } from "../services/get-assignment-url";   
 import { deleteModule } from "../services/delete-module"; 
 import { deleteDay } from "../services/delete-day";
@@ -270,81 +270,17 @@ const TeacherStudentModulePage = () => {
     };   
 
     const handleChatMessage = async (message) => {
-        if (!message.trim() || !displayType) return '';
-
-        const chatId = displayType === 'material' 
-            ? `material_${selectedContent.id}`
-            : `assignment_${selectedContent.id}`;
-        
-        try {
-            
-            // Get the response from the server
-            const serverResponse = await putChatMessage(
-                user.id,
-                displayType,
-                selectedDay.id,
-                selectedContent.filename,
-                message
-            );
-
-            console.log("This is the response in the TeacherStudentModulePage", serverResponse);
-            
-            // Process the response to pair messages with their responses
-            if (serverResponse && serverResponse.messages && serverResponse.responses) {
-                // First, clear existing messages to avoid duplicates
-                // Then add all message-response pairs
-                const messagesToAdd = [];
-                for (let i = 0; i < serverResponse.messages.length; i++) {
-                    // Add user message
-                    messagesToAdd.push({
-                        id: serverResponse.messages[i].id,
-                        role: 'user',
-                        content: serverResponse.messages[i].content,
-                        timestamp: Date.now()
-                    });
-                    
-                    // Add corresponding AI response if it exists
-                    if (serverResponse.responses[i]) {
-                        messagesToAdd.push({
-                            id: serverResponse.responses[i].id,
-                            role: 'assistant',
-                            content: serverResponse.responses[i].content,
-                            timestamp: Date.now()
-                        });
-                    }
-                }
-                
-                // Clear existing messages and add all new ones with unique IDs
-                setCurrentChat(chatId); // Reset the chat
-                let messageCount = 1;
-                
-                messagesToAdd.forEach((msg, index) => {
-                    // For even indices (0, 2, 4, ...) use numeric ID, for odd use response_#
-                    const messageId = index % 2 === 0 
-                        ? messageCount.toString() 
-                        : `response_${messageCount}`;
-                    
-                    // Only increment the counter after processing a pair (user + assistant)
-                    if (index % 2 === 1) {
-                        messageCount++;
-                    }
-                    
-                    const messageWithId = {
-                        ...msg,
-                        id: messageId
-                    };
-                    addMessage(messageWithId);
-                });
-            }
-            
-            return serverResponse;
-        } catch (error) {
-            console.error('Error sending chat message:', error);
-            setError('Failed to send message. Please try again.');
-            throw error;
-        } finally {
-            setLoading(false);
-        }
+        return sendChatMessage({
+            message,
+            displayType,
+            selectedContent,
+            selectedDay,
+            user,
+            setCurrentChat,
+            addMessage,
+            setError,
+            setLoading
+        });
     };
 
     const handleOpenDeleteModuleModal = (module) => { 
