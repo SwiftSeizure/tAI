@@ -83,17 +83,20 @@
     
   ],
   "enrolled": [
-   
+    
     {
+
       "id": 2,
       "studentID": "P7eyfXks4ccuwl2fbLD11SyYiHp1",
       "classID": 1
+
     },
     {
       "id": 3,
       "studentID": "P7eyfXks4ccuwl2fbLD11SyYiHp1",
       "classID": 2
     },
+
     {
       "id": 4,
       "studentID": "2",
@@ -3802,9 +3805,9 @@
     {
       "id": 1,
       "name": "Assignment 1",
-      "filename": "ws_a.pdf",
+      "filename": "math.pdf",
       "sequence": 1,
-      "path": "/assignment/1/ws_a.pdf",
+      "path": "/assignment/1/math.pdf",
       "dayId": 1
     },
     {

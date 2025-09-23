@@ -17,7 +17,13 @@ from backend.auth import get_firebase_user_from_token
 
 router=APIRouter(prefix="/assignment", tags=["assignment"])
 # Get the absolute path to one directory above the current file
-BASE_DIR = Path(__file__).parent.parent.parent
+
+
+#BASE_DIR = Path(__file__).parent.parent.parent
+
+DATA_ROOT = Path(os.getenv("DATA_ROOT", Path(__file__).parent.parent.parent))
+
+
 
 # Create a validator instance
 doc_validator = DocumentValidator(max_size= 25 * 1024 * 1024)
@@ -44,8 +50,10 @@ def get_file(dayID: int,
         FileResponse: A response containing the file.
     """
     # Start from BASE_DIR and navigate to uploads
-    file_path = BASE_DIR / "uploads" / "assignment" / str(dayID) / filename
-    base_uploads = BASE_DIR / "uploads"
+
+    file_path = DATA_ROOT / "uploads" / "assignment" / str(dayID) / filename
+    base_uploads = DATA_ROOT / "uploads"
+
     
     print(f"Checking path: {file_path}")
     
@@ -108,8 +116,10 @@ def delete_file(dayID: int,
     if user_id != teacher_id and user_id != "test-user":
             raise UnauthorizedException("delete assignment") 
     
-    file_path = BASE_DIR / "uploads" / "assignment" / str(dayID) / filename
-    base_uploads = BASE_DIR / "uploads"
+
+    file_path = DATA_ROOT / "uploads" / "assignment" / str(dayID) / filename
+    base_uploads = DATA_ROOT / "uploads"
+
     
     
     try:
@@ -136,7 +146,10 @@ def delete_file(dayID: int,
         raise UploadNotFoundException(dayID, filename)
     
 
+
 @router.post("/{dayID}/{filename}",
+
+
                 status_code=201,
                 responses={
                     409: {"model": ClientErrorResponse},
@@ -158,7 +171,9 @@ async def upload_assignment(dayID: int,
         raise HTTPException(status_code=400, detail="No file selected")
 
     # Check if the folder exists, if not create it
-    UPLOAD_DIR = BASE_DIR / "uploads" / "assignment" / str(dayID)
+
+    UPLOAD_DIR = DATA_ROOT / "uploads" / "assignment" / str(dayID)
+
     UPLOAD_DIR.mkdir(exist_ok=True)
     
     # Use the original filename from the uploaded file

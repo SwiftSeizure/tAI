@@ -1,0 +1,234 @@
+import React, { useEffect, useState } from "react";  
+import { FaChevronDown, FaChevronUp, FaFile, FaClipboard, FaTrash } from "react-icons/fa";
+import { MdAssignment } from "react-icons/md"; 
+import { motion, AnimatePresence } from 'framer-motion'; 
+import { useCurrentUser } from "../../store/user-store"; 
+import { useDay } from "../../store/day-store"; 
+
+
+import { getDayAssignments } from "../services/get-day-assignments"; 
+import { getDayMaterials } from "../services/get-day-materials";
+
+/**
+ * DayComponent
+ * This component represents a single day in a schedule or calendar.
+ * It allows users to expand the day to view associated materials and assignments.
+ * Props:
+ * - day: Object containing information about the day (id, name, materials, assignments).
+ * - onDaySelect: Callback function triggered when a day is selected (used in ModuleComponent).
+ * - onMaterialSelect: Callback function triggered when a material is selected.
+ * - onAssignmentSelect: Callback function triggered when an assignment is selected.
+ */ 
+
+const DayComponent = ( {
+    day,
+    onDaySelect,
+    onMaterialSelect, 
+    onAssignmentSelect, 
+    handleAddMaterial, 
+    handleAddAssignment, 
+    handleOnClickDeleteDay, 
+    handleOnClickDeleteMaterial, 
+    handleOnClickDeleteAssignment
+}  ) => { 
+
+    // State to store materials and assignments for the day
+    const [materials, setMaterials] = useState([]);   
+
+    // State to store assignments for the day
+    const [assignments, setAssignments] = useState([]);
+
+    const [selected, setSelected] = useState([null]); 
+
+    // State to store loading state
+    const [loading, setLoading] = useState(false); 
+
+    // Use day store: get state and actions
+    const [dayState, dayActions] = useDay();
+    const { selectedDay } = dayState;
+    const { setSelectedDay } = dayActions;
+
+    const { user } = useCurrentUser();
+
+    const handleDaySelect = () => {
+        onDaySelect(day);
+    }; 
+
+    const handleDayClicked = (e) => {
+        // Set this day as the globally selected day 
+        if (selectedDay?.id === day?.id) {
+            setSelectedDay(null);
+            return;
+        }
+        setSelectedDay(day);
+        handleDaySelect();
+    };
+
+    /**
+     * toggleExpand
+     * Toggles the expanded state of the day. If expanding for the first time,
+     * it fetches materials and assignments for the day from the API.
+     */
+    // Determine if this day is the currently selected/expanded day
+    const isExpanded = selectedDay?.id === day?.id;
+
+    // When this day becomes selected, fetch its materials and assignments
+    useEffect(() => {
+        let isCancelled = false;
+
+        const fetchData = async () => {
+            if (!isExpanded || !day || loading) return;
+            setLoading(true);
+            try {
+                const [materials, assignments] = await Promise.all([
+                    getDayMaterials(day),
+                    getDayAssignments(day)
+                ]);
+                if (!isCancelled) {
+                    setMaterials(materials || []);
+                    setAssignments(assignments || []);
+                }
+            } catch (error) {
+                console.log(error);
+            } finally {
+                if (!isCancelled) setLoading(false);
+            }
+        };
+
+        // Clear previous data when switching selection to avoid stale display
+        if (isExpanded) {
+            setMaterials([]);
+            setAssignments([]);
+            fetchData();
+        }
+
+        return () => {
+            isCancelled = true;
+        };
+    }, [isExpanded, day?.id]);
+
+
+    return (
+        <div className={`p-2 m-2 rounded-lg font-nunito text-[#2c3e50] ease-in-out duration-300 opacity-0 animate-fade-in-slide-up transform
+            ${isExpanded
+              ? "bg-pink-400 border-pink-400 font-bold pb-3"
+              : "bg-blue-400 bg-opacity-30 hover:bg-pink-400 hover:border-pink-500 hover:font-bold hover:scale-105"}
+          `}
+            onClick={handleDayClicked}>
+                <h4 className={` pl-4 ${isExpanded ? "pb-2 font-bold": "pb-0"} `}>
+                    {day?.name} 
+                </h4>
+
+            {/* Content section for the day */}
+            {isExpanded && (
+                <div className="p-2 bg-white rounded-lg">
+                    {loading ? (
+                        <div className="flex items-center pl-4 gap-3">
+                            <div className="w-5 h-5 border-[3px] border-blue-400 border-opacity-30 border-t-blue-500 rounded-full animate-spin"></div>
+                            <span>Loading resources...</span>
+                        </div>
+                    ) : (
+                        <AnimatePresence>
+                            <>
+                            {user.role === "teacher" && (
+                                <button onClick={() => handleOnClickDeleteDay(day)}>Delete Day</button>
+                            )}
+                                {materials && materials.length > 0 && (
+                                    <motion.div 
+                                        key="materials-section"
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: "auto", opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.4 }}
+                                    >
+                                        <h5 className="font-nunito font-bold text-md text-gray-500 uppercase tracking-wide m-2">
+                                            Materials
+                                        </h5>
+                                        <ul>
+                                            {materials.map(material => (
+                                                <li key={`material-${material.id}`}> 
+                                                    <button
+                                                        className={`flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300 ${material.name === selected ? 'bg-slate-400 translate-x-1' : ''}`}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            onMaterialSelect(day.id, material);
+                                                        }}
+                                                    >
+                                                        <FaFile className="mr-3 text-base text-yellow-500" />
+                                                        <span className="font-sans text-sm text-gray-600 font-md tracking-wide">{material.name}</span>
+                                                    </button> 
+                                                    <button onClick={() => handleOnClickDeleteMaterial(material)} className="ml-2"> 
+                                                        <FaTrash className="mr-3 text-base text-yellow-500" />
+                                                    </button>
+                                                </li> 
+                                                
+                                            ))}
+                                        </ul> 
+                                    </motion.div>
+                                )} 
+                                {user.role === "teacher" && (
+                                    <button 
+                                        className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
+                                        onClick={ (e) => {
+                                            e.stopPropagation();
+                                            handleAddMaterial(day.id)
+                                        }}
+                                    >
+                                        <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Material</span>
+                                    </button> 
+                                )}
+            
+                                {assignments && assignments.length > 0 && (
+                                    <motion.div 
+                                        key="assignments-section"
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: "auto", opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.4 }}
+                                    >
+                                        <h5 className="font-nunito font-bold text-md text-gray-500 uppercase tracking-wide m-2">
+                                            Assignments
+                                        </h5>
+                                        <ul>
+                                            {assignments.map(assignment => (
+                                                <li key={`assignment-${assignment.id}`} > 
+                                                    <button
+                                                        className={`flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300 ${assignment.name === selected ? 'bg-slate-400 translate-x-1' : ''}`}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            onAssignmentSelect(day.id, assignment);
+                                                        }} 
+                                                    >
+                                                
+                                                        <MdAssignment className="mr-3 text-base text-red-500" />
+                                                        <span className="font-sans text-sm text-gray-600 font-md tracking-wide">{assignment.name}</span>
+                                                    </button> 
+                                                    <button onClick={() => handleOnClickDeleteAssignment(assignment)} > 
+                                                        <FaTrash className="mr-3 text-base text-yellow-500" />
+                                                    </button>
+                                                </li>
+                                            ))}
+                                        </ul> 
+                                    </motion.div>
+                                )}  
+                                {user.role === "teacher" && (
+                                    <button 
+                                        className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
+                                        onClick={ (e) => {
+                                            e.stopPropagation();
+                                            handleAddAssignment(day.id); 
+                                        }}
+                                    >
+                                        <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Assignment</span>
+                                    </button>
+                                )}
+                            </>
+                        </AnimatePresence>
+                    )}
+                </div>
+            )}
+        </div>
+      );
+    };
+
+export default DayComponent;

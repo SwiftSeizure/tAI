@@ -55,7 +55,10 @@ def get_student_classes(studentID: str, session: Session) -> list[DBClass]:
             classes.remove(c) 
     return classes
 
-def enroll(studentID: str, classCode: str, session: Session) -> None:
+
+def enroll(studentID: int, classCode: str, session: Session) -> int:
+
+
     """Enroll a student in a class.
     
     Args:
@@ -67,12 +70,13 @@ def enroll(studentID: str, classCode: str, session: Session) -> None:
         EntityNotFoundException: If the student or class with the given ID does not exist.
         
     Returns:    
-        None
+
     """
 
     student = get_student(studentID, session)
     if not student:
         raise EntityNotFoundException("student", studentID)
+
     
     stmt = select(DBClass).filter(DBClass.classCode == classCode)
     classroom = session.execute(stmt).scalar_one_or_none()
@@ -82,14 +86,38 @@ def enroll(studentID: str, classCode: str, session: Session) -> None:
     if classCode != classroom.classCode:
         raise InvalidClassCodeException()
     
+
+
+    stmt = select(DBClass).filter(DBClass.classCode == classCode)
+    classroom = session.execute(stmt).scalar_one_or_none()
+
+    if not classroom:
+        raise EntityNotFoundException("class", classCode)
+
+    # Check if already enrolled using relationship
+    stmt = select(DBEnrolled).filter(
+        DBEnrolled.studentID == studentID,
+        DBEnrolled.classID == classroom.id
+    )
+    existing_enrollment = session.execute(stmt).scalar_one_or_none()
+
+    if existing_enrollment:
+        return classroom.id  # Already enrolled
+
+
     enrollment = DBEnrolled(studentID=studentID, classID=classroom.id)
     session.add(enrollment)
     session.commit()
     session.refresh(enrollment)
     session.refresh(student)
     session.refresh(classroom)
+
     
-    return None
+    return student.id
+
+
+    
+
 
 def updateStudent(studentID: str, update: StudentUpdate, session: Session) -> None:
     """Update a student's information.

@@ -1,0 +1,5 @@
+P.E.M.D.A.S.
+1) Solve inside the parenthesis.
+2) Exponents
+3) Multiplication and Division, from left to right
+4) Addition and Subtraction, from left to right

@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pydantic import BaseModel
 from typing import Optional, Dict, Any
-from backend.database.schema import DBMessage, DBResponse, DBConversation
+from backend.database.schema import DBMessage, DBResponse, DBConversation, DBStudent
 
 # Error Response Model --------------------------------------------
 class ClientErrorResponse(BaseModel):
@@ -19,6 +19,7 @@ class HomeResponse(BaseModel):
 class HomeClass(BaseModel):
     id: int
     name: str
+    classCode: str
 
 
 # Classroom Input Models ------------------------------------------
@@ -38,6 +39,16 @@ class CreateUnit(BaseModel):
 # Classroom Response Models ---------------------------------------
 class ClassroomResponse(BaseModel):
     units: list[ClassroomUnit]
+
+class ClassroomStudentsResponse(BaseModel):
+    students: list[ClassroomStudent]
+
+class ClassroomStudent(BaseModel):
+    id: int
+    name: str
+    username: str
+
+
 class ClassroomUnit(BaseModel):
     id: int
     name: str
@@ -87,7 +98,7 @@ class DayMaterial(BaseModel):
 
 class AddEnrollment(BaseModel):
     studentID: int
-    classCode: int
+    classCode: str
 
 # Teacher Input Models -----------------------------------
 class TeacherUpdate(BaseModel):

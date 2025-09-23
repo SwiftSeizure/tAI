@@ -1,0 +1,1 @@
+export const AUTH_TOGGLE = false; // TODO: This will have to be changed to an API call
