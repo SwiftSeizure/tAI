@@ -20,6 +20,7 @@ class HomeClass(BaseModel):
     id: int
     name: str
     classCode: str
+    published: bool
 
 
 # Classroom Input Models ------------------------------------------

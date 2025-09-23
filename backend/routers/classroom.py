@@ -133,7 +133,7 @@ def get_students_in_classroom(classroomID: int, session: DBSession):
         404: If the classroom with the given ID is not found.
 
     Returns:
-        ClassroomStudentsResponse: A response model containing the students in the classroom.
+        ClassroomStudentsResponse: A response model containing the students in the classroom, in alphabetical order.
     """
     students = classroom_db.get_students_in_classroom(classroomID, session)
     return ClassroomStudentsResponse(students=students)
