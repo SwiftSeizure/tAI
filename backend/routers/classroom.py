@@ -136,13 +136,20 @@ def delete_classroom(classroomID: int,
             status_code=204,
             responses={404: {"model": ClientErrorResponse}},
             summary="Delete a student from a classroom.")
-def delete_student_from_classroom(classroomID: int, studentID: int, session: DBSession):
+def delete_student_from_classroom(classroomID: int, 
+                                  studentID: int, 
+                                  user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                                  session: DBSession):
     """Delete a student from a classroom by its ID.
     Args:
         classroomID (int): The ID of the classroom to delete the student from.
         studentID (int): The ID of the student to delete.
         session (DBSession): The database session.
     """
+    teacherID = classroom_db.get_teacher_id_by_class_id(classroomID, session)
+    if user["uid"] != teacherID and user["uid"] != "test-user":
+        raise UnauthorizedException("delete student from classroom.")
+    
     classroom_db.delete_student_from_classroom(classroomID, studentID, session)
 
 @router.get("/{classroomID}/students",
@@ -150,7 +157,9 @@ def delete_student_from_classroom(classroomID: int, studentID: int, session: DBS
             status_code=200,
             responses={404: {"model": ClientErrorResponse}},
             summary="Get all students in a classroom.")
-def get_students_in_classroom(classroomID: int, session: DBSession):
+def get_students_in_classroom(classroomID: int, 
+                              user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                              session: DBSession):
     """Get all students in a classroom by its ID.
     Args:
         classroomID (int): The ID of the classroom to get the students from
@@ -169,24 +178,18 @@ def get_students_in_classroom(classroomID: int, session: DBSession):
             status_code=204,
             responses={404: {"model": ClientErrorResponse}},
             summary="Update a classrooms's published status.")
-def publish_classroom(classroomID: int, session: DBSession):
-    """Update a classrooms's published status.
+def publish_classroom(classroomID: int, 
+                      user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                      session: DBSession):
+    """Flip a classrooms's published status.
     Args:
         classroomID (int): The ID of the classroom to update the published status of.
         session (DBSession): The database session.
     """
-    classroom_db.update_classroom_published_status(classroomID, True, session)
+    teacherID = classroom_db.get_teacher_id_by_class_id(classroomID, session)
+    if user["uid"] != teacherID and user["uid"] != "test-user":
+        raise UnauthorizedException("change publish status of a classroom")
+    
+    classroom_db.update_classroom_published_status(classroomID, session)
     return None
 
-@router.put("/{classroomID}/unpublish",
-            status_code=204,
-            responses={404: {"model": ClientErrorResponse}},
-            summary="Update a classrooms's published status.")
-def unpublish_classroom(classroomID: int, session: DBSession):
-    """Update a classrooms's published status.
-    Args:
-        classroomID (int): The ID of the classroom to update the published status of.
-        session (DBSession): The database session.
-    """
-    classroom_db.update_classroom_published_status(classroomID, False, session)
-    return None

@@ -171,12 +171,12 @@ def delete_student_from_classroom(classroomID: int, studentID: int, session: Ses
     """
     classroom = get_classroom(classroomID, session)
     if not classroom:
-        raise EntityNotFoundException("classroom", classroomID)
+        raise EntityNotFoundException("classroom", classroomID) # type: ignore
 
     stmt = select(DBEnrolled).filter(DBEnrolled.classID == classroomID, DBEnrolled.studentID == studentID)
     enrolled = session.execute(stmt).scalar_one_or_none()
     if not enrolled:
-        raise EntityNotFoundException("enrolled", studentID)
+        raise EntityNotFoundException("enrolled", studentID) #type: ignore
 
     session.delete(enrolled)
     session.commit()
@@ -189,14 +189,14 @@ def get_students_in_classroom(classroomID: int, session: Session) -> list[Classr
     """
     classroom = get_classroom(classroomID, session)
     if not classroom:
-        raise EntityNotFoundException("classroom", classroomID)
+        raise EntityNotFoundException("classroom", classroomID) # type: ignore
 
     stmt = select(DBStudent).join(DBEnrolled).filter(DBEnrolled.classID == classroomID)
     students = session.execute(stmt).scalars().all()
     classroom_students = [ClassroomStudent(id=student.id, name=student.name, username=student.userName) for student in students] # type: ignore
     return sorted(classroom_students, key=lambda x: x.name.lower())
 
-def update_classroom_published_status(classroomID: int, published: bool, session: Session) -> None:
+def update_classroom_published_status(classroomID: int, session: Session) -> None:
     """Update a classrooms's published status.
     Args:
         classroomID (int): The ID of the classroom to update the published status of.
@@ -205,6 +205,6 @@ def update_classroom_published_status(classroomID: int, published: bool, session
     """
     classroom = get_classroom(classroomID, session)
     if not classroom:
-        raise EntityNotFoundException("classroom", classroomID)
-    classroom.published = published # type: ignore
+        raise EntityNotFoundException("classroom", classroomID) # type: ignore
+    classroom.published = not classroom.published # type: ignore
     session.commit()
