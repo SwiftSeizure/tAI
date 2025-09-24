@@ -32,7 +32,7 @@ def get_teacher_home(accountID: int, session: DBSession) -> HomeResponse:
         HomeResponse: A response model containing the classes for the teacher.
     """ 
     db_classes = teacher_db.get_teacher_classes(accountID, session) 
-    classes = [HomeClass(id=c.id, name=c.name, classCode=c.classCode) for c in db_classes] # type: ignore
+    classes = [HomeClass(id=c.id, name=c.name, classCode=c.classCode, published=c.published) for c in db_classes] # type: ignore
     return HomeResponse(classes=classes)
 
 @router.post("/teacher/{accountID}",
@@ -57,7 +57,7 @@ def create_new_classroom(accountID: int, classroom: CreateClassroom, session: DB
         HomeClass: A response model containing the created classroom.
     """
     db_class = teacher_db.create_new_classroom(accountID, classroom, session)
-    return(HomeClass(id=db_class.id, name=db_class.name, classCode=db_class.classCode)) # type: ignore
+    return(HomeClass(id=db_class.id, name=db_class.name, classCode=db_class.classCode, published=db_class.published)) # type: ignore
 
 
 # Student home routes -------------------------------------------------------------
@@ -83,5 +83,5 @@ def get_student_home(accountID: int, session: DBSession) -> HomeResponse:
         HomeResponse: A response model containing the classes for the student.
     """
     db_classes = student_db.get_student_classes(accountID, session) 
-    classes = [HomeClass(id=c.id, name=c.name, classCode=c.classCode) for c in db_classes] # type: ignore
+    classes = [HomeClass(id=c.id, name=c.name, classCode=c.classCode, published=c.published) for c in db_classes] # type: ignore
     return HomeResponse(classes=classes)
