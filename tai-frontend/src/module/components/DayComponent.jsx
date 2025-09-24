@@ -160,7 +160,8 @@ const DayComponent = ( {
                                                     <button 
                                                         onClick={(e) => { 
                                                             e.stopPropagation();
-                                                            handleOnClickDeleteMaterial(material)
+                                                            handleOnClickDeleteMaterial(material); 
+                                                            setSelectedDay(day); 
                                                         }} 
                                                         className="ml-2"
                                                         > 
@@ -202,7 +203,8 @@ const DayComponent = ( {
                                                         className={`flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300 ${assignment.name === selected ? 'bg-slate-400 translate-x-1' : ''}`}
                                                         onClick={(e) => {
                                                             e.stopPropagation();
-                                                            onAssignmentSelect(day.id, assignment);
+                                                            onAssignmentSelect(day.id, assignment); 
+                                                            setSelectedDay(day); 
                                                         }} 
                                                     >
                                                 

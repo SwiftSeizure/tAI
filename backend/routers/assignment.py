@@ -135,7 +135,7 @@ def delete_file(dayID: int, filename: str, session: DBSession):
     
 
 
-@router.post("{dayID}/{filename}",
+@router.post("/{dayID}/{filename}",
 
                 status_code=201,
                 responses={

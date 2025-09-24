@@ -255,7 +255,9 @@ const TeacherStudentModulePage = () => {
             const formData = new FormData();
             formData.append('file', assignmentData.file);  
 
-            const fileName = assignmentData.name;
+            const fileName = assignmentData.name; 
+            console.log('Selected day:', selectedDay); 
+            
             await postCreateAssignment(selectedDay.id, fileName, formData); 
              
             await fetchModules(currentUnit.id); 
