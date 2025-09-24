@@ -196,3 +196,15 @@ def get_students_in_classroom(classroomID: int, session: Session) -> list[Classr
     classroom_students = [ClassroomStudent(id=student.id, name=student.name, username=student.userName) for student in students] # type: ignore
     return sorted(classroom_students, key=lambda x: x.name.lower())
 
+def update_classroom_published_status(classroomID: int, published: bool, session: Session) -> None:
+    """Update a classrooms's published status.
+    Args:
+        classroomID (int): The ID of the classroom to update the published status of.
+        published (bool): The new published status.
+        session (Session): The database session.
+    """
+    classroom = get_classroom(classroomID, session)
+    if not classroom:
+        raise EntityNotFoundException("classroom", classroomID)
+    classroom.published = published # type: ignore
+    session.commit()
