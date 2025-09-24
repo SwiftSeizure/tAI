@@ -157,7 +157,13 @@ const DayComponent = ( {
                                                         <FaFile className="mr-3 text-base text-yellow-500" />
                                                         <span className="font-sans text-sm text-gray-600 font-md tracking-wide">{material.name}</span>
                                                     </button> 
-                                                    <button onClick={() => handleOnClickDeleteMaterial(material)} className="ml-2"> 
+                                                    <button 
+                                                        onClick={(e) => { 
+                                                            e.stopPropagation();
+                                                            handleOnClickDeleteMaterial(material)
+                                                        }} 
+                                                        className="ml-2"
+                                                        > 
                                                         <FaTrash className="mr-3 text-base text-yellow-500" />
                                                     </button>
                                                 </li> 
@@ -203,7 +209,10 @@ const DayComponent = ( {
                                                         <MdAssignment className="mr-3 text-base text-red-500" />
                                                         <span className="font-sans text-sm text-gray-600 font-md tracking-wide">{assignment.name}</span>
                                                     </button> 
-                                                    <button onClick={() => handleOnClickDeleteAssignment(assignment)} > 
+                                                    <button onClick={(e) => { 
+                                                        e.stopPropagation();
+                                                        handleOnClickDeleteAssignment(assignment)
+                                                    }} > 
                                                         <FaTrash className="mr-3 text-base text-yellow-500" />
                                                     </button>
                                                 </li>

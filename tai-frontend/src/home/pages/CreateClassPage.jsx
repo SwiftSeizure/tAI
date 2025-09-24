@@ -36,7 +36,8 @@ const CreateClassPage = () => {
         try {  
             const requestBody = { 
                 name: newClassName,
-                settings: selectedChatSetting
+                settings: selectedChatSetting, 
+                published: false
             };
 
             const response = await postCreateClass(user.id, requestBody);

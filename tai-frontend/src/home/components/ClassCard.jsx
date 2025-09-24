@@ -110,7 +110,18 @@ const ClassCard = ( {
                     <div className="border-2 border-white/30 rounded-md backdrop-blur-sm bg-white/10 flex-wrap" >  
                        <h3 className="p-2 rounded-md" > 
                             {classroom?.name} 
-                        </h3> 
+                        </h3>  
+                        {admin && ( 
+                            <div className="flex flex-col items-center" > 
+                                <h3 className="p-2 rounded-md" > 
+                                    {classroom?.published ? "Published" : "Not Published"} 
+                                </h3>  
+                                <h3 className="p-2 rounded-md" > 
+                                    {classroom.classCode} 
+                                </h3>  
+                            </div> 
+                        )} 
+
                     </div> 
                     
                 </button>

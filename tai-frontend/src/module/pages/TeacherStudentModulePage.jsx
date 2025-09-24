@@ -331,8 +331,9 @@ const TeacherStudentModulePage = () => {
 
     const handleDeleteMaterial = async () => {
         try { 
-            console.log('Deleting material:', currentDeleteMaterial);  
-            await deleteMaterial(currentDeleteMaterial.day_id, currentDeleteMaterial.filename);
+            console.log('Deleting material:', currentDeleteMaterial);   
+            console.log('Selected day:', selectedDay); 
+            await deleteMaterial(selectedDay.id, currentDeleteMaterial.filename);
             await fetchModules(currentUnit.id);
         } catch (error) {
             console.error('Error deleting material:', error);

@@ -9,7 +9,9 @@ import { SettingsModal } from "../../shared/modals/SettingsModal";
 import { useSettingsModal } from "../../shared/hooks/useSettingsModal"; 
 import { deleteClass } from "../services/delete-class";  
 import { getStudentsEnrolled } from "../services/get-students-enrolled";  
-import { deleteStudentFromClass } from "../services/delete-student-from-class"; 
+import { deleteStudentFromClass } from "../services/delete-student-from-class";  
+import { postPublishClass } from "../services/post-publish-class";  
+
 import DeleteModal from "../../shared/modals/DeleteModal"; 
 import RosterModal from "../modals/RosterModal";
 
@@ -158,9 +160,10 @@ const TeacherStudentHomePage = () => {
         setIsRosterModalOpen(false);
     }; 
 
-    const handlePublishClass = async () => { 
+    const handlePublishClass = async (classroom) => {   
+        console.log("classroom", classroom); 
         try { 
-            // await publishClass(selectedClass.id); 
+            await postPublishClass(classroom.id); 
             // fetchClasses(user.id, user.role); 
         } 
         catch (error) { 
@@ -179,21 +182,35 @@ const TeacherStudentHomePage = () => {
         if (error) return <div>Error loading classes: {error}</div>; 
         
         return ( 
-            <>   
-                {Array.isArray(classes) && classes.map(classroom => ( 
-                    
-                    <ClassCard   
-                        key={classroom.id} 
-                        classroom={classroom} 
-                        onClick={handleClassSelect}   
-                        onClickSettings={() => handleClassSettings(classroom.id, classroom.name)}
-                        admin={user.role === 'teacher'} 
-                        onClickDelete={handleOpenDeleteModal} 
-                        onClickRoster={handleOpenRosterModal} 
-                        onPublishClass={handlePublishClass}
+            <>  
+                {Array.isArray(classes) && classes.map(classroom => (  
 
-                    />
-                ))} 
+                    user.role === 'student' && classroom.published ? ( 
+                        <ClassCard   
+                            key={classroom.id} 
+                            classroom={classroom} 
+                            onClick={handleClassSelect}   
+                        /> 
+
+                    ) : ( 
+                        <ClassCard   
+                            key={classroom.id} 
+                            classroom={classroom} 
+                            onClick={handleClassSelect}   
+                            onClickSettings={() => handleClassSettings(classroom.id, classroom.name)}
+                            admin={user.role === 'teacher'} 
+                            onClickDelete={handleOpenDeleteModal} 
+                            onClickRoster={handleOpenRosterModal} 
+                            onPublishClass={handlePublishClass}
+                        /> 
+                    )
+                ))}   
+
+                {/* Add a "new class" card for creating or joining a class */}
+                <ClassCard   
+                    classroom={addClassClass}
+                    onClick={handleClassSelect}
+                />  
             </>
         );
     }; 
@@ -212,14 +229,7 @@ const TeacherStudentHomePage = () => {
             {/* Grid container for class cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-items-center gap-4">      
                 {/* Render the fetched class cards */}
-                {populateClassCards()}  
-
-                {/* Add a "new class" card for creating or joining a class */}
-                <ClassCard   
-                    classroom={addClassClass}
-                    onClick={handleClassSelect}
-                />   
-                
+                {populateClassCards()}   
             </div>  
             
         </div>

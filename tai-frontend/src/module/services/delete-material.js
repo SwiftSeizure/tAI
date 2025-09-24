@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const deleteMaterial = async (dayID, filename) => {  
     try {
-        const url = `http://localhost:8000/materials/${dayID}/${filename}`;
+        const url = `http://localhost:8000/material/${dayID}/${filename}`;
         await axios.delete(url);
         return;
         
