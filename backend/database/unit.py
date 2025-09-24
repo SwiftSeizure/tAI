@@ -20,7 +20,7 @@ def get_unit(unitID: int, session: Session) -> DBUnit:
     stmt = select(DBUnit).filter(DBUnit.id == unitID)
     unit = session.execute(stmt).scalar_one_or_none()
     if not unit:
-        raise EntityNotFoundException("unit", unitID)
+        raise EntityNotFoundException("unit", unitID) # type: ignore
     
     return unit
 
@@ -44,7 +44,7 @@ def get_unit_modules(unitID: int, session: Session) -> list[DBModule]:
     )
     unit = session.execute(stmt).scalar_one_or_none()
     if not unit:
-        raise EntityNotFoundException("unit", unitID)
+        raise EntityNotFoundException("unit", unitID) # type: ignore
     
     return list(unit.modules)
 
@@ -144,3 +144,13 @@ def delete_unit(unitID: int, session: Session) -> None:
             
     session.delete(unit)
     session.commit()
+
+def get_teacher_id_by_unit_id(unitID : int, session: Session) -> str:
+    """Get a teacher's user ID by a unit ID.
+    Args: 
+        unitID (int): The ID of the unit.
+        session (Session): The SQLAlchemy session to use for the query.
+    Raises:
+        EntityNotFoundException: If the unit with the given ID does not exist."""
+    unit = get_unit(unitID, session)
+    return unit.class_.ownerID

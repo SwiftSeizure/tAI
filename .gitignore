@@ -1,9 +1,11 @@
 .env
 
-backend/service-account.json
-backend/curl_tests
 
-# macOS system files
+backend/curl_tests
+backend/service-account.json
+
+# macOS stystem files
+
 .DS_Store
 
 # Python bytecode

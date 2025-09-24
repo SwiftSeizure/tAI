@@ -10,9 +10,19 @@ from backend.database.schema import DBConversation, DBMessage, DBResponse
 from backend.database.student import get_student
 from backend.exceptions import EntityNotFoundException, InvalidClassCodeException
 from backend.routers.material import get_file  # unchanged
+from pathlib import Path
+
+# Get the project root directory (3 levels up from this file)
+ROOT_DIR = Path(__file__).parent.parent.parent
+
+# Load .env file from project root
+load_dotenv(ROOT_DIR / ".env")
 
 load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+api_key = os.getenv("OPENAI_API_KEY")
+if not api_key:
+    raise ValueError("OPENAI_API_KEY environment variable is not set")
+client = OpenAI(api_key=api_key)
 
 
 RESPONSES_TEXT_MODEL = os.getenv("RESPONSES_TEXT_MODEL", "gpt-4.1-mini")
@@ -42,7 +52,7 @@ def _ask_with_pdf(path: str, prompt: str) -> str:
             "role": "user",
             "content": [{"type": "input_text", "text": full_prompt}],
         }],
-    )
+    ) # type: ignore
     return resp.output_text
 
 
@@ -72,7 +82,7 @@ def _ask_with_png_data_url(data_url: str, prompt: str) -> str:
                 {"type": "input_text", "text": f"Use the attached image as context.\n\nQuestion: {prompt}"},
                 {"type": "input_image", "image_url": data_url},
             ],
-        }],
+        }], # type: ignore
     )
     return resp.output_text
 
@@ -113,9 +123,9 @@ def queryBot(studentID: int, path: str, prompt: str, session: Session) -> ChatRe
     except Exception as e:
         response_text = f"[Failed to process file: {e}]"
 
-    student = get_student(studentID, session)
+    student = get_student(studentID, session) #type: ignore
     if not student:
-        raise EntityNotFoundException("student", studentID)
+        raise EntityNotFoundException("student", studentID) # type: ignore
 
     stmnt = select(DBConversation).filter(
         DBConversation.studentID == studentID,
@@ -144,7 +154,7 @@ def queryBot(studentID: int, path: str, prompt: str, session: Session) -> ChatRe
         session.refresh(response)
 
         return ChatResponse(
-            conversationID=conversation.id,
+            conversationID=conversation.id, # type: ignore
             studentID=studentID,
             messages=[ChatMessage.model_validate(m) for m in conversation.messages],
             responses=[ChatResponseMessage.model_validate(r) for r in conversation.responses],

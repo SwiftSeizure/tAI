@@ -6,7 +6,7 @@ from pathlib import Path
 import shutil, os
 
 
-def getDay(dayId:int, session:Session) -> DBDay:
+def get_day(dayId:int, session:Session) -> DBDay:
     """ Get a day by its ID.
 
     Args:
@@ -23,11 +23,11 @@ def getDay(dayId:int, session:Session) -> DBDay:
     day = session.execute(stmnt).scalar_one_or_none()
 
     if not day:
-        raise EntityNotFoundException("day",dayId)
+        raise EntityNotFoundException("day",dayId) # type: ignore
     
     return day
 
-def getDayAssignment(dayId:int, session:Session) -> list[DBAssignment]:
+def get_day_assignment(dayId:int, session:Session) -> list[DBAssignment]:
     """ Get all assignments for a specific day.
     
     Args:
@@ -40,14 +40,14 @@ def getDayAssignment(dayId:int, session:Session) -> list[DBAssignment]:
     Returns:
         list[DBAssignment]: A list of DBAssignment objects representing the assignments for the day.
     """
-    day = getDay(dayId,session)
+    day = get_day(dayId,session)
 
     if not day:
         raise EntityNotFoundException("day",day)
 
     return day.assignments
 
-def getDayMaterial(dayId:int, session:Session) -> list[DBMaterial]:
+def get_day_material(dayId:int, session:Session) -> list[DBMaterial]:
     """ Get all materials for a specific day.
     
     Args:
@@ -60,7 +60,7 @@ def getDayMaterial(dayId:int, session:Session) -> list[DBMaterial]:
     Returns:
         list[DBMaterial]: A list of DBMaterial objects representing the materials for the day.
     """
-    day = getDay(dayId,session)
+    day = get_day(dayId,session)
 
     if not day:
         raise EntityNotFoundException("day", day)
@@ -176,4 +176,22 @@ def delete_day(dayId: int, session: Session) -> None:
     if day:
         session.delete(day)
         session.commit()
-        
+
+    
+def get_teacher_by_day_id(dayID: int, session: Session) -> str:
+    """Get the teacher ID associated with a day by its ID.
+
+    Args:
+        dayID (int): The ID of the day.
+        session (Session): The SQLAlchemy session to use for the query.
+
+    Raises:
+        EntityNotFoundException: If the day with the given ID does not exist.
+
+    Returns:
+        str: The teacher ID associated with the day.
+    """
+    day = get_day(dayID, session)
+    if not day:
+        raise EntityNotFoundException("day", dayID) # type: ignore
+    return day.module.unit.class_.ownerID

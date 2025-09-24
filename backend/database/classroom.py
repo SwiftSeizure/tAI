@@ -21,7 +21,7 @@ def get_classroom(classroomID: int, session: Session) -> DBClass | None:
     stmt = select(DBClass).filter(DBClass.id == classroomID)
     classroom = session.execute(stmt).scalar_one_or_none()
     if not classroom:
-        raise EntityNotFoundException("classroom", classroomID)
+        raise EntityNotFoundException("classroom", classroomID) # type: ignore
     return classroom
 
 def get_class_units(classroomID: int, session: Session) -> list[DBClass]:
@@ -39,7 +39,7 @@ def get_class_units(classroomID: int, session: Session) -> list[DBClass]:
     """
     classroom = get_classroom(classroomID, session)
     if not classroom:
-        raise EntityNotFoundException("classroom", classroomID)
+        raise EntityNotFoundException("classroom", classroomID) # type: ignore
     return classroom.units
 
 def create_new_unit(classroomID: int, unit: CreateUnit, session: Session) -> DBUnit:
@@ -58,7 +58,7 @@ def create_new_unit(classroomID: int, unit: CreateUnit, session: Session) -> DBU
     """
     classroom = get_classroom(classroomID, session)
     if not classroom:
-        raise EntityNotFoundException("classroom", classroomID)
+        raise EntityNotFoundException("classroom", classroomID) # type: ignore
     
     # Get the highest sequence number and add 10
     stmt = select(DBUnit.sequence)\
@@ -104,7 +104,7 @@ def update_classroom(classroomID: int, classroomUpdates: ClassroomUpdate, sessio
     """
     classroom = get_classroom(classroomID, session)
     if not classroom:
-        raise EntityNotFoundException("classroom", classroomID)
+        raise EntityNotFoundException("classroom", classroomID) # type: ignore
     
     # Update the classroom name
     if classroomUpdates.name:
@@ -149,6 +149,18 @@ def delete_classroom(classroomID: int, session: Session) -> None:
 
     session.delete(classroom)
     session.commit()
+
+    
+def get_teacher_id_by_class_id(classID : int, session: Session) -> str:
+    """Get a teacher's user ID by a class ID.
+    Args: 
+        classID (int): The ID of the class.
+        session (Session): The SQLAlchemy session to use for the query.
+    Raises:
+        EntityNotFoundException: If the class with the given ID does not exist."""
+    classroom = get_classroom(classID, session)
+    return classroom.ownerID # type: ignore
+
 
 def delete_student_from_classroom(classroomID: int, studentID: int, session: Session) -> None:
     """Delete a student from a classroom by its ID.
