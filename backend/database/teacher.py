@@ -6,7 +6,7 @@ from backend.database.schema import DBTeacher, DBClass
 from backend.models import CreateClassroom, TeacherUpdate
 from backend.exceptions import EntityNotFoundException, DuplicateNameException
 
-def get_teacher(teacherID: int, session: Session) -> DBTeacher:
+def get_teacher(teacherID: str, session: Session) -> DBTeacher:
     """ Get a DBTeacher object by its ID.
     
     Args:
@@ -26,7 +26,7 @@ def get_teacher(teacherID: int, session: Session) -> DBTeacher:
     
     return teacher
 
-def get_teacher_classes(teacherID: int, session: Session) -> list[DBClass]:
+def get_teacher_classes(teacherID: str, session: Session) -> list[DBClass]:
     """ Get all classes a teacher is associated with.
     
     Args:
@@ -39,9 +39,9 @@ def get_teacher_classes(teacherID: int, session: Session) -> list[DBClass]:
     Returns:
         list[DBClass]: A list of DBClass objects representing the classes the teacher is associated with.
     """
-    teacher = get_teacher(teacherID, session)
+    teacher = get_teacher(teacherID, session) # type: ignore
     if not teacher:
-        raise EntityNotFoundException("teacher", teacherID)
+        raise EntityNotFoundException("teacher", teacherID) # type: ignore
     
     stmt = (
         select(DBTeacher)
@@ -51,7 +51,7 @@ def get_teacher_classes(teacherID: int, session: Session) -> list[DBClass]:
     result = session.execute(stmt).scalar_one_or_none()
     return list(result.classes) if result else []
 
-def create_new_classroom(teacherID: int, classroom: CreateClassroom, session: Session) -> DBClass:
+def create_new_classroom(teacherID: str, classroom: CreateClassroom, session: Session) -> DBClass:
     """ Create a new classroom associated with a teacher.
     
     Args:
@@ -65,9 +65,9 @@ def create_new_classroom(teacherID: int, classroom: CreateClassroom, session: Se
     Returns:
         DBClass: The newly created DBClass object.
     """
-    teacher = get_teacher(teacherID, session)
+    teacher = get_teacher(teacherID, session) # type: ignore
     if not teacher:
-        raise EntityNotFoundException("teacher", teacherID)
+        raise EntityNotFoundException("teacher", teacherID) # type: ignore
     
     duplicate_stmt = select(DBClass)\
         .filter(
@@ -99,7 +99,7 @@ def create_new_classroom(teacherID: int, classroom: CreateClassroom, session: Se
     
     return new_class
     
-def update_teacher(teacherID: int,  update: TeacherUpdate, session: Session) -> None:
+def update_teacher(teacherID: str,  update: TeacherUpdate, session: Session) -> None:
     """ Update a teacher's username and or name."""
 
     stmnt = (
@@ -108,7 +108,7 @@ def update_teacher(teacherID: int,  update: TeacherUpdate, session: Session) -> 
     )
     teacher = session.execute(stmnt).scalar_one_or_none()
     if not teacher:
-        raise EntityNotFoundException("teacher", teacherID)
+        raise EntityNotFoundException("teacher", teacherID) # type: ignore
     if update.name is not None:
         teacher.name = update.name #type: ignore
     if update.username is not None:

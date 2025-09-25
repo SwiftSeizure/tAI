@@ -7,6 +7,7 @@ Usage:
     run `fastapi dev` or `poetry run fastapi dev` to start the server
 """
 
+
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -16,7 +17,28 @@ from dotenv import load_dotenv
 from backend.routers import home, classroom, unit, module, day, assignment, material, student, teacher, chat
 from backend.Seed_Database import PopulateDB
 from fastapi.middleware.cors import CORSMiddleware
-from backend.exceptions import EntityNotFoundException, UploadNotFoundException, DuplicateNameException, InvalidClassCodeException
+from backend.exceptions import EntityNotFoundException, UploadNotFoundException, DuplicateNameException, InvalidClassCodeException, UnauthorizedException
+#import os
+#import requests
+
+
+
+""" 
+https://medium.com/%40gabriel.cournelle/firebase-authentication-in-the-backend-with-fastapi-4ff3d5db55ca
+Firebase Auth Flow implimented from the above link
+Mixed with some troubleshooting from AI
+"""
+import firebase_admin
+from firebase_admin import credentials
+from dotenv import load_dotenv
+import pathlib
+# we need to load the env file because it contains the GOOGLE_APPLICATION_CREDENTIALS
+basedir = pathlib.Path(__file__).parent
+load_dotenv(basedir / ".env")
+cred = credentials.Certificate(basedir / "service-account.json")
+firebase_admin.initialize_app(cred)
+print("TAI:",firebase_admin.get_app().project_id)
+
 
 
 app = FastAPI(
@@ -72,6 +94,17 @@ app.include_router(student.router)
 app.include_router(teacher.router)
 app.include_router(chat.router)
 
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Only allow frontend origin
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 # Exception handlers
 @app.exception_handler(EntityNotFoundException)
 def handle_entity_not_found(request: Request, exception: EntityNotFoundException):
@@ -84,6 +117,9 @@ def handle_duplicate_name(request: Request, exception: DuplicateNameException):
     return exception.response()
 @app.exception_handler(InvalidClassCodeException)
 def handle_invalid_class_code(request: Request, exception: InvalidClassCodeException):
+    return exception.response()
+@app.exception_handler(UnauthorizedException)
+def handle_unauthorized(request: Request, exception: UnauthorizedException):
     return exception.response()
 
 """

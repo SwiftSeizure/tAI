@@ -4,7 +4,7 @@ from .schema import DBStudent, DBEnrolled, DBClass
 from backend.exceptions import EntityNotFoundException, InvalidClassCodeException
 from backend.models import StudentUpdate
 
-def get_student(studentID: int, session: Session) -> DBStudent:
+def get_student(studentID: str, session: Session) -> DBStudent:
     """Get a DBStudent object by its ID.
     
     Args:
@@ -24,7 +24,7 @@ def get_student(studentID: int, session: Session) -> DBStudent:
     
     return student
 
-def get_student_classes(studentID: int, session: Session) -> list[DBClass]:
+def get_student_classes(studentID: str, session: Session) -> list[DBClass]:
     """Get all classes a student is enrolled in.
     
     Args:
@@ -55,7 +55,9 @@ def get_student_classes(studentID: int, session: Session) -> list[DBClass]:
             classes.remove(c) 
     return classes
 
+
 def enroll(studentID: int, classCode: str, session: Session) -> int:
+
 
     """Enroll a student in a class.
     
@@ -114,10 +116,10 @@ def enroll(studentID: int, classCode: str, session: Session) -> int:
     return student.id
 
 
-    return classroom.id
+    
 
 
-def updateStudent(studentID: int, update: StudentUpdate, session: Session) -> None:
+def updateStudent(studentID: str, update: StudentUpdate, session: Session) -> None:
     """Update a student's information.
     
     Args:
@@ -133,13 +135,13 @@ def updateStudent(studentID: int, update: StudentUpdate, session: Session) -> No
     """
     student = get_student(studentID, session)
     if not student:
-        raise EntityNotFoundException("student", studentID)
+        raise EntityNotFoundException("student", studentID) # type: ignore
     
     if update.name is not None:
-        student.name = update.name
+        student.name = update.name # type: ignore
     if update.username is not None:
-        student.userName = update.username
-    
+        student.userName = update.username # type: ignore
+
     session.commit()
     session.refresh(student)
     

@@ -5,7 +5,7 @@ from backend.models import ClientErrorResponse
 
 class EntityNotFoundException(Exception):
     """Exception for a non-existent entity."""
-    def __init__(self, entity_name: str, entity_id: int):
+    def __init__(self, entity_name: str, entity_id: str):
         self.status_code = 404
         self.error = f"entity_not_found"
         self.message = f"Unable to find {entity_name} with id={entity_id}"
@@ -54,6 +54,20 @@ class InvalidClassCodeException(Exception):
         
     def response(self) -> Response:
         """HTTP response when a non-existent entity is requested."""
+        return JSONResponse(
+            status_code=self.status_code,
+            content=ClientErrorResponse(error=self.error, message=self.message).model_dump(),
+        )
+        
+class UnauthorizedException(Exception):
+    """Exception for unauthorized access."""
+    def __init__(self, action: str):
+        self.status_code = 401
+        self.error = f"unauthorized"
+        self.message = f"You do not have permission to {action}."
+        
+    def response(self) -> Response:
+        """HTTP response when unauthorized access is attempted."""
         return JSONResponse(
             status_code=self.status_code,
             content=ClientErrorResponse(error=self.error, message=self.message).model_dump(),

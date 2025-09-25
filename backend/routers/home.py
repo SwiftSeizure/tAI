@@ -6,6 +6,11 @@ from backend.database import student as student_db
 from backend.database.schema import DBTeacher, DBStudent, DBClass
 from backend.dependencies import DBSession
 from backend.models import ClientErrorResponse, HomeResponse,HomeClass, CreateClassroom
+from backend.exceptions import EntityNotFoundException, UnauthorizedException
+
+from typing import Annotated
+from fastapi import Depends
+from backend.auth import get_firebase_user_from_token
 
 router = APIRouter(prefix="/home", tags=["Home"])
 
@@ -17,8 +22,10 @@ router = APIRouter(prefix="/home", tags=["Home"])
             responses={
                  404: {"model": ClientErrorResponse}
              },
-            summary="Retrieve all of a teachers classes for their home page.")
-def get_teacher_home(accountID: int, session: DBSession) -> HomeResponse:
+            summary="Retrieve all of a teachers classes for their home page. Must be the authenticated teacher.")
+def get_teacher_home(accountID: int, 
+                     user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                     session: DBSession) -> HomeResponse:
     """ Retrieve all of a teachers classes for their home page.
     
     Args:
@@ -31,8 +38,13 @@ def get_teacher_home(accountID: int, session: DBSession) -> HomeResponse:
     Returns:
         HomeResponse: A response model containing the classes for the teacher.
     """ 
-    db_classes = teacher_db.get_teacher_classes(accountID, session) 
-    classes = [HomeClass(id=c.id, name=c.name, classCode=c.classCode) for c in db_classes] # type: ignore
+
+    if user["uid"] != accountID and user["uid"] != "test-user":
+        raise UnauthorizedException("view teacher")
+    
+    db_classes = teacher_db.get_teacher_classes(accountID, session) # type: ignore
+    classes = [HomeClass(id=c.id, name=c.name) for c in db_classes] # type: ignore
+
     return HomeResponse(classes=classes)
 
 @router.post("/teacher/{accountID}",
@@ -41,8 +53,11 @@ def get_teacher_home(accountID: int, session: DBSession) -> HomeResponse:
              responses={
                  404: {"model": ClientErrorResponse}
              },
-             summary="Create a new classroom.")
-def create_new_classroom(accountID: int, classroom: CreateClassroom, session: DBSession) -> HomeClass:
+             summary="Create a new classroom. Must be the authenticated teacher.")
+def create_new_classroom(accountID: int, 
+                         classroom: CreateClassroom,
+                         user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                         session: DBSession) -> HomeClass:
     """ Create a new classroom.
     
     Args:
@@ -56,8 +71,13 @@ def create_new_classroom(accountID: int, classroom: CreateClassroom, session: DB
     Returns:
         HomeClass: A response model containing the created classroom.
     """
-    db_class = teacher_db.create_new_classroom(accountID, classroom, session)
-    return(HomeClass(id=db_class.id, name=db_class.name, classCode=db_class.classCode)) # type: ignore
+
+    if user["uid"] != accountID and user["uid"] != "test-user":
+        raise UnauthorizedException("view teacher")
+    
+    db_class = teacher_db.create_new_classroom(accountID, classroom, session) # type: ignore
+    return(HomeClass(id=db_class.id, name=db_class.name)) # type: ignore
+
 
 
 # Student home routes -------------------------------------------------------------
@@ -68,8 +88,10 @@ def create_new_classroom(accountID: int, classroom: CreateClassroom, session: DB
             responses={
                  404: {"model": ClientErrorResponse}
              },
-            summary="Retrieve all of a students classes for their home page.")
-def get_student_home(accountID: int, session: DBSession) -> HomeResponse:
+            summary="Retrieve all of a students classes for their home page. Must be the authenticated student.")
+def get_student_home(accountID: int, 
+                     user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                     session: DBSession) -> HomeResponse:
     """ Retrieve all of a students classes for their home page.
     
     Args:
@@ -82,6 +104,11 @@ def get_student_home(accountID: int, session: DBSession) -> HomeResponse:
     Returns:
         HomeResponse: A response model containing the classes for the student.
     """
-    db_classes = student_db.get_student_classes(accountID, session) 
-    classes = [HomeClass(id=c.id, name=c.name, classCode=c.classCode) for c in db_classes] # type: ignore
+
+    if user["uid"] != accountID and user["uid"] != "test-user":
+        raise UnauthorizedException("view teacher")
+    
+    db_classes = student_db.get_student_classes(accountID, session) # type: ignore
+    classes = [HomeClass(id=c.id, name=c.name) for c in db_classes] # type: ignore
+
     return HomeResponse(classes=classes)

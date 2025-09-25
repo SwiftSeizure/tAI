@@ -1,13 +1,13 @@
 {
   "teacher": [
     {
-      "id": 1,
+      "id": "2AxKHm2eHjQ5syF2jB3Qug4b9ua2",
       "name": "Ms. Smith",
       "userName": "smithman",
       "password_hash": "hashed_pw_1"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Mr. Johnson",
       "userName": "bigJ",
       "password_hash": "hashed_pw_2"
@@ -15,25 +15,25 @@
   ],
   "student": [
     {
-      "id": 1,
+      "id": "P7eyfXks4ccuwl2fbLD11SyYiHp1",
       "name": "Alice",
       "userName": "madhatter",
       "password_hash": "hashed_pw_3"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Bob",
       "userName": "bobthebuilder",
       "password_hash": "hashed_pw_4"
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Charlie",
       "userName": "charliebrown",
       "password_hash": "hashed_pw_5"
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "David",
       "userName": "davidthegreat",
       "password_hash": "hashed_pw_6"
@@ -43,7 +43,7 @@
     {
       "id": 1,
       "name": "Classroom 1",
-      "ownerID": 1,
+      "ownerID": "2AxKHm2eHjQ5syF2jB3Qug4b9ua2",
       "settings": {
         "difficulty": "medium"
       },
@@ -53,7 +53,7 @@
     {
       "id": 2,
       "name": "Classroom 2",
-      "ownerID": 2,
+      "ownerID": "2",
       "settings": {
         "difficulty": "hard"
       },
@@ -63,7 +63,7 @@
     {
       "id": 3,
       "name": "Classroom 3",
-      "ownerID": 1,
+      "ownerID": "2AxKHm2eHjQ5syF2jB3Qug4b9ua2",
       "settings": {
         "difficulty": "medium"
       },
@@ -73,7 +73,7 @@
     {
       "id": 4,
       "name": "Classroom 4",
-      "ownerID": 2,
+      "ownerID": "2",
       "settings": {
         "difficulty": "hard"
       },
@@ -85,34 +85,41 @@
   "enrolled": [
     
     {
-      "id": 4,
-      "studentID": 2,
-      "classID": 2
+
+      "id": 2,
+      "studentID": "P7eyfXks4ccuwl2fbLD11SyYiHp1",
+      "classID": 1
+
     },
     {
       "id": 3,
-      "studentID": 1,
+      "studentID": "P7eyfXks4ccuwl2fbLD11SyYiHp1",
       "classID": 2
     },
 
     {
+      "id": 4,
+      "studentID": "2",
+      "classID": 2
+    },
+    {
       "id": 5,
-      "studentID": 1,
+      "studentID": "P7eyfXks4ccuwl2fbLD11SyYiHp1",
       "classID": 3
     },
     {
       "id": 6,
-      "studentID": 2,
+      "studentID": "2",
       "classID": 3
     },
     {
       "id": 7,
-      "studentID": 1,
+      "studentID": "P7eyfXks4ccuwl2fbLD11SyYiHp1",
       "classID": 4
     },
     {
       "id": 8,
-      "studentID": 2,
+      "studentID": "2",
       "classID": 4
     }
   ],
