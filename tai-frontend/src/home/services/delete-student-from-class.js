@@ -1,8 +1,9 @@
 import axios from "axios"; 
+import { API_BASE_URL } from "../../shared/constants/urls";
 
 export const deleteStudentFromClass = async (classroomID, studentID) => { 
     try { 
-        const url = `http://localhost:8000/classroom/${classroomID}/${studentID}`;
+        const url = `${API_BASE_URL}/classroom/${classroomID}/${studentID}`;
         await axios.delete(url); 
         return;
     } 

@@ -1,10 +1,11 @@
 import axios from 'axios';
+import { API_BASE_URL } from "../../shared/constants/urls";
 
 export const putChatMessage = async (studentID, displayType, dayID, currentFileName, message) => {
     try { 
  
         
-        const url = `http://localhost:8000/chat/uploads/${displayType}/${dayID}/${currentFileName}`;
+        const url = `${API_BASE_URL}/chat/uploads/${displayType}/${dayID}/${currentFileName}`;
         const formData = new FormData();
         formData.append("query", message); 
 

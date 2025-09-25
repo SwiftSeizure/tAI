@@ -1,9 +1,10 @@
 import axios from 'axios';
+import { API_BASE_URL } from "../../shared/constants/urls";
 
 export const postJoinClass = async (requestBody) => {
   try {
 
-    const response = await axios.put(`http://localhost:8000/student/enroll`, requestBody, {
+    const response = await axios.put(`${API_BASE_URL}/student/enroll`, requestBody, {
       headers: {
         'Content-Type': 'application/json'
       }

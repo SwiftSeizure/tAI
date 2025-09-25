@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { API_BASE_URL } from "../../shared/constants/urls";
 
 export const getAssignmentURL = async (dayID, fileName) => {
   if (!dayID || !fileName) {
@@ -6,7 +7,7 @@ export const getAssignmentURL = async (dayID, fileName) => {
   }
 
   try {
-    const url = `http://localhost:8000/assignment/${dayID}/${fileName}`;
+    const url = `${API_BASE_URL}/assignment/${dayID}/${fileName}`;
     const response = await axios.get(url, { responseType: 'blob' });
 
     if (response.status !== 200) {

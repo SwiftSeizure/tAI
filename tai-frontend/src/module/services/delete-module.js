@@ -1,8 +1,9 @@
 import axios from "axios"; 
+import { API_BASE_URL } from "../../shared/constants/urls";
 
 export const deleteModule = async (moduleID) => {
     try {
-        const url = `http://localhost:8000/module/${moduleID}`;
+        const url = `${API_BASE_URL}/module/${moduleID}`;
         await axios.delete(url);
         return;
     } catch (error) {

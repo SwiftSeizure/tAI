@@ -1,11 +1,12 @@
 import axios from "axios";
+import { API_BASE_URL } from "../../shared/constants/urls";
 
 export const putUpdateClassSettings = async (classID, requestBody) => {
     if (!classID) {
         throw new Error('Class ID is required');
     }
 
-    const URL = `http://localhost:8000/classroom/${classID}`;
+    const URL = `${API_BASE_URL}/classroom/${classID}`;
     
     try {
         const response = await axios.put(URL, requestBody, {

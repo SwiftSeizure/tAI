@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { API_BASE_URL } from "../../shared/constants/urls";
 
 /**
  * Creates a new unit in the specified class
@@ -14,7 +15,7 @@ export const postNewUnit = async (classID, unitName) => {
         };
 
         const response = await axios.post(
-            `http://localhost:8000/classroom/${classID}/unit`,
+            `${API_BASE_URL}/classroom/${classID}/unit`,
             requestBody,
             {
                 headers: {
