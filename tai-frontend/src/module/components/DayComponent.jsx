@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";  
-import { FaChevronDown, FaChevronUp, FaFile, FaClipboard, FaTrash } from "react-icons/fa";
+import { FaFile, FaTrash } from "react-icons/fa";
 import { MdAssignment } from "react-icons/md"; 
 import { motion, AnimatePresence } from 'framer-motion'; 
 import { useCurrentUser } from "../../store/user-store"; 

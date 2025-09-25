@@ -4,7 +4,6 @@ import { TitleCard } from "../../shared/components/TitleCard";
 import { postCreateClass } from "../services/post-create-class";
 import { ChatSettings } from "../../shared/components/ChatSettings";
 import { useCurrentUser } from "../../store/user-store";
-import { useCurrentClass } from "../../store/class-store";
 import { useClass } from "../../store/class-store";
 
 
@@ -21,7 +20,7 @@ const CreateClassPage = () => {
     const [selectedChatSetting, setSelectedChatSetting] = useState(null);
     
     const { user } = useCurrentUser(); 
-    const [state, { fetchClasses, setCurrentClass } ] = useClass();  
+    const [, { fetchClasses, setCurrentClass } ] = useClass();  
     const navigate = useNavigate();
 
 
