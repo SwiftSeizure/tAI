@@ -70,7 +70,7 @@ const LoginPage = () => {
                         name="role"
                         value="teacher1"
                         onClick={() => {
-                            setSelectedRole('teacher1');
+                            setSelectedRole('teacher');
                             setUser({
                                 id: 1,
                                 name: 'Mr. Smith',
@@ -99,7 +99,7 @@ const LoginPage = () => {
                         name="role"
                         value="student1"
                         onClick={() => {
-                            setSelectedRole('student1');
+                            setSelectedRole('student');
                             setUser({
                                 id: 1,
                                 name: 'Henry Winkler',
@@ -131,7 +131,7 @@ const LoginPage = () => {
                         name="role"
                         value="teacher2"
                         onClick={() => {
-                            setSelectedRole('teacher2');
+                            setSelectedRole('teacher');
                             setUser({
                                 id: 2,
                                 name: 'Mrs. Professor',
