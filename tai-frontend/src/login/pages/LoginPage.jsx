@@ -44,7 +44,7 @@ const LoginPage = () => {
 
     const handleCloseAuthModal = () => { 
         setIsAuthModalOpen(false);
-    }; 
+    };
  
     console.log(selectedRole);
 
