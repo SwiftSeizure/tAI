@@ -1,9 +1,8 @@
-import axios from "axios"; 
-import { API_BASE_URL } from "../../shared/constants/urls";
+import api from "../../shared/services/axios";
 
 export const postPublishClass = async (classID) => {
     try {
-        await axios.post(`${API_BASE_URL}/classroom/${classID}/publish`);
+        await api.post(`/classroom/${classID}/publish`);
         return; 
     } catch (error) {
         throw error;

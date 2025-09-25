@@ -1,8 +1,7 @@
-import axios from 'axios';
-import { API_BASE_URL } from "../../shared/constants/urls";
+import api from "../../shared/services/axios";
 
 export const postCreateDay = async (moduleId, dayName) => { 
-    const url = `${API_BASE_URL}/module/${moduleId}/day`;
-    await axios.post(url, { name: dayName });
+    const url = `/module/${moduleId}/day`;
+    await api.post(url, { name: dayName });
     return;
 };

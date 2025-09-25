@@ -1,8 +1,7 @@
-import axios from 'axios';
-import { API_BASE_URL } from "../../shared/constants/urls";
+import api from "../../shared/services/axios";
 
 export const getModules = async (unitID) => {
-  const url = `${API_BASE_URL}/unit/${unitID}/modules`; 
-  const response = await axios.get(url);
+  const url = `/unit/${unitID}/modules`; 
+  const response = await api.get(url);
   return response.data.modules;
 };

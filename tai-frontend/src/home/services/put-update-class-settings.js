@@ -1,15 +1,14 @@
-import axios from "axios";
-import { API_BASE_URL } from "../../shared/constants/urls";
+import api from "../../shared/services/axios";
 
 export const putUpdateClassSettings = async (classID, requestBody) => {
     if (!classID) {
         throw new Error('Class ID is required');
     }
 
-    const URL = `${API_BASE_URL}/classroom/${classID}`;
+    const URL = `/classroom/${classID}`;
     
     try {
-        const response = await axios.put(URL, requestBody, {
+        const response = await api.put(URL, requestBody, {
             headers: {
                 'Content-Type': 'application/json'
             },

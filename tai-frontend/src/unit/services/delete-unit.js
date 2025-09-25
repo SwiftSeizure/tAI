@@ -1,10 +1,9 @@
-import axios from "axios"; 
-import { API_BASE_URL } from "../../shared/constants/urls";
+import api from "../../shared/services/axios";
 
 export const deleteUnit = async (unitID) => {
     try {
-        const url = `${API_BASE_URL}/unit/${unitID}`;
-        await axios.delete(url);
+        const url = `/unit/${unitID}`;
+        await api.delete(url);
         return;
     } catch (error) {
         console.error('Error deleting unit:', error);

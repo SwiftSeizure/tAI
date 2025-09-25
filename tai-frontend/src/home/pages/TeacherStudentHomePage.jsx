@@ -33,15 +33,13 @@ const TeacherStudentHomePage = () => {
     const { classes } = useAllClasses();
     const { isLoading } = useClassesLoading();
     const { error } = useClassesError();
-    const [state, { setCurrentClass, fetchClasses }] = useClass();
+    const [, { setCurrentClass, fetchClasses }] = useClass();
     
     // State for managing settings modal
     const [currentSettingsClass, setCurrentSettingsClass] = useState(null); 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); 
 
-    const [selectedClass, setSelectedClass] = useState(null);   
-
-    const [currentRosterClass, setCurrentRosterClass] = useState(null);  
+    const [selectedClass, setSelectedClass] = useState(null);
     const [isRosterModalOpen, setIsRosterModalOpen] = useState(false);  
 
     const [enrolledStudents, setEnrolledStudents] = useState({}); 
@@ -51,7 +49,7 @@ const TeacherStudentHomePage = () => {
         id: null,
     }
 
-    const handleSettingsSuccess = (response, settingsData) => {
+    const handleSettingsSuccess = () => {
         // Optionally refresh classes or update local state
         if (user.id && user.role) {
             fetchClasses(user.id, user.role);
@@ -163,8 +161,7 @@ const TeacherStudentHomePage = () => {
     const handlePublishClass = async (classroom) => {   
         console.log("classroom", classroom); 
         try { 
-            await postPublishClass(classroom.id); 
-            // fetchClasses(user.id, user.role); 
+            await postPublishClass(classroom.id);
         } 
         catch (error) { 
             console.error('Error publishing class:', error); 

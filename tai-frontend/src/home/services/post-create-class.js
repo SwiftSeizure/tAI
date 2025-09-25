@@ -1,9 +1,8 @@
-import axios from "axios"; 
-import { API_BASE_URL } from "../../shared/constants/urls";
+import api from "../../shared/services/axios";
 
 export const postCreateClass = async (id, requestBody) => {
     try { 
-        const response = await axios.post(`${API_BASE_URL}/home/teacher/${id}`, requestBody, {
+        const response = await api.post(`/home/teacher/${id}`, requestBody, {
             headers: {
                 'Content-Type': 'application/json'
             }
