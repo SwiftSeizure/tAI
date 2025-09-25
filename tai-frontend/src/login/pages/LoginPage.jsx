@@ -1,181 +1,121 @@
-import { useState } from 'react'; 
-import { useNavigate } from 'react-router-dom';   
-import { TitleCard } from '../../shared/components/TitleCard';   
-import { useUser } from '../../store/user-store'; 
-import { AuthModal } from '../modals/AuthModal';
-import '../../App.css'  
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { TitleCard } from '../../shared/components/TitleCard';
+import { useUser } from '../../store/user-store';
+import { AuthModal } from '../modals/AuthModal'; 
+import '../../App.css'; 
+import { contentSections, subTitle } from '../constants/content';
 
-
-const teacherImage = require('../../images/teacher-login-image.png')
-const studentImage = require('../../images/student-login-image.png');
-
-
-/**
- * LoginPage Component
- * This page allows users to log in by selecting their role (teacher or student).
- * It includes radio buttons for role selection and a login button to navigate to the home page.
- */
-
-const LoginPage = () => {  
-
-    // State to manage the selected role (teacher or student)
-    const [selectedRole, setSelectedRole] = useState('');   
-    const [error, setError] = useState('');   
-
+const LoginPage = () => {
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-
+    const [selectedRole, setSelectedRole] = useState('');
+    const sectionsRef = useRef([]); 
+    const navigate = useNavigate();
     const [, { setUser }] = useUser();
 
-    // Hook to navigate to HomePage
-    const navigate = useNavigate(); 
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in-up');
+                        entry.target.classList.remove('opacity-0', 'translate-y-10');
+                    }
+                });
+            },
+            { 
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            }
+        );
 
+        sectionsRef.current.forEach((el) => {
+            if (el) observer.observe(el);
+        });
 
-    //TODO: Need to chance with USER AUTH  
-    /* logIn */
+        return () => observer.disconnect();
+    }, []);
 
-
-    // END CHANGE  
-
-    const handleAuthTrial = () => { 
-        console.log('Auth is not working but implementation will go here:'); 
+    const handleAuthTrial = () => {
+        console.log('Auth is not working but implementation will go here:');
         setIsAuthModalOpen(false);
         navigate('/home');
-    }; 
+    };
 
-    const handleCloseAuthModal = () => { 
+    const handleCloseAuthModal = () => {
         setIsAuthModalOpen(false);
     };
- 
-    console.log(selectedRole);
 
-    return ( 
-        <>   
-        <div className="h-screen w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient"> 
-            <TitleCard title={""} /> 
+    const handleLoginClick = () => {
+        setSelectedRole('student');
+        setUser({
+            id: 1,
+            name: 'Demo User',
+            role: 'student',
+            email: 'demo@example.com',
+        });
+        setIsAuthModalOpen(true);
+    };
 
 
-            {/* Role selection section */}
-            <div className="pt-[5%] pb-[5%] flex justify-around w-full"> 
+    return (
+        <>
+            <div className="h-screen w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient flex flex-col items-center justify-start overflow-y-auto">
+                {/* Hero Section */}
+                <section className="pt-32 pb-16 text-center w-3/4">
+                    <TitleCard title="Welcome to Teaching Revolutionalized" />
+                    <p className="text-lg text-gray-700 font-nunito mt-6 mb-10 max-w-2xl mx-auto">
+                        {subTitle}
+                    </p>
+                    
+                    {/* Single Login Button */}
+                    <button type="button" class="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+                        Login to Learn
+                    </button>
+                </section>
 
-
-
-                {/* Radio buttons for selecting teacher or student role */}
-                <label className="radio-card group block relative w-[200px] cursor-pointer border-2 border-[#e0e0e0] rounded-lg p-4 m-2 transition-all duration-300 ease-in-out 
-                    hover:border-[#a0a0a0] hover:-translate-y-1 hover:shadow-[0_5px_15px_rgba(0,0,0,0.1)] 
-                    focus-within:outline-[6px] focus-within:outline-lightblue focus-within:outline-offset-2"> 
-                    {/* Radio button for teacher role */}
-                    <button
-                        className="absolute opacity-0 cursor-pointer"
-                        type="radio"
-                        name="role"
-                        value="teacher1"
-                        onClick={() => {
-                            setSelectedRole('teacher');
-                            setUser({
-                                id: 1,
-                                name: 'Mr. Smith',
-                                role: 'teacher',
-                                email: 'prof1@example.com'
-                            });
-                            setIsAuthModalOpen(true);
-                        }}
-                    />
-                    <div className="flex flex-col items-center justify-center">
-                        <img
-                            className="w-full h-auto object-cover rounded mb-3"
-                            src={teacherImage}
-                            alt="Teacher"
-                        />
-                        <span className="text-xl font-extrabold text-gray-800 font-nunito"> Teacher 1 </span>
-                    </div> 
-                </label>
-                <label className="radio-card group block relative w-[200px] cursor-pointer border-2 border-[#e0e0e0] rounded-lg p-4 m-2 transition-all duration-300 ease-in-out 
-                    hover:border-[#a0a0a0] hover:-translate-y-1 hover:shadow-[0_5px_15px_rgba(0,0,0,0.1)] 
-                    focus-within:outline-[6px] focus-within:outline-lightblue focus-within:outline-offset-2"> 
-                    {/* Radio button for student role */}
-                    <button 
-                        className="absolute opacity-0 cursor-pointer"
-                        type="radio"
-                        name="role"
-                        value="student1"
-                        onClick={() => {
-                            setSelectedRole('student');
-                            setUser({
-                                id: 1,
-                                name: 'Henry Winkler',
-                                role: 'student',
-                                email: 'student1@example.com'
-                            });
-                            setIsAuthModalOpen(true);
-                        }}
-                    />  
-                    <div className="flex flex-col items-center justify-center"> 
-                        <img 
-                            className="w-full h-auto object-cover rounded mb-3" 
-                            src={studentImage} 
-                            alt="Student"
-                        /> 
-                        <span className="text-xl font-extrabold text-gray-800 font-nunito"> Student 1 </span>
+                {/* Content Sections with Scroll Reveal */}
+                <section className="w-full bg-white py-20">
+                    <div className="max-w-4xl mx-auto px-4">
+                        {contentSections.map((section, i) => (
+                            <div
+                                key={i}
+                                ref={el => sectionsRef.current[i] = el}
+                                className="opacity-0 translate-y-10 transition-all duration-700 ease-out mb-16 text-center"
+                            >
+                                <h3 className="text-2xl font-semibold text-gray-900 mb-4">{section.title}</h3>
+                                <p className="text-lg text-gray-700 leading-relaxed">{section.content}</p>
+                            </div>
+                        ))}
                     </div>
-                </label> 
+                </section>
+            </div>
 
-              </div>  
+            <AuthModal
+                isOpen={isAuthModalOpen}
+                onClose={handleCloseAuthModal}
+                role={selectedRole}
+                onAuthTrial={handleAuthTrial}
+            />
 
-
-
-            {/* Radio button for demo teacher role */}
-            <div>
-                <label>
-                    <button
-                        type="radio"
-                        name="role"
-                        value="teacher2"
-                        onClick={() => {
-                            setSelectedRole('teacher');
-                            setUser({
-                                id: 2,
-                                name: 'Mrs. Professor',
-                                role: 'teacher',
-                                email: 'prof2@example.com'
-                            });
-                            setIsAuthModalOpen(true);
-                        }}
-                    />
-                    Demo teacher
-                </label>
-            </div> 
-
-
-
-            {error && (
-                <div className="text-red-500 text-center mb-4">
-                    {error}
-                </div>
-            )}
-            {/* <div className="flex justify-center items-center"> 
-                <button 
-                    className="inline-block w-[200px] cursor-pointer border-2 border-gray-300 rounded-lg p-4 m-2 bg-transparent
-                    font-medium text-[1.1rem] text-gray-800 text-center font-nunito
-                    transition-all duration-300 ease-in-out
-                    hover:border-gray-400 hover:-translate-y-1 hover:shadow-lg
-                    active:-translate-y-0.5 active:shadow-md
-                    focus:outline-none focus:outline-offset-2"
-                    onClick={logIn}
-                    >
-                    Log In
-                </button> 
-            </div> */}
-        </div> 
-
-        <AuthModal 
-            isOpen={isAuthModalOpen} 
-            onClose={handleCloseAuthModal}  
-            role={selectedRole} 
-            onAuthTrial={handleAuthTrial}
-        />
-        
+            <style jsx>{`
+                .fade-in-up {
+                    opacity: 1 !important;
+                    transform: translateY(0) !important;
+                }
+                
+                @keyframes scrollGradient {
+                    0% { background-position: 0% 0%; }
+                    50% { background-position: 0% 100%; }
+                    100% { background-position: 0% 0%; }
+                }
+                
+                .animate-scrollGradient {
+                    animation: scrollGradient 10s ease-in-out infinite;
+                }
+            `}</style>
         </>
     );
-}  
+};
 
-export default LoginPage; 
+export default LoginPage;

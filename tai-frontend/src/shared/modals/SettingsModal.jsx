@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import { ChatSettings } from "../components/ChatSettings";
 
 export const SettingsModal = ({ onSave, onCancel, isLoading, isOpen }) => {
-	if (!isOpen) {
-        return null;
-    } 
 
 	const [formData, setFormData] = useState({
 		name: "",
 		settings: {}
-	});
+	}); 
+
+    if (!isOpen) {
+        return null;
+    } 
 
 	const handleSettingsChange = (selectedSetting) => {
 		setFormData((prev) => ({

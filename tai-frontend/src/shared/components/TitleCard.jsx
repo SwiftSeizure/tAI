@@ -64,8 +64,8 @@ export const TitleCard = ({ title, intro, settings }) => {
                         />
                     </div>
                 ) : (
-                    <>
-                        <div className="absolute left-2">
+                    <> 
+                        <div className="absolute left-2"> 
                             <button
                                 className="flex w-10 h-10 cursor-pointer rounded-md p-4 m-2 font-medium text-[1.1rem] text-gray-800 justify-center items-center hover:shadow-2xl active:shadow-sm focus:outline-offset-2"
                                 onClick={(e) => goBackPage(e)}
