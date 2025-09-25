@@ -26,17 +26,10 @@ export const TitleCard = ({ title, intro, settings }) => {
     // Callbacks for settings operations
     const handleSettingsSuccess = (responseData) => {
         console.log('Settings saved successfully:', responseData);   
-
-        // Update the current class in the store  
-        //TODO: Update class here for state managment 
-        // updateClass(currentClass.id);
-        // You could add a toast notification here
-        // You could update local state here if needed
     };
 
     const handleSettingsError = (error) => {
         console.error('Settings save failed:', error);
-        // You could add error toast notification here
         // You could show an error modal here
     };
 
