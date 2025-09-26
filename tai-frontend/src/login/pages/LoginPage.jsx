@@ -48,9 +48,14 @@ const LoginPage = () => {
         if (!email || !password) {
             setLoginError("Please fill in all fields");
             return;
+        } 
+
+        if (!selectedRole) {
+            setLoginError("Please select a role");
+            return;
         }
 
-        setIsLoginLoading(true);
+        setIsLoginLoading(true); 
         setLoginError("");
 
         try {
@@ -101,8 +106,7 @@ const LoginPage = () => {
     };
 
     const handleLoginClick = () => { 
-        //TODO help with this 
-        setSelectedRole('student');
+        //TODO help with this
         setIsAuthModalOpen(true);
     };
 
@@ -157,7 +161,9 @@ const LoginPage = () => {
                 password={password}
                 setPassword={setPassword}
                 rememberMe={rememberMe}
-                setRememberMe={setRememberMe}
+                setRememberMe={setRememberMe} 
+                selectedRole={selectedRole}
+                setSelectedRole={setSelectedRole}
             />
 
             <style jsx>{`
