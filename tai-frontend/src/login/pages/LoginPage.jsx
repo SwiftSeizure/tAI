@@ -1,17 +1,24 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { auth, googleProvider } from '../../auth/firebase';
 import { TitleCard } from '../../shared/components/TitleCard';
 import { useUser } from '../../store/user-store';
 import { AuthModal } from '../modals/AuthModal'; 
 import '../../App.css'; 
-import { contentSections, subTitle } from '../constants/content';
+import { contentSections, subTitle } from '../constants/content'; 
 
 const LoginPage = () => {
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [selectedRole, setSelectedRole] = useState('');
     const sectionsRef = useRef([]); 
+    const [loginError, setLoginError] = useState('');
+    const [isLoginLoading, setIsLoginLoading] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [rememberMe, setRememberMe] = useState(false);
     const navigate = useNavigate();
-    const [, { setUser }] = useUser();
+    const [{ user }, { setUser }] = useUser();
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -36,24 +43,66 @@ const LoginPage = () => {
         return () => observer.disconnect();
     }, []);
 
-    const handleAuthTrial = () => {
-        console.log('Auth is not working but implementation will go here:');
-        setIsAuthModalOpen(false);
-        navigate('/home');
+    const handleAuthEmailPasswordLogin = async (e) => {
+        e.preventDefault();
+        if (!email || !password) {
+            setLoginError("Please fill in all fields");
+            return;
+        }
+
+        setIsLoginLoading(true);
+        setLoginError("");
+
+        try {
+            const userCredentials = await signInWithEmailAndPassword(auth, email, password); 
+            const idToken = await userCredentials.user.getIdToken();   
+            console.log('ID Token:', idToken);
+            console.log('User:', userCredentials);
+            localStorage.setItem('authToken', idToken); 
+            setUser({
+                id: userCredentials.user.uid,
+                name: userCredentials.user.displayName,
+                role: selectedRole,
+                email: userCredentials.user.email,  
+
+            }); 
+            
+            console.log('User in local store ', user);
+
+            // TODO: Set user in global state
+            setIsAuthModalOpen(false);
+            navigate('/home');
+        } catch (error) {
+            console.error(error);
+            setLoginError("Invalid email or password. Please try again.");
+        } finally {
+            setIsLoginLoading(false);
+        }
+    }; 
+
+    const handleAuthGoogleLogin = async () => {
+        setIsLoginLoading(true);
+        setLoginError("");
+        try {
+            await signInWithPopup(auth, googleProvider);
+            // TODO: Set user in global state
+            setIsAuthModalOpen(false);
+            navigate('/home');
+        } catch (error) {
+            console.error(error);
+            setLoginError("Failed to sign in with Google. Please try again.");
+        } finally {
+            setIsLoginLoading(false);
+        }
     };
 
     const handleCloseAuthModal = () => {
         setIsAuthModalOpen(false);
     };
 
-    const handleLoginClick = () => {
+    const handleLoginClick = () => { 
+        //TODO help with this 
         setSelectedRole('student');
-        setUser({
-            id: 1,
-            name: 'Demo User',
-            role: 'student',
-            email: 'demo@example.com',
-        });
         setIsAuthModalOpen(true);
     };
 
@@ -63,13 +112,17 @@ const LoginPage = () => {
             <div className="h-screen w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient flex flex-col items-center justify-start overflow-y-auto">
                 {/* Hero Section */}
                 <section className="pt-32 pb-16 text-center w-3/4">
-                    <TitleCard title="Welcome to Teaching Revolutionalized" />
+                    Welcome to Teaching Revolutionalized
                     <p className="text-lg text-gray-700 font-nunito mt-6 mb-10 max-w-2xl mx-auto">
                         {subTitle}
                     </p>
                     
                     {/* Single Login Button */}
-                    <button type="button" class="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+                    <button 
+                        type="button" 
+                        className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                        onClick={handleLoginClick}
+                    >
                         Login to Learn
                     </button>
                 </section>
@@ -95,7 +148,16 @@ const LoginPage = () => {
                 isOpen={isAuthModalOpen}
                 onClose={handleCloseAuthModal}
                 role={selectedRole}
-                onAuthTrial={handleAuthTrial}
+                onAuthEmailPasswordLogin={handleAuthEmailPasswordLogin}
+                onAuthGoogleLogin={handleAuthGoogleLogin} 
+                loginError={loginError}
+                isLoginLoading={isLoginLoading}
+                email={email}
+                setEmail={setEmail}
+                password={password}
+                setPassword={setPassword}
+                rememberMe={rememberMe}
+                setRememberMe={setRememberMe}
             />
 
             <style jsx>{`

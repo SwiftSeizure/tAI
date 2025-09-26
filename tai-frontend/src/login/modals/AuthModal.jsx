@@ -1,6 +1,4 @@
-import { auth, googleProvider } from "../../auth/firebase";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { AUTH_TOGGLE } from "../../auth/auth-toggle";
 
 // Custom hook to detect clicks outside the modal
@@ -19,51 +17,23 @@ const useClickOutside = (ref, callback) => {
   }, [ref, callback]);
 };
 
-export const AuthModal = ({ isOpen, onClose, onAuthTrial }) => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [rememberMe, setRememberMe] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState("");
+export const AuthModal = ({ 
+    isOpen, 
+    onClose, 
+    onAuthEmailPasswordLogin,
+    onAuthGoogleLogin,
+    loginError,
+    isLoginLoading,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    rememberMe,
+    setRememberMe
+}) => { 
     
     const modalRef = useRef(null);
     useClickOutside(modalRef, onClose);
-
-    const handleEmailLogin = async (e) => {
-        e.preventDefault();
-        if (!email || !password) {
-            setError("Please fill in all fields");
-            return;
-        }
-
-        setIsLoading(true);
-        setError("");
-
-        try {
-            const userCredentials = await signInWithEmailAndPassword(auth, email, password);
-            console.log(userCredentials);
-            onAuthTrial();
-        } catch (error) {
-            console.error(error);
-            setError("Invalid email or password. Please try again.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleGoogleLogin = async () => {
-        try {
-            setIsLoading(true);
-            setError("");
-            await signInWithPopup(auth, googleProvider);
-            onAuthTrial();
-        } catch (error) {
-            console.error(error);
-            setError("Failed to sign in with Google. Please try again.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     if (!isOpen) { 
         return null;
@@ -76,14 +46,14 @@ export const AuthModal = ({ isOpen, onClose, onAuthTrial }) => {
                     ref={modalRef}
                     className="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700"
                 >
-                    <form className="space-y-6" onSubmit={handleEmailLogin}>
+                    <form className="space-y-6" onSubmit={onAuthEmailPasswordLogin}>
                         <h5 className="text-xl font-medium text-gray-900 dark:text-white">
                             Please Sign in to Continue Learning
                         </h5>
             
-                        {error && (
+                        {loginError && (
                             <div className="p-3 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800">
-                                {error}
+                                {loginError}
                             </div>
                         )}
 
@@ -137,10 +107,10 @@ export const AuthModal = ({ isOpen, onClose, onAuthTrial }) => {
 
                         <button
                             type="submit"
-                            disabled={isLoading}
+                            disabled={isLoginLoading}
                             className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:opacity-50"
                         >
-                            {isLoading ? 'Signing in...' : 'Sign in to your account'}
+                            {isLoginLoading ? 'Signing in...' : 'Sign in to your account'}
                         </button>
 
                         <div className="relative my-4">
@@ -156,8 +126,8 @@ export const AuthModal = ({ isOpen, onClose, onAuthTrial }) => {
 
                         <button
                             type="button"
-                            onClick={handleGoogleLogin}
-                            disabled={isLoading}
+                            onClick={onAuthGoogleLogin}
+                            disabled={isLoginLoading}
                             className="w-full flex items-center justify-center gap-3 py-2.5 px-5 text-sm font-medium text-gray-700 bg-white rounded-lg border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 transition-colors duration-200"
                         >
                             <img 
@@ -205,7 +175,7 @@ export const AuthModal = ({ isOpen, onClose, onAuthTrial }) => {
                     Cancel
                 </button>
                 <button
-                    onClick={onAuthTrial}
+                    onClick={onAuthEmailPasswordLogin}
                     className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                     Continue
