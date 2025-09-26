@@ -95,16 +95,6 @@ app.include_router(teacher.router)
 app.include_router(chat.router)
 
 
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Only allow frontend origin
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
 # Exception handlers
 @app.exception_handler(EntityNotFoundException)
 def handle_entity_not_found(request: Request, exception: EntityNotFoundException):
