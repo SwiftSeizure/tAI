@@ -39,7 +39,7 @@ def enroll_student(update:AddEnrollment ,
                 409: {"model": ClientErrorResponse},
             },
             summary="Update a student. Must be an authenticated student.")
-def update_student(studentID: int, 
+def update_student(studentID: str, 
                    update: StudentUpdate, 
                    user: Annotated[dict, Depends(get_firebase_user_from_token)],
                    session: DBSession) -> None:
@@ -58,7 +58,7 @@ def update_student(studentID: int,
                 409: {"model": ClientErrorResponse},
             },
             summary="Get a student. Must be an authenticated student.")
-def get_student_ID(studentID: int, 
+def get_student_ID(studentID: str, 
                    user: Annotated[dict, Depends(get_firebase_user_from_token)],
                    session: DBSession) -> StudentResponse:
     
