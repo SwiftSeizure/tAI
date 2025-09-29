@@ -93,12 +93,14 @@ const LoginPage = () => {
         try {
             const userCredentials = await signInWithEmailAndPassword(auth, email, password); 
             const idToken = await userCredentials.user.getIdToken();   
-            localStorage.setItem('authToken', idToken); 
-            setUser({
+            await localStorage.setItem('authToken', idToken);  
+            
+            await setUser({
                 id: userCredentials.user.uid,
                 name: userCredentials.user.displayName,
                 role: selectedRole,
-                email: userCredentials.user.email,  
+                email: userCredentials.user.email,   
+                token: idToken
             }); 
             
             setIsAuthModalOpen(false);

@@ -161,7 +161,8 @@ const TeacherStudentHomePage = () => {
     const handlePublishClass = async (classroom) => {   
         console.log("classroom", classroom); 
         try { 
-            await postPublishClass(classroom.id);
+            postPublishClass(classroom.id); 
+            fetchClasses(user.id, user.role); 
         } 
         catch (error) { 
             console.error('Error publishing class:', error); 
