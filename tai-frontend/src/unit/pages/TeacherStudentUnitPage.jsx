@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";   
 import UnitCard from "../components/UnitCard";
-import { TitleCard } from "../../shared/components/TitleCard"; 
+import { NavBar } from "../../shared/components/NavBar"; 
 import Loading from "../../shared/components/Loading"; 
 import { useCurrentUser } from "../../store/user-store";
 import { useCurrentClass } from "../../store/class-store"; 
@@ -51,13 +51,13 @@ const TeacherStudentUnitPage = () => {
     }, [currentClass.id]);
 
 
-    const handleUnitSelect = async (unitID) => {
+    const handleUnitSelect = async (unit) => {
         try { 
-            if (!unitID && user.role === "teacher") {
+            if (!unit && user.role === "teacher") {
                 navigate('/createunit');
                 return;
             }
-            await setCurrentUnit(unitID);
+            await setCurrentUnit(unit.id);
             navigate('/modulepage');
         } 
         catch (error) {
@@ -65,10 +65,10 @@ const TeacherStudentUnitPage = () => {
         }
     };  
 
-    const handleOpenDeleteModal = (unitID, unitName) => { 
-        if (!unitID) return;
-        setCurrentDeleteUnitID(unitID);
-        setCurrentDeleteUnitName(unitName);
+    const handleOpenDeleteModal = (unit) => { 
+        if (!unit) return;
+        setCurrentDeleteUnitID(unit.id);
+        setCurrentDeleteUnitName(unit.name);
         setIsDeleteModalOpen(true);
     };
 
@@ -84,7 +84,18 @@ const TeacherStudentUnitPage = () => {
  
     const handleCloseDeleteModal = () => {
         setIsDeleteModalOpen(false);
-    }; 
+    };  
+
+    const handlePublishUnit = async (unit) => {
+        try { 
+            console.log('Publishing unit:', unit);
+            //await publishUnit(unit.id);
+            fetchUnits(currentClass.id);
+        } 
+        catch (error) {
+            console.error('Error publishing unit:', error);
+        }
+    };
 
     /**
      * populateUnitCards
@@ -100,10 +111,10 @@ const TeacherStudentUnitPage = () => {
             {Array.isArray(units) && units.map(unit => (  
                 <UnitCard 
                     key={unit.id} 
-                    unitID={unit.id} 
-                    unitName={unit.name}  
+                    unit={unit}  
                     onClick={handleUnitSelect} 
                     onClickDelete={handleOpenDeleteModal}
+                    onClickPublish={handlePublishUnit}
                 />
             ))}  
 
@@ -118,10 +129,9 @@ const TeacherStudentUnitPage = () => {
     return(  
         <> 
         <div className="min-h-screen min-w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient"> 
-            <TitleCard 
+            <NavBar 
                 title={currentClass?.name} 
                 classID={currentClass?.id}
-                intro={true}
             />   
 
             {isLoading 
@@ -132,8 +142,7 @@ const TeacherStudentUnitPage = () => {
                         {user.role === "teacher" 
                             ? <UnitCard 
                                 key={null} 
-                                unitID={null}
-                                unitName={null}  
+                                unit={null}  
                                 onClick={handleUnitSelect} 
                                 onClickDelete={handleOpenDeleteModal}
                             />

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TitleCard } from "../../shared/components/TitleCard";  
+import { NavBar } from "../../shared/components/NavBar";  
 import { useNavigate } from "react-router-dom"; 
 import { postJoinClass } from "../services/post-join-class";
 import { useClass } from "../../store/class-store";
@@ -27,9 +27,11 @@ const JoinClassPage = () => {
                 studentID: user.id,
                 classCode: classCode,
             } 
-            const classID = await postJoinClass(requestBody);   
+            const classID = await postJoinClass(requestBody);    
+            console.log("Class ID:", classID); 
             await fetchClasses(user.id, user.role);
-            await setCurrentClass(classID);   
+            await setCurrentClass(classID);
+            console.log("Class joined successfully:", classCode); 
             navigate('/unitpage'); 
        } 
        catch (error) {  
@@ -46,7 +48,7 @@ const JoinClassPage = () => {
         <div className="h-screen w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient"> 
 
             {/* Title card for the page */}
-            < TitleCard 
+            < NavBar 
             title="Join a Class"  
             intro={true}
             /> 

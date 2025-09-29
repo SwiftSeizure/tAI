@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";   
 import { useNavigate } from 'react-router-dom';   
 import ClassCard from "../components/ClassCard"; 
-import { TitleCard } from "../../shared/components/TitleCard";    
+import { NavBar } from "../../shared/components/NavBar";    
 import "react-icons/fa"; 
 import { useCurrentUser, useIsAuthenticated } from "../../store/user-store"; 
 import { useClass, useAllClasses, useClassesLoading, useClassesError } from "../../store/class-store";
@@ -195,7 +195,7 @@ const TeacherStudentHomePage = () => {
                             key={classroom.id} 
                             classroom={classroom} 
                             onClick={handleClassSelect}   
-                            onClickSettings={() => handleClassSettings(classroom.id, classroom.name)}
+                            onClickSettings={handleClassSettings}
                             admin={user.role === 'teacher'} 
                             onClickDelete={handleOpenDeleteModal} 
                             onClickRoster={handleOpenRosterModal} 
@@ -214,7 +214,8 @@ const TeacherStudentHomePage = () => {
     }; 
 
     // Title for the page, personalized with the user's name
-    const title = `Welcome ${user?.name || ''}`;
+    const title = `Welcome Home ${user?.name || ''}`; 
+    console.log("user", user);
 
     return ( 
         <>   
@@ -222,7 +223,7 @@ const TeacherStudentHomePage = () => {
 
         
             {/* Title card displaying a personalized welcome message */}
-            <TitleCard title={title}  />
+            <NavBar title={title}  />
 
             {/* Grid container for class cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-items-center gap-4">      
