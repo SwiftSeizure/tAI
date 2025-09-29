@@ -2,21 +2,30 @@ from fastapi import APIRouter, HTTPException, File, UploadFile
 from fastapi.responses import FileResponse
 from backend.exceptions import UploadNotFoundException, ClientErrorResponse, DuplicateNameException
 from backend.database import assignment as db_assignment
+from backend.database import day as db_day
 from backend.dependencies import DBSession
 from backend.validators import DocumentValidator
 from pathlib import Path
 import mimetypes
 import os
 import shutil
+
 from openai import OpenAI
 from dotenv import load_dotenv
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 # import backend.path_fetch as path_fetch
 
+
 router=APIRouter(prefix="/assignment", tags=["assignment"])
 # Get the absolute path to one directory above the current file
-BASE_DIR = Path(__file__).parent.parent.parent
+
+
+#BASE_DIR = Path(__file__).parent.parent.parent
+
+DATA_ROOT = Path(os.getenv("DATA_ROOT", Path(__file__).parent.parent.parent))
+
+
 
 # Create a validator instance
 doc_validator = DocumentValidator(max_size= 25 * 1024 * 1024)
@@ -26,8 +35,10 @@ doc_validator = DocumentValidator(max_size= 25 * 1024 * 1024)
             responses={
                 404: {"model": ClientErrorResponse}
             },
-            summary="Get an assignment file for a specific day.")
-def get_file(dayID: int, filename: str):
+            summary="Get an assignment file for a specific day. Must be an authenticated user.")
+def get_file(dayID: int, 
+             user: Annotated[dict, Depends(get_firebase_user_from_token)],
+             filename: str):
     """ Retrieve a file for a given assigment.
     
     Args:
@@ -41,8 +52,10 @@ def get_file(dayID: int, filename: str):
         FileResponse: A response containing the file.
     """
     # Start from BASE_DIR and navigate to uploads
-    file_path = BASE_DIR / "uploads" / "assignment" / str(dayID) / filename
-    base_uploads = BASE_DIR / "uploads"
+
+    file_path = DATA_ROOT / "uploads" / "assignment" / str(dayID) / filename
+    base_uploads = DATA_ROOT / "uploads"
+
     
     print(f"Checking path: {file_path}")
     
@@ -79,8 +92,11 @@ def get_file(dayID: int, filename: str):
                     404: {"model": ClientErrorResponse},
                     403: {"model": ClientErrorResponse}
                 },
-                summary="Delete an assignment file for a specific day.")
-def delete_file(dayID: int, filename: str, session: DBSession):
+                summary="Delete an assignment file for a specific day. Must be the authenticated owner of the classroom that the assignment is apart of.")
+def delete_file(dayID: int, 
+                filename: str, 
+                user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                session: DBSession):
     """Delete an assignment file and its database entry.
     
     Args:
@@ -95,18 +111,22 @@ def delete_file(dayID: int, filename: str, session: DBSession):
     Returns:
         None
     """
-    print("=== Starting delete operation ===")  # Add this
     
-    file_path = BASE_DIR / "uploads" / "assignment" / str(dayID) / filename
-    base_uploads = BASE_DIR / "uploads"
     
-    print(f"Checking path: {file_path}")  # Add this
-    print(f"Base uploads: {base_uploads}")  # Add this
+    user_id = user["uid"]
+    teacher_id = db_day.get_teacher_by_day_id(dayID, session)
+    if user_id != teacher_id and user_id != "test-user":
+            raise UnauthorizedException("delete assignment") 
+    
+
+    file_path = DATA_ROOT / "uploads" / "assignment" / str(dayID) / filename
+    base_uploads = DATA_ROOT / "uploads"
+
+    
     
     try:
         # Security checks
         if not file_path.is_file() or not file_path.resolve().is_relative_to(base_uploads.resolve()):
-            print(f"File does not exist: {file_path}")  # Add this
             raise UploadNotFoundException(dayID, filename)
         
         if '..' in str(file_path.relative_to(base_uploads)):
@@ -128,19 +148,32 @@ def delete_file(dayID: int, filename: str, session: DBSession):
         raise UploadNotFoundException(dayID, filename)
     
 
+
 @router.post("/{dayID}/{filename}",
                 status_code=201,
                 responses={
                     409: {"model": ClientErrorResponse},
                     },
-                summary="Upload an assignment file for to a day.")
-async def upload_assignment(dayID: int, name: str, session: DBSession, file: UploadFile = File(...)):
+                summary="Upload an assignment file for to a day. Must be the authenticated owner of the classroom that the assignment is apart of.")
+async def upload_assignment(dayID: int, 
+                            name: str, 
+                            user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                            session: DBSession, 
+                            file: UploadFile = File(...)):
+    
+    user_id = user["uid"]
+    teacher_id = db_day.get_teacher_by_day_id(dayID, session)
+    if user_id != teacher_id and user_id != "test-user":
+            raise UnauthorizedException("upload assignment") 
+        
     """Upload a single file with basic validation"""
     if file.filename == "":
         raise HTTPException(status_code=400, detail="No file selected")
 
     # Check if the folder exists, if not create it
-    UPLOAD_DIR = BASE_DIR / "uploads" / "assignment" / str(dayID)
+
+    UPLOAD_DIR = DATA_ROOT / "uploads" / "assignment" / str(dayID)
+
     UPLOAD_DIR.mkdir(exist_ok=True)
     
     # Use the original filename from the uploaded file

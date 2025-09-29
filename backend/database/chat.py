@@ -10,11 +10,17 @@ from backend.database.schema import DBConversation, DBMessage, DBResponse
 from backend.database.student import get_student
 from backend.exceptions import EntityNotFoundException, InvalidClassCodeException
 from backend.routers.material import get_file  # unchanged
+
 import backend.database.assignment as db_assignment
 import backend.database.material as db_material
 
+
 load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+api_key = os.getenv("OPENAI_API_KEY")
+if not api_key:
+    raise ValueError("OPENAI_API_KEY environment variable is not set")
+client = OpenAI(api_key=api_key)
+
 
 
 
@@ -25,10 +31,11 @@ def queryBot(studentID: int, path: str, prompt: str, session: Session) -> ChatRe
     (DB logic unchanged; only OpenAI call is different.)
     path looks like uploads/assignment/1/assignment_1.pdf
     """
-    
+
     print("Incoming path:", path)
 
     remoteID = db_assignment.get_RemoteID(path, session) if path.startswith("uploads/assignment") else db_material.get_RemoteID(path, session)
+
 
     ai_response = client.responses.create(
     model="gpt-4.1",
@@ -48,9 +55,10 @@ def queryBot(studentID: int, path: str, prompt: str, session: Session) -> ChatRe
 )    
 
 
-    student = get_student(studentID, session)
+
+    student = get_student(studentID, session) #type: ignore
     if not student:
-        raise EntityNotFoundException("student", studentID)
+        raise EntityNotFoundException("student", studentID) # type: ignore
 
     stmnt = select(DBConversation).filter(
         DBConversation.studentID == studentID,
@@ -89,7 +97,7 @@ def queryBot(studentID: int, path: str, prompt: str, session: Session) -> ChatRe
         session.refresh(db_response)
 
         return ChatResponse(
-            conversationID=conversation.id,
+            conversationID=conversation.id, # type: ignore
             studentID=studentID,
             messages=[ChatMessage.model_validate(m) for m in conversation.messages],
             responses=[ChatResponseMessage.model_validate(r) for r in conversation.responses],

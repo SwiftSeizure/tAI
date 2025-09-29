@@ -1,0 +1,35 @@
+# fly.toml
+app = "tai-ixyqrg"
+primary_region = "den"
+
+[build]
+  # uses your Dockerfile automatically
+
+[env]
+  DATA_ROOT = "/var/appdata"
+  PORT = "8080"
+
+[[mounts]]
+  source = "data"
+  destination = "/var/appdata"
+
+[[services]]
+  internal_port = 8080
+  processes = ["app"]
+  protocol = "tcp"
+  [[services.ports]]
+    port = 80
+  [[services.ports]]
+    port = 443
+  [services.concurrency]
+    type = "connections"
+    hard_limit = 200
+    soft_limit = 150
+
+  [[services.http_checks]]
+    interval = "10s"
+    timeout = "2s"
+    method = "GET"
+    path = "/health"       # add a simple health endpoint in FastAPI
+    protocol = "http"
+    tls_skip_verify = false

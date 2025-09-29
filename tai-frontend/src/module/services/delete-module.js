@@ -1,9 +1,9 @@
-import axios from "axios"; 
+import api from "../../shared/services/axios";
 
 export const deleteModule = async (moduleID) => {
     try {
-        const url = `http://localhost:8000/module/${moduleID}`;
-        await axios.delete(url);
+        const url = `/module/${moduleID}`;
+        await api.delete(url);
         return;
     } catch (error) {
         console.error('Error deleting module:', error);

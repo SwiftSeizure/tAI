@@ -4,7 +4,10 @@ from sqlalchemy.orm import sessionmaker, Session
 from backend.database.schema import DBClass,DBEnrolled,DBStudent,DBTeacher,Base
 from typing import Annotated
 from fastapi  import Depends
+import os
 
+from dotenv import load_dotenv
+load_dotenv()
 # Database connection URL
 DB_URL = "mysql+mysqlconnector://developer:password@localhost/TestDB"
 

@@ -1,5 +1,8 @@
 import SettingsIcon from '@mui/icons-material/Settings';
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from '@mui/icons-material/Delete'; 
+import PersonIcon from '@mui/icons-material/Person';
+import VisibilityIcon from '@mui/icons-material/Visibility'; 
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 /**
  * ClassCard Component
  * This component represents a card for a class. It displays the class name
@@ -10,19 +13,36 @@ import DeleteIcon from '@mui/icons-material/Delete';
  * - userID: ID of the current user
  * - role: Role of the user (e.g., "teacher" or "student")
  */
-const ClassCard = ( {classID, classname, onClick, onClickSettings, showSettings, onClickDelete }  ) => {
-     
+const ClassCard = ( { 
+    classroom, 
+    onClick, 
+    onClickSettings,
+    admin,
+    onClickDelete, 
+    onClickRoster,
+    onPublishClass
+}  ) => {
+
+    console.log("classroom published", classroom.published);
     
     const handleClick = () => { 
-        onClick(classID, classname);
+        onClick(classroom);
     };
 
     const handleClickSettings = () => { 
-        onClickSettings(classID, classname);
+        onClickSettings(classroom);
     }; 
 
     const handleClickDelete = () => { 
-        onClickDelete(classID, classname);
+        onClickDelete(classroom);
+    }; 
+
+    const handleClickRoster = () => { 
+        onClickRoster(classroom);
+    };  
+
+    const handleClickPublish = () => { 
+        onPublishClass(classroom);
     }; 
 
     // Logo for the class card 
@@ -32,10 +52,10 @@ const ClassCard = ( {classID, classname, onClick, onClickSettings, showSettings,
  
     //TODO: make one conditional on if this is a new class or not 
     // Render the class card based on the classname prop
-    if (classname !== "newClass") { 
+    if (classroom?.name !== "newClass") { 
         return(  
             <div className="overflow-hidden p-12">   
-                {onClickSettings && showSettings && (
+                {onClickSettings && admin && (
                     <button 
                         onClick={ () => handleClickSettings() }
                         className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
@@ -44,14 +64,36 @@ const ClassCard = ( {classID, classname, onClick, onClickSettings, showSettings,
                     </button>
                 )} 
 
-                {onClickDelete && classID && showSettings && (
+                {onClickDelete && classroom.id && admin && (
                     <button 
                         onClick={ () => handleClickDelete() }
                         className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
                     >
                         <DeleteIcon />   
                     </button>
-                )}
+                )}  
+                {onClickRoster && classroom.id && admin && (
+                    <button 
+                        onClick={ () => handleClickRoster() }
+                        className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
+                    >
+                        <PersonIcon />   
+                    </button>
+                )} 
+
+                {onPublishClass && classroom.id && admin && (
+                    <button 
+                        onClick={ () => handleClickPublish() }
+                        className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
+                    > 
+                       {classroom.published ? (
+                        <VisibilityIcon />
+                       ) : (
+                        <VisibilityOffIcon />
+                       )}  
+                    </button>
+                )} 
+
 
                 <button 
                     className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
@@ -69,8 +111,19 @@ const ClassCard = ( {classID, classname, onClick, onClickSettings, showSettings,
                     {/* Display the class name */}
                     <div className="border-2 border-white/30 rounded-md backdrop-blur-sm bg-white/10 flex-wrap" >  
                        <h3 className="p-2 rounded-md" > 
-                            {classname} 
-                        </h3> 
+                            {classroom?.name} 
+                        </h3>  
+                        {admin && ( 
+                            <div className="flex flex-col items-center" > 
+                                <h3 className="p-2 rounded-md" > 
+                                    {classroom?.published ? "Published" : "Not Published"} 
+                                </h3>  
+                                <h3 className="p-2 rounded-md" > 
+                                    {classroom.classCode} 
+                                </h3>  
+                            </div> 
+                        )} 
+
                     </div> 
                     
                 </button>

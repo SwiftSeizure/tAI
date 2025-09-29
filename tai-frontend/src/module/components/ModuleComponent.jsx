@@ -16,12 +16,28 @@ import { useCurrentUser } from "../../store/user-store";
  * - onMaterialSelect: Callback function triggered when a material is selected.
  * - onAssignmentSelect: Callback function triggered when an assignment is selected.
  */
-const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentSelect, onAddDay, onAddMaterial, onAddAssignment, onClickDelete } ) => {   
+const ModuleComponent = ( { 
+    module, 
+    onDaySelect, 
+    onMaterialSelect, 
+    onAssignmentSelect, 
+    onAddDay, 
+    onAddMaterial, 
+    onAddAssignment, 
+    onClickDeleteModule,
+    onClickDeleteDay, 
+    onClickDeleteMaterial, 
+    onClickDeleteAssignment
+} ) => {   
  
     // State to track whether the module is expanded or not
     const [isExpanded, setIsExpanded] = useState(false);   
 
     const { user } = useCurrentUser(); 
+
+    const handleDaySelect = (day) => {
+        onDaySelect(day);
+    };
     
 
     /**
@@ -32,9 +48,21 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
         setIsExpanded(!isExpanded);
     }; 
 
-    const handleOnClickDelete = () => { 
-        onClickDelete(module.id, module.name);
+    const handleOnClickDeleteModule = () => { 
+        onClickDeleteModule(module);
     };
+
+    const handleOnClickDeleteDay = (day) => { 
+        onClickDeleteDay(day);
+    }; 
+
+    const handleOnClickDeleteMaterial = (material) => { 
+        onClickDeleteMaterial(material);
+    }; 
+
+    const handleOnClickDeleteAssignment = (assignment) => { 
+        onClickDeleteAssignment(assignment);
+    }; 
 
     return ( 
         <> 
@@ -44,7 +72,7 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
 
             {user.role === "teacher" && (
                 <div>
-                    <button onClick={handleOnClickDelete}>Delete Module</button>
+                    <button onClick={handleOnClickDeleteModule}>Delete Module</button>
                 </div>
             )} 
 
@@ -80,11 +108,14 @@ const ModuleComponent = ( { module, onDaySelect, onMaterialSelect, onAssignmentS
                             > 
                                 <DayComponent  
                                     day={day} 
-                                    onDaySelect={() => onDaySelect(module.id, day.id)} 
+                                    onDaySelect={handleDaySelect} 
                                     onMaterialSelect={onMaterialSelect}  
                                     onAssignmentSelect={onAssignmentSelect}
                                     handleAddMaterial={onAddMaterial}
                                     handleAddAssignment={onAddAssignment}
+                                    handleOnClickDeleteDay={handleOnClickDeleteDay} 
+                                    handleOnClickDeleteMaterial={handleOnClickDeleteMaterial} 
+                                    handleOnClickDeleteAssignment={handleOnClickDeleteAssignment}
                                 /> 
                             </li> 
                         ))}  

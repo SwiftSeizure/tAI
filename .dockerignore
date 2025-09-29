@@ -1,0 +1,93 @@
+# flyctl launch added from .gitignore
+**/.env
+
+# macOS stystem files
+**/.DS_Store
+**/**/.DS_Store
+
+# Python byecode
+**/*.pyc
+**/*/__pycache__
+**/*.py[cod]
+**/*$py.class
+
+# Virtual environments
+**/.env
+**/.venv
+**/env
+**/venv
+
+# Poetry files
+**/poetry.lock
+**/*.egg-info
+
+# Environment variables
+**/*.env
+
+# VS Code
+**/.vscode
+
+# JetBrains (PyCharm)
+**/.idea
+
+# Mac and Linux system files
+**/.DS_Store
+**/Thumbs.db
+
+# Logs
+**/*.log
+
+# Test coverage
+**/.coverage
+**/htmlcov
+
+# MyPy, Pyright, Pyre
+**/.mypy_cache
+**/.pyright
+
+# Database and migration artifacts
+**/*.db
+**/*.sqlite3
+**/migrations
+
+# FastAPI Swagger docs cache
+**/openapi.json
+
+# Node (if you're working fullstack)
+**/node_modules
+**/dist
+/build
+
+# Misc
+**/*.bak
+**/*.swp
+**/*.tmp
+
+# flyctl launch added from Extra/.gitignore
+Extra/**/.env
+
+# flyctl launch added from tai-frontend/.gitignore
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+tai-frontend/node_modules
+tai-frontend/.pnp
+tai-frontend/**/.pnp.js
+
+# testing
+tai-frontend/coverage
+
+# production
+
+
+# misc
+tai-frontend/**/.DS_Store
+tai-frontend/**/.env.local
+tai-frontend/**/.env.development.local
+tai-frontend/**/.env.test.local
+tai-frontend/**/.env.production.local
+
+tai-frontend/**/npm-debug.log*
+tai-frontend/**/yarn-debug.log*
+tai-frontend/**/yarn-error.log*
+fly.toml

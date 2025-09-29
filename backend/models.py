@@ -19,8 +19,8 @@ class HomeResponse(BaseModel):
 class HomeClass(BaseModel):
     id: int
     name: str
-    classCode: str
-    published: bool
+    classCode: Optional[str] = None
+    published: Optional[bool] = None
 
 
 # Classroom Input Models ------------------------------------------
@@ -45,7 +45,7 @@ class ClassroomStudentsResponse(BaseModel):
     students: list[ClassroomStudent]
 
 class ClassroomStudent(BaseModel):
-    id: int
+    id: str
     name: str
     username: str
 
@@ -98,7 +98,7 @@ class DayMaterial(BaseModel):
 # Enrollment Input Models -----------------------------------
 
 class AddEnrollment(BaseModel):
-    studentID: int
+    studentID: str
     classCode: str
 
 # Teacher Input Models -----------------------------------

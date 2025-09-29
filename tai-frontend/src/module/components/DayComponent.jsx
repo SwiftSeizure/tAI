@@ -1,8 +1,10 @@
-import React, {useState} from "react";  
-import { FaChevronDown, FaChevronUp, FaFile, FaClipboard } from "react-icons/fa";
+import React, { useEffect, useState } from "react";  
+import { FaFile, FaTrash } from "react-icons/fa";
 import { MdAssignment } from "react-icons/md"; 
 import { motion, AnimatePresence } from 'framer-motion'; 
-import { useCurrentUser } from "../../store/user-store";
+import { useCurrentUser } from "../../store/user-store"; 
+import { useDay } from "../../store/day-store"; 
+
 
 import { getDayAssignments } from "../services/get-day-assignments"; 
 import { getDayMaterials } from "../services/get-day-materials";
@@ -18,63 +20,92 @@ import { getDayMaterials } from "../services/get-day-materials";
  * - onAssignmentSelect: Callback function triggered when an assignment is selected.
  */ 
 
-const DayComponent = ( {day, onMaterialSelect, onAssignmentSelect, handleAddMaterial, handleAddAssignment}  ) => { 
-
-    // State to track whether the day is expanded or not
-    const [isExpanded, setIsExpanded] = useState(false);   
+const DayComponent = ( {
+    day,
+    onDaySelect,
+    onMaterialSelect, 
+    onAssignmentSelect, 
+    handleAddMaterial, 
+    handleAddAssignment, 
+    handleOnClickDeleteDay, 
+    handleOnClickDeleteMaterial, 
+    handleOnClickDeleteAssignment
+}  ) => { 
 
     // State to store materials and assignments for the day
     const [materials, setMaterials] = useState([]);   
 
     // State to store assignments for the day
-    const [assignments, setAssignments] = useState([]) 
+    const [assignments, setAssignments] = useState([]);
 
-    const [selected, setSelected] = useState([null]);
+    const [selected, setSelected] = useState([null]); 
 
     // State to store loading state
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false); 
+
+    // Use day store: get state and actions
+    const [dayState, dayActions] = useDay();
+    const { selectedDay } = dayState;
+    const { setSelectedDay } = dayActions;
 
     const { user } = useCurrentUser();
 
+    const handleDaySelect = () => {
+        onDaySelect(day);
+    }; 
+
+    const handleDayClicked = (e) => {
+        // Set this day as the globally selected day 
+        if (selectedDay?.id === day?.id) {
+            setSelectedDay(null);
+            return;
+        }
+        setSelectedDay(day);
+        handleDaySelect();
+    };
 
     /**
      * toggleExpand
      * Toggles the expanded state of the day. If expanding for the first time,
      * it fetches materials and assignments for the day from the API.
      */
-    const toggleExpand = async () =>  { 
-        const newExpandedState = !isExpanded;
-        setIsExpanded(newExpandedState); 
+    // Determine if this day is the currently selected/expanded day
+    const isExpanded = selectedDay?.id === day?.id;
 
-        // Fetch materials and assignments only if expanding for the first time
-        if (newExpandedState && !loading) {  
-            setLoading(true); 
+    // When this day becomes selected, fetch its materials and assignments
+    useEffect(() => {
+        let isCancelled = false;
 
-            try {   
-                // Fetch Materials
-                const materials = await getDayMaterials(day);
-                setMaterials(materials);  
-
-                // Fetch Assignments  
-                if (day) {
-                    const assignments = await getDayAssignments(day); 
-                    setAssignments(assignments);
+        const fetchData = async () => {
+            if (!isExpanded || !day || loading) return;
+            setLoading(true);
+            try {
+                const [materials, assignments] = await Promise.all([
+                    getDayMaterials(day),
+                    getDayAssignments(day)
+                ]);
+                if (!isCancelled) {
+                    setMaterials(materials || []);
+                    setAssignments(assignments || []);
                 }
-            }  
-
-            // Handle errors during API requests
-            catch (error) { 
+            } catch (error) {
                 console.log(error);
-            }  
-
-            // Reset loading state
-            finally { 
-                setLoading(false);
+            } finally {
+                if (!isCancelled) setLoading(false);
             }
-        }  
+        };
 
+        // Clear previous data when switching selection to avoid stale display
+        if (isExpanded) {
+            setMaterials([]);
+            setAssignments([]);
+            fetchData();
+        }
 
-    };
+        return () => {
+            isCancelled = true;
+        };
+    }, [isExpanded, day?.id]);
 
 
     return (
@@ -83,7 +114,7 @@ const DayComponent = ( {day, onMaterialSelect, onAssignmentSelect, handleAddMate
               ? "bg-pink-400 border-pink-400 font-bold pb-3"
               : "bg-blue-400 bg-opacity-30 hover:bg-pink-400 hover:border-pink-500 hover:font-bold hover:scale-105"}
           `}
-            onClick={toggleExpand} >
+            onClick={handleDayClicked}>
                 <h4 className={` pl-4 ${isExpanded ? "pb-2 font-bold": "pb-0"} `}>
                     {day?.name} 
                 </h4>
@@ -99,6 +130,9 @@ const DayComponent = ( {day, onMaterialSelect, onAssignmentSelect, handleAddMate
                     ) : (
                         <AnimatePresence>
                             <>
+                            {user.role === "teacher" && (
+                                <button onClick={() => handleOnClickDeleteDay(day)}>Delete Day</button>
+                            )}
                                 {materials && materials.length > 0 && (
                                     <motion.div 
                                         key="materials-section"
@@ -112,18 +146,29 @@ const DayComponent = ( {day, onMaterialSelect, onAssignmentSelect, handleAddMate
                                         </h5>
                                         <ul>
                                             {materials.map(material => (
-                                                <li
-                                                    key={`material-${material.id}`}
-                                                    className={`flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300 ${material.name === selected ? 'bg-slate-400 translate-x-1' : ''}`}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        onMaterialSelect(day.id, material.filename, material.name);
-                                                        setSelected(material.name);
-                                                    }}
-                                                >
-                                                    <FaFile className="mr-3 text-base text-yellow-500" />
-                                                    <span className="font-sans text-sm text-gray-600 font-md tracking-wide">{material.name}</span>
-                                                </li>
+                                                <li key={`material-${material.id}`}> 
+                                                    <button
+                                                        className={`flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300 ${material.name === selected ? 'bg-slate-400 translate-x-1' : ''}`}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            onMaterialSelect(day.id, material);
+                                                        }}
+                                                    >
+                                                        <FaFile className="mr-3 text-base text-yellow-500" />
+                                                        <span className="font-sans text-sm text-gray-600 font-md tracking-wide">{material.name}</span>
+                                                    </button> 
+                                                    <button 
+                                                        onClick={(e) => { 
+                                                            e.stopPropagation();
+                                                            handleOnClickDeleteMaterial(material); 
+                                                            setSelectedDay(day); 
+                                                        }} 
+                                                        className="ml-2"
+                                                        > 
+                                                        <FaTrash className="mr-3 text-base text-yellow-500" />
+                                                    </button>
+                                                </li> 
+                                                
                                             ))}
                                         </ul> 
                                     </motion.div>
@@ -153,17 +198,25 @@ const DayComponent = ( {day, onMaterialSelect, onAssignmentSelect, handleAddMate
                                         </h5>
                                         <ul>
                                             {assignments.map(assignment => (
-                                                <li
-                                                    key={`assignment-${assignment.id}`}
-                                                    className={`flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300 ${assignment.name === selected ? 'bg-slate-400 translate-x-1' : ''}`}
-                                                    onClick={(e) => {
+                                                <li key={`assignment-${assignment.id}`} > 
+                                                    <button
+                                                        className={`flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300 ${assignment.name === selected ? 'bg-slate-400 translate-x-1' : ''}`}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            onAssignmentSelect(day.id, assignment); 
+                                                            setSelectedDay(day); 
+                                                        }} 
+                                                    >
+                                                
+                                                        <MdAssignment className="mr-3 text-base text-red-500" />
+                                                        <span className="font-sans text-sm text-gray-600 font-md tracking-wide">{assignment.name}</span>
+                                                    </button> 
+                                                    <button onClick={(e) => { 
                                                         e.stopPropagation();
-                                                        onAssignmentSelect(day.id, assignment.filename, assignment.name);
-                                                        setSelected(assignment.name);
-                                                    }}
-                                                >
-                                                    <MdAssignment className="mr-3 text-base text-red-500" />
-                                                    <span className="font-sans text-sm text-gray-600 font-md tracking-wide">{assignment.name}</span>
+                                                        handleOnClickDeleteAssignment(assignment)
+                                                    }} > 
+                                                        <FaTrash className="mr-3 text-base text-yellow-500" />
+                                                    </button>
                                                 </li>
                                             ))}
                                         </ul> 
