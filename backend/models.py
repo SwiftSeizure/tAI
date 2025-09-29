@@ -98,7 +98,7 @@ class DayMaterial(BaseModel):
 # Enrollment Input Models -----------------------------------
 
 class AddEnrollment(BaseModel):
-    studentID: int
+    studentID: str
     classCode: str
 
 # Teacher Input Models -----------------------------------
