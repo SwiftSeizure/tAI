@@ -27,9 +27,11 @@ const JoinClassPage = () => {
                 studentID: user.id,
                 classCode: classCode,
             } 
-            const classID = await postJoinClass(requestBody);   
+            const classID = await postJoinClass(requestBody);    
+            console.log("Class ID:", classID); 
             await fetchClasses(user.id, user.role);
-            await setCurrentClass(classID);   
+            await setCurrentClass(classID);
+            console.log("Class joined successfully:", classCode); 
             navigate('/unitpage'); 
        } 
        catch (error) {  
