@@ -1,3 +1,4 @@
+
 import api from "../../shared/services/axios";
 
 export const putChatMessage = async (studentID, displayType, dayID, currentFileName, message) => {
@@ -19,6 +20,7 @@ export const putChatMessage = async (studentID, displayType, dayID, currentFileN
         console.log(response);
 
         return response.data;
+
     } catch (error) {
         console.error('Error updating chat message:', error);
     }

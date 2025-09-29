@@ -102,6 +102,7 @@ class DBAssignment(Base):
     filename = Column(String(225), nullable=False)
     sequence = Column(Integer, nullable=False)
     path = Column(String(255),nullable=False)
+    remoteID = Column(String(255),nullable=True)
     dayId = Column(ForeignKey("day.id", ondelete="CASCADE"))
 
     day = relationship("DBDay", back_populates="assignments")
@@ -114,6 +115,7 @@ class DBMaterial(Base):
     filename = Column(String(225), nullable=False)
     sequence = Column(Integer, nullable=False)
     path = Column(String(255),nullable=False)
+    remoteID = Column(String(255),nullable=True)
     dayId = Column(ForeignKey("day.id", ondelete="CASCADE"))
 
     day = relationship("DBDay", back_populates="materials")
