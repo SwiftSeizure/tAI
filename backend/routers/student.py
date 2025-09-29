@@ -19,15 +19,17 @@ router = APIRouter(prefix="/student", tags=["student"])
                 409: {"model": ClientErrorResponse},
             },
 
-            summary="Enroll a student in a class. Must be an authenticated student.")
+            summary="Enroll a student in a class. Must be an authenticated student. Returns the ID of the class that got jointed.")
 def enroll_student(update:AddEnrollment , 
                    user: Annotated[dict, Depends(get_firebase_user_from_token)],
-                   session: DBSession) -> None:
+                   session: DBSession) -> int:
     
     if user["uid"] != update.studentID and user["uid"] != "test-user":
         raise UnauthorizedException("enroll student")
     
-    enroll(studentID=update.studentID, classCode=update.classCode, session=session) # type: ignore
+    return enroll(studentID=update.studentID, classCode=update.classCode, session=session) # type: ignore
+    
+    
 
 
 
