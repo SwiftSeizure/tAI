@@ -56,7 +56,7 @@ def get_student_classes(studentID: str, session: Session) -> list[DBClass]:
     return classes
 
 
-def enroll(studentID: int, classCode: str, session: Session) -> int:
+def enroll(studentID: str, classCode: str, session: Session) -> int:
 
 
     """Enroll a student in a class.
@@ -102,7 +102,7 @@ def enroll(studentID: int, classCode: str, session: Session) -> int:
     existing_enrollment = session.execute(stmt).scalar_one_or_none()
 
     if existing_enrollment:
-        return classroom.id  # Already enrolled
+        return classroom.id  # type: ignore
 
 
     enrollment = DBEnrolled(studentID=studentID, classID=classroom.id)
@@ -113,7 +113,7 @@ def enroll(studentID: int, classCode: str, session: Session) -> int:
     session.refresh(classroom)
 
     
-    return student.id
+    return student.id #type: ignore
 
 
     
