@@ -92,8 +92,9 @@ const LoginPage = () => {
 
         try {
             const userCredentials = await signInWithEmailAndPassword(auth, email, password); 
-            const idToken = await userCredentials.user.getIdToken();   
-            await localStorage.setItem('authToken', idToken);  
+            const idToken = await userCredentials.user.getIdToken();    
+            await localStorage.setItem('authToken', idToken);   
+            console.log("userCredentials", userCredentials);
 
             await setUser({
                 id: userCredentials.user.uid,

@@ -214,7 +214,8 @@ const TeacherStudentHomePage = () => {
     }; 
 
     // Title for the page, personalized with the user's name
-    const title = `Welcome ${user?.name || ''}`;
+    const title = `Welcome Home ${user?.name || ''}`; 
+    console.log("user", user);
 
     return ( 
         <>   
