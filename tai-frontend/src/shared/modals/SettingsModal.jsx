@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ChatSettings } from "../components/ChatSettings";
 
-export const SettingsModal = ({ onSave, onCancel, isLoading, isOpen }) => {
+export const SettingsModal = ({ isOpen, onClose, classroom, onSaveSettings }) => {
 
 	const [formData, setFormData] = useState({
 		name: "",
@@ -17,14 +17,15 @@ export const SettingsModal = ({ onSave, onCancel, isLoading, isOpen }) => {
 			...prev,
 			settings: selectedSetting
 		}));
-	};
+	}; 
 
-	const handleSave = () => {
-		if (!formData.name.trim() && Object.keys(formData.settings).length === 0) {
-			// Optional error handling
-			return;
-		}
-		onSave(formData);
+	const handleSaveSettings = () => {
+		// Call the parent's onSaveSettings with the current form data
+		onSaveSettings(formData);
+	}; 
+
+	const handleOnClose = () => {
+		onClose();
 	};
 
 	return (
@@ -44,7 +45,7 @@ export const SettingsModal = ({ onSave, onCancel, isLoading, isOpen }) => {
 						</h3>
 						<button
 							type="button"
-							onClick={onCancel}
+							onClick={handleOnClose}
 							className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 
 										rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center 
 										dark:hover:bg-gray-600 dark:hover:text-white"
@@ -105,18 +106,16 @@ export const SettingsModal = ({ onSave, onCancel, isLoading, isOpen }) => {
 					{/* Modal footer */}
 					<div className="flex items-center justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600 space-x-3">
 						<button
-							onClick={handleSave}
-							disabled={isLoading}
+							onClick={handleSaveSettings}
 							type="button"
 							className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none 
 										focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center 
 										dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:opacity-50"
 						>
-							{isLoading ? "Saving..." : "Save"}
+							Save
 						</button>
 						<button
-							onClick={onCancel}
-							disabled={isLoading}
+							onClick={handleOnClose}
 							type="button"
 							className="py-2.5 px-5 text-sm font-medium text-gray-900 bg-white rounded-lg border 
 										border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 

@@ -5,25 +5,8 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 import '../../App.css';
-import { useSettingsModal } from "../hooks/useSettingsModal";
-import { useCurrentClass } from "../../store/class-store";
-
 export const NavBar = ({ title, settings }) => {
     const navigate = useNavigate();
-    const { currentClass } = useCurrentClass();
-
-    const handleSettingsSuccess = (responseData) => {
-        console.log('Settings saved successfully:', responseData);
-    };
-
-    const handleSettingsError = (error) => {
-        console.error('Settings save failed:', error);
-    };
-
-    const {
-        isLoading,
-        openModal,
-    } = useSettingsModal(currentClass?.id, handleSettingsSuccess, handleSettingsError);
 
     const goBackPage = (e) => {
         e.preventDefault();
@@ -62,9 +45,9 @@ export const NavBar = ({ title, settings }) => {
                         </h1>
                     </div>
 
-                    {/* Right side: Settings + Edit Profile */}
+                    {/* Right side: (maybe) Settings + Edit Profile */}
                     <div className="flex items-center gap-3 min-w-[120px] justify-end">
-                        {settings && (
+                        {/* {settings && (
                             <button
                                 className="group flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200 hover:bg-gray-100 hover:shadow-sm active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                                 onClick={openModal}
@@ -76,7 +59,7 @@ export const NavBar = ({ title, settings }) => {
                                     fontSize="medium"
                                 />
                             </button>
-                        )}
+                        )} */}
 
                         <button
                             className="group flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:ring-blue-200 transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
