@@ -23,13 +23,13 @@ router = APIRouter(prefix="/home", tags=["Home"])
                  404: {"model": ClientErrorResponse}
              },
             summary="Retrieve all of a teachers classes for their home page. Must be the authenticated teacher.")
-def get_teacher_home(accountID: int, 
+def get_teacher_home(accountID: str, 
                      user: Annotated[dict, Depends(get_firebase_user_from_token)],
                      session: DBSession) -> HomeResponse:
     """ Retrieve all of a teachers classes for their home page.
     
     Args:
-        accountID (int): The ID of the teacher to retrieve classes for.
+        accountID (str): The ID of the teacher to retrieve classes for.
         session (DBSession): The database session.
     
     Raises:
@@ -54,14 +54,14 @@ def get_teacher_home(accountID: int,
                  404: {"model": ClientErrorResponse}
              },
              summary="Create a new classroom. Must be the authenticated teacher.")
-def create_new_classroom(accountID: int, 
+def create_new_classroom(accountID: str, 
                          classroom: CreateClassroom,
                          user: Annotated[dict, Depends(get_firebase_user_from_token)],
                          session: DBSession) -> HomeClass:
     """ Create a new classroom.
     
     Args:
-        accountID (int): The ID of the teacher creating the classroom.
+        accountID (str): The ID of the teacher creating the classroom.
         classroom (CreateClassroom): The classroom data to create.
         session (DBSession): The database session.
         
@@ -89,13 +89,13 @@ def create_new_classroom(accountID: int,
                  404: {"model": ClientErrorResponse}
              },
             summary="Retrieve all of a students classes for their home page. Must be the authenticated student.")
-def get_student_home(accountID: int, 
+def get_student_home(accountID: str, 
                      user: Annotated[dict, Depends(get_firebase_user_from_token)],
                      session: DBSession) -> HomeResponse:
     """ Retrieve all of a students classes for their home page.
     
     Args:
-        accountID (int): The ID of the student to retrieve classes for.
+        accountID (str): The ID of the student to retrieve classes for.
         session (DBSession): The database session.
         
     Raises:

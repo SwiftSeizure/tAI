@@ -148,8 +148,6 @@ def delete_file(dayID: int,
 
 
 @router.post("/{dayID}/{filename}",
-
-
                 status_code=201,
                 responses={
                     409: {"model": ClientErrorResponse},

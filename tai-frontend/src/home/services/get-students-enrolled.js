@@ -1,10 +1,10 @@
-import axios from "axios"; 
+import api from "../../shared/services/axios";
 
 export const getStudentsEnrolled = async (classroomID) => { 
     try {   
         console.log("Fetching students enrolled for classroom:", classroomID); 
-        const url = `http://localhost:8000/classroom/${classroomID}/students`;
-        const response = await axios.get(url); 
+        const url = `/classroom/${classroomID}/students`;
+        const response = await api.get(url); 
         return response.data; 
     } 
     catch (error) { 

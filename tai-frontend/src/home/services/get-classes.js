@@ -1,9 +1,9 @@
-import axios from "axios"; 
+import api from "../../shared/services/axios";
 
 export const getClasses = async (userID, role) => { 
     try { 
-        const url = `http://localhost:8000/home/${role}/${userID}`;
-        const response = await axios.get(url); 
+        const url = `/home/${role}/${userID}`;
+        const response = await api.get(url); 
         return response.data.classes;
     } 
     catch (error) { 

@@ -115,3 +115,5 @@ def PopulateDB(file: str = SEED_FILE_PATH):
 
     finally:
         db.close()
+
+PopulateDB()
