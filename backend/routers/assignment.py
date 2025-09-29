@@ -1,6 +1,9 @@
-from fastapi import APIRouter, HTTPException, File, UploadFile
+from fastapi import APIRouter, HTTPException, File, UploadFile, Depends
 from fastapi.responses import FileResponse
-from backend.exceptions import UploadNotFoundException, ClientErrorResponse, DuplicateNameException
+from typing import Annotated
+from fastapi import Depends
+from backend.auth import get_firebase_user_from_token
+from backend.exceptions import UploadNotFoundException, ClientErrorResponse, DuplicateNameException, UnauthorizedException
 from backend.database import assignment as db_assignment
 from backend.database import day as db_day
 from backend.dependencies import DBSession
