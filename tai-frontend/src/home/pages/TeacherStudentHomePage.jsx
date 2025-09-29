@@ -195,7 +195,7 @@ const TeacherStudentHomePage = () => {
                             key={classroom.id} 
                             classroom={classroom} 
                             onClick={handleClassSelect}   
-                            onClickSettings={() => handleClassSettings(classroom.id, classroom.name)}
+                            onClickSettings={handleClassSettings}
                             admin={user.role === 'teacher'} 
                             onClickDelete={handleOpenDeleteModal} 
                             onClickRoster={handleOpenRosterModal} 
