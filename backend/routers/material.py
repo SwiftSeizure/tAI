@@ -15,6 +15,9 @@ from openai import OpenAI
 client = OpenAI(api_key=os.getenv("OPENAI_APIKEY"))
 # import backend.path_fetch as path_fetch
 
+from typing import Annotated
+from fastapi import Depends
+from backend.auth import get_firebase_user_from_token
 
 router=APIRouter(prefix="/material", tags=["material"])
 

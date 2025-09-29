@@ -10,6 +10,10 @@ import mimetypes
 import os
 import shutil
 
+from typing import Annotated
+from fastapi import Depends
+from backend.auth import get_firebase_user_from_token
+
 from openai import OpenAI
 from dotenv import load_dotenv
 load_dotenv()
