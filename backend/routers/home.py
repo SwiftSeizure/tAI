@@ -43,7 +43,7 @@ def get_teacher_home(accountID: int,
         raise UnauthorizedException("view teacher")
     
     db_classes = teacher_db.get_teacher_classes(accountID, session) # type: ignore
-    classes = [HomeClass(id=c.id, name=c.name) for c in db_classes] # type: ignore
+    classes = [HomeClass(id=c.id, name=c.name, classCode=c.classCode, published=c.published) for c in db_classes] # type: ignore
 
     return HomeResponse(classes=classes)
 
@@ -109,6 +109,7 @@ def get_student_home(accountID: int,
         raise UnauthorizedException("view teacher")
     
     db_classes = student_db.get_student_classes(accountID, session) # type: ignore
-    classes = [HomeClass(id=c.id, name=c.name) for c in db_classes] # type: ignore
+    
+    classes = [HomeClass(id=c.id, name=c.name, classCode=c.classCode, published=c.published) for c in db_classes] # type: ignore
 
     return HomeResponse(classes=classes)
