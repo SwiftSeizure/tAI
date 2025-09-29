@@ -1,8 +1,8 @@
-import axios from "axios"; 
+import api from "../../shared/services/axios";
 
 export const postCreateClass = async (id, requestBody) => {
     try { 
-        const response = await axios.post(`http://localhost:8000/home/teacher/${id}`, requestBody, {
+        const response = await api.post(`/home/teacher/${id}`, requestBody, {
             headers: {
                 'Content-Type': 'application/json'
             }

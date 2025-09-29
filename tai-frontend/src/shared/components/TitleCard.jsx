@@ -26,17 +26,10 @@ export const TitleCard = ({ title, intro, settings }) => {
     // Callbacks for settings operations
     const handleSettingsSuccess = (responseData) => {
         console.log('Settings saved successfully:', responseData);   
-
-        // Update the current class in the store  
-        //TODO: Update class here for state managment 
-        // updateClass(currentClass.id);
-        // You could add a toast notification here
-        // You could update local state here if needed
     };
 
     const handleSettingsError = (error) => {
         console.error('Settings save failed:', error);
-        // You could add error toast notification here
         // You could show an error modal here
     };
 
@@ -71,8 +64,8 @@ export const TitleCard = ({ title, intro, settings }) => {
                         />
                     </div>
                 ) : (
-                    <>
-                        <div className="absolute left-2">
+                    <> 
+                        <div className="absolute left-2"> 
                             <button
                                 className="flex w-10 h-10 cursor-pointer rounded-md p-4 m-2 font-medium text-[1.1rem] text-gray-800 justify-center items-center hover:shadow-2xl active:shadow-sm focus:outline-offset-2"
                                 onClick={(e) => goBackPage(e)}

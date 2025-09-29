@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from "../../shared/services/axios";
 
 export const getAssignmentURL = async (dayID, fileName) => {
   if (!dayID || !fileName) {
@@ -6,8 +6,8 @@ export const getAssignmentURL = async (dayID, fileName) => {
   }
 
   try {
-    const url = `http://localhost:8000/assignment/${dayID}/${fileName}`;
-    const response = await axios.get(url, { responseType: 'blob' });
+    const url = `/assignment/${dayID}/${fileName}`;
+    const response = await api.get(url, { responseType: 'blob' });
 
     if (response.status !== 200) {
       throw new Error(`Failed to fetch assignment: ${response.status} ${response.statusText}`);

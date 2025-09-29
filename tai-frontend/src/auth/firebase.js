@@ -1,15 +1,23 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { 
+    getAuth, 
+    GoogleAuthProvider,
+    signInWithPopup,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+} from "firebase/auth";
 
-// TODO: Get these credentials from the backend 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-};
+    apiKey: "AIzaSyB1-XC70H4aiJ3uw74YkZhJU2--Uk7-lmM",
+    authDomain: "capstone-tai.firebaseapp.com",
+    projectId: "capstone-tai",
+    storageBucket: "capstone-tai.firebasestorage.app",
+    messagingSenderId: "700770300559",
+    appId: "1:700770300559:web:28267999713e339e75f6fa",
+    measurementId: "G-GH6LZB115M"
+  };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -17,3 +25,25 @@ const app = initializeApp(firebaseConfig);
 // Export Firebase Auth instance
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
+
+// Helper functions for common auth operations
+export const signInWithGoogle = () => {
+  return signInWithPopup(auth, googleProvider);
+};
+
+export const signInWithEmail = (email, password) => {
+  return signInWithEmailAndPassword(auth, email, password);
+};
+
+export const signUpWithEmail = (email, password) => {
+  return createUserWithEmailAndPassword(auth, email, password);
+};
+
+export const logout = () => {
+  return signOut(auth);
+};
+
+// Listen to auth state changes
+export const onAuthStateChange = (callback) => {
+  return onAuthStateChanged(auth, callback);
+};

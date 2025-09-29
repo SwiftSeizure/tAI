@@ -1,6 +1,8 @@
 import SettingsIcon from '@mui/icons-material/Settings';
 import DeleteIcon from '@mui/icons-material/Delete'; 
 import PersonIcon from '@mui/icons-material/Person';
+import VisibilityIcon from '@mui/icons-material/Visibility'; 
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 /**
  * ClassCard Component
  * This component represents a card for a class. It displays the class name
@@ -15,9 +17,10 @@ const ClassCard = ( {
     classroom, 
     onClick, 
     onClickSettings,
-    showSettings,
+    admin,
     onClickDelete, 
-    onClickRoster
+    onClickRoster,
+    onPublishClass
 }  ) => {
     
     const handleClick = () => { 
@@ -34,6 +37,10 @@ const ClassCard = ( {
 
     const handleClickRoster = () => { 
         onClickRoster(classroom);
+    };  
+
+    const handleClickPublish = () => { 
+        onPublishClass(classroom);
     }; 
 
     // Logo for the class card 
@@ -46,7 +53,7 @@ const ClassCard = ( {
     if (classroom?.name !== "newClass") { 
         return(  
             <div className="overflow-hidden p-12">   
-                {onClickSettings && showSettings && (
+                {onClickSettings && admin && (
                     <button 
                         onClick={ () => handleClickSettings() }
                         className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
@@ -55,7 +62,7 @@ const ClassCard = ( {
                     </button>
                 )} 
 
-                {onClickDelete && classroom.id && showSettings && (
+                {onClickDelete && classroom.id && admin && (
                     <button 
                         onClick={ () => handleClickDelete() }
                         className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
@@ -63,14 +70,27 @@ const ClassCard = ( {
                         <DeleteIcon />   
                     </button>
                 )}  
-                {onClickRoster && classroom.id && showSettings && (
+                {onClickRoster && classroom.id && admin && (
                     <button 
                         onClick={ () => handleClickRoster() }
                         className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
                     >
                         <PersonIcon />   
                     </button>
-                )}
+                )} 
+
+                {onPublishClass && classroom.id && admin && (
+                    <button 
+                        onClick={ () => handleClickPublish() }
+                        className="bg-blue-400 bg-opacity-30 p-4 cursor-pointer flex flex-col items-center rounded-[15px] transition-all duration-300 ease-in-out transform hover:scale-105 hover:bg-pink-400 hover:border-pink-500" 
+                    > 
+                       {classroom.published ? (
+                        <VisibilityIcon />
+                       ) : (
+                        <VisibilityOffIcon />
+                       )}  
+                    </button>
+                )} 
 
 
                 <button 
@@ -90,7 +110,18 @@ const ClassCard = ( {
                     <div className="border-2 border-white/30 rounded-md backdrop-blur-sm bg-white/10 flex-wrap" >  
                        <h3 className="p-2 rounded-md" > 
                             {classroom?.name} 
-                        </h3> 
+                        </h3>  
+                        {admin && ( 
+                            <div className="flex flex-col items-center" > 
+                                <h3 className="p-2 rounded-md" > 
+                                    {classroom?.published ? "Published" : "Not Published"} 
+                                </h3>  
+                                <h3 className="p-2 rounded-md" > 
+                                    {classroom.classCode} 
+                                </h3>  
+                            </div> 
+                        )} 
+
                     </div> 
                     
                 </button>

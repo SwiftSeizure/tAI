@@ -9,7 +9,9 @@ import { SettingsModal } from "../../shared/modals/SettingsModal";
 import { useSettingsModal } from "../../shared/hooks/useSettingsModal"; 
 import { deleteClass } from "../services/delete-class";  
 import { getStudentsEnrolled } from "../services/get-students-enrolled";  
-import { deleteStudentFromClass } from "../services/delete-student-from-class"; 
+import { deleteStudentFromClass } from "../services/delete-student-from-class";  
+import { postPublishClass } from "../services/post-publish-class";  
+
 import DeleteModal from "../../shared/modals/DeleteModal"; 
 import RosterModal from "../modals/RosterModal";
 
@@ -31,15 +33,13 @@ const TeacherStudentHomePage = () => {
     const { classes } = useAllClasses();
     const { isLoading } = useClassesLoading();
     const { error } = useClassesError();
-    const [state, { setCurrentClass, fetchClasses }] = useClass();
+    const [, { setCurrentClass, fetchClasses }] = useClass();
     
     // State for managing settings modal
     const [currentSettingsClass, setCurrentSettingsClass] = useState(null); 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); 
 
-    const [selectedClass, setSelectedClass] = useState(null);   
-
-    const [currentRosterClass, setCurrentRosterClass] = useState(null);  
+    const [selectedClass, setSelectedClass] = useState(null);
     const [isRosterModalOpen, setIsRosterModalOpen] = useState(false);  
 
     const [enrolledStudents, setEnrolledStudents] = useState({}); 
@@ -49,7 +49,7 @@ const TeacherStudentHomePage = () => {
         id: null,
     }
 
-    const handleSettingsSuccess = (response, settingsData) => {
+    const handleSettingsSuccess = () => {
         // Optionally refresh classes or update local state
         if (user.id && user.role) {
             fetchClasses(user.id, user.role);
@@ -157,6 +157,16 @@ const TeacherStudentHomePage = () => {
     const handleCloseRosterModal = () => {
         setIsRosterModalOpen(false);
     }; 
+
+    const handlePublishClass = async (classroom) => {   
+        console.log("classroom", classroom); 
+        try { 
+            await postPublishClass(classroom.id);
+        } 
+        catch (error) { 
+            console.error('Error publishing class:', error); 
+        } 
+    };  
  
 
     /**
@@ -169,19 +179,35 @@ const TeacherStudentHomePage = () => {
         if (error) return <div>Error loading classes: {error}</div>; 
         
         return ( 
-            <>   
-                {Array.isArray(classes) && classes.map(classroom => ( 
-                    
-                    <ClassCard   
-                        key={classroom.id} 
-                        classroom={classroom} 
-                        onClick={handleClassSelect}   
-                        onClickSettings={() => handleClassSettings(classroom.id, classroom.name)}
-                        showSettings={user.role === 'teacher'} 
-                        onClickDelete={handleOpenDeleteModal} 
-                        onClickRoster={handleOpenRosterModal}
-                    />
-                ))} 
+            <>  
+                {Array.isArray(classes) && classes.map(classroom => (  
+
+                    user.role === 'student' && classroom.published ? ( 
+                        <ClassCard   
+                            key={classroom.id} 
+                            classroom={classroom} 
+                            onClick={handleClassSelect}   
+                        /> 
+
+                    ) : ( 
+                        <ClassCard   
+                            key={classroom.id} 
+                            classroom={classroom} 
+                            onClick={handleClassSelect}   
+                            onClickSettings={() => handleClassSettings(classroom.id, classroom.name)}
+                            admin={user.role === 'teacher'} 
+                            onClickDelete={handleOpenDeleteModal} 
+                            onClickRoster={handleOpenRosterModal} 
+                            onPublishClass={handlePublishClass}
+                        /> 
+                    )
+                ))}   
+
+                {/* Add a "new class" card for creating or joining a class */}
+                <ClassCard   
+                    classroom={addClassClass}
+                    onClick={handleClassSelect}
+                />  
             </>
         );
     }; 
@@ -200,14 +226,7 @@ const TeacherStudentHomePage = () => {
             {/* Grid container for class cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-items-center gap-4">      
                 {/* Render the fetched class cards */}
-                {populateClassCards()}  
-
-                {/* Add a "new class" card for creating or joining a class */}
-                <ClassCard   
-                    classroom={addClassClass}
-                    onClick={handleClassSelect}
-                />   
-                
+                {populateClassCards()}   
             </div>  
             
         </div>

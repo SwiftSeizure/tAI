@@ -1,9 +1,8 @@
-import React, { useState } from "react";  
-import axios from "axios";
+import React, { useState } from "react";
 import { TitleCard } from "../../shared/components/TitleCard";  
-import { useNavigate, useLocation } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom"; 
 import { postJoinClass } from "../services/post-join-class";
-import { useCurrentClass, useClass } from "../../store/class-store";
+import { useClass } from "../../store/class-store";
 import { useCurrentUser } from "../../store/user-store";
 
 /**
@@ -16,15 +15,14 @@ const JoinClassPage = () => {
 
     // TODO: Add the functionality to join a class here  
     const [classCode, setClassCode] = useState(""); 
-    const [state, { fetchClasses, setCurrentClass } ] = useClass();   
+    const [, { fetchClasses, setCurrentClass } ] = useClass();   
     const { user } = useCurrentUser(); 
     const navigate = useNavigate();  
 
     const handleJoinClass = async (e) => { 
         e.preventDefault(); 
 
-       try {   
-            const code = parseInt(classCode, 10); 
+       try {
             const requestBody = {   
                 studentID: user.id,
                 classCode: classCode,
