@@ -2,9 +2,9 @@ import axios from 'axios';
 
 export const putChatMessage = async (displayType, dayID, currentFileName, message) => {
     try {  
-        const url = `http://localhost:8000/chat/${displayType}/${dayID}/${currentFileName}`;
+        const url = `http://localhost:8000/chat/uploads/${displayType}/${dayID}/${currentFileName}`;
         const requestBody = {
-            message: message
+            query: message
         };
         await axios.put(url, requestBody);
     } catch (error) {

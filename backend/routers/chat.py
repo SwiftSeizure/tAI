@@ -21,8 +21,7 @@ async def queryResponse(studentID: int, path: str, session:DBSession, query: str
     Returns:
         ChatResponse: The response containing the conversatiorint(path)n ID and name.
     """
-    # Placeholder for actual logic to run the query and update the chat
-    print(path)
+    
 
     ret = queryBot(studentID,path, query,session)
 

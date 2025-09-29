@@ -8,6 +8,10 @@ from pathlib import Path
 import mimetypes
 import os
 import shutil
+from openai import OpenAI
+from dotenv import load_dotenv
+load_dotenv()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 # import backend.path_fetch as path_fetch
 
 router=APIRouter(prefix="/assignment", tags=["assignment"])
@@ -171,5 +175,27 @@ async def upload_assignment(dayID: int, name: str, session: DBSession, file: Upl
             detail=f"Failed to save file: {str(e)}"
         )
 
+    try:
+        with open(file_path, "rb") as f:
+            openai_file = client.files.create(
+                file=f,
+                purpose="assistants"
+            )
+            remoteID = openai_file.id
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"OpenAI upload failed: {str(e)}"
+        )
     # Add the new material to the database and return the created entry.
-    return db_assignment.create_assignment(dayID, name, safe_filename, file.content_type, session)
+    return db_assignment.create_assignment(dayID, name, safe_filename, file.content_type, session, remoteID)
+
+@router.get("/{path:path}",
+            status_code=200,
+            responses={
+                404: {"model": ClientErrorResponse}
+            },
+            summary="Get remoteID for given path.")
+def get_RemoteID(path: str, session: DBSession):
+    return db_assignment.get_RemoteID(path, session)

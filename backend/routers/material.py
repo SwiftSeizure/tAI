@@ -9,6 +9,8 @@ from datetime import datetime
 from backend.validators import DocumentValidator
 import mimetypes
 import os
+from openai import OpenAI
+client = OpenAI(api_key=os.getenv("OPENAI_APIKEY"))
 # import backend.path_fetch as path_fetch
 
 router=APIRouter(prefix="/material", tags=["material"])
@@ -135,6 +137,32 @@ async def upload_single_file(dayID: int, name: str, session: DBSession, file: Up
             status_code=500,
             detail=f"Failed to save file: {str(e)}"
         )
+    print("got here 2")
+    try:
+        with open(file_path, "rb") as f:
+            openai_file = client.files.create(
+                file=f,
+                purpose="assistants"
+            )
+            print("got here")
+            remoteID = openai_file.id
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"OpenAI upload failed: {str(e)}"
+        )
+
 
     # Add the new material to the database and return the created entry.
-    return db_material.create_material(dayID, name, safe_filename, file.content_type, session)
+    return db_material.create_material(dayID, name, safe_filename, file.content_type, session, remoteID)    
+
+
+@router.get("/{path:path}",
+            status_code=200,
+            responses={
+                404: {"model": ClientErrorResponse}
+            },
+            summary="Get remoteID for given path.")
+def get_RemoteID(path: str, session: DBSession):
+    return db_material.get_RemoteID(path, session)
