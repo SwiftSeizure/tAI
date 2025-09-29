@@ -45,7 +45,7 @@ class ClassroomStudentsResponse(BaseModel):
     students: list[ClassroomStudent]
 
 class ClassroomStudent(BaseModel):
-    id: int
+    id: str
     name: str
     username: str
 
