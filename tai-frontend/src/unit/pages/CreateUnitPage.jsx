@@ -1,5 +1,5 @@
 import React, { useState } from "react"; 
-import { TitleCard } from "../../shared/components/TitleCard"; 
+import { NavBar } from "../../shared/components/NavBar"; 
 import { useLocation, useNavigate } from "react-router-dom";   
 import { useCurrentClass } from "../../store/class-store"; 
 import { postNewUnit } from "../services/post-new-unit";
@@ -38,7 +38,7 @@ const CreateUnitPage = () => {
 
 return( 
     <>
-    <TitleCard title={"Create A Unit"} intro={true}/>   
+    <NavBar title={"Create A Unit"} intro={true}/>   
 
     <form onSubmit={handleCreateUnit} className="flex flex-col items-center">   
 

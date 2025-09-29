@@ -1,6 +1,6 @@
 import React, {useState} from "react";  
 import { useNavigate } from 'react-router-dom';  
-import { TitleCard } from "../../shared/components/TitleCard";   
+import { NavBar } from "../../shared/components/NavBar";   
 import { postCreateClass } from "../services/post-create-class";
 import { ChatSettings } from "../../shared/components/ChatSettings";
 import { useCurrentUser } from "../../store/user-store";
@@ -64,7 +64,7 @@ const CreateClassPage = () => {
 
     return(  
         <>  
-        <TitleCard title={"Create a Class"} />
+        <NavBar title={"Create a Class"} />
         
         <form onSubmit={handleCreateClass} className="flex flex-col items-center">
             <input

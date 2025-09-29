@@ -5,7 +5,7 @@ import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
 
 // Components
-import { TitleCard } from "../../shared/components/TitleCard";
+import { NavBar } from "../../shared/components/NavBar";
 import ChatFeature from "../components/ChatFeature";
 import ModuleComponent from "../components/ModuleComponent";
 import MainContent from "../components/MainContent";
@@ -477,7 +477,7 @@ const TeacherStudentModulePage = () => {
         <>   
         <div className="h-screen w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient">
             
-            <TitleCard title={currentUnit?.name || 'Loading...'} /> 
+            <NavBar title={currentUnit?.name || 'Loading...'} /> 
 
             <div className="grid grid-cols-[280px_1fr_auto] gap-5 p-5 relative h-[calc(90vh-90px)] max-w-full overflow-x-hidden">  
                 {/* Sidebar for modules */}

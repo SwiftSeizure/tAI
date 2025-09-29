@@ -10,7 +10,7 @@ import { SettingsModal } from "../modals/SettingsModal";
 import { useCurrentClass } from "../../store/class-store";
 
 /**
- * TitleCard Component
+ * NavBar Component
  * This component displays a title card with an optional back button.
  * If no title is provided, it displays a default welcome message.
  * 
@@ -19,7 +19,7 @@ import { useCurrentClass } from "../../store/class-store";
  * - intro: Boolean for intro animation
  * - settings: Boolean to show settings button
  */
-export const TitleCard = ({ title, intro, settings }) => {
+export const NavBar = ({ title, intro, settings }) => {
     const navigate = useNavigate(); 
     const { currentClass } = useCurrentClass();
 

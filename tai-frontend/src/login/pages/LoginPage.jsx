@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../../auth/firebase';
-import { TitleCard } from '../../shared/components/TitleCard';
+import { NavBar } from '../../shared/components/NavBar';
 import { useUser } from '../../store/user-store';
 import { AuthModal } from '../modals/AuthModal'; 
 import '../../App.css'; 
@@ -94,7 +94,7 @@ const LoginPage = () => {
             const userCredentials = await signInWithEmailAndPassword(auth, email, password); 
             const idToken = await userCredentials.user.getIdToken();   
             await localStorage.setItem('authToken', idToken);  
-            
+
             await setUser({
                 id: userCredentials.user.uid,
                 name: userCredentials.user.displayName,
