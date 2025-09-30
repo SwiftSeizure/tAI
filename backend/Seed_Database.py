@@ -10,6 +10,7 @@ from backend.dependencies import engine, SessionLocal
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SEED_FILE_PATH = os.path.join(BASE_DIR, "seed_data.json")
+Base.metadata.drop_all(bind=engine)
 
 
 Base.metadata.create_all(bind=engine)

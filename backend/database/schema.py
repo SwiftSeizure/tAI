@@ -86,7 +86,7 @@ class DBDay(Base):
     id = Column(Integer, primary_key = True, index = True)
     name = Column(String(25), nullable=False)
     sequence = Column(Integer, nullable=False)
-    moduleID = Column(Integer, ForeignKey("module.id", ondelete="CASCADE"))
+    moduleID = Column(Integer, ForeignKey("module.id", ondelete="CASCADE"), nullable=True)
 
     assignments = relationship("DBAssignment",back_populates="day", cascade="all, delete-orphan")
     materials = relationship("DBMaterial",back_populates="day", cascade="all, delete-orphan")
