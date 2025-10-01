@@ -135,7 +135,7 @@ class StudentClass(BaseModel):
 
 # Chat Response Models -----------------------------------
 class ChatResponse(BaseModel):
-    studentID: int
+    studentID: str
     conversationID: int
     messages: list[ChatMessage]
     responses: list[ChatResponseMessage]
