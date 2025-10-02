@@ -21,6 +21,8 @@ class HomeClass(BaseModel):
     name: str
     classCode: Optional[str] = None
     published: Optional[bool] = None
+class UserTypeResponse(BaseModel):
+    user_type: str  # "teacher" or "student"
 
 
 # Classroom Input Models ------------------------------------------

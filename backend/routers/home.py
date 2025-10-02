@@ -5,7 +5,7 @@ from backend.database import teacher as teacher_db
 from backend.database import student as student_db
 from backend.database.schema import DBTeacher, DBStudent, DBClass
 from backend.dependencies import DBSession
-from backend.models import ClientErrorResponse, HomeResponse,HomeClass, CreateClassroom
+from backend.models import ClientErrorResponse, HomeResponse,HomeClass, CreateClassroom, UserTypeResponse
 from backend.exceptions import EntityNotFoundException, UnauthorizedException
 
 from typing import Annotated
@@ -113,3 +113,40 @@ def get_student_home(accountID: str,
     classes = [HomeClass(id=c.id, name=c.name, classCode=c.classCode, published=c.published) for c in db_classes] # type: ignore
 
     return HomeResponse(classes=classes)
+
+
+# Generic home route
+@router.get("/usertype",
+            response_model = UserTypeResponse,
+            status_code=200,
+            responses={
+                 404: {"model": ClientErrorResponse}
+                },
+            summary="Get the user type of the authenticated user.")
+def get_user_type(
+    user: Annotated[dict, Depends(get_firebase_user_from_token)],
+    session: DBSession
+    ) -> Any:
+    """ Get the user type of the authenticated user.
+    
+    Args:
+        user (dict): The authenticated user.
+        session (DBSession): The database session.
+        
+    Raises:
+        404: If the user is not found.
+        
+    Returns:
+        UserTypeResponse: A response model containing the user type.
+    """
+    uid = user["uid"]
+    
+    teacher = session.get(DBTeacher, uid)
+    if teacher:
+        return UserTypeResponse(user_type="teacher")
+    
+    student = session.get(DBStudent, uid)
+    if student:
+        return UserTypeResponse(user_type="student")
+    
+    raise EntityNotFoundException("user", uid)
