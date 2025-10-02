@@ -111,6 +111,9 @@ class AddEnrollment(BaseModel):
 class TeacherUpdate(BaseModel):
     name : Optional[str] = None
     username : Optional[str] = None
+class TeacherCreate(BaseModel):
+    name : str
+    username : str
 
 # Teacher Response Models -----------------------------------
 

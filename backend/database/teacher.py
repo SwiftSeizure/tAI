@@ -117,6 +117,39 @@ def update_teacher(teacherID: str,  update: TeacherUpdate, session: Session) -> 
 
     return None
 
+def create_teacher(teacherID: str, name: str, username: str, session: Session) -> DBTeacher:
+    """ Create a new teacher.
+    
+    Args:
+        teacherID (str): The ID of the teacher to create.
+        name (str): The name of the teacher.
+        username (str): The username of the teacher.
+        session (Session): The SQLAlchemy session to use for the query.
+        
+    Raises:
+        DuplicateNameException: If a teacher with the given username already exists.
+        
+    Returns:
+        DBTeacher: The newly created DBTeacher object.
+    """
+    duplicate_stmt = select(DBTeacher).filter(DBTeacher.userName == username)
+    existing_teacher = session.execute(duplicate_stmt).scalar_one_or_none()
+    if existing_teacher:
+        raise DuplicateNameException("teacher", username)
+    
+    new_teacher = DBTeacher(
+        id=teacherID,
+        name=name,
+        userName=username
+    )
+    
+    session.add(new_teacher)
+    session.commit()
+    session.refresh(new_teacher)
+    
+    return new_teacher
+
+
 def generate_class_code() -> str:
     """Generate a random 6-character alphanumeric code."""
     chars = string.ascii_uppercase + string.digits
