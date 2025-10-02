@@ -37,6 +37,10 @@ class ClassroomUpdateReturn(BaseModel):
 class CreateUnit(BaseModel):
     name: str
     settings: dict
+    
+class CanvasAPIKey(BaseModel):
+    api_key: str
+
 # Classroom Response Models ---------------------------------------
 class ClassroomResponse(BaseModel):
     units: list[ClassroomUnit]

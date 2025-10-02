@@ -4,7 +4,7 @@ from typing import Any, Annotated
 from backend.database import classroom as classroom_db
 from backend.database.schema import DBTeacher, DBUnit, DBClass
 from backend.dependencies import DBSession
-from backend.models import ClassroomStudentsResponse, ClientErrorResponse, ClassroomResponse, ClassroomUnit, CreateUnit, ClassroomUpdate,ClassroomUpdateReturn
+from backend.models import ClassroomStudentsResponse, ClientErrorResponse, ClassroomResponse, ClassroomUnit, CreateUnit, ClassroomUpdate,ClassroomUpdateReturn, CanvasAPIKey
 
 from backend.exceptions import UnauthorizedException
 from fastapi import Depends
@@ -72,6 +72,35 @@ def create_new_unit(classID: int,
     db_class = classroom_db.create_new_unit(classID, unit, session)
     return(ClassroomUnit(id=db_class.id, name=db_class.name)) # type: ignore
 
+
+@router.post("/{classID}/canvas",
+             status_code=201,
+             responses={
+                 404: {"model": ClientErrorResponse},
+             },
+             summary="Create a new Canvas API key for the classroom. Must be an authenticated teacher.")
+def add_canvas_api_key(classID: int, 
+                        api_key: CanvasAPIKey, 
+                        user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                        session: DBSession):
+    """ Add a new Canvas API key for the classroom.
+
+    Args:
+        classID (int): The ID of the classroom to add the API key to.
+        api_key (CanvasAPIKey): The API key data to create.
+        session (DBSession): The database session.
+
+    Raises:
+        404: If the teacher with the given ID is not found.
+
+    Returns:
+        Nothing
+    """
+    teacherID = classroom_db.get_teacher_id_by_class_id(classID, session)
+    if user["uid"] != teacherID:
+        raise UnauthorizedException("create canvas API key")
+
+    classroom_db.add_canvas_api_key(classID, api_key.api_key, session)
 
 
 @router.put("/{classroomID}",

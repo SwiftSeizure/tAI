@@ -5,6 +5,18 @@ from backend.exceptions import EntityNotFoundException, DuplicateNameException
 from backend.models import ClassroomStudent, CreateUnit, ClassroomUpdate
 from backend.database.day import delete_day_files
 
+from cryptography.fernet import Fernet
+import os
+from dotenv import load_dotenv
+
+basedir = __import__("pathlib").Path(__file__).parent
+load_dotenv(basedir / ".env")   # loads .env in repo root
+
+fernet_key = os.getenv("FERNET_KEY")
+if not fernet_key:
+    raise EntityNotFoundException("FERNET_KEY", "environment variable")
+fernet = Fernet(fernet_key)
+
 def get_classroom(classroomID: int, session: Session) -> DBClass | None:
     """Get a DBClass object by its ID.
 
@@ -128,6 +140,26 @@ def update_classroom(classroomID: int, classroomUpdates: ClassroomUpdate, sessio
     return classroom
 
 
+def add_canvas_api_key(classID: int, api_key: str, session: Session):
+    """Add a new Canvas API key for a classroom.
+        The API key is encrypted before being stored in the database.
+    
+    Args:
+        classID (int): The ID of the classroom to add the API key to.
+        api_key (str): The API key to add.
+        session (Session): The database session.
+        
+    Raises:
+        EntityNotFoundException: If the classroom with the given ID does not exist.
+    """
+    classroom = get_classroom(classID, session)
+    if not classroom:
+        raise EntityNotFoundException("classroom", classID) # type: ignore
+
+    classroom.canvas_api_key = fernet.encrypt(api_key.encode()) # type: ignore
+    session.commit()
+    
+    
 def delete_classroom(classroomID: int, session: Session) -> None:
     """Delete a classroom by its ID.
 
