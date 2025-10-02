@@ -1,37 +1,62 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 export default function DeleteModal({ isOpen, onClose, onConfirmDelete, itemToDelete }) {
-	if (!isOpen) return null;
+	const modalRef = useRef(null);
 
-	const handleConfirmDelete = () => {
+	const handleClickOutside = (event) => {
+		if (modalRef.current && !modalRef.current.contains(event.target)) {
+			onClose();
+		}
+	};
+
+	useEffect(() => {
+		if (isOpen) {
+			document.addEventListener('mousedown', handleClickOutside);
+			document.body.style.overflow = 'hidden';
+		} else {
+			document.body.style.overflow = 'unset';
+		}
+
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+			document.body.style.overflow = 'unset';
+		};
+	}, [isOpen]);
+
+	const handleConfirmDelete = (e) => {
+		e.stopPropagation();
 		onConfirmDelete();
 		onClose();
 	};
+
+	if (!isOpen) return null;
 
 	return (
 		<div
 			id="delete-modal"
 			tabIndex="-1"
 			aria-hidden={!isOpen}
-			className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-[calc(100%-1rem)] max-h-full bg-black bg-opacity-50"
+			className="fixed inset-0 z-50 flex justify-center items-center bg-black/60 backdrop-blur-sm"
 		>
-			<div className="relative p-4 w-full max-w-md max-h-full">
-				{/* Modal content */}
-				<div className="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+			<div 
+				ref={modalRef}
+				className="relative p-4 w-full max-w-md"
+				onClick={(e) => e.stopPropagation()}
+			>
+				<div className="relative bg-white rounded-2xl shadow-2xl overflow-hidden">
 					{/* Modal header */}
-					<div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-200 dark:border-gray-600">
-						<h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-							Confirm Delete
+					<div className="flex items-center justify-between px-6 py-5 border-b border-gray-200">
+						<h3 className="text-xl font-bold text-gray-900">
+							Confirm Deletion
 						</h3>
 						<button
 							type="button"
 							onClick={onClose}
-							className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 
-										rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center 
-										dark:hover:bg-gray-600 dark:hover:text-white"
+							className="group flex items-center justify-center w-8 h-8 text-gray-400 hover:text-gray-600 bg-transparent hover:bg-gray-100 rounded-lg transition-all duration-200 active:scale-95"
+							aria-label="Close modal"
 						>
 							<svg
-								className="w-3 h-3"
+								className="w-4 h-4"
 								aria-hidden="true"
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
@@ -42,48 +67,73 @@ export default function DeleteModal({ isOpen, onClose, onConfirmDelete, itemToDe
 									strokeLinecap="round"
 									strokeLinejoin="round"
 									strokeWidth="2"
-									d="M1 1l6 6m0 0l6 6M7 7l6-6M7 7L1 13"
+									d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
 								/>
 							</svg>
-							<span className="sr-only">Close modal</span>
 						</button>
 					</div>
-
+					
 					{/* Modal body */}
-					<div className="p-4 md:p-5 space-y-4">
-						<p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-							Are you sure you want to delete{" "}
-							<span className="font-semibold text-gray-900 dark:text-white">
-								{itemToDelete}
-							</span>
-							?
-						</p>
-					</div>
+					<div className="px-6 py-6 space-y-5">
+						{/* Warning Icon */}
+						<div className="flex justify-center">
+							<div className="flex items-center justify-center w-16 h-16 bg-red-50 rounded-full">
+								<svg
+									className="w-8 h-8 text-red-600"
+									aria-hidden="true"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 20 20"
+								>
+									<path
+										stroke="currentColor"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth="2"
+										d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+									/>
+								</svg>
+							</div>
+						</div>
 
-					{/* Modal footer */}
-					<div className="flex items-center justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600 space-x-3">
-						<button
-							onClick={handleConfirmDelete}
-							type="button"
-							className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none 
-										focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center 
-										dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900"
-						>
-							Delete
-						</button>
-						<button
-							onClick={onClose}
-							type="button"
-							className="py-2.5 px-5 text-sm font-medium text-gray-900 bg-white rounded-lg border 
-										border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 
-										focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 
-										dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-						>
-							Cancel
-						</button>
+						{/* Message */}
+						<div className="text-center space-y-3">
+							<p className="text-base text-gray-700 leading-relaxed">
+								Are you sure you want to delete{' '}
+								<span className="font-semibold text-gray-900">
+									{itemToDelete}
+								</span>?
+							</p>
+							<div className="bg-red-50 border border-red-200 rounded-xl p-4"> 
+								<p className="text-sm text-red-700 font-medium">
+									This action cannot be undone
+								</p>
+								<p className="text-xs text-red-600 mt-1">
+									Once deleted, this item cannot be recovered.
+								</p>
+							</div>
+						</div>
+
+						{/* Action Buttons */}
+						<div className="flex flex-col-reverse sm:flex-row gap-3 pt-2"> 
+							<button
+								onClick={handleConfirmDelete}
+								type="button"
+								className="flex-1 px-5 py-3 text-sm font-semibold text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 focus:outline-none focus:ring-4 focus:ring-red-200"
+							>
+								Delete
+							</button>
+							<button
+								onClick={onClose}
+								type="button"
+								className="flex-1 px-5 py-3 text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 hover:border-gray-400 rounded-xl transition-all duration-200 shadow-sm hover:shadow active:scale-95 focus:outline-none focus:ring-4 focus:ring-gray-200"
+							>
+								Cancel
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	);
+	); 
 }
