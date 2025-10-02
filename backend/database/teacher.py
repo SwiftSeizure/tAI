@@ -90,7 +90,7 @@ def create_new_classroom(teacherID: str, classroom: CreateClassroom, session: Se
         ownerID=teacherID,
         settings=classroom.settings,
         classCode=class_code,
-        published=True,
+        published=classroom.published,
     )
     
     session.add(new_class)

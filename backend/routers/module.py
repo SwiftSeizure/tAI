@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Form
 from typing import Any, Annotated
-from backend.models import ClientErrorResponse, ModuleDay, ModuleResponse
+from backend.models import ClientErrorResponse, ModuleDay, ModuleResponse, CreateDay
 from backend.dependencies import DBSession
 from backend.database import module as module_db
 
@@ -46,6 +46,7 @@ def getModuleDays(moduleID:int,
              },
              summary="Create a new day within a module. Must be an authenticated owner of the module.")
 def create_new_day(moduleID: int, 
+                   new_day: CreateDay,
                    user: Annotated[dict, Depends(get_firebase_user_from_token)],
                    session: DBSession) -> ModuleDay:
     """ Create a new day within a module.
@@ -66,7 +67,7 @@ def create_new_day(moduleID: int,
     if user_id != teacher_id and user_id != "test-user":
         raise UnauthorizedException("create day")
     
-    db_day = module_db.create_new_day(moduleID, session)
+    db_day = module_db.create_new_day(moduleID, new_day.name, session) # type: ignore
     return(ModuleDay(id=db_day.id, name = db_day.name)) # type: ignore
 
 

@@ -1,6 +1,6 @@
 from backend.dependencies import DBSession
 from fastapi import APIRouter
-from backend.models import ClientErrorResponse, AddEnrollment,StudentUpdate, StudentResponse
+from backend.models import ClientErrorResponse, AddEnrollment,StudentUpdate, StudentResponse, StudentCreate
 import backend.database.student as db_student
 from backend.exceptions import EntityNotFoundException, InvalidClassCodeException, UnauthorizedException
 
@@ -27,7 +27,7 @@ def enroll_student(update:AddEnrollment ,
     if user["uid"] != update.studentID and user["uid"] != "test-user":
         raise UnauthorizedException("enroll student")
     
-    return enroll(studentID=update.studentID, classCode=update.classCode, session=session) # type: ignore
+    return db_student.enroll(studentID=update.studentID, classCode=update.classCode, session=session) # type: ignore
     
 
 
@@ -47,7 +47,7 @@ def update_student(studentID: str,
     if user["uid"] != studentID and user["uid"] != "test-user":
         raise UnauthorizedException("update student")
     
-    updateStudent(studentID=studentID, update=update, session=session) # type: ignore
+    db_student.updateStudent(studentID=studentID, update=update, session=session) # type: ignore
     return None
 
 
@@ -66,7 +66,7 @@ def get_student_ID(studentID: str,
     if user["uid"] != studentID and user["uid"] != "test-user":
         raise UnauthorizedException("view student")
 
-    student = get_student(studentID, session) # type: ignore
+    student = db_student.get_student(studentID, session) # type: ignore
     if not student:
         raise EntityNotFoundException("student", studentID) # type: ignore
     
@@ -80,7 +80,7 @@ def get_student_ID(studentID: str,
                  401: {"model": ClientErrorResponse},
              },
              summary="Create a new student. Must provide a valid token.")
-def create_teacher(studemtInfo: StudentCreate,
+def create_student(studentInfo: StudentCreate,
                    user: Annotated[dict, Depends(get_firebase_user_from_token)],
                    session: DBSession) -> StudentResponse:
     """ Create a new student.

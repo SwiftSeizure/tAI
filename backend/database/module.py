@@ -44,7 +44,7 @@ def get_module_days(moduleID:int,session:Session) -> list[DBDay]:
     return module.days
 
 
-def create_new_day(moduleID: int, session: Session) -> DBModule:
+def create_new_day(moduleID: int, name: str, session: Session) -> DBModule:
     """Create a new day in a module.
 
     Args:
@@ -72,7 +72,10 @@ def create_new_day(moduleID: int, session: Session) -> DBModule:
     existingDays = session.execute(stmt).scalars().all()
     
     # Name will just be the number of the day
-    dayName = f"Day {len(existingDays) + 1}"
+    if name:
+        dayName = name
+    else:
+        dayName = f"Day {len(existingDays) + 1}"
     
     # Create the new module
     db_day = DBDay(

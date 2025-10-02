@@ -13,21 +13,27 @@ class ClientErrorResponse(BaseModel):
 class CreateClassroom(BaseModel):
     name: str
     settings: dict
+    published: bool
+    
 # Home Response Models --------------------------------------------
 class HomeResponse(BaseModel):
     classes: list[HomeClass]
+    
 class HomeClass(BaseModel):
     id: int
     name: str
     classCode: Optional[str] = None
     published: Optional[bool] = None
+    
 class UserTypeResponse(BaseModel):
     user_type: str  # "teacher" or "student"
 
 
 # Classroom Input Models ------------------------------------------
-class ClassroomUpdate(BaseModel):
+class ClassroomNameUpdate(BaseModel):
     name: str
+    
+class ClassroomSettingsUpdate(BaseModel):
     settings: dict
 
 class ClassroomUpdateReturn(BaseModel):
@@ -81,6 +87,9 @@ class ModuleDay(BaseModel):
 
 
 # Module Input Models ----------------------------------------------
+class CreateDay(BaseModel):
+    name: Optional[str] = None
+    
 # Module Response Models -------------------------------------------
 class ModuleResponse(BaseModel):
     days: list[ModuleDay]

@@ -148,8 +148,8 @@ def updateStudent(studentID: str, update: StudentUpdate, session: Session) -> No
     return None
 
 
-def create_teacher(teacherID: str, name: str, username: str, session: Session) -> DBTeacher:
-    """ Create a new teacher.
+def create_student(teacherID: str, name: str, username: str, session: Session) -> DBTeacher:
+    """ Create a new student.
     
     Args:
         teacherID (str): The ID of the teacher to create.
@@ -163,23 +163,26 @@ def create_teacher(teacherID: str, name: str, username: str, session: Session) -
     Returns:
         DBTeacher: The newly created DBTeacher object.
     """
+    # Ensure no student already has this username
     duplicate_stmt = select(DBStudent).filter(DBStudent.userName == username)
     existing_student = session.execute(duplicate_stmt).scalar_one_or_none()
     if existing_student:
         raise DuplicateNameException("user", username)
     
+    # Ensure a teacher does not have the same username as new student
     duplicate_stmt = select(DBTeacher).filter(DBTeacher.userName == username)
     existing_teacher = session.execute(duplicate_stmt).scalar_one_or_none()
     if existing_teacher:
         raise DuplicateNameException("user", username)
     
-    
+    # Create the student DBObject
     new_student = DBStudent(
         id=teacherID,
         name=name,
         userName=username
     )
     
+    # Add student to database
     session.add(new_student)
     session.commit()
     session.refresh(new_student)
