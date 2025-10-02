@@ -127,6 +127,9 @@ class TeacherResponse(BaseModel):
 class StudentUpdate(BaseModel):
     name : Optional[str] = None
     username : Optional[str] = None
+class StudentCreate(BaseModel):
+    name : str
+    username : str
 
 # Student Response Models -----------------------------------
 class StudentResponse(BaseModel):

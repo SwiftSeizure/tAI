@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
-from .schema import DBStudent, DBEnrolled, DBClass
-from backend.exceptions import EntityNotFoundException, InvalidClassCodeException
+from .schema import DBStudent, DBEnrolled, DBClass, DBTeacher
+from backend.exceptions import EntityNotFoundException, InvalidClassCodeException, DuplicateNameException
 from backend.models import StudentUpdate
 
 def get_student(studentID: str, session: Session) -> DBStudent:
@@ -147,3 +147,41 @@ def updateStudent(studentID: str, update: StudentUpdate, session: Session) -> No
     
     return None
 
+
+def create_teacher(teacherID: str, name: str, username: str, session: Session) -> DBTeacher:
+    """ Create a new teacher.
+    
+    Args:
+        teacherID (str): The ID of the teacher to create.
+        name (str): The name of the teacher.
+        username (str): The username of the teacher.
+        session (Session): The SQLAlchemy session to use for the query.
+        
+    Raises:
+        DuplicateNameException: If a teacher with the given username already exists.
+        
+    Returns:
+        DBTeacher: The newly created DBTeacher object.
+    """
+    duplicate_stmt = select(DBStudent).filter(DBStudent.userName == username)
+    existing_student = session.execute(duplicate_stmt).scalar_one_or_none()
+    if existing_student:
+        raise DuplicateNameException("user", username)
+    
+    duplicate_stmt = select(DBTeacher).filter(DBTeacher.userName == username)
+    existing_teacher = session.execute(duplicate_stmt).scalar_one_or_none()
+    if existing_teacher:
+        raise DuplicateNameException("user", username)
+    
+    
+    new_student = DBStudent(
+        id=teacherID,
+        name=name,
+        userName=username
+    )
+    
+    session.add(new_student)
+    session.commit()
+    session.refresh(new_student)
+    
+    return new_student

@@ -2,7 +2,7 @@ import random
 import string
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload, Session
-from backend.database.schema import DBTeacher, DBClass
+from backend.database.schema import DBTeacher, DBClass, DBStudent
 from backend.models import CreateClassroom, TeacherUpdate
 from backend.exceptions import EntityNotFoundException, DuplicateNameException
 
@@ -135,7 +135,13 @@ def create_teacher(teacherID: str, name: str, username: str, session: Session) -
     duplicate_stmt = select(DBTeacher).filter(DBTeacher.userName == username)
     existing_teacher = session.execute(duplicate_stmt).scalar_one_or_none()
     if existing_teacher:
-        raise DuplicateNameException("teacher", username)
+        raise DuplicateNameException("user", username)
+    
+    duplicate_stmt = select(DBStudent).filter(DBStudent.userName == username)
+    existing_student = session.execute(duplicate_stmt).scalar_one_or_none()
+    if existing_student:
+        raise DuplicateNameException("user", username)
+    
     
     new_teacher = DBTeacher(
         id=teacherID,
