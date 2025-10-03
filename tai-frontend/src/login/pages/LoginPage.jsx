@@ -96,13 +96,15 @@ const LoginPage = () => {
             await localStorage.setItem('authToken', idToken);   
             console.log("userCredentials", userCredentials);
 
+            // TODO send auth token to banckend to take user id from user and tell me if student or teacher
+
             await setUser({
                 id: userCredentials.user.uid,
                 name: userCredentials.user.displayName,
                 role: selectedRole,
                 email: userCredentials.user.email,   
                 token: idToken
-            }); 
+            });
             
             setIsAuthModalOpen(false);
             navigate('/home');

@@ -25,7 +25,7 @@ client = OpenAI(api_key=api_key)
 
 
 
-def queryBot(studentID: int, path: str, prompt: str, session: Session) -> ChatResponse:
+def queryBot(studentID: str, path: str, prompt: str, session: Session) -> ChatResponse:
     """
     Queries the OpenAI API with the given prompt and returns the response.
     (DB logic unchanged; only OpenAI call is different.)

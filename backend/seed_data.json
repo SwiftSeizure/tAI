@@ -1,5 +1,11 @@
 {
-  "teacher": [
+  "teacher": [ 
+    { 
+      "id": "h7HevWINEIcPRCadeCi8AIhrGxD3", 
+      "name": "Mr. Adam",
+      "userName": "adamrocks",
+      "password_hash": "hashed_pw_1"
+    },
     {
       "id": "2AxKHm2eHjQ5syF2jB3Qug4b9ua2",
       "name": "Ms. Smith",

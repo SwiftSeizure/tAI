@@ -14,7 +14,7 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 
 @router.put("/{path:path}",response_model=ChatResponse,responses= {404:{"model": ClientErrorResponse}} 
            ,status_code=200, summary="Run query and update chat")
-async def queryResponse(studentID: int, 
+async def queryResponse(studentID: str, 
                         path: str, 
                         user: Annotated[dict, Depends(get_firebase_user_from_token)],
                         session:DBSession,
@@ -23,7 +23,7 @@ async def queryResponse(studentID: int,
 
     Args:doc_validator.validate_file(file)
 
-        studentID (int): The ID of the student.
+        studentID (str): The ID of the student (Firebase UID).
         path (str): The relative path of what context the chat is being run in.
         query (str): The query to run.
 
