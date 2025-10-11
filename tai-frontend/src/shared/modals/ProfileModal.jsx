@@ -42,16 +42,15 @@ export default function ProfileModal({ isOpen, onClose, onChangeDisplayName, cur
             id="profile-modal"
             tabIndex="-1"
             aria-hidden={!isOpen}
-            className="fixed inset-0 z-50 flex justify-center items-center bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex justify-center items-center bg-black/50 backdrop-blur-sm p-4"
         >
             <div 
                 ref={modalRef}
-                className="relative p-4 w-full max-w-md"
+                className="relative w-full max-w-2xl bg-white rounded-lg shadow dark:bg-gray-800"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
-                    {/* Modal header */}
-                    <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                <div className="p-6 space-y-6">
+                    <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-600">
                         <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                             Profile Settings
                         </h3>
@@ -81,7 +80,7 @@ export default function ProfileModal({ isOpen, onClose, onChangeDisplayName, cur
                     </div>
                     
                     {/* Modal body */}
-                    <div className="p-4 md:p-5 space-y-4">
+                    <div className="space-y-4">
                         {/* Avatar */} 
                         {/* TODO: Add avatar upload */}
                         <div className="flex justify-center">
@@ -151,7 +150,7 @@ export default function ProfileModal({ isOpen, onClose, onChangeDisplayName, cur
                     </div>
 
                     {/* Modal footer */}
-                    <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                    <div className="flex items-center pt-4 border-t border-gray-200 dark:border-gray-600">
                         <button
                             onClick={handleSave}
                             type="button"
