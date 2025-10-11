@@ -105,7 +105,9 @@ const TeacherStudentHomePage = () => {
     const handleOnSaveSettings = async (formData) => { 
         try { 
             //This is where updating logic will go  
-            await putUpdateClassSettings(selectedClass.id, formData);
+            await putUpdateClassSettings(selectedClass.id, formData); 
+            // Right now this handles both settings and name, now we need to update name then settings. 
+            // refresh the classes here 
         }
         catch (error) { 
             console.error('Error saving settings:', error);
