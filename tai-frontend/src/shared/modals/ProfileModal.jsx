@@ -1,8 +1,9 @@
 
-export default function ProfileModal({ isOpen, onClose, onChangeDisplayName }) { 
+export default function ProfileModal({ isOpen, onClose, onChangeDisplayName }) {  
+
     if (!isOpen) { 
         return null;
-    } 
+    }
 
     return (
         <div>
@@ -11,5 +12,5 @@ export default function ProfileModal({ isOpen, onClose, onChangeDisplayName }) {
         </div>
     );
     
-}
+};
 	

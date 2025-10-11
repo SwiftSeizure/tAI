@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SettingsIcon from '@mui/icons-material/Settings';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'; 
+import ProfileModal from "../modals/ProfileModal";
 
 import '../../App.css';
-export const NavBar = ({ title, settings }) => {
+export const NavBar = ({ title, settings }) => { 
+
+    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false); 
+
+
     const navigate = useNavigate();
 
     const goBackPage = (e) => {
@@ -13,10 +18,21 @@ export const NavBar = ({ title, settings }) => {
         navigate(-1);
     };
 
-    const handleEditProfile = () => {
+    const handleOpenProfile = () => { 
+
         console.log("Edit Profile clicked");
-        // Add navigation or modal opening here
-    };
+        // Add navigation or modal opening here  
+        setIsProfileModalOpen(true); 
+    }; 
+
+    const handleCloseProfileModal = () => { 
+        setIsProfileModalOpen(false);
+    } 
+
+    const handleOnChangeDisplayName = () => { 
+        // call the api to change the users display name here 
+        console.log("changing the display name to: " )
+    }
 
     return (
         <>
@@ -63,7 +79,7 @@ export const NavBar = ({ title, settings }) => {
 
                         <button
                             className="group flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:ring-blue-200 transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
-                            onClick={handleEditProfile}
+                            onClick={handleOpenProfile}
                             title="Edit Profile"
                         >
                             <AccountCircleIcon fontSize="small" />
@@ -71,7 +87,13 @@ export const NavBar = ({ title, settings }) => {
                         </button>
                     </div>
                 </div>
-            </nav>
+            </nav> 
+
+            <ProfileModal
+                isOpen={isProfileModalOpen} 
+                onClose={handleCloseProfileModal} 
+                onChangeDisplayName={handleOnChangeDisplayName}
+            />
         </>
     );
 };
