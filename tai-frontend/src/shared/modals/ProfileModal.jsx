@@ -1,9 +1,15 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react"; 
+import { useCurrentUser } from "../../store/user-store";
 
 export default function ProfileModal({ isOpen, onClose, onChangeDisplayName, currentUser }) {
-    const modalRef = useRef(null);
-    const [displayName, setDisplayName] = useState(currentUser?.displayName || "");
-    const [email, setEmail] = useState(currentUser?.email || "");
+    const modalRef = useRef(null);  
+
+    // TODO: Add the functionality to update the display name here, send the API call in the NAV bar component and update the local storage there too
+
+    const { user } = useCurrentUser();
+
+    const [displayName, setDisplayName] = useState(user?.displayName || "");
+    const [email, setEmail] = useState(user?.email || "");
 
     const handleClickOutside = (event) => {
         if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -16,8 +22,8 @@ export default function ProfileModal({ isOpen, onClose, onChangeDisplayName, cur
             document.addEventListener('mousedown', handleClickOutside);
             document.body.style.overflow = 'hidden';
             // Update local state when modal opens
-            setDisplayName(currentUser?.displayName || "");
-            setEmail(currentUser?.email || "");
+            setDisplayName(user?.displayName || "");
+            setEmail(user?.email || "");
         } else {
             document.body.style.overflow = 'unset';
         }
@@ -49,7 +55,7 @@ export default function ProfileModal({ isOpen, onClose, onChangeDisplayName, cur
                 className="relative w-full max-w-2xl bg-white rounded-lg shadow dark:bg-gray-800"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="p-6 space-y-6">
+                <div className="px-8 py-6 space-y-6">
                     <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-600">
                         <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                             Profile Settings
