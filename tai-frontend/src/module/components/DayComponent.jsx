@@ -157,16 +157,18 @@ const DayComponent = ( {
                                                         <FaFile className="mr-3 text-base text-yellow-500 flex-shrink-0" />
                                                         <span className="font-sans text-sm text-gray-600 font-md tracking-wide truncate">{material.name}</span>
                                                     </button> 
-                                                    <button 
-                                                        onClick={(e) => { 
-                                                            e.stopPropagation();
-                                                            handleOnClickDeleteMaterial(material); 
-                                                            setSelectedDay(day); 
-                                                        }} 
-                                                        className="ml-2"
-                                                        > 
-                                                        <FaTrash className="mr-3 text-base text-yellow-500" />
-                                                    </button>
+                                                    {user.role === "teacher" && (
+                                                        <button 
+                                                            onClick={(e) => { 
+                                                                e.stopPropagation();
+                                                                handleOnClickDeleteMaterial(material); 
+                                                                setSelectedDay(day); 
+                                                            }} 
+                                                            className="ml-2"
+                                                            > 
+                                                            <FaTrash className="mr-3 text-base text-yellow-500" />
+                                                        </button>
+                                                    )}
                                                 </li> 
                                                 
                                             ))}
@@ -211,12 +213,14 @@ const DayComponent = ( {
                                                         <MdAssignment className="mr-3 text-base text-red-500 flex-shrink-0" />
                                                         <span className="font-sans text-sm text-gray-600 font-md tracking-wide truncate">{assignment.name}</span>
                                                     </button> 
-                                                    <button onClick={(e) => { 
-                                                        e.stopPropagation();
-                                                        handleOnClickDeleteAssignment(assignment)
-                                                    }} > 
-                                                        <FaTrash className="mr-3 text-base text-yellow-500" />
-                                                    </button>
+                                                    {user.role === "teacher" && (
+                                                        <button onClick={(e) => { 
+                                                            e.stopPropagation();
+                                                            handleOnClickDeleteAssignment(assignment)
+                                                        }} > 
+                                                            <FaTrash className="mr-3 text-base text-yellow-500" />
+                                                        </button>
+                                                    )}
                                                 </li>
                                             ))}
                                         </ul> 
