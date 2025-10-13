@@ -1,10 +1,10 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
-from .schema import DBStudent, DBEnrolled, DBClass
-from backend.exceptions import EntityNotFoundException, InvalidClassCodeException
+from .schema import DBStudent, DBEnrolled, DBClass, DBTeacher
+from backend.exceptions import EntityNotFoundException, InvalidClassCodeException, DuplicateNameException
 from backend.models import StudentUpdate
 
-def get_student(studentID: int, session: Session) -> DBStudent:
+def get_student(studentID: str, session: Session) -> DBStudent:
     """Get a DBStudent object by its ID.
     
     Args:
@@ -24,7 +24,7 @@ def get_student(studentID: int, session: Session) -> DBStudent:
     
     return student
 
-def get_student_classes(studentID: int, session: Session) -> list[DBClass]:
+def get_student_classes(studentID: str, session: Session) -> list[DBClass]:
     """Get all classes a student is enrolled in.
     
     Args:
@@ -55,7 +55,9 @@ def get_student_classes(studentID: int, session: Session) -> list[DBClass]:
             classes.remove(c) 
     return classes
 
-def enroll(studentID: int, classCode: str, session: Session) -> int:
+
+def enroll(studentID: str, classCode: str, session: Session) -> int:
+
 
     """Enroll a student in a class.
     
@@ -100,7 +102,7 @@ def enroll(studentID: int, classCode: str, session: Session) -> int:
     existing_enrollment = session.execute(stmt).scalar_one_or_none()
 
     if existing_enrollment:
-        return classroom.id  # Already enrolled
+        return classroom.id  # type: ignore
 
 
     enrollment = DBEnrolled(studentID=studentID, classID=classroom.id)
@@ -111,13 +113,13 @@ def enroll(studentID: int, classCode: str, session: Session) -> int:
     session.refresh(classroom)
 
     
-    return student.id
+    return classroom.id #type: ignore
 
 
-    return classroom.id
+    
 
 
-def updateStudent(studentID: int, update: StudentUpdate, session: Session) -> None:
+def updateStudent(studentID: str, update: StudentUpdate, session: Session) -> None:
     """Update a student's information.
     
     Args:
@@ -133,15 +135,56 @@ def updateStudent(studentID: int, update: StudentUpdate, session: Session) -> No
     """
     student = get_student(studentID, session)
     if not student:
-        raise EntityNotFoundException("student", studentID)
+        raise EntityNotFoundException("student", studentID) # type: ignore
     
     if update.name is not None:
-        student.name = update.name
+        student.name = update.name # type: ignore
     if update.username is not None:
-        student.userName = update.username
-    
+        student.userName = update.username # type: ignore
+
     session.commit()
     session.refresh(student)
     
     return None
 
+
+def create_student(teacherID: str, name: str, username: str, session: Session) -> DBTeacher:
+    """ Create a new student.
+    
+    Args:
+        teacherID (str): The ID of the teacher to create.
+        name (str): The name of the teacher.
+        username (str): The username of the teacher.
+        session (Session): The SQLAlchemy session to use for the query.
+        
+    Raises:
+        DuplicateNameException: If a teacher with the given username already exists.
+        
+    Returns:
+        DBTeacher: The newly created DBTeacher object.
+    """
+    # Ensure no student already has this username
+    duplicate_stmt = select(DBStudent).filter(DBStudent.userName == username)
+    existing_student = session.execute(duplicate_stmt).scalar_one_or_none()
+    if existing_student:
+        raise DuplicateNameException("user", username)
+    
+    # Ensure a teacher does not have the same username as new student
+    duplicate_stmt = select(DBTeacher).filter(DBTeacher.userName == username)
+    existing_teacher = session.execute(duplicate_stmt).scalar_one_or_none()
+    if existing_teacher:
+        raise DuplicateNameException("user", username)
+    
+    # Create the student DBObject
+    new_student = DBStudent(
+        id=teacherID,
+        name=name,
+        userName=username
+    )
+    
+    # Add student to database
+    session.add(new_student)
+    session.commit()
+    session.refresh(new_student)
+    
+    return new_student

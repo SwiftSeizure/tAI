@@ -8,7 +8,7 @@ Base = declarative_base()
 class DBStudent(Base):
     __tablename__ = "student" 
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String(128), primary_key=True, index=True)  # Using Firebase UID as primary key
     name = Column(String(25), nullable=False)
     userName = Column(String(25), nullable=False)
     password_hash = Column(String(255), nullable=False)
@@ -18,7 +18,7 @@ class DBStudent(Base):
 class DBTeacher(Base):
     __tablename__ = "teacher"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String(128), primary_key=True, index=True)  # Using Firebase UID as primary key
     name = Column(String(25), nullable=False)
     userName = Column(String(25), nullable=False)
     password_hash = Column(String(255), nullable=False)
@@ -30,7 +30,7 @@ class DBEnrolled(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     
-    studentID = Column(Integer, ForeignKey("student.id", ondelete="CASCADE"))
+    studentID = Column(String(128), ForeignKey("student.id", ondelete="CASCADE"))
     classID = Column(Integer, ForeignKey("class.id", ondelete="CASCADE"))
 
     student = relationship("DBStudent", back_populates="classes")
@@ -42,13 +42,15 @@ class DBClass(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(25), nullable=False)
     
-    ownerID = Column(Integer, ForeignKey("teacher.id", ondelete="CASCADE"))
+    ownerID = Column(String(128), ForeignKey("teacher.id", ondelete="CASCADE"))
     classCode = Column(String(6), nullable=False, unique=True)  # Changed to String(6) for alphanumeric codes
     published = Column(Boolean,nullable = False)
 
     owner = relationship("DBTeacher", back_populates="classes")
     enrollment = relationship("DBEnrolled", back_populates="class_")
     units = relationship("DBUnit", back_populates="class_", order_by="DBUnit.sequence", cascade="all, delete")
+    
+    canvas_api_key = Column(String(255), nullable=True)
     
     settings = Column(JSON, nullable=False)
     
@@ -86,7 +88,7 @@ class DBDay(Base):
     id = Column(Integer, primary_key = True, index = True)
     name = Column(String(25), nullable=False)
     sequence = Column(Integer, nullable=False)
-    moduleID = Column(Integer, ForeignKey("module.id", ondelete="CASCADE"))
+    moduleID = Column(Integer, ForeignKey("module.id", ondelete="CASCADE"), nullable=True)
 
     assignments = relationship("DBAssignment",back_populates="day", cascade="all, delete-orphan")
     materials = relationship("DBMaterial",back_populates="day", cascade="all, delete-orphan")
@@ -102,6 +104,7 @@ class DBAssignment(Base):
     filename = Column(String(225), nullable=False)
     sequence = Column(Integer, nullable=False)
     path = Column(String(255),nullable=False)
+    remoteID = Column(String(255),nullable=True)
     dayId = Column(ForeignKey("day.id", ondelete="CASCADE"))
 
     day = relationship("DBDay", back_populates="assignments")
@@ -114,6 +117,7 @@ class DBMaterial(Base):
     filename = Column(String(225), nullable=False)
     sequence = Column(Integer, nullable=False)
     path = Column(String(255),nullable=False)
+    remoteID = Column(String(255),nullable=True)
     dayId = Column(ForeignKey("day.id", ondelete="CASCADE"))
 
     day = relationship("DBDay", back_populates="materials")
@@ -122,7 +126,7 @@ class DBConversation(Base):
     __tablename__ = "conversation"
 
     id = Column(Integer, primary_key=True, index=True)
-    studentID = Column(ForeignKey("student.id", ondelete="CASCADE"))
+    studentID = Column(String(128), ForeignKey("student.id", ondelete="CASCADE"))
     path = Column(String(255), nullable=True)
 
     student = relationship("DBStudent")

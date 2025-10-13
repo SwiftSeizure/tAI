@@ -1,9 +1,9 @@
-import axios from "axios";
+import api from "../../shared/services/axios";
 
 export const deleteDay = async (dayId) => {  
     try { 
-        const url = `http://localhost:8000/days/${dayId}`;
-        await axios.delete(url);
+        const url = `/days/${dayId}`;
+        await api.delete(url);
         return;
     } catch (error) {
         console.error('Error deleting day:', error);

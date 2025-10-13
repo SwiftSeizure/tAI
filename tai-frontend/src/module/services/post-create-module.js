@@ -1,10 +1,14 @@
-
-import axios from 'axios';
+import api from "../../shared/services/axios";
 
 export const postCreateModule = async (unitID, moduleName, settings) => { 
     
-    const url = `http://localhost:8000/unit/${unitID}/module`;
-    await axios.post(url, { name: moduleName, settings: settings });
-    return;
+    try {
+        const url = `/unit/${unitID}/module`;
+        await api.post(url, { name: moduleName, settings: settings });
+        return;
+    } catch (error) {
+        console.error('Error creating module:', error);
+        throw error;
+    }
 };
 

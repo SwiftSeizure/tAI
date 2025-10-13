@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pydantic import BaseModel
 from typing import Optional, Dict, Any
-from backend.database.schema import DBMessage, DBResponse, DBConversation
+from backend.database.schema import DBMessage, DBResponse, DBConversation, DBStudent
 
 # Error Response Model --------------------------------------------
 class ClientErrorResponse(BaseModel):
@@ -13,18 +13,27 @@ class ClientErrorResponse(BaseModel):
 class CreateClassroom(BaseModel):
     name: str
     settings: dict
+    published: bool
+    
 # Home Response Models --------------------------------------------
 class HomeResponse(BaseModel):
     classes: list[HomeClass]
+    
 class HomeClass(BaseModel):
     id: int
     name: str
-    classCode: str
+    classCode: Optional[str] = None
+    published: Optional[bool] = None
+    
+class UserTypeResponse(BaseModel):
+    user_type: str  # "teacher" or "student"
 
 
 # Classroom Input Models ------------------------------------------
-class ClassroomUpdate(BaseModel):
+class ClassroomNameUpdate(BaseModel):
     name: str
+    
+class ClassroomSettingsUpdate(BaseModel):
     settings: dict
 
 class ClassroomUpdateReturn(BaseModel):
@@ -36,9 +45,23 @@ class ClassroomUpdateReturn(BaseModel):
 class CreateUnit(BaseModel):
     name: str
     settings: dict
+    
+class CanvasAPIKey(BaseModel):
+    api_key: str
+
 # Classroom Response Models ---------------------------------------
 class ClassroomResponse(BaseModel):
     units: list[ClassroomUnit]
+
+class ClassroomStudentsResponse(BaseModel):
+    students: list[ClassroomStudent]
+
+class ClassroomStudent(BaseModel):
+    id: str
+    name: str
+    username: str
+
+
 class ClassroomUnit(BaseModel):
     id: int
     name: str
@@ -64,6 +87,9 @@ class ModuleDay(BaseModel):
 
 
 # Module Input Models ----------------------------------------------
+class CreateDay(BaseModel):
+    name: Optional[str] = None
+    
 # Module Response Models -------------------------------------------
 class ModuleResponse(BaseModel):
     days: list[ModuleDay]
@@ -87,13 +113,16 @@ class DayMaterial(BaseModel):
 # Enrollment Input Models -----------------------------------
 
 class AddEnrollment(BaseModel):
-    studentID: int
+    studentID: str
     classCode: str
 
 # Teacher Input Models -----------------------------------
 class TeacherUpdate(BaseModel):
     name : Optional[str] = None
     username : Optional[str] = None
+class TeacherCreate(BaseModel):
+    name : str
+    username : str
 
 # Teacher Response Models -----------------------------------
 
@@ -107,6 +136,9 @@ class TeacherResponse(BaseModel):
 class StudentUpdate(BaseModel):
     name : Optional[str] = None
     username : Optional[str] = None
+class StudentCreate(BaseModel):
+    name : str
+    username : str
 
 # Student Response Models -----------------------------------
 class StudentResponse(BaseModel):
@@ -124,7 +156,7 @@ class StudentClass(BaseModel):
 
 # Chat Response Models -----------------------------------
 class ChatResponse(BaseModel):
-    studentID: int
+    studentID: str
     conversationID: int
     messages: list[ChatMessage]
     responses: list[ChatResponseMessage]

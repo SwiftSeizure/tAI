@@ -1,9 +1,9 @@
-import axios from "axios"; 
+import api from "../../shared/services/axios";
 
 export const getDayAssignments = async (day) => {
   try {
-    const url = `http://localhost:8000/day/${day.id}/assignments`;
-    const response = await axios.get(url);
+    const url = `/day/${day.id}/assignments`;
+    const response = await api.get(url);
     return response.data.assignments;
   } 
   catch (error) {

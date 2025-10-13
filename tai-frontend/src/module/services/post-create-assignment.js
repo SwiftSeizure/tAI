@@ -1,9 +1,9 @@
-import axios from "axios";
+import api from "../../shared/services/axios";
 
 export const postCreateAssignment = async (dayID, fileName, formData) => {
     try {
-        await axios.post(
-            `http://localhost:8000/assignment/${dayID}/${fileName}`, // Fixed URL path
+        await api.post(
+            `/assignment/${dayID}/${fileName}`, // Fixed URL path
             formData, // Send FormData directly, not wrapped in object
             {
                 headers: {

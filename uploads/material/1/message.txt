@@ -1,0 +1,200 @@
+arch==7.2.0
+backports.tarfile==1.2.0
+fqdn==1.5.1
+grpcio-tools==1.66.2
+html5lib==1.1
+hurst-estimators==0.0.3
+ibapi==9.81.1.post1
+importlib-metadata==8.0.0
+importlib-resources==6.4.0
+isoduration==20.11.0
+jaraco.collections==5.1.0
+json-log-formatter==1.1
+jsonpointer==3.0.0
+jupyter==1.1.1
+openpyxl==3.1.5
+pandas-datareader==0.10.0
+pandas-ta==0.3.14b0
+pip-chill==1.0.3
+pipx==1.7.1
+pmdarima==2.0.4
+pykalman==0.10.1
+pyrithmic==0.1
+pytest==8.3.3
+python-dotenv==1.0.1
+quantstats==0.0.64
+ta==0.11.0
+ta-lib==0.5.1
+tensorflow==2.18.0
+tomli==2.0.1
+uri-template==1.3.0
+vectorbt==0.26.2
+webcolors==24.8.0
+xgboost==2.1.2
+# absl-py==2.1.0 # Installed as dependency for keras, tensorboard, tensorflow
+# anyio==4.6.0 # Installed as dependency for httpx, jupyter-server
+# appnope==0.1.4 # Installed as dependency for ipykernel
+# argcomplete==3.6.2 # Installed as dependency for pipx
+# argon2-cffi==23.1.0 # Installed as dependency for jupyter-server
+# argon2-cffi-bindings==21.2.0 # Installed as dependency for argon2-cffi
+# arrow==1.3.0 # Installed as dependency for isoduration
+# asttokens==2.4.1 # Installed as dependency for stack-data
+# astunparse==1.6.3 # Installed as dependency for tensorflow
+# async-lru==2.0.4 # Installed as dependency for jupyterlab
+# attrs==24.2.0 # Installed as dependency for jsonschema, referencing
+# autocommand==2.2.2 # Installed as dependency for jaraco.text
+# babel==2.16.0 # Installed as dependency for jupyterlab-server
+# beautifulsoup4==4.12.3 # Installed as dependency for nbconvert, yfinance
+# bleach==6.1.0 # Installed as dependency for nbconvert
+# certifi==2024.8.30 # Installed as dependency for httpcore, httpx, requests
+# cffi==1.17.1 # Installed as dependency for argon2-cffi-bindings
+# charset-normalizer==3.3.2 # Installed as dependency for requests
+# click==8.2.1 # Installed as dependency for userpath
+# comm==0.2.2 # Installed as dependency for ipykernel, ipywidgets
+# contourpy==1.3.0 # Installed as dependency for matplotlib
+# cycler==0.12.1 # Installed as dependency for matplotlib
+# cython==3.0.12 # Installed as dependency for pmdarima
+# dateparser==1.2.0 # Installed as dependency for vectorbt
+# debugpy==1.8.6 # Installed as dependency for ipykernel
+# decorator==5.1.1 # Installed as dependency for ipython
+# defusedxml==0.7.1 # Installed as dependency for nbconvert
+# dill==0.3.9 # Installed as dependency for vectorbt
+# et-xmlfile==2.0.0 # Installed as dependency for openpyxl
+# executing==2.1.0 # Installed as dependency for stack-data
+# fastjsonschema==2.20.0 # Installed as dependency for nbformat
+# flatbuffers==24.3.25 # Installed as dependency for tensorflow
+# fonttools==4.54.1 # Installed as dependency for matplotlib
+# frozendict==2.4.6 # Installed as dependency for yfinance
+# gast==0.6.0 # Installed as dependency for tensorflow
+# google-pasta==0.2.0 # Installed as dependency for tensorflow
+# grpcio==1.66.2 # Installed as dependency for grpcio-tools, tensorboard, tensorflow
+# h11==0.14.0 # Installed as dependency for httpcore
+# h5py==3.12.1 # Installed as dependency for keras, tensorflow
+# httpcore==1.0.6 # Installed as dependency for httpx
+# httpx==0.27.2 # Installed as dependency for jupyterlab
+# idna==3.10 # Installed as dependency for anyio, httpx, requests
+# imageio==2.36.0 # Installed as dependency for vectorbt
+# inflect==7.3.1 # Installed as dependency for jaraco.text
+# iniconfig==2.0.0 # Installed as dependency for pytest
+# ipykernel==6.29.5 # Installed as dependency for jupyter, jupyter-console, jupyterlab
+# ipython==8.27.0 # Installed as dependency for ipykernel, ipywidgets, jupyter-console
+# ipywidgets==8.1.5 # Installed as dependency for jupyter, vectorbt
+# jaraco.context==5.3.0 # Installed as dependency for jaraco.text
+# jaraco.functools==4.0.1 # Installed as dependency for jaraco.text
+# jaraco.text==3.12.1 # Installed as dependency for jaraco.collections
+# jedi==0.19.1 # Installed as dependency for ipython
+# jinja2==3.1.4 # Installed as dependency for jupyter-server, jupyterlab, jupyterlab-server, nbconvert
+# joblib==1.4.2 # Installed as dependency for pmdarima, scikit-learn
+# json5==0.9.25 # Installed as dependency for jupyterlab-server
+# jsonschema==4.23.0 # Installed as dependency for jupyter-events, jupyterlab-server, nbformat
+# jsonschema-specifications==2023.12.1 # Installed as dependency for jsonschema
+# jupyter-client==8.6.3 # Installed as dependency for ipykernel, jupyter-console, jupyter-server, nbclient
+# jupyter-console==6.6.3 # Installed as dependency for jupyter
+# jupyter-core==5.7.2 # Installed as dependency for ipykernel, jupyter-client, jupyter-console, jupyter-server, jupyterlab, nbclient, nbconvert, nbformat
+# jupyter-events==0.10.0 # Installed as dependency for jupyter-server
+# jupyter-lsp==2.2.5 # Installed as dependency for jupyterlab
+# jupyter-server==2.14.2 # Installed as dependency for jupyter-lsp, jupyterlab, jupyterlab-server, notebook, notebook-shim
+# jupyter-server-terminals==0.5.3 # Installed as dependency for jupyter-server
+# jupyterlab==4.2.5 # Installed as dependency for jupyter, notebook
+# jupyterlab-pygments==0.3.0 # Installed as dependency for nbconvert
+# jupyterlab-server==2.27.3 # Installed as dependency for jupyterlab, notebook
+# jupyterlab-widgets==3.0.13 # Installed as dependency for ipywidgets
+# keras==3.6.0 # Installed as dependency for tensorflow
+# kiwisolver==1.4.7 # Installed as dependency for matplotlib
+# libclang==18.1.1 # Installed as dependency for tensorflow
+# llvmlite==0.43.0 # Installed as dependency for numba
+# lxml==5.3.0 # Installed as dependency for pandas-datareader
+# markdown==3.7 # Installed as dependency for tensorboard
+# markdown-it-py==3.0.0 # Installed as dependency for rich
+# markupsafe==2.1.5 # Installed as dependency for jinja2, nbconvert, werkzeug
+# matplotlib==3.9.2 # Installed as dependency for quantstats, seaborn, vectorbt
+# matplotlib-inline==0.1.7 # Installed as dependency for ipykernel, ipython
+# mdurl==0.1.2 # Installed as dependency for markdown-it-py
+# mistune==3.0.2 # Installed as dependency for nbconvert
+# ml-dtypes==0.4.1 # Installed as dependency for keras, tensorflow
+# more-itertools==10.3.0 # Installed as dependency for inflect, jaraco.functools, jaraco.text
+# multitasking==0.0.11 # Installed as dependency for yfinance
+# mypy-extensions==1.0.0 # Installed as dependency for vectorbt
+# namex==0.0.8 # Installed as dependency for keras
+# nbclient==0.10.0 # Installed as dependency for nbconvert
+# nbconvert==7.16.4 # Installed as dependency for jupyter, jupyter-server
+# nbformat==5.10.4 # Installed as dependency for jupyter-server, nbclient, nbconvert
+# nest-asyncio==1.6.0 # Installed as dependency for ipykernel
+# notebook==7.2.2 # Installed as dependency for jupyter
+# notebook-shim==0.2.4 # Installed as dependency for jupyterlab, notebook
+# numba==0.60.0 # Installed as dependency for vectorbt
+# numpy==1.26.4 # Installed as dependency for arch, contourpy, h5py, hurst-estimators, imageio, keras, matplotlib, ml-dtypes, numba, pandas, patsy, pmdarima, pykalman, pyrithmic, pywavelets, quantstats, scikit-learn, scipy, seaborn, statsmodels, ta, ta-lib, tensorboard, tensorflow, vectorbt, xgboost, yfinance
+# opt-einsum==3.4.0 # Installed as dependency for tensorflow
+# optree==0.13.1 # Installed as dependency for keras
+# overrides==7.7.0 # Installed as dependency for jupyter-server
+# packaging==24.1 # Installed as dependency for ipykernel, jupyter-server, jupyterlab, jupyterlab-server, keras, matplotlib, nbconvert, pipx, plotly, pmdarima, pykalman, pytest, statsmodels, tensorboard, tensorflow
+# pandas==2.2.3 # Installed as dependency for arch, pandas-datareader, pandas-ta, pmdarima, pyrithmic, quantstats, seaborn, statsmodels, ta, vectorbt, yfinance
+# pandocfilters==1.5.1 # Installed as dependency for nbconvert
+# parso==0.8.4 # Installed as dependency for jedi
+# patsy==1.0.1 # Installed as dependency for statsmodels
+# peewee==3.17.8 # Installed as dependency for yfinance
+# pexpect==4.9.0 # Installed as dependency for ipython
+# pillow==10.4.0 # Installed as dependency for imageio, matplotlib
+# platformdirs==4.3.6 # Installed as dependency for jupyter-core, pipx, yfinance
+# plotly==5.24.1 # Installed as dependency for vectorbt
+# pluggy==1.5.0 # Installed as dependency for pytest
+# prometheus-client==0.21.0 # Installed as dependency for jupyter-server
+# prompt-toolkit==3.0.48 # Installed as dependency for ipython, jupyter-console
+# protobuf==3.20.3 # Installed as dependency for grpcio-tools, pyrithmic, tensorboard, tensorflow
+# psutil==6.0.0 # Installed as dependency for ipykernel
+# ptyprocess==0.7.0 # Installed as dependency for pexpect, terminado
+# pure-eval==0.2.3 # Installed as dependency for stack-data
+# pycparser==2.22 # Installed as dependency for cffi
+# pygments==2.18.0 # Installed as dependency for ipython, jupyter-console, nbconvert, rich
+# pyparsing==3.1.4 # Installed as dependency for matplotlib
+# python-dateutil==2.9.0.post0 # Installed as dependency for arrow, dateparser, jupyter-client, matplotlib, pandas, quantstats
+# python-json-logger==2.0.7 # Installed as dependency for jupyter-events
+# pytz==2024.2 # Installed as dependency for dateparser, pandas, vectorbt, yfinance
+# pywavelets==1.7.0 # Installed as dependency for hurst-estimators
+# pyyaml==6.0.2 # Installed as dependency for jupyter-events
+# pyzmq==26.2.0 # Installed as dependency for ipykernel, jupyter-client, jupyter-console, jupyter-server
+# referencing==0.35.1 # Installed as dependency for jsonschema, jsonschema-specifications, jupyter-events
+# regex==2024.11.6 # Installed as dependency for dateparser
+# requests==2.32.3 # Installed as dependency for jupyterlab-server, pandas-datareader, tensorflow, vectorbt, yfinance
+# rfc3339-validator==0.1.4 # Installed as dependency for jupyter-events
+# rfc3986-validator==0.1.1 # Installed as dependency for jupyter-events
+# rich==13.9.4 # Installed as dependency for keras
+# rpds-py==0.20.0 # Installed as dependency for jsonschema, referencing
+# schedule==1.2.2 # Installed as dependency for vectorbt
+# scikit-base==0.12.0 # Installed as dependency for pykalman
+# scikit-learn==1.5.2 # Installed as dependency for pmdarima, vectorbt
+# scipy==1.14.1 # Installed as dependency for arch, hurst-estimators, pmdarima, pykalman, quantstats, scikit-learn, statsmodels, vectorbt, xgboost
+# seaborn==0.13.2 # Installed as dependency for quantstats
+# send2trash==1.8.3 # Installed as dependency for jupyter-server
+# six==1.16.0 # Installed as dependency for asttokens, astunparse, bleach, google-pasta, html5lib, python-dateutil, rfc3339-validator, tensorboard, tensorflow
+# sniffio==1.3.1 # Installed as dependency for anyio, httpx
+# soupsieve==2.6 # Installed as dependency for beautifulsoup4
+# stack-data==0.6.3 # Installed as dependency for ipython
+# statsmodels==0.14.4 # Installed as dependency for arch, pmdarima
+# tabulate==0.9.0 # Installed as dependency for quantstats
+# tenacity==9.0.0 # Installed as dependency for plotly
+# tensorboard==2.18.0 # Installed as dependency for tensorflow
+# tensorboard-data-server==0.7.2 # Installed as dependency for tensorboard
+# termcolor==2.5.0 # Installed as dependency for tensorflow
+# terminado==0.18.1 # Installed as dependency for jupyter-server, jupyter-server-terminals
+# threadpoolctl==3.5.0 # Installed as dependency for scikit-learn
+# tinycss2==1.3.0 # Installed as dependency for nbconvert
+# tornado==6.4.1 # Installed as dependency for ipykernel, jupyter-client, jupyter-server, jupyterlab, notebook, terminado
+# tqdm==4.67.0 # Installed as dependency for vectorbt
+# traitlets==5.14.3 # Installed as dependency for comm, ipykernel, ipython, ipywidgets, jupyter-client, jupyter-console, jupyter-core, jupyter-events, jupyter-server, jupyterlab, matplotlib-inline, nbclient, nbconvert, nbformat
+# typeguard==4.3.0 # Installed as dependency for inflect
+# types-python-dateutil==2.9.0.20240906 # Installed as dependency for arrow
+# typing-extensions==4.12.2 # Installed as dependency for optree, tensorflow, typeguard
+# tzdata==2024.2 # Installed as dependency for pandas
+# tzlocal==5.2 # Installed as dependency for dateparser
+# urllib3==2.2.3 # Installed as dependency for pmdarima, requests
+# userpath==1.9.2 # Installed as dependency for pipx
+# wcwidth==0.2.13 # Installed as dependency for prompt-toolkit
+# webencodings==0.5.1 # Installed as dependency for bleach, html5lib, tinycss2
+# websocket-client==1.8.0 # Installed as dependency for jupyter-server
+# websockets==13.1 # Installed as dependency for pyrithmic
+# werkzeug==3.1.3 # Installed as dependency for tensorboard
+# widgetsnbextension==4.0.13 # Installed as dependency for ipywidgets
+# wrapt==1.16.0 # Installed as dependency for tensorflow
+# yfinance==0.2.54 # Installed as dependency for quantstats
+# zipp==3.19.2 # Installed as dependency for importlib-metadata

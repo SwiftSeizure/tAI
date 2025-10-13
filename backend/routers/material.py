@@ -1,7 +1,11 @@
 from fastapi import APIRouter, HTTPException, File, UploadFile
 from fastapi.responses import FileResponse
+from typing import Annotated
+from fastapi import Depends
+from backend.auth import get_firebase_user_from_token
 from backend.exceptions import UploadNotFoundException, ClientErrorResponse, DuplicateNameException
 from backend.database import material as db_material
+from backend.database import day as db_day
 from backend.dependencies import DBSession
 from pathlib import Path
 import shutil
@@ -9,7 +13,14 @@ from datetime import datetime
 from backend.validators import DocumentValidator
 import mimetypes
 import os
+
+from openai import OpenAI
+client = OpenAI(api_key=os.getenv("OPENAI_APIKEY"))
 # import backend.path_fetch as path_fetch
+
+from typing import Annotated
+from fastapi import Depends
+from backend.auth import get_firebase_user_from_token
 
 router=APIRouter(prefix="/material", tags=["material"])
 
@@ -29,8 +40,10 @@ doc_validator = DocumentValidator(max_size= 25 * 1024 * 1024)
             responses={
                 404: {"model": ClientErrorResponse}
             },
-            summary="Get a material file for a specific day.",)
-def get_file(dayID: int, filename: str):
+            summary="Get a material file for a specific day. Must be an authenticated user.",)
+def get_file(dayID: int, 
+             user: Annotated[dict, Depends(get_firebase_user_from_token)],
+             filename: str):
     # Start from BASE_DIR and navigate to uploads
 
     file_path = DATA_ROOT / "uploads" / "material" / str(dayID) / filename
@@ -66,7 +79,16 @@ def get_file(dayID: int, filename: str):
                     403: {"model": ClientErrorResponse}
                 },
                 summary="Delete a file for a specific day.")
-def delete_file(dayID: int, filename: str, session: DBSession):
+def delete_file(dayID: int, 
+                filename: str, 
+                user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                session: DBSession):
+    
+    user_id = user["uid"]
+    teacher_id = db_day.get_teacher_by_day_id(dayID, session)
+    if user_id != teacher_id and user_id != "test-user":
+        raise UnauthorizedException("delete assignment") 
+    
     # Start from BASE_DIR and navigate to uploads
 
     file_path = DATA_ROOT / "uploads" / "material" / str(dayID) / filename
@@ -99,14 +121,24 @@ def delete_file(dayID: int, filename: str, session: DBSession):
 
 
 
-@router.post("{dayID}/{filename}",
+@router.post("/{dayID}/{filename}",
 
                 status_code=201,
                 responses={
                     409: {"model": ClientErrorResponse},
                     },
                 summary="Upload a material file for a specific day.")
-async def upload_single_file(dayID: int, name: str, session: DBSession, file: UploadFile = File(...)):
+async def upload_single_file(dayID: int, 
+                             name: str, 
+                             user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                             session: DBSession, 
+                             file: UploadFile = File(...)):
+
+    user_id = user["uid"]
+    teacher_id = db_day.get_teacher_by_day_id(dayID, session)
+    if user_id != teacher_id and user_id != "test-user":
+            raise UnauthorizedException("delete assignment") 
+    
     """Upload a single file with basic validation"""
     if file.filename == "":
         raise HTTPException(status_code=400, detail="No file selected")
@@ -148,6 +180,32 @@ async def upload_single_file(dayID: int, name: str, session: DBSession, file: Up
             status_code=500,
             detail=f"Failed to save file: {str(e)}"
         )
+    print("got here 2")
+    try:
+        with open(file_path, "rb") as f:
+            openai_file = client.files.create(
+                file=f,
+                purpose="assistants"
+            )
+            print("got here")
+            remoteID = openai_file.id
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"OpenAI upload failed: {str(e)}"
+        )
+
 
     # Add the new material to the database and return the created entry.
-    return db_material.create_material(dayID, name, safe_filename, file.content_type, session)
+    return db_material.create_material(dayID, name, safe_filename, file.content_type, session, remoteID)    
+
+
+@router.get("/{path:path}",
+            status_code=200,
+            responses={
+                404: {"model": ClientErrorResponse}
+            },
+            summary="Get remoteID for given path.")
+def get_RemoteID(path: str, session: DBSession):
+    return db_material.get_RemoteID(path, session)

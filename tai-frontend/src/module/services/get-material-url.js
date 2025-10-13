@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from "../../shared/services/axios";
 
 export const getMaterialURL = async (dayID, fileName) => {
   if (!dayID || !fileName) {
@@ -6,8 +6,8 @@ export const getMaterialURL = async (dayID, fileName) => {
   }
 
   try {
-    const url = `http://localhost:8000/material/${dayID}/${fileName}`;
-    const response = await axios.get(url, { responseType: 'blob' });
+    const url = `/material/${dayID}/${fileName}`;
+    const response = await api.get(url, { responseType: 'blob' });
 
     if (response.status !== 200) {
       throw new Error(`Failed to fetch material: ${response.status} ${response.statusText}`);

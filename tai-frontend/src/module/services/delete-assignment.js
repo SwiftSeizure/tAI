@@ -1,9 +1,9 @@
-import axios from "axios";
+import api from "../../shared/services/axios";
 
 export const deleteAssignment = async (dayID, filename) => {  
     try {
-        const url = `http://localhost:8000/assignments/${dayID}/${filename}`;
-        await axios.delete(url);
+        const url = `/assignment/${dayID}/${filename}`;
+        await api.delete(url);
         return;
     } catch (error) {
         console.error('Error deleting assignment:', error);

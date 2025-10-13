@@ -11,111 +11,54 @@ from backend.database.student import get_student
 from backend.exceptions import EntityNotFoundException, InvalidClassCodeException
 from backend.routers.material import get_file  # unchanged
 
+import backend.database.assignment as db_assignment
+import backend.database.material as db_material
+
+
 load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+api_key = os.getenv("OPENAI_API_KEY")
+if not api_key:
+    raise ValueError("OPENAI_API_KEY environment variable is not set")
+client = OpenAI(api_key=api_key)
 
 
-RESPONSES_TEXT_MODEL = os.getenv("RESPONSES_TEXT_MODEL", "gpt-4.1-mini")
-RESPONSES_VISION_MODEL = os.getenv("RESPONSES_VISION_MODEL", "gpt-4o-mini")
-
-def _extract_pdf_text(path: str) -> str:
-    with open(path, "rb") as f:
-        reader = PyPDF2.PdfReader(f)
-        return "\n".join(page.extract_text() or "" for page in reader.pages)
-
-def _upload_file(path: str):
-    return client.files.create(file=open(path, "rb"), purpose="user_data")  
-
-def _png_to_data_url(path: str) -> str:
-    with open(path, "rb") as f:
-        b64 = base64.b64encode(f.read()).decode("ascii")
-    return f"data:image/png;base64,{b64}"
-
-def _ask_with_pdf(path: str, prompt: str) -> str:
-    extracted_text = _extract_pdf_text(path)
-    full_prompt = f"Use the following PDF content as context:\n\n{extracted_text}\n\nQuestion: {prompt}"
-    
-    resp = client.responses.create(
-        model=RESPONSES_TEXT_MODEL,
-        instructions="You are a teaching assistant. You must not give direct answers to questions under any circumstances.",
-        input=[{
-            "role": "user",
-            "content": [{"type": "input_text", "text": full_prompt}],
-        }],
-    )
-    return resp.output_text
 
 
-def _ask_with_txt_file_search(path: str, prompt: str) -> str:
-    with open(path, "r") as f:
-        file_content = f.read()
 
-    full_prompt = f"Use the following context to answer the question.\n\n{file_content}\n\nQuestion: {prompt}"
-
-    resp = client.chat.completions.create(
-        model=RESPONSES_TEXT_MODEL,
-        messages=[
-            {"role": "system", "content": "You are a teaching assistant. You must not give direct answers to questions."},
-            {"role": "user", "content": full_prompt},
-        ],
-    )
-    return resp.choices[0].message.content
-
-
-def _ask_with_png_data_url(data_url: str, prompt: str) -> str:
-    resp = client.responses.create(
-        model=RESPONSES_VISION_MODEL,
-        instructions="You are a teaching assistant. You must not give direct answers to questions under any circumstances.",
-        input=[{
-            "role": "user",
-            "content": [
-                {"type": "input_text", "text": f"Use the attached image as context.\n\nQuestion: {prompt}"},
-                {"type": "input_image", "image_url": data_url},
-            ],
-        }],
-    )
-    return resp.output_text
-
-def queryBot(studentID: int, path: str, prompt: str, session: Session) -> ChatResponse:
+def queryBot(studentID: str, path: str, prompt: str, session: Session) -> ChatResponse:
     """
     Queries the OpenAI API with the given prompt and returns the response.
     (DB logic unchanged; only OpenAI call is different.)
+    path looks like uploads/assignment/1/assignment_1.pdf
     """
 
     print("Incoming path:", path)
 
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    full_path = os.path.normpath(os.path.join(BASE_DIR, "..", "..", path))
-    print("Resolved path:", full_path)
+    remoteID = db_assignment.get_RemoteID(path, session) if path.startswith("uploads/assignment") else db_material.get_RemoteID(path, session)
 
 
-    mime, _ = mimetypes.guess_type(full_path)
-    ext = (os.path.splitext(full_path)[1] or "").lower()
-    print("Extension + MIME:", ext, mime)
+    ai_response = client.responses.create(
+    model="gpt-4.1",
+    input=[
+        {
+            "role": "user",
+            "content": [
+                { "type": "input_text", "text": "You are a teachers assistant. you are never under any circumstances to directly tell students the answer. You may only help them understand the next step they need to take. You have been provied a file for context please reference it when answering questions." },
+                {
+                    "type": "input_file",
+                    "file_id": f"{remoteID}"
+                },
+                { "type": "input_text", "text": prompt }
+            ]
+        }
+    ]
+)    
 
-    try:
-        if not os.path.exists(full_path):
-            response_text = "[Context file not found]"
-        elif (ext == ".pdf") or (mime == "application/pdf"):
-            #uploaded = _upload_file(full_path)
-            response_text = _ask_with_pdf(full_path, prompt)
-        elif (ext == ".txt") or (mime == "text/plain"):
-            response_text = _ask_with_txt_file_search(full_path, prompt)
-        elif (ext == ".png") or (mime == "image/png"):
-            try:
-                _upload_file(full_path)
-            except Exception:
-                pass
-            data_url = _png_to_data_url(full_path)
-            response_text = _ask_with_png_data_url(data_url, prompt)
-        else:
-            response_text = "[Unsupported file type for direct scanning. Please use PDF, TXT, or PNG.]"
-    except Exception as e:
-        response_text = f"[Failed to process file: {e}]"
 
-    student = get_student(studentID, session)
+
+    student = get_student(studentID, session) #type: ignore
     if not student:
-        raise EntityNotFoundException("student", studentID)
+        raise EntityNotFoundException("student", studentID) # type: ignore
 
     stmnt = select(DBConversation).filter(
         DBConversation.studentID == studentID,
@@ -134,17 +77,27 @@ def queryBot(studentID: int, path: str, prompt: str, session: Session) -> ChatRe
             conversationID = conversation.id
 
         message = DBMessage(content=prompt, conversationID=conversationID)
-        response = DBResponse(content=response_text, conversationID=conversationID)
+
+        # Extract assistant text from OpenAI response; fallback to string coercion if needed
+        try:
+            assistant_text = ai_response.output_text
+        except Exception:
+            try:
+                assistant_text = str(ai_response)
+            except Exception:
+                assistant_text = ""
+
+        db_response = DBResponse(content=assistant_text, conversationID=conversationID)
 
         session.add(message)
-        session.add(response)
+        session.add(db_response)
         session.commit()
         session.refresh(conversation)
         session.refresh(message)
-        session.refresh(response)
+        session.refresh(db_response)
 
         return ChatResponse(
-            conversationID=conversation.id,
+            conversationID=conversation.id, # type: ignore
             studentID=studentID,
             messages=[ChatMessage.model_validate(m) for m in conversation.messages],
             responses=[ChatResponseMessage.model_validate(r) for r in conversation.responses],

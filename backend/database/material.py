@@ -33,7 +33,7 @@ def delete_material(dayId: int, filename: str, session: Session):
     session.commit()
 
 
-def create_material(dayID: int, name: str, filename: str, fileType: str | None, session: Session) -> DBMaterial:
+def create_material(dayID: int, name: str, filename: str, fileType: str | None, session: Session, remoteID: str | None) -> DBMaterial:
     """Create a new material entry in the database.
     
     Args:
@@ -51,7 +51,8 @@ def create_material(dayID: int, name: str, filename: str, fileType: str | None, 
         filename=filename,
         sequence=0,  # Default sequence, can be updated later
         path=f"uploads/material/{dayID}/{filename}",
-        dayId=dayID
+        dayId=dayID,
+        remoteID=remoteID  
     )
     
     session.add(new_material)
@@ -59,3 +60,11 @@ def create_material(dayID: int, name: str, filename: str, fileType: str | None, 
     session.refresh(new_material)
     
     return new_material
+
+def get_RemoteID(path: str, session: Session):
+    stmt = select(DBMaterial).filter(
+        DBMaterial.path == path
+    )
+    material = session.execute(stmt).scalar_one_or_none()
+    ret = material.remoteID if material else None
+    return ret 

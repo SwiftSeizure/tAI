@@ -10,6 +10,7 @@ from backend.dependencies import engine, SessionLocal
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SEED_FILE_PATH = os.path.join(BASE_DIR, "seed_data.json")
+Base.metadata.drop_all(bind=engine)
 
 
 Base.metadata.create_all(bind=engine)
@@ -21,10 +22,12 @@ def PopulateDB(file: str = SEED_FILE_PATH):
     db: Session = SessionLocal()
 
     try:
+        print("Reading seed data from:", file)
         with open(file, "r") as f:
             data = json.load(f)
 
         # Clear existing data (respect foreign key constraints)
+        print("Clearing existing data...")
         db.query(DBMaterial).delete()
         db.query(DBAssignment).delete()
         db.query(DBDay).delete()
@@ -35,35 +38,75 @@ def PopulateDB(file: str = SEED_FILE_PATH):
         db.query(DBStudent).delete()
         db.query(DBTeacher).delete()
         db.commit()
+        print("Existing data cleared.")
 
         # Insert in dependency-safe order
+        print("Adding teachers...")
         for t in data.get("teacher", []):
-            db.add(DBTeacher(**t))
+            try:
+                print(f"Adding teacher with ID: {t.get('id')}")
+                db.add(DBTeacher(**t))
+                db.flush()  # Flush after each teacher to catch any errors immediately
+            except Exception as e:
+                print(f"Error adding teacher {t.get('id')}: {str(e)}")
+                raise
 
+        print("Adding students...")
         for s in data.get("student", []):
-            db.add(DBStudent(**s))
+            try:
+                print(f"Adding student with ID: {s.get('id')}")
+                db.add(DBStudent(**s))
+                db.flush()
+            except Exception as e:
+                print(f"Error adding student {s.get('id')}: {str(e)}")
+                raise
 
+        print("Adding classes...")
         for c in data.get("class", []):
-            db.add(DBClass(**c))
+            try:
+                print(f"Adding class with ID: {c.get('id')} for teacher {c.get('ownerID')}")
+                db.add(DBClass(**c))
+                db.flush()
+            except Exception as e:
+                print(f"Error adding class {c.get('id')}: {str(e)}")
+                raise
 
-        for e in data.get("enrolled", []):   # <-- moved here
-            db.add(DBEnrolled(**e))
+        print("Adding enrollments...")
+        for e in data.get("enrolled", []):
+            try:
+                print(f"Adding enrollment for student {e.get('studentID')} in class {e.get('classID')}")
+                db.add(DBEnrolled(**e))
+                db.flush()
+            except Exception as e:
+                print(f"Error adding enrollment: {str(e)}")
+                raise
 
+        print("Adding units...")
         for u in data.get("unit", []):
-            db.add(DBUnit(**u))
+            try:
+                db.add(DBUnit(**u))
+                db.flush()
+            except Exception as e:
+                print(f"Error adding unit {u.get('id')}: {str(e)}")
+                raise
 
+        print("Adding modules...")
         for m in data.get("module", []):
             db.add(DBModule(**m))
 
+        print("Adding days...")
         for d in data.get("day", []):
             db.add(DBDay(**d))
 
+        print("Adding assignments...")
         for a in data.get("assignment", []):
             db.add(DBAssignment(**a))
 
+        print("Adding materials...")
         for m in data.get("material", []):
             db.add(DBMaterial(**m))
 
+        print("Committing all changes...")
         db.commit()
         print("Database seeded successfully.")
 
@@ -73,3 +116,5 @@ def PopulateDB(file: str = SEED_FILE_PATH):
 
     finally:
         db.close()
+
+PopulateDB()

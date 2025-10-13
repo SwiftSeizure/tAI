@@ -32,7 +32,7 @@ def delete_assignment(dayID: int, filename: str, session: Session) -> None:
     session.commit()
     
     
-def create_assignment(dayID: int, name: str, filename: str, fileType: str | None, session: Session) -> DBAssignment:
+def create_assignment(dayID: int, name: str, filename: str, fileType: str | None, session: Session, remoteID: str | None) -> DBAssignment:
     """Create a new assignment entry in the database.
     
     Args:
@@ -50,7 +50,8 @@ def create_assignment(dayID: int, name: str, filename: str, fileType: str | None
         filename=filename,
         sequence=0,  # Default sequence, can be updated later
         path=f"uploads/assignment/{dayID}/{filename}",
-        dayId=dayID
+        dayId=dayID,
+        remoteID=remoteID
     )
     
     session.add(new_assignment)
@@ -58,3 +59,11 @@ def create_assignment(dayID: int, name: str, filename: str, fileType: str | None
     session.refresh(new_assignment)
     
     return new_assignment
+
+def get_RemoteID(path: str, session: Session):
+    stmt = select(DBAssignment).filter(
+        DBAssignment.path == path
+    )
+    assignment = session.execute(stmt).scalar_one_or_none()
+    ret = assignment.remoteID if assignment else None
+    return ret 

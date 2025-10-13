@@ -2,11 +2,11 @@ import random
 import string
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload, Session
-from backend.database.schema import DBTeacher, DBClass
+from backend.database.schema import DBTeacher, DBClass, DBStudent
 from backend.models import CreateClassroom, TeacherUpdate
 from backend.exceptions import EntityNotFoundException, DuplicateNameException
 
-def get_teacher(teacherID: int, session: Session) -> DBTeacher:
+def get_teacher(teacherID: str, session: Session) -> DBTeacher:
     """ Get a DBTeacher object by its ID.
     
     Args:
@@ -26,7 +26,7 @@ def get_teacher(teacherID: int, session: Session) -> DBTeacher:
     
     return teacher
 
-def get_teacher_classes(teacherID: int, session: Session) -> list[DBClass]:
+def get_teacher_classes(teacherID: str, session: Session) -> list[DBClass]:
     """ Get all classes a teacher is associated with.
     
     Args:
@@ -39,9 +39,9 @@ def get_teacher_classes(teacherID: int, session: Session) -> list[DBClass]:
     Returns:
         list[DBClass]: A list of DBClass objects representing the classes the teacher is associated with.
     """
-    teacher = get_teacher(teacherID, session)
+    teacher = get_teacher(teacherID, session) # type: ignore
     if not teacher:
-        raise EntityNotFoundException("teacher", teacherID)
+        raise EntityNotFoundException("teacher", teacherID) # type: ignore
     
     stmt = (
         select(DBTeacher)
@@ -51,7 +51,7 @@ def get_teacher_classes(teacherID: int, session: Session) -> list[DBClass]:
     result = session.execute(stmt).scalar_one_or_none()
     return list(result.classes) if result else []
 
-def create_new_classroom(teacherID: int, classroom: CreateClassroom, session: Session) -> DBClass:
+def create_new_classroom(teacherID: str, classroom: CreateClassroom, session: Session) -> DBClass:
     """ Create a new classroom associated with a teacher.
     
     Args:
@@ -65,9 +65,9 @@ def create_new_classroom(teacherID: int, classroom: CreateClassroom, session: Se
     Returns:
         DBClass: The newly created DBClass object.
     """
-    teacher = get_teacher(teacherID, session)
+    teacher = get_teacher(teacherID, session) # type: ignore
     if not teacher:
-        raise EntityNotFoundException("teacher", teacherID)
+        raise EntityNotFoundException("teacher", teacherID) # type: ignore
     
     duplicate_stmt = select(DBClass)\
         .filter(
@@ -90,7 +90,7 @@ def create_new_classroom(teacherID: int, classroom: CreateClassroom, session: Se
         ownerID=teacherID,
         settings=classroom.settings,
         classCode=class_code,
-        published=True,
+        published=classroom.published,
     )
     
     session.add(new_class)
@@ -99,7 +99,7 @@ def create_new_classroom(teacherID: int, classroom: CreateClassroom, session: Se
     
     return new_class
     
-def update_teacher(teacherID: int,  update: TeacherUpdate, session: Session) -> None:
+def update_teacher(teacherID: str,  update: TeacherUpdate, session: Session) -> None:
     """ Update a teacher's username and or name."""
 
     stmnt = (
@@ -108,7 +108,7 @@ def update_teacher(teacherID: int,  update: TeacherUpdate, session: Session) -> 
     )
     teacher = session.execute(stmnt).scalar_one_or_none()
     if not teacher:
-        raise EntityNotFoundException("teacher", teacherID)
+        raise EntityNotFoundException("teacher", teacherID) # type: ignore
     if update.name is not None:
         teacher.name = update.name #type: ignore
     if update.username is not None:
@@ -116,6 +116,45 @@ def update_teacher(teacherID: int,  update: TeacherUpdate, session: Session) -> 
     session.commit()
 
     return None
+
+def create_teacher(teacherID: str, name: str, username: str, session: Session) -> DBTeacher:
+    """ Create a new teacher.
+    
+    Args:
+        teacherID (str): The ID of the teacher to create.
+        name (str): The name of the teacher.
+        username (str): The username of the teacher.
+        session (Session): The SQLAlchemy session to use for the query.
+        
+    Raises:
+        DuplicateNameException: If a teacher with the given username already exists.
+        
+    Returns:
+        DBTeacher: The newly created DBTeacher object.
+    """
+    duplicate_stmt = select(DBTeacher).filter(DBTeacher.userName == username)
+    existing_teacher = session.execute(duplicate_stmt).scalar_one_or_none()
+    if existing_teacher:
+        raise DuplicateNameException("user", username)
+    
+    duplicate_stmt = select(DBStudent).filter(DBStudent.userName == username)
+    existing_student = session.execute(duplicate_stmt).scalar_one_or_none()
+    if existing_student:
+        raise DuplicateNameException("user", username)
+    
+    
+    new_teacher = DBTeacher(
+        id=teacherID,
+        name=name,
+        userName=username
+    )
+    
+    session.add(new_teacher)
+    session.commit()
+    session.refresh(new_teacher)
+    
+    return new_teacher
+
 
 def generate_class_code() -> str:
     """Generate a random 6-character alphanumeric code."""
