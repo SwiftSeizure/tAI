@@ -515,16 +515,20 @@ const TeacherStudentModulePage = () => {
             </div>
 
             {/* Chat panel for students */}
-            {user.role === 'student' && isChatExpanded && (
+            {user.role === 'student' && (
                 <>
                     {/* Chat overlay backdrop */}
                     <div 
-                        className="fixed inset-0 bg-black bg-opacity-25 z-40"
+                        className={`fixed inset-0 bg-black z-40 transition-opacity duration-300 ease-out pointer-events-none ${
+                            isChatExpanded ? 'bg-opacity-25 pointer-events-auto' : 'bg-opacity-0'
+                        }`}
                         onClick={toggleChatExpand}
                     />
                     
                     {/* Chat panel */}
-                    <div className="fixed right-0 top-0 h-full bg-white shadow-lg z-50 w-1/3 min-w-[400px] max-w-[600px]">
+                    <div className={`fixed right-0 top-0 h-full bg-white shadow-lg z-50 w-1/3 min-w-[400px] max-w-[600px] transform transition-transform duration-300 ease-out ${
+                        isChatExpanded ? 'translate-x-0' : 'translate-x-full'
+                    }`}>
                         <div className="flex flex-col h-full">
                             <div className="flex justify-between items-center p-4 border-b bg-gray-50">
                                 <h3 className="text-lg font-semibold text-gray-800">Chat</h3>
