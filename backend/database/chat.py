@@ -1,4 +1,5 @@
 from openai import OpenAI
+from typing import Optional, Any
 from dotenv import load_dotenv
 import os, mimetypes, base64
 from sqlalchemy import select
@@ -25,7 +26,7 @@ client = OpenAI(api_key=api_key)
 
 
 
-def queryBot(studentID: str, path: str, prompt: str, session: Session) -> ChatResponse:
+def queryBot(studentID: str, path: Optional[str], prompt: str, session: Session) -> ChatResponse:
     """
     Queries the OpenAI API with the given prompt and returns the response.
     (DB logic unchanged; only OpenAI call is different.)
@@ -34,25 +35,27 @@ def queryBot(studentID: str, path: str, prompt: str, session: Session) -> ChatRe
 
     print("Incoming path:", path)
 
-    remoteID = db_assignment.get_RemoteID(path, session) if path.startswith("uploads/assignment") else db_material.get_RemoteID(path, session)
+    # Build model input: always include instruction and user prompt; include file only if path provided
+    content_items: list[dict[str, str]] = [
+        { "type": "input_text", "text": "You are a teachers assistant. you are never under any circumstances to directly tell students the answer. You may only help them understand the next step they need to take. You have been provied a file for context please reference it when answering questions." },
+        { "type": "input_text", "text": prompt },
+    ]
 
+    if path is not None and isinstance(path, str) and len(path) > 0:
+        remoteID = db_assignment.get_RemoteID(path, session) if path.startswith("uploads/assignment") else db_material.get_RemoteID(path, session)
+        if remoteID is not None and isinstance(remoteID, str) and len(remoteID) > 0:
+            content_items.insert(1, { "type": "input_file", "file_id": remoteID })
 
-    ai_response = client.responses.create(
-    model="gpt-4.1",
-    input=[
+    openai_input: Any = [
         {
             "role": "user",
-            "content": [
-                { "type": "input_text", "text": "You are a teachers assistant. you are never under any circumstances to directly tell students the answer. You may only help them understand the next step they need to take. You have been provied a file for context please reference it when answering questions." },
-                {
-                    "type": "input_file",
-                    "file_id": f"{remoteID}"
-                },
-                { "type": "input_text", "text": prompt }
-            ]
+            "content": content_items
         }
     ]
-)    
+    ai_response = client.responses.create(
+        model="gpt-4.1",
+        input=openai_input
+    )    
 
 
 

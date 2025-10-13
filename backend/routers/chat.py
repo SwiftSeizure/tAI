@@ -1,23 +1,21 @@
-from fastapi import APIRouter, Form
+from fastapi import APIRouter, Form, Depends
 from backend.models import ChatResponse
 from backend.models import ClientErrorResponse
 from backend.dependencies import DBSession
 from backend.database.chat import queryBot
 from backend.database.schema import DBConversation, DBMessage, DBResponse
 
-from typing import Annotated
+from typing import Annotated, Optional
 from backend.exceptions import UnauthorizedException
-from fastapi import Depends
 from backend.auth import get_firebase_user_from_token
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 
-@router.put("/{path:path}",response_model=ChatResponse,responses= {404:{"model": ClientErrorResponse}} 
-           ,status_code=200, summary="Run query and update chat")
-async def queryResponse(studentID: str, 
-                        path: str, 
+@router.put("/{path:path}", response_model=ChatResponse, responses={404:{"model": ClientErrorResponse}}, status_code=200, summary="Run query and update chat with path context")
+async def queryResponse_with_path(studentID: str,
+                        path: str,
                         user: Annotated[dict, Depends(get_firebase_user_from_token)],
-                        session:DBSession,
+                        session: DBSession,
                         query: str = Form(...)) -> ChatResponse:
     """Run a query and update the chat.
 
@@ -32,6 +30,16 @@ async def queryResponse(studentID: str,
     """
     
 
-    ret = queryBot(studentID,path, query,session)
+    ret = queryBot(studentID, path, query, session)
 
     return ChatResponse(studentID=studentID, conversationID=ret.conversationID,messages=ret.messages, responses=ret.responses)
+
+
+@router.put("/", response_model=ChatResponse, responses={404:{"model": ClientErrorResponse}}, status_code=200, summary="Run query and update chat without file context")
+async def queryResponse_no_path(studentID: str,
+                        user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                        session: DBSession,
+                        query: str = Form(...)) -> ChatResponse:
+    """Run a query without providing a path; skips file context."""
+    ret = queryBot(studentID, None, query, session)
+    return ChatResponse(studentID=studentID, conversationID=ret.conversationID, messages=ret.messages, responses=ret.responses)
