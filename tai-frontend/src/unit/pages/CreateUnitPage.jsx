@@ -21,7 +21,7 @@ const CreateUnitPage = () => {
         e.preventDefault();  
 
         const response = await postNewUnit(currentClass.id, newUnitName);  
-
+ 
         if (response.success) { 
             await fetchUnits(currentClass.id);
             await setCurrentUnit(response.data.id); 
