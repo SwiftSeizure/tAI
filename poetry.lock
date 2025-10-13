@@ -487,6 +487,20 @@ standard = ["fastapi-cloud-cli (>=0.1.1)", "uvicorn[standard] (>=0.15.0)"]
 standard-no-fastapi-cloud-cli = ["uvicorn[standard] (>=0.15.0)"]
 
 [[package]]
+name = "fernet"
+version = "1.0.1"
+description = "A simple python fernet implementation"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "fernet-1.0.1.tar.gz", hash = "sha256:c50a51c997e09199695b51761bdc090ccf4129917520681e69dcfff4355325c7"},
+]
+
+[package.dependencies]
+pyaes = "*"
+
+[[package]]
 name = "firebase-admin"
 version = "7.1.0"
 description = "Firebase Admin Python SDK"
@@ -1817,6 +1831,17 @@ files = [
 ]
 
 [[package]]
+name = "pyaes"
+version = "1.6.1"
+description = "Pure-Python Implementation of the AES block-cipher and common modes of operation"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "pyaes-1.6.1.tar.gz", hash = "sha256:02c1b1405c38d3c370b085fb952dd8bea3fadcee6411ad99f312cc129c536d8f"},
+]
+
+[[package]]
 name = "pyasn1"
 version = "0.6.1"
 description = "Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)"
@@ -2756,4 +2781,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "05996bf6efda5ed8a3ca336a8ee3cf0f78a6774957dc2a9ac62800dd986b3943"
+content-hash = "b36f5b46291f7ec1784419afe76bf405ce99f333e8d6fe16946daac22b81dfa4"

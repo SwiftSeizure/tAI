@@ -4,7 +4,7 @@ from typing import Any, Annotated
 from backend.database import classroom as classroom_db
 from backend.database.schema import DBTeacher, DBUnit, DBClass
 from backend.dependencies import DBSession
-from backend.models import ClassroomStudentsResponse, ClientErrorResponse, ClassroomResponse, ClassroomUnit, CreateUnit, ClassroomUpdate,ClassroomUpdateReturn
+from backend.models import ClassroomStudentsResponse, ClientErrorResponse, ClassroomResponse, ClassroomUnit, CreateUnit, ClassroomNameUpdate,ClassroomSettingsUpdate,ClassroomUpdateReturn, CanvasAPIKey
 
 from backend.exceptions import UnauthorizedException
 from fastapi import Depends
@@ -73,18 +73,47 @@ def create_new_unit(classID: int,
     return(ClassroomUnit(id=db_class.id, name=db_class.name)) # type: ignore
 
 
+@router.post("/{classID}/canvas",
+             status_code=201,
+             responses={
+                 404: {"model": ClientErrorResponse},
+             },
+             summary="Create a new Canvas API key for the classroom. Must be an authenticated teacher.")
+def add_canvas_api_key(classID: int, 
+                        api_key: CanvasAPIKey, 
+                        user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                        session: DBSession):
+    """ Add a new Canvas API key for the classroom.
 
-@router.put("/{classroomID}",
+    Args:
+        classID (int): The ID of the classroom to add the API key to.
+        api_key (CanvasAPIKey): The API key data to create.
+        session (DBSession): The database session.
+
+    Raises:
+        404: If the teacher with the given ID is not found.
+
+    Returns:
+        Nothing
+    """
+    teacherID = classroom_db.get_teacher_id_by_class_id(classID, session)
+    if user["uid"] != teacherID:
+        raise UnauthorizedException("create canvas API key")
+
+    classroom_db.add_canvas_api_key(classID, api_key.api_key, session)
+
+
+@router.put("/name/{classroomID}",
             response_model=ClassroomUpdateReturn,
             status_code= 200,
             responses={404: {"model": ClientErrorResponse},
                        422: {"model": ClientErrorResponse}},
-            summary="Update a classrooms's name and/or settings. Must be an authenticated owner of the classroom.")
-def update_chat(classroomID: int, 
-                classroomUpdate: ClassroomUpdate, 
+            summary="Update a classrooms's name. Must be an authenticated owner of the classroom.")
+def update_classroom_name(classroomID: int, 
+                newName: ClassroomNameUpdate, 
                 user: Annotated[dict, Depends(get_firebase_user_from_token)],
                 session: DBSession):
-    """Update a classrooms name and/or settings
+    """Update a classrooms name 
 
     Args:
         classroomID (int): ID of the classroom being updated
@@ -102,7 +131,38 @@ def update_chat(classroomID: int,
     if user["uid"] != teacherID and user["uid"] != "test-user":
         raise UnauthorizedException("update classroom")
     
-    ret = classroom_db.update_classroom(classroomID, classroomUpdate, session)
+    ret = classroom_db.update_classroom_name(classroomID, newName, session)
+    return ClassroomUpdateReturn(id=ret.id, name=ret.name, settings=ret.settings, published=ret.published) # type: ignore
+
+@router.put("/settings/{classroomID}",
+            response_model=ClassroomUpdateReturn,
+            status_code= 200,
+            responses={404: {"model": ClientErrorResponse},
+                       422: {"model": ClientErrorResponse}},
+            summary="Update a classrooms's settings. Must be an authenticated owner of the classroom.")
+def update_classroom_settings(classroomID: int, 
+                settings: ClassroomSettingsUpdate, 
+                user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                session: DBSession):
+    """Update a classrooms settings.
+
+    Args:
+        classroomID (int): ID of the classroom being updated.
+        classroomUpdate (ClassroomUpdate): The data to update the classroom with
+        session (DBSession): The database session.
+        
+    Raises:
+        404: If the classroom with the given ID is not found.
+        422: If the classroom update data is invalid.
+
+    Returns:
+        ClassroomUpdateReturn: The updated classroom data.
+    """
+    teacherID = classroom_db.get_teacher_id_by_class_id(classroomID, session)
+    if user["uid"] != teacherID and user["uid"] != "test-user":
+        raise UnauthorizedException("update classroom")
+    
+    ret = classroom_db.update_classroom_settings(classroomID, settings, session)
     return ClassroomUpdateReturn(id=ret.id, name=ret.name, settings=ret.settings, published=ret.published) # type: ignore
 
 

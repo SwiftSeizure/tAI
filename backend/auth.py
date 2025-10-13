@@ -3,7 +3,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from firebase_admin.auth import verify_id_token
 
-ACTIVE = True
+ACTIVE = False
 
 # Bearer scheme setup
 bearer_scheme = HTTPBearer(auto_error=False)

@@ -50,6 +50,8 @@ class DBClass(Base):
     enrollment = relationship("DBEnrolled", back_populates="class_")
     units = relationship("DBUnit", back_populates="class_", order_by="DBUnit.sequence", cascade="all, delete")
     
+    canvas_api_key = Column(String(255), nullable=True)
+    
     settings = Column(JSON, nullable=False)
     
 class DBUnit(Base):

@@ -13,19 +13,27 @@ class ClientErrorResponse(BaseModel):
 class CreateClassroom(BaseModel):
     name: str
     settings: dict
+    published: bool
+    
 # Home Response Models --------------------------------------------
 class HomeResponse(BaseModel):
     classes: list[HomeClass]
+    
 class HomeClass(BaseModel):
     id: int
     name: str
     classCode: Optional[str] = None
     published: Optional[bool] = None
+    
+class UserTypeResponse(BaseModel):
+    user_type: str  # "teacher" or "student"
 
 
 # Classroom Input Models ------------------------------------------
-class ClassroomUpdate(BaseModel):
+class ClassroomNameUpdate(BaseModel):
     name: str
+    
+class ClassroomSettingsUpdate(BaseModel):
     settings: dict
 
 class ClassroomUpdateReturn(BaseModel):
@@ -37,6 +45,10 @@ class ClassroomUpdateReturn(BaseModel):
 class CreateUnit(BaseModel):
     name: str
     settings: dict
+    
+class CanvasAPIKey(BaseModel):
+    api_key: str
+
 # Classroom Response Models ---------------------------------------
 class ClassroomResponse(BaseModel):
     units: list[ClassroomUnit]
@@ -75,6 +87,9 @@ class ModuleDay(BaseModel):
 
 
 # Module Input Models ----------------------------------------------
+class CreateDay(BaseModel):
+    name: Optional[str] = None
+    
 # Module Response Models -------------------------------------------
 class ModuleResponse(BaseModel):
     days: list[ModuleDay]
@@ -105,6 +120,9 @@ class AddEnrollment(BaseModel):
 class TeacherUpdate(BaseModel):
     name : Optional[str] = None
     username : Optional[str] = None
+class TeacherCreate(BaseModel):
+    name : str
+    username : str
 
 # Teacher Response Models -----------------------------------
 
@@ -118,6 +136,9 @@ class TeacherResponse(BaseModel):
 class StudentUpdate(BaseModel):
     name : Optional[str] = None
     username : Optional[str] = None
+class StudentCreate(BaseModel):
+    name : str
+    username : str
 
 # Student Response Models -----------------------------------
 class StudentResponse(BaseModel):
