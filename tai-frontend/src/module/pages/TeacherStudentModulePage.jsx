@@ -124,9 +124,11 @@ const TeacherStudentModulePage = () => {
     };
 
     /*  
+     * Only auto-close chat for specific display types that are incompatible with chat
+     * Allow chat to remain open when viewing materials, assignments, or days
      */
     useEffect(() => { 
-        if (displayType !== 'chat' && displayType !== 'chat-settings') { 
+        if (displayType === 'welcome') { 
             setIsChatExpanded(false);  
         } 
     }, [displayType]);  
@@ -513,28 +515,41 @@ const TeacherStudentModulePage = () => {
             </div>
 
             {/* Chat panel for students */}
-            {user.role === 'student' && isChatExpanded && (
-                <div className="fixed right-0 top-0 h-full bg-white shadow-lg z-40 w-1/3 min-w-[400px]">
-                    <div className="flex flex-col h-full">
-                        <div className="flex justify-between items-center p-4 border-b">
-                            <h3 className="text-lg font-semibold">Chat</h3>
-                            <button 
-                                onClick={toggleChatExpand} 
-                                className="text-gray-500 hover:text-gray-700 text-xl"
-                                aria-label="Close chat"
-                            >
-                                ✕
-                            </button>
-                        </div>
-                        <div className="flex-1 overflow-hidden">
-                            <ChatFeature
-                                displayType={displayType}
-                                selectedContent={selectedContent}
-                                onSendMessage={handleChatMessage}
-                            />
+            {user.role === 'student' && (
+                <>
+                    {/* Chat overlay backdrop */}
+                    <div 
+                        className={`fixed inset-0 bg-black z-40 transition-opacity duration-300 ease-out pointer-events-none ${
+                            isChatExpanded ? 'bg-opacity-25 pointer-events-auto' : 'bg-opacity-0'
+                        }`}
+                        onClick={toggleChatExpand}
+                    />
+                    
+                    {/* Chat panel */}
+                    <div className={`fixed right-0 top-0 h-full bg-white shadow-lg z-50 w-1/3 min-w-[400px] max-w-[600px] transform transition-transform duration-300 ease-out ${
+                        isChatExpanded ? 'translate-x-0' : 'translate-x-full'
+                    }`}>
+                        <div className="flex flex-col h-full">
+                            <div className="flex justify-between items-center p-4 border-b bg-gray-50">
+                                <h3 className="text-lg font-semibold text-gray-800">Chat</h3>
+                                <button 
+                                    onClick={toggleChatExpand} 
+                                    className="text-gray-500 hover:text-gray-700 hover:bg-gray-200 rounded-full p-2 text-xl font-bold transition-colors"
+                                    aria-label="Close chat"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+                            <div className="flex-1 overflow-hidden">
+                                <ChatFeature
+                                    displayType={displayType}
+                                    selectedContent={selectedContent}
+                                    onSendMessage={handleChatMessage}
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
+                </>
             )}
         </div> 
             {user.role === "teacher" && (
