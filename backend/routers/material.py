@@ -15,7 +15,6 @@ import mimetypes
 import os
 
 from openai import OpenAI
-client = OpenAI(api_key=os.getenv("OPENAI_APIKEY"))
 # import backend.path_fetch as path_fetch
 
 from typing import Annotated
@@ -182,8 +181,12 @@ async def upload_single_file(dayID: int,
         )
     print("got here 2")
     try:
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise RuntimeError("OpenAI API key not configured")
+        openai_client = OpenAI(api_key=api_key)
         with open(file_path, "rb") as f:
-            openai_file = client.files.create(
+            openai_file = openai_client.files.create(
                 file=f,
                 purpose="assistants"
             )
