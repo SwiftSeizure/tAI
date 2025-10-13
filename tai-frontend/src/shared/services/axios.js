@@ -46,8 +46,8 @@ api.interceptors.request.use(
                 token = await refreshToken();
             } catch (error) {
                 // If we can't get a token, redirect to login
-                if (window.location.pathname !== '/login') {
-                    window.location.href = '/login';
+                if (window.location.pathname !== '/') {
+                    window.location.href = '/';
                 }
                 return Promise.reject(error);
             }

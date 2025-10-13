@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChatSettings } from "../components/ChatSettings";
-import { ClassSettings } from "../components/ClassSettings"; 
+import { ClassSettings } from "../components/ClassSettings";  
 
 export const SettingsModal = ({ isOpen, onClose, classroom, onSaveSettings }) => {
 	const modalRef = useRef(null);
@@ -33,15 +33,23 @@ export const SettingsModal = ({ isOpen, onClose, classroom, onSaveSettings }) =>
         return null;
     } 
 
+	const handleClassNameChange = (className) => {
+		setFormData((prev) => ({
+			...prev,
+			name: className
+		}));
+	};  
+
 	const handleSettingsChange = (selectedSetting) => {
 		setFormData((prev) => ({
 			...prev,
 			settings: selectedSetting
 		}));
-	}; 
+	};
 
 	const handleSaveSettings = () => {
-		// Call the parent's onSaveSettings with the current form data
+		// Call the parent's onSaveSettings with the current form data 
+		console.log("This is the form data", formData);
 		onSaveSettings(formData);
 	}; 
 
@@ -94,7 +102,7 @@ export const SettingsModal = ({ isOpen, onClose, classroom, onSaveSettings }) =>
 					{/* Modal body */}
 					<div className="p-4 md:p-5 space-y-6 max-h-[400px] overflow-y-auto">
 						
-						<ClassSettings />
+						<ClassSettings onClassNameChange={handleClassNameChange} />
 						<ChatSettings onSettingsChange={handleSettingsChange} /> 
 						
 					</div>

@@ -2,7 +2,8 @@ import React, {useState} from "react";
 import { useNavigate } from 'react-router-dom';  
 import { NavBar } from "../../shared/components/NavBar";   
 import { postCreateClass } from "../services/post-create-class";
-import { ChatSettings } from "../../shared/components/ChatSettings";
+import { ChatSettings } from "../../shared/components/ChatSettings"; 
+import { ClassSettings} from "../../shared/components/ClassSettings";
 import { useCurrentUser } from "../../store/user-store";
 import { useClass } from "../../store/class-store";
 
@@ -16,7 +17,7 @@ import { useClass } from "../../store/class-store";
 const CreateClassPage = () => {  
  
     // TODO: Add the functionality to create a class here 
-    const [newClassName, setNewClassName] = useState("");     
+    const [newClassName, setNewClassName] = useState(""); 
     const [selectedChatSetting, setSelectedChatSetting] = useState(null);
     
     const { user } = useCurrentUser(); 
@@ -26,20 +27,18 @@ const CreateClassPage = () => {
 
     const handleCreateClass = async (e) => {  
         e.preventDefault();
-        if (selectedChatSetting === null) { 
-            //TODO come up with a better cleaner alert system 
-            alert("Please select a chat setting");
-            return;
-        }
 
         try {  
             const requestBody = { 
                 name: newClassName,
-                settings: selectedChatSetting, 
+                settings: { 
+                    chatSetting: selectedChatSetting
+                }, 
                 published: false
             };
 
-            const response = await postCreateClass(user.id, requestBody);
+            const response = await postCreateClass(user.id, requestBody); 
+            // Will have to split this up into 2 once routes are implemented 
             await fetchClasses(user.id, user.role);
             await setCurrentClass(response.data.id); 
             navigate('/unitpage');
@@ -58,6 +57,14 @@ const CreateClassPage = () => {
         catch (error) { 
             console.log("Error creating class:", error); 
         }
+    }; 
+
+    const handleSettingsChange = (selectedSetting) => {
+        setSelectedChatSetting(selectedSetting);
+    };
+
+    const handleClassNameChange = (className) => {
+        setNewClassName(className);
     };
 
 
@@ -67,17 +74,13 @@ const CreateClassPage = () => {
         <NavBar title={"Create a Class"} />
         
         <form onSubmit={handleCreateClass} className="flex flex-col items-center">
-            <input
-                className="w-1/2 p-2 rounded border border-gray-300 text-base mb-2.5"
-                id="className"
-                type="text"
-                placeholder="Enter Class Name"
-                value={newClassName}
-                onChange={(e) => setNewClassName(e.target.value)}
-            /> 
+
+            <ClassSettings 
+                onClassNameChange={handleClassNameChange}
+            />
 
             <ChatSettings 
-                onSettingsChange={(selectedSetting) => setSelectedChatSetting(selectedSetting)}
+                onSettingsChange={handleSettingsChange}
             />
 
             <button 

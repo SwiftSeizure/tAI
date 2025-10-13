@@ -103,8 +103,27 @@ const TeacherStudentUnitPage = () => {
      * Each `UnitCard` represents a unit associated with the class.
      */
     const populateUnitCards = () => {   
-        if (isLoading) return <div>Loading units...</div>;
-        if (error) return <div>Error loading units: {error}</div>;
+        if (isLoading) {
+            return (
+                <div className="col-span-full flex items-center justify-center py-20">
+                    <div className="text-center">
+                        <div className="inline-block w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+                        <p className="text-lg text-gray-600 font-medium">Loading units...</p>
+                    </div>
+                </div>
+            );
+        }
+        
+        if (error) {
+            return (
+                <div className="col-span-full flex items-center justify-center py-20">
+                    <div className="bg-red-50 border border-red-200 rounded-2xl p-6 max-w-md">
+                        <h3 className="text-lg font-semibold text-red-800 mb-2">Error Loading Units</h3>
+                        <p className="text-red-600">{error}</p>
+                    </div>
+                </div>
+            );
+        }
 
         return(  
             <>  
@@ -117,52 +136,87 @@ const TeacherStudentUnitPage = () => {
                     onClickPublish={handlePublishUnit}
                 />
             ))}  
-
+            {user.role === "teacher" 
+                ? <UnitCard 
+                    key={null} 
+                    unit={null}  
+                    onClick={handleUnitSelect} 
+                    onClickDelete={handleOpenDeleteModal}
+                />
+                : null
+            }
             </>
         )
-
     };
 
-
-    // TODO: add check for if teacher, teacher give the oportunity to add a class. 
-
     return(  
-        <> 
-        <div className="min-h-screen min-w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient"> 
-            <NavBar 
-                title={currentClass?.name} 
-                classID={currentClass?.id}
-            />   
+        <>   
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 relative overflow-hidden">
+                
+                {/* Subtle Background Elements */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                    <div className="absolute -top-40 -right-32 w-96 h-96 bg-blue-100 rounded-full opacity-20 blur-3xl"></div>
+                    <div className="absolute top-1/3 -left-40 w-96 h-96 bg-purple-100 rounded-full opacity-20 blur-3xl"></div>
+                    <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-green-100 rounded-full opacity-20 blur-3xl"></div>
+                </div>
 
-            {isLoading 
-                ? <Loading /> 
-                :  
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-items-center gap-4">     
-                        {populateUnitCards()}    
-                        {user.role === "teacher" 
-                            ? <UnitCard 
-                                key={null} 
-                                unit={null}  
-                                onClick={handleUnitSelect} 
-                                onClickDelete={handleOpenDeleteModal}
-                            />
-                            : null
-                        }  
+                {/* NavBar */}
+                <NavBar 
+                    title={currentClass?.name} 
+                    classID={currentClass?.id}
+                />
+
+                {/* Main Content Container */}
+                <div className="relative max-w-7xl mx-auto px-6 py-12">
+                    
+                    {/* Section Header */}
+                    <div className="mb-12">
+                        <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                            {`${currentClass?.name?.trim()}'s Units`}
+                        </h2>
+                        <p className="text-gray-600">
+                            {user?.role === 'teacher' 
+                                ? 'Manage your units and course content' 
+                                : 'Access your learning units and materials'}
+                        </p>
                     </div>
-            }
-        </div> 
 
-        <DeleteModal
-            isOpen={isDeleteModalOpen}
-            onClose={handleCloseDeleteModal}
-            onConfirmDelete={handleDeleteUnit}
-            itemToDelete={currentDeleteUnitName}
-        />
+                    {/* Grid container for unit cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">      
+                        {populateUnitCards()}   
+                    </div>
+                    
+                    {/* Empty State - Only show if no units and not loading */}
+                    {!isLoading && !error && Array.isArray(units) && units.length === 0 && (
+                        <div className="col-span-full mt-12 text-center py-16">
+                            <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-6">
+                                <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                            </div>
+                            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                                {user?.role === 'teacher' ? 'No Units Yet' : 'No Units Available'}
+                            </h3>
+                            <p className="text-gray-600 mb-6">
+                                {user?.role === 'teacher' 
+                                    ? 'Create your first unit to get started' 
+                                    : 'Check back later for new units'}
+                            </p>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Delete Modal */}
+            <DeleteModal
+                isOpen={isDeleteModalOpen}
+                onClose={handleCloseDeleteModal}
+                onConfirmDelete={handleDeleteUnit}
+                itemToDelete={currentDeleteUnitName}
+            />
             
         </>
-
     );
-
 } 
 
 export default TeacherStudentUnitPage;

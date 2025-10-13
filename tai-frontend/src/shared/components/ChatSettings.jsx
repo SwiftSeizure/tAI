@@ -16,10 +16,10 @@ export const ChatSettings = ({ className, onSettingsChange }) => {
     };
 
     return ( 
-        <div> 
-            <h4 className="text-md font-medium text-gray-900 dark:text-white mb-2">
+        <div className="w-full max-w-2xl"> 
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2 text-center">
 				Chat Settings
-			</h4>
+			</h3>
             <div className="space-y-3">
                 {/* Optional: Display class name if provided */}
                 {className && (
