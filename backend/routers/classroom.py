@@ -36,7 +36,7 @@ def get_class_units(classID: int,
     """
     
     db_units = classroom_db.get_class_units(classID, session) 
-    units = [ClassroomUnit(id=c.id, name=c.name) for c in db_units] # type: ignore
+    units = [ClassroomUnit(id=u.id, name=u.name, published=u.published) for u in db_units] # type: ignore
     return ClassroomResponse(units=units)
 
 
@@ -52,7 +52,7 @@ def create_new_unit(classID: int,
                     unit: CreateUnit, 
                     user: Annotated[dict, Depends(get_firebase_user_from_token)],
                     session: DBSession) -> ClassroomUnit:
-    """ Create a new unit within a class.
+    """ Create a new unit within a class. Must be an authenticated teacher
     
     Args:
         accountID (int): The ID of the teacher creating the classroom.
@@ -63,14 +63,14 @@ def create_new_unit(classID: int,
         404: If the teacher with the given ID is not found.
         
     Returns:
-        HomeClass: A response model containing the created classroom.
+        ClassroomUnit: A response model containing the created unit.
     """
     teacherID = classroom_db.get_teacher_id_by_class_id(classID, session)
     if user["uid"] != teacherID:
         raise UnauthorizedException("create unit")
     
-    db_class = classroom_db.create_new_unit(classID, unit, session)
-    return(ClassroomUnit(id=db_class.id, name=db_class.name)) # type: ignore
+    db_unit = classroom_db.create_new_unit(classID, unit, session)
+    return(ClassroomUnit(id=db_unit.id, name=db_unit.name, published=db_unit.published)) # type: ignore
 
 
 @router.post("/{classID}/canvas",

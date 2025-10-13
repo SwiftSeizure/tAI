@@ -154,3 +154,16 @@ def get_teacher_id_by_unit_id(unitID : int, session: Session) -> str:
         EntityNotFoundException: If the unit with the given ID does not exist."""
     unit = get_unit(unitID, session)
     return unit.class_.ownerID
+
+def update_unit_published_status(unitID: int, session: Session) -> None:
+    """Update a unit's published status.
+    Args:
+        unitID (int): The ID of the unit to update the published status of.
+        published (bool): The new published status.
+        session (Session): The database session.
+    """
+    unit = get_unit(unitID, session)
+    if not unit:
+        raise EntityNotFoundException("unit", unitID) # type: ignore
+    unit.published = not unit.published # type: ignore
+    session.commit()

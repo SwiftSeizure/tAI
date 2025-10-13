@@ -66,6 +66,7 @@ class DBUnit(Base):
     modules = relationship("DBModule", back_populates="unit")
     
     settings = Column(JSON, nullable=True)
+    published = Column(Boolean, nullable=False)
 
 
 class DBModule(Base):

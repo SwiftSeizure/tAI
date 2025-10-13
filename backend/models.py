@@ -45,6 +45,7 @@ class ClassroomUpdateReturn(BaseModel):
 class CreateUnit(BaseModel):
     name: str
     settings: dict
+    published: bool
     
 class CanvasAPIKey(BaseModel):
     api_key: str
@@ -65,6 +66,7 @@ class ClassroomStudent(BaseModel):
 class ClassroomUnit(BaseModel):
     id: int
     name: str
+    published: bool
     
     
 # Unit Input Models -----------------------------------------------
