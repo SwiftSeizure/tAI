@@ -12,12 +12,17 @@ from backend.auth import get_firebase_user_from_token
 router = APIRouter(prefix="/student", tags=["student"])
 
 @router.put("/enroll",
+ 
             status_code=200,
 
             responses={
                 404: {"model": ClientErrorResponse},
                 409: {"model": ClientErrorResponse},
             },
+            summary="Enroll a student in a class.")
+ 
+def enroll_student(update:AddEnrollment , session: DBSession) -> int:
+    return enroll(studentID=update.studentID, classCode=update.classCode, session=session)
 
             summary="Enroll a student in a class. Must be an authenticated student. Returns the ID of the class that got jointed.")
 def enroll_student(update:AddEnrollment , 

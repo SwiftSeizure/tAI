@@ -28,8 +28,9 @@ primary_region = "den"
 
   [[services.http_checks]]
     interval = "10s"
-    timeout = "2s"
+    timeout = "5s"
+    grace_period = "30s"
     method = "GET"
-    path = "/health"       # add a simple health endpoint in FastAPI
+    path = "/health"
     protocol = "http"
     tls_skip_verify = false
