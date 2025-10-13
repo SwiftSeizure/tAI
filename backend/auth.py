@@ -25,7 +25,10 @@ def get_firebase_user_from_token(
     try:
         if not token:
             raise ValueError("No token")
-        user = verify_id_token(token.credentials)
+        user = verify_id_token(
+            token.credentials,
+            clock_skew_seconds=60,
+        )
         return user
     except Exception:
         raise HTTPException(
