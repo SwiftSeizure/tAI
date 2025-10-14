@@ -74,9 +74,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Only serve static files in production
-if os.getenv("NODE_ENV") == "production":
-    app.mount("/static", StaticFiles(directory="tai-frontend/build/static"), name="static")
+# Serve static files - check for production environment or if build directory exists
+build_static_path = "tai-frontend/build/static"
+if os.getenv("NODE_ENV") == "production" or os.path.exists(build_static_path):
+    app.mount("/static", StaticFiles(directory=build_static_path), name="static")
+    print(f"[startup] Static files mounted from: {build_static_path}")
+else:
+    print(f"[startup] Static files directory not found: {build_static_path}")
 
 
 @app.get("/health")
@@ -98,7 +102,28 @@ def maybe_seed():
         
 @app.get("/")
 def serve_frontend():
+    """Serve the main React app HTML file"""
     return FileResponse("tai-frontend/build/index.html")
+
+@app.get("/favicon.ico")
+def serve_favicon():
+    """Serve favicon"""
+    return FileResponse("tai-frontend/build/favicon.ico")
+
+@app.get("/manifest.json")
+def serve_manifest():
+    """Serve web app manifest"""
+    return FileResponse("tai-frontend/build/manifest.json")
+
+@app.get("/logo192.png")
+def serve_logo192():
+    """Serve 192px logo"""
+    return FileResponse("tai-frontend/build/logo192.png")
+
+@app.get("/logo512.png")
+def serve_logo512():
+    """Serve 512px logo"""
+    return FileResponse("tai-frontend/build/logo512.png")
 
 
 app.include_router(home.router)
