@@ -9,7 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { useIsAuthenticated } from "../../store/user-store";
 import { useAllUnits, useUnitLoading, useUnitError } from "../../store/unit-store"; 
 import DeleteModal from "../../shared/modals/DeleteModal";
-import { deleteUnit } from "../services/delete-unit";
+import { deleteUnit } from "../services/delete-unit"; 
+import { putPublishUnit } from "../services/put-publish-unit"; 
  
 
 /**
@@ -89,7 +90,7 @@ const TeacherStudentUnitPage = () => {
     const handlePublishUnit = async (unit) => {
         try { 
             console.log('Publishing unit:', unit);
-            //await publishUnit(unit.id);
+            await putPublishUnit(unit.id);
             fetchUnits(currentClass.id);
         } 
         catch (error) {
