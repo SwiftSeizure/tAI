@@ -17,6 +17,8 @@ if not fernet_key:
     raise EntityNotFoundException("FERNET_KEY", "environment variable")
 fernet = Fernet(fernet_key)
 
+
+
 def get_classroom(classroomID: int, session: Session) -> DBClass | None:
     """Get a DBClass object by its ID.
 
@@ -36,6 +38,8 @@ def get_classroom(classroomID: int, session: Session) -> DBClass | None:
         raise EntityNotFoundException("classroom", classroomID) # type: ignore
     return classroom
 
+
+
 def get_class_units(classroomID: int, session: Session) -> list[DBClass]:
     """Get all units in a classroom.
 
@@ -53,6 +57,8 @@ def get_class_units(classroomID: int, session: Session) -> list[DBClass]:
     if not classroom:
         raise EntityNotFoundException("classroom", classroomID) # type: ignore
     return classroom.units
+
+
 
 def create_new_unit(classroomID: int, unit: CreateUnit, session: Session) -> DBUnit:
     """Create a new unit in a classroom.
@@ -95,7 +101,6 @@ def create_new_unit(classroomID: int, unit: CreateUnit, session: Session) -> DBU
         classID = classroomID,
         settings = unit.settings,
         published = unit.published
-        
     )
     
     # Add the new unit to the database
@@ -103,6 +108,8 @@ def create_new_unit(classroomID: int, unit: CreateUnit, session: Session) -> DBU
     session.add(classroom)
     session.commit()
     return db_unit
+
+
 
 def update_classroom_name(classroomID: int, newName: ClassroomNameUpdate, session: Session) -> DBClass:
     """Update a classroom name.
@@ -173,8 +180,28 @@ def add_canvas_api_key(classID: int, api_key: str, session: Session):
     if not classroom:
         raise EntityNotFoundException("classroom", classID) # type: ignore
 
-    classroom.canvas_api_key = fernet.encrypt(api_key.encode()) # type: ignore
+    classroom.canvas_api_key = fernet.encrypt(api_key) # type: ignore
     session.commit()
+    
+    
+    
+def get_api_key(classroomID: int, session: Session) -> str | None:
+    """Decode a classroom's Canvas API key.
+    
+    Args:
+        classroomID (int): The ID of the classroom to decode the API key for.
+        session (Session): The database session.
+        
+    Returns:
+        str | None: The decoded API key, or None if no API key is set.
+    """
+    classroom = get_classroom(classroomID, session)
+    if not classroom:
+        raise EntityNotFoundException("classroom", classroomID) # type: ignore
+    if classroom.canvas_api_key: # type: ignore
+        return fernet.decrypt(classroom.canvas_api_key) # type: ignore
+    return None
+
     
     
 def delete_classroom(classroomID: int, session: Session) -> None:
@@ -200,6 +227,7 @@ def delete_classroom(classroomID: int, session: Session) -> None:
     session.commit()
 
     
+    
 def get_teacher_id_by_class_id(classID : int, session: Session) -> str:
     """Get a teacher's user ID by a class ID.
     Args: 
@@ -209,6 +237,7 @@ def get_teacher_id_by_class_id(classID : int, session: Session) -> str:
         EntityNotFoundException: If the class with the given ID does not exist."""
     classroom = get_classroom(classID, session)
     return classroom.ownerID # type: ignore
+
 
 
 def delete_student_from_classroom(classroomID: int, studentID: int, session: Session) -> None:
@@ -230,6 +259,8 @@ def delete_student_from_classroom(classroomID: int, studentID: int, session: Ses
     session.delete(enrolled)
     session.commit()
 
+
+
 def get_students_in_classroom(classroomID: int, session: Session) -> list[ClassroomStudent]:
     """Get all students in a classroom by its ID.
     Args:
@@ -244,6 +275,8 @@ def get_students_in_classroom(classroomID: int, session: Session) -> list[Classr
     students = session.execute(stmt).scalars().all()
     classroom_students = [ClassroomStudent(id=student.id, name=student.name, username=student.userName) for student in students] # type: ignore
     return sorted(classroom_students, key=lambda x: x.name.lower())
+
+
 
 def update_classroom_published_status(classroomID: int, session: Session) -> None:
     """Update a classrooms's published status.

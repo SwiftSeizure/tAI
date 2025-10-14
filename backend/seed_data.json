@@ -1,7 +1,7 @@
 {
   "teacher": [
     {
-      "id": "2AxKHm2eHjQ5syF2jB3Qug4b9ua2",
+      "id": "MoXcBl1ofcYvVTqlUI8TGgoImzN2",
       "name": "Ms. Smith",
       "userName": "smithman",
       "password_hash": "hashed_pw_1"
@@ -15,7 +15,7 @@
   ],
   "student": [
     {
-      "id": "P7eyfXks4ccuwl2fbLD11SyYiHp1",
+      "id": "CqEuCbNJooakSb1aeQ5D7avyCl02",
       "name": "Alice",
       "userName": "madhatter",
       "password_hash": "hashed_pw_3"
@@ -43,7 +43,7 @@
     {
       "id": 1,
       "name": "Classroom 1",
-      "ownerID": "2AxKHm2eHjQ5syF2jB3Qug4b9ua2",
+      "ownerID": "MoXcBl1ofcYvVTqlUI8TGgoImzN2",
       "settings": {
         "difficulty": "medium"
       },
@@ -63,7 +63,7 @@
     {
       "id": 3,
       "name": "Classroom 3",
-      "ownerID": "2AxKHm2eHjQ5syF2jB3Qug4b9ua2",
+      "ownerID": "MoXcBl1ofcYvVTqlUI8TGgoImzN2",
       "settings": {
         "difficulty": "medium"
       },
@@ -87,13 +87,13 @@
     {
 
       "id": 2,
-      "studentID": "P7eyfXks4ccuwl2fbLD11SyYiHp1",
+      "studentID": "CqEuCbNJooakSb1aeQ5D7avyCl02",
       "classID": 1
 
     },
     {
       "id": 3,
-      "studentID": "P7eyfXks4ccuwl2fbLD11SyYiHp1",
+      "studentID": "CqEuCbNJooakSb1aeQ5D7avyCl02",
       "classID": 2
     },
 
@@ -104,7 +104,7 @@
     },
     {
       "id": 5,
-      "studentID": "P7eyfXks4ccuwl2fbLD11SyYiHp1",
+      "studentID": "CqEuCbNJooakSb1aeQ5D7avyCl02",
       "classID": 3
     },
     {
@@ -114,7 +114,7 @@
     },
     {
       "id": 7,
-      "studentID": "P7eyfXks4ccuwl2fbLD11SyYiHp1",
+      "studentID": "CqEuCbNJooakSb1aeQ5D7avyCl02",
       "classID": 4
     },
     {
