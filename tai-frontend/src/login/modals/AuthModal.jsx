@@ -29,9 +29,7 @@ export const AuthModal = ({
     password,
     setPassword,
     rememberMe,
-    setRememberMe, 
-    selectedRole,
-    setSelectedRole
+    setRememberMe,
 }) => { 
     
     const modalRef = useRef(null);
@@ -53,7 +51,7 @@ export const AuthModal = ({
                             Please Sign in to Continue Learning
                         </h5> 
 
-                        <div className="mb-2">
+                        {/* <div className="mb-2">
                             <div className="flex items-center justify-center space-x-4">
                                 <button
                                     type="button"
@@ -82,7 +80,7 @@ export const AuthModal = ({
                                     Student
                                 </button>
                             </div>
-                        </div>
+                        </div> */}
             
                         {loginError && (
                             <div className="p-3 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800">
