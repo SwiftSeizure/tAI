@@ -137,7 +137,8 @@
       "classID": 1,
       "settings": {
         "topic": "Topic 1"
-      }
+      },
+      "published": true
     },
     {
       "id": 2,
@@ -146,7 +147,8 @@
       "classID": 1,
       "settings": {
         "topic": "Topic 2"
-      }
+      },
+      "published": true
     },
     {
       "id": 3,
@@ -155,7 +157,8 @@
       "classID": 1,
       "settings": {
         "topic": "Topic 3"
-      }
+      },
+      "published": true
     },
     {
       "id": 4,
@@ -164,7 +167,8 @@
       "classID": 1,
       "settings": {
         "topic": "Topic 4"
-      }
+      },
+      "published": true
     },
     {
       "id": 5,
@@ -173,7 +177,8 @@
       "classID": 1,
       "settings": {
         "topic": "Topic 5"
-      }
+      },
+      "published": true
     },
     {
       "id": 6,
@@ -182,7 +187,8 @@
       "classID": 1,
       "settings": {
         "topic": "Topic 6"
-      }
+      },
+      "published": true
     },
     {
       "id": 7,
@@ -191,7 +197,8 @@
       "classID": 2,
       "settings": {
         "topic": "Topic 1"
-      }
+      },
+      "published": true
     },
     {
       "id": 8,
@@ -200,7 +207,8 @@
       "classID": 2,
       "settings": {
         "topic": "Topic 2"
-      }
+      },
+      "published": true
     },
     {
       "id": 9,
@@ -209,7 +217,8 @@
       "classID": 2,
       "settings": {
         "topic": "Topic 3"
-      }
+      },
+      "published": true
     },
     {
       "id": 10,
@@ -218,7 +227,8 @@
       "classID": 2,
       "settings": {
         "topic": "Topic 4"
-      }
+      },
+      "published": true
     },
     {
       "id": 11,
@@ -227,7 +237,8 @@
       "classID": 2,
       "settings": {
         "topic": "Topic 5"
-      }
+      },
+      "published": true
     },
     {
       "id": 12,
@@ -236,7 +247,8 @@
       "classID": 2,
       "settings": {
         "topic": "Topic 6"
-      }
+      },
+      "published": true
     },
     {
       "id": 13,
@@ -245,7 +257,8 @@
       "classID": 3,
       "settings": {
         "topic": "Topic 1"
-      }
+      },
+      "published": true
     },
     {
       "id": 14,
@@ -254,7 +267,8 @@
       "classID": 3,
       "settings": {
         "topic": "Topic 2"
-      }
+      },
+      "published": true
     },
     {
       "id": 15,
@@ -263,7 +277,8 @@
       "classID": 3,
       "settings": {
         "topic": "Topic 3"
-      }
+      },
+      "published": true
     },
     {
       "id": 16,
@@ -272,7 +287,8 @@
       "classID": 3,
       "settings": {
         "topic": "Topic 4"
-      }
+      },
+      "published": true
     },
     {
       "id": 17,
@@ -281,7 +297,8 @@
       "classID": 3,
       "settings": {
         "topic": "Topic 5"
-      }
+      },
+      "published": true
     },
     {
       "id": 18,
@@ -290,7 +307,8 @@
       "classID": 3,
       "settings": {
         "topic": "Topic 6"
-      }
+      },
+      "published": true
     },
     {
       "id": 19,
@@ -299,7 +317,8 @@
       "classID": 4,
       "settings": {
         "topic": "Topic 1"
-      }
+      },
+      "published": true
     },
     {
       "id": 20,
@@ -308,7 +327,8 @@
       "classID": 4,
       "settings": {
         "topic": "Topic 2"
-      }
+      },
+      "published": true
     },
     {
       "id": 21,
@@ -317,7 +337,8 @@
       "classID": 4,
       "settings": {
         "topic": "Topic 3"
-      }
+      },
+      "published": true
     },
     {
       "id": 22,
@@ -326,7 +347,8 @@
       "classID": 4,
       "settings": {
         "topic": "Topic 4"
-      }
+      },
+      "published": true
     },
     {
       "id": 23,
@@ -335,7 +357,8 @@
       "classID": 4,
       "settings": {
         "topic": "Topic 5"
-      }
+      },
+      "published": true
     },
     {
       "id": 24,
@@ -344,7 +367,8 @@
       "classID": 4,
       "settings": {
         "topic": "Topic 6"
-      }
+      },
+      "published": true
     }
   ],
   "module": [

@@ -139,3 +139,23 @@ def delete_classroom(unitID: int,
         raise UnauthorizedException("delete module")
     
     unit_db.delete_unit(unitID, session)
+    
+    
+@router.put("/{unitID}/publish",
+            status_code=204,
+            responses={404: {"model": ClientErrorResponse}},
+            summary="Update a unit's published status.")
+def publish_unit(unitID: int, 
+                 user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                 session: DBSession):
+    """Flip a unit's published status.
+    Args:
+        unitID (int): The ID of the unit to update the published status of.
+        session (DBSession): The database session.
+    """
+    teacherID = unit_db.get_teacher_id_by_unit_id(unitID, session)
+    if user["uid"] != teacherID and user["uid"] != "test-user":
+        raise UnauthorizedException("change publish status of a unit")
+
+    unit_db.update_unit_published_status(unitID, session)
+    return None
