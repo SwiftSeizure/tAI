@@ -85,6 +85,11 @@ def read_root():
 
 @app.on_event("startup")
 def maybe_seed():
+    """
+    Conditionally seed the database on startup.
+    Set INIT_DB_ON_STARTUP=true in your environment variables to enable seeding.
+    This is useful for local development but should be disabled in production.
+    """
     if os.getenv("INIT_DB_ON_STARTUP", "false").lower() == "true":
         try:
             PopulateDB()
