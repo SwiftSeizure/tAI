@@ -15,7 +15,7 @@ import os
 import requests
 from dotenv import load_dotenv
 from backend.routers import home, classroom, unit, module, day, assignment, material, student, teacher, chat
-from backend.Seed_Database import PopulateDB
+from backend.Seed_Database import PopulateDB, InitializeDB
 from fastapi.middleware.cors import CORSMiddleware
 from backend.exceptions import EntityNotFoundException, UploadNotFoundException, DuplicateNameException, InvalidClassCodeException, UnauthorizedException
 #import os
@@ -88,17 +88,31 @@ def read_root():
     return {"status": "ok"}
 
 @app.on_event("startup")
-def maybe_seed():
+def maybe_initialize_db():
     """
-    Conditionally seed the database on startup.
-    Set INIT_DB_ON_STARTUP=true in your environment variables to enable seeding.
-    This is useful for local development but should be disabled in production.
+    Conditionally initialize or seed the database on startup.
+    - Set INIT_DB_ON_STARTUP=true to seed the database with test data (for development)
+    - Set INIT_DB_TABLES_ONLY=true to only create tables without data (for production)
     """
-    if os.getenv("INIT_DB_ON_STARTUP", "false").lower() == "true":
+    init_db = os.getenv("INIT_DB_ON_STARTUP", "false").lower() == "true"
+    init_tables_only = os.getenv("INIT_DB_TABLES_ONLY", "false").lower() == "true"
+    
+    if init_db:
         try:
+            print("[startup] Seeding database with test data...")
             PopulateDB()
+            print("[startup] Database seeded successfully.")
         except Exception as e:
             print(f"[startup] PopulateDB failed: {e}")
+    elif init_tables_only:
+        try:
+            print("[startup] Initializing database tables...")
+            InitializeDB()
+            print("[startup] Database tables initialized successfully.")
+        except Exception as e:
+            print(f"[startup] InitializeDB failed: {e}")
+    else:
+        print("[startup] Database initialization skipped.")
         
 @app.get("/")
 def serve_frontend():
