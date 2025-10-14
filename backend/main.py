@@ -60,10 +60,14 @@ app = FastAPI(
 )
 
 
-# Configure CORS for development
+# Configure CORS for development and production
 origins = [
     "http://localhost:3000",  # Default React dev server
     "http://127.0.0.1:3000",
+    "http://taiteach.com",    # Production frontend
+    "https://taiteach.com",   # Production frontend with HTTPS
+    "http://api.taiteach.com", # Production API
+    "https://api.taiteach.com", # Production API with HTTPS
 ]
 
 app.add_middleware(
