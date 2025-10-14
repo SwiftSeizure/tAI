@@ -24,7 +24,6 @@ const ClassCard = ( {
     onPublishClass
 }  ) => {
 
-    console.log("classroom published", classroom.published);
     
     const handleClick = () => { 
         onClick(classroom);

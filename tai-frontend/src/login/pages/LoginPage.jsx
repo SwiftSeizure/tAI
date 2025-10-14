@@ -121,6 +121,7 @@ const LoginPage = () => {
         setLoginError("");
         try {
             await signInWithPopup(auth, googleProvider);
+            // TODO get this user and then get the creds form the be 
             setIsAuthModalOpen(false);
             navigate('/home');
         } catch (error) {
