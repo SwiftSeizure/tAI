@@ -152,14 +152,7 @@ const TeacherStudentUnitPage = () => {
 
     return(  
         <>   
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 relative overflow-hidden">
-                
-                {/* Subtle Background Elements */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute -top-40 -right-32 w-96 h-96 bg-blue-100 rounded-full opacity-20 blur-3xl"></div>
-                    <div className="absolute top-1/3 -left-40 w-96 h-96 bg-purple-100 rounded-full opacity-20 blur-3xl"></div>
-                    <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-green-100 rounded-full opacity-20 blur-3xl"></div>
-                </div>
+            <div className="min-h-screen bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 bg-[length:200%_200%]" style={{animation: 'gradient-shift 18s ease-in-out infinite'}}>
 
                 {/* NavBar */}
                 <NavBar 
