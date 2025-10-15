@@ -32,10 +32,18 @@ import firebase_admin
 from firebase_admin import credentials
 from dotenv import load_dotenv
 import pathlib
+import json
+import base64
 # we need to load the env file because it contains the GOOGLE_APPLICATION_CREDENTIALS
-basedir = pathlib.Path(__file__).parent
-load_dotenv(basedir / ".env")
-cred = credentials.Certificate(basedir / "service-account.json")
+# unneeded in production because we will set the env var directly there
+#basedir = pathlib.Path(__file__).parent
+#load_dotenv(basedir / ".env")
+
+# This version for deployment
+b64 = os.getenv("SERVICE_ACCOUNT_JSON_B64")
+svc_dct = json.loads(base64.b64decode(b64).decode("utf-8")) #type:ignore
+cred = credentials.Certificate(svc_dct)
+
 firebase_admin.initialize_app(cred)
 print("TAI:",firebase_admin.get_app().project_id)
 
