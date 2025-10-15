@@ -52,76 +52,41 @@ export const AuthModal = ({
 
     if (AUTH_TOGGLE) {
         return (
-            <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 overflow-y-auto">
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
                 <div 
                     ref={modalRef}
-                    className="w-full max-w-2xl p-4 bg-green-50/98 backdrop-blur-xl border border-green-200/40 rounded-2xl shadow-2xl sm:p-6 md:p-8 dark:bg-gray-800/98 dark:border-green-600/40 relative overflow-hidden my-4"
+                    className="w-full overflow-y-auto max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700"
                 >
-                    {/* FANG Background Elements */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-green-50/40 via-emerald-50/40 to-teal-50/40 animate-gradient-shift pointer-events-none"></div>
-                    <div className="absolute -top-10 -right-10 w-20 h-20 bg-gradient-to-br from-green-400/30 to-emerald-400/30 rounded-full blur-xl"></div>
-                    <div className="absolute -bottom-10 -left-10 w-20 h-20 bg-gradient-to-br from-emerald-400/30 to-teal-400/30 rounded-full blur-xl"></div>
-                    
-                    {/* Discrete Exit Button */}
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-green-100/80 hover:bg-green-200/90 text-green-600 hover:text-green-800 transition-all duration-200 backdrop-blur-sm border border-green-300/50 hover:border-green-400/60 shadow-sm hover:shadow-md group"
-                        aria-label="Close modal"
-                    >
-                        <svg 
-                            className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" 
-                            fill="none" 
-                            stroke="currentColor" 
-                            viewBox="0 0 24 24"
-                        >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                    
-                    <div className="relative z-10">
                     <form className="space-y-4" onSubmit={isSignupMode ? onAuthEmailPasswordSignup : onAuthEmailPasswordLogin}>
-                        <div className="text-center">
-                            <h5 className="text-2xl font-bold bg-gradient-to-r from-gray-800 via-blue-600 to-purple-600 bg-clip-text text-transparent">
-                                {isSignupMode ? 'Create Your Account' : 'Sign In to Continue'}
-                            </h5>
-                            <p className="text-sm text-gray-600 mt-2">
-                                {isSignupMode ? 'Join the future of education' : 'Welcome back! Please sign in to your account'}
-                            </p>
-                        </div> 
+                        <h5 className="text-xl font-medium text-gray-900 dark:text-white">
+                            {isSignupMode ? 'Create Your Account' : 'Please Sign in to Continue Learning'}
+                        </h5> 
             
                         {loginError && (
-                            <div className="p-3 text-sm text-red-700 bg-red-100/80 backdrop-blur-sm rounded-lg border border-red-200 dark:bg-red-200/80 dark:text-red-800">
+                            <div className="p-3 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800">
                                 {loginError}
                             </div>
                         )}
 
                         {/* Role Selection for Signup */}
                         {isSignupMode && (
-                            <div className="space-y-3">
-                                <label className="block text-sm font-medium text-gray-900 dark:text-white">
+                            <div>
+                                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                     I am a...
                                 </label>
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-2 gap-3">
                                     {['Teacher', 'Student'].map((role) => (
                                         <button
                                             key={role}
                                             type="button"
                                             onClick={() => setSelectedRole(role.toLowerCase())}
-                                            className={`p-3 rounded-xl border-2 transition-all duration-300 text-sm font-medium ${
+                                            className={`p-2.5 rounded-lg border text-sm font-medium transition-colors ${
                                                 selectedRole === role.toLowerCase()
-                                                    ? 'border-blue-500 bg-gradient-to-br from-blue-50 to-purple-50 text-blue-700 shadow-md transform scale-105'
-                                                    : 'border-gray-200 hover:border-gray-300 text-gray-700 hover:bg-gray-50'
+                                                    ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
+                                                    : 'border-gray-300 bg-gray-50 text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300'
                                             }`}
                                         >
-                                            <div className="flex items-center justify-center space-x-2">
-                                                <div className={`text-lg ${
-                                                    selectedRole === role.toLowerCase() ? 'text-blue-600' : 'text-gray-500'
-                                                }`}>
-                                                    {role === 'Teacher' ? '👨‍🏫' : '👨‍🎓'}
-                                                </div>
-                                                <span>{role}</span>
-                                            </div>
+                                            {role}
                                         </button>
                                     ))}
                                 </div>
@@ -130,7 +95,7 @@ export const AuthModal = ({
 
                         {/* Full Name and Username for Signup */}
                         {isSignupMode && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <>
                                 <div>
                                     <label htmlFor="fullName" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                         Full Name
@@ -140,8 +105,8 @@ export const AuthModal = ({
                                         id="fullName"
                                         value={fullName}
                                         onChange={(e) => setFullName(e.target.value)}
-                                        className="bg-white/95 backdrop-blur-sm border border-green-300/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-green-500/70 focus:border-green-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-green-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
-                                        placeholder="Enter your full name"
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                        placeholder="John Doe"
                                         required
                                     />
                                 </div>
@@ -154,72 +119,57 @@ export const AuthModal = ({
                                         id="username"
                                         value={username}
                                         onChange={(e) => setUsername(e.target.value)}
-                                        className="bg-white/95 backdrop-blur-sm border border-green-300/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-green-500/70 focus:border-green-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-green-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
-                                        placeholder="Choose a username"
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                        placeholder="johndoe"
                                         required
                                     />
                                 </div>
-                            </div>
+                            </>
                         )}
 
                         <div>
                             <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                {isSignupMode ? 'Email Address' : 'Your email'}
+                                Your email
                             </label>
                             <input
                                 type="email"
                                 id="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="bg-white/95 backdrop-blur-sm border border-gray-400/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/70 focus:border-blue-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-gray-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
-                                placeholder={isSignupMode ? "your@email.com" : "name@school.edu"}
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                placeholder="name@school.edu"
                                 required
                             />
                         </div>
 
-                        {isSignupMode ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        Create Password
-                                    </label>
-                                    <input
-                                        type="password"
-                                        id="password"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        placeholder="••••••••"
-                                        className="bg-white/95 backdrop-blur-sm border border-green-300/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-green-500/70 focus:border-green-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-green-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
-                                        required
-                                    />
-                                </div>
-                                <div>
-                                    <label htmlFor="confirmPassword" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        Confirm Password
-                                    </label>
-                                    <input
-                                        type="password"
-                                        id="confirmPassword"
-                                        value={confirmPassword}
-                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                        placeholder="••••••••"
-                                        className="bg-white/95 backdrop-blur-sm border border-green-300/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-green-500/70 focus:border-green-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-green-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
-                                        required
-                                    />
-                                </div>
-                            </div>
-                        ) : (
+                        <div>
+                            <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {isSignupMode ? 'Create Password' : 'Your password'}
+                            </label>
+                            <input
+                                type="password"
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="••••••••"
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                                required
+                            />
+                        </div>
+
+                        {/* Confirm Password for Signup */}
+                        {isSignupMode && (
                             <div>
-                                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                    Your password
+                                <label htmlFor="confirmPassword" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    Confirm Password
                                 </label>
                                 <input
                                     type="password"
-                                    id="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    id="confirmPassword"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
                                     placeholder="••••••••"
-                                    className="bg-white/95 backdrop-blur-sm border border-green-300/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-green-500/70 focus:border-green-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-green-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                                     required
                                 />
                             </div>
@@ -239,7 +189,7 @@ export const AuthModal = ({
                                 <label htmlFor="remember" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                                     Remember me
                                 </label>
-                                <a href="#" className="ms-auto text-sm text-blue-700 hover:text-blue-800 font-semibold bg-blue-50/80 hover:bg-blue-100/80 px-3 py-1 rounded-lg border border-blue-200/50 hover:border-blue-300/60 dark:text-blue-400 dark:bg-blue-900/30 dark:hover:bg-blue-800/40 dark:border-blue-700/50 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <a href="#" className="ms-auto text-sm text-blue-700 hover:underline dark:text-blue-500">
                                     Forgot password?
                                 </a>
                             </div>
@@ -248,16 +198,9 @@ export const AuthModal = ({
                         <button
                             type="submit"
                             disabled={isLoginLoading || (isSignupMode && (!selectedRole || password !== confirmPassword))}
-                            className="w-full text-white bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300/50 font-semibold rounded-xl text-sm px-5 py-3.5 text-center shadow-lg transform transition-all duration-200 hover:scale-105 hover:shadow-xl disabled:opacity-50 disabled:transform-none disabled:shadow-none"
+                            className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:opacity-50"
                         >
-                            {isLoginLoading ? (
-                                <div className="flex items-center justify-center space-x-2">
-                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                    <span>{isSignupMode ? 'Creating Account...' : 'Signing in...'}</span>
-                                </div>
-                            ) : (
-                                isSignupMode ? 'Create Account' : 'Sign in to your account'
-                            )}
+                            {isLoginLoading ? (isSignupMode ? 'Creating Account...' : 'Signing in...') : (isSignupMode ? 'Create Account' : 'Sign in to your account')}
                         </button>
 
                         <div className="relative my-4">
@@ -275,7 +218,7 @@ export const AuthModal = ({
                             type="button"
                             onClick={isSignupMode ? onAuthGoogleSignup : onAuthGoogleLogin}
                             disabled={isLoginLoading}
-                            className="w-full flex items-center justify-center gap-3 py-3 px-5 text-sm font-medium text-gray-700 bg-white/95 backdrop-blur-sm rounded-xl border border-green-300/60 hover:bg-green-50/80 hover:border-green-400/70 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500/50 disabled:opacity-50 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
+                            className="w-full flex items-center justify-center gap-3 py-2.5 px-5 text-sm font-medium text-gray-700 bg-white rounded-lg border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 transition-colors duration-200"
                         >
                             <img 
                                 src="https://www.google.com/favicon.ico" 
@@ -289,39 +232,42 @@ export const AuthModal = ({
                             <span>{isSignupMode ? 'Sign up with Google' : 'Sign in with Google'}</span>
                         </button>
 
-                        <div className="text-sm font-medium text-gray-500 dark:text-gray-300 text-center">
+                        <div className="text-sm font-medium text-gray-500 dark:text-gray-300">
                             {isSignupMode ? (
                                 <>
                                     Already have an account?{" "}
-                                    <button 
-                                        type="button"
-                                        onClick={() => {
+                                    <a 
+                                        href="#" 
+                                        onClick={(e) => {
+                                            e.preventDefault();
                                             setIsSignupMode(false);
                                             setSelectedRole('');
                                             setConfirmPassword('');
                                             setFullName('');
                                             setUsername('');
                                         }}
-                                        className="text-blue-700 hover:text-blue-800 font-semibold bg-blue-50/80 hover:bg-blue-100/80 px-3 py-1 rounded-lg border border-blue-200/50 hover:border-blue-300/60 dark:text-blue-400 dark:bg-blue-900/30 dark:hover:bg-blue-800/40 dark:border-blue-700/50 transition-all duration-200 shadow-sm hover:shadow-md"
+                                        className="text-blue-700 hover:underline dark:text-blue-500"
                                     >
-                                        Sign in here
-                                    </button>
+                                        Sign in
+                                    </a>
                                 </>
                             ) : (
                                 <>
-                                    New to the platform?{" "}
-                                    <button 
-                                        type="button"
-                                        onClick={() => setIsSignupMode(true)}
-                                        className="text-blue-700 hover:text-blue-800 font-semibold bg-blue-50/80 hover:bg-blue-100/80 px-3 py-1 rounded-lg border border-blue-200/50 hover:border-blue-300/60 dark:text-blue-400 dark:bg-blue-900/30 dark:hover:bg-blue-800/40 dark:border-blue-700/50 transition-all duration-200 shadow-sm hover:shadow-md"
+                                    Not registered?{" "}
+                                    <a 
+                                        href="#" 
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setIsSignupMode(true);
+                                        }}
+                                        className="text-blue-700 hover:underline dark:text-blue-500"
                                     >
-                                        Create your account
-                                    </button>
+                                        Create account
+                                    </a>
                                 </>
                             )}
                         </div>
                     </form>
-                    </div>
                 </div>
             </div>
         );
