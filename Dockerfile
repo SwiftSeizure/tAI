@@ -28,6 +28,8 @@ RUN apt-get update && apt-get install -y curl && \
 # Copy frontend and build it
 COPY tai-frontend/ /app/tai-frontend/
 WORKDIR /app/tai-frontend
+# Set the API URL for production build
+ENV REACT_APP_API_URL=http://api.taiteach.com
 RUN npm install && npm run build
 WORKDIR /app
 

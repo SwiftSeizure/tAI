@@ -1,6 +1,7 @@
 from openai import OpenAI
 from dotenv import load_dotenv
 import os, mimetypes, base64
+from typing import Optional, Any
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 import PyPDF2
@@ -17,15 +18,14 @@ import backend.database.material as db_material
 
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
-if not api_key:
-    raise ValueError("OPENAI_API_KEY environment variable is not set")
-client = OpenAI(api_key=api_key)
+# Initialize OpenAI client only when configured; avoid crashing at import time
+client: OpenAI | None = OpenAI(api_key=api_key) if api_key else None
 
 
 
 
 
-def queryBot(studentID: str, path: str, prompt: str, session: Session) -> ChatResponse:
+def queryBot(studentID: str, path: Optional[str], prompt: str, session: Session) -> ChatResponse:
     """
     Queries the OpenAI API with the given prompt and returns the response.
     (DB logic unchanged; only OpenAI call is different.)
@@ -34,25 +34,41 @@ def queryBot(studentID: str, path: str, prompt: str, session: Session) -> ChatRe
 
     print("Incoming path:", path)
 
-    remoteID = db_assignment.get_RemoteID(path, session) if path.startswith("uploads/assignment") else db_material.get_RemoteID(path, session)
+    # Build assistant response if OpenAI is configured; otherwise fallback text
+    assistant_text: str = ""
 
+    if client is not None:
+        # Build model input: instruction + prompt (+ file if provided)
+        content_items: list[dict[str, str]] = [
+            { "type": "input_text", "text": "You are a teachers assistant. you are never under any circumstances to directly tell students the answer. You may only help them understand the next step they need to take. You have been provied a file for context please reference it when answering questions." },
+            { "type": "input_text", "text": prompt },
+        ]
 
-    ai_response = client.responses.create(
-    model="gpt-4.1",
-    input=[
-        {
-            "role": "user",
-            "content": [
-                { "type": "input_text", "text": "You are a teachers assistant. you are never under any circumstances to directly tell students the answer. You may only help them understand the next step they need to take. You have been provied a file for context please reference it when answering questions." },
-                {
-                    "type": "input_file",
-                    "file_id": f"{remoteID}"
-                },
-                { "type": "input_text", "text": prompt }
-            ]
-        }
-    ]
-)    
+        if path is not None and isinstance(path, str) and len(path) > 0:
+            remoteID = db_assignment.get_RemoteID(path, session) if path.startswith("uploads/assignment") else db_material.get_RemoteID(path, session)
+            if remoteID is not None and isinstance(remoteID, str) and len(remoteID) > 0:
+                content_items.insert(1, { "type": "input_file", "file_id": remoteID })
+
+        openai_input: Any = [
+            {
+                "role": "user",
+                "content": content_items
+            }
+        ]
+        ai_response = client.responses.create(
+            model="gpt-4.1",
+            input=openai_input
+        )
+
+        try:
+            assistant_text = ai_response.output_text
+        except Exception:
+            try:
+                assistant_text = str(ai_response)
+            except Exception:
+                assistant_text = ""
+    else:
+        assistant_text = "Assistant is not configured. Please set OPENAI_API_KEY."
 
 
 
@@ -77,15 +93,6 @@ def queryBot(studentID: str, path: str, prompt: str, session: Session) -> ChatRe
             conversationID = conversation.id
 
         message = DBMessage(content=prompt, conversationID=conversationID)
-
-        # Extract assistant text from OpenAI response; fallback to string coercion if needed
-        try:
-            assistant_text = ai_response.output_text
-        except Exception:
-            try:
-                assistant_text = str(ai_response)
-            except Exception:
-                assistant_text = ""
 
         db_response = DBResponse(content=assistant_text, conversationID=conversationID)
 

@@ -10,12 +10,16 @@ from backend.dependencies import engine, SessionLocal
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SEED_FILE_PATH = os.path.join(BASE_DIR, "seed_data.json")
-Base.metadata.drop_all(bind=engine)
 
-
-Base.metadata.create_all(bind=engine)
+def InitializeDB():
+    """Initialize database tables without seeding data"""
+    print("Initializing database tables...")
+    Base.metadata.create_all(bind=engine)
+    print("Database tables created successfully.")
 
 def PopulateDB(file: str = SEED_FILE_PATH): 
+    # Drop and recreate database schema only when explicitly called
+    Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     print("Populating database...")
 
@@ -116,5 +120,3 @@ def PopulateDB(file: str = SEED_FILE_PATH):
 
     finally:
         db.close()
-
-PopulateDB()

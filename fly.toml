@@ -8,6 +8,8 @@ primary_region = "den"
 [env]
   DATA_ROOT = "/var/appdata"
   PORT = "8080"
+  NODE_ENV = "production"
+  INIT_DB_TABLES_ONLY = "true"
 
 [[mounts]]
   source = "data"
