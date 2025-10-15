@@ -55,18 +55,18 @@ export const AuthModal = ({
             <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 overflow-y-auto">
                 <div 
                     ref={modalRef}
-                    className="w-full max-w-2xl p-4 bg-white/98 backdrop-blur-xl border border-gray-300/40 rounded-2xl shadow-2xl sm:p-6 md:p-8 dark:bg-gray-800/98 dark:border-gray-600/40 relative overflow-hidden my-4"
+                    className="w-full max-w-2xl p-4 bg-green-50/98 backdrop-blur-xl border border-green-200/40 rounded-2xl shadow-2xl sm:p-6 md:p-8 dark:bg-gray-800/98 dark:border-green-600/40 relative overflow-hidden my-4"
                 >
                     {/* FANG Background Elements */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-green-50/40 to-purple-50/40 animate-gradient-shift pointer-events-none"></div>
-                    <div className="absolute -top-10 -right-10 w-20 h-20 bg-gradient-to-br from-blue-400/30 to-purple-400/30 rounded-full blur-xl"></div>
-                    <div className="absolute -bottom-10 -left-10 w-20 h-20 bg-gradient-to-br from-green-400/30 to-blue-400/30 rounded-full blur-xl"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-green-50/40 via-emerald-50/40 to-teal-50/40 animate-gradient-shift pointer-events-none"></div>
+                    <div className="absolute -top-10 -right-10 w-20 h-20 bg-gradient-to-br from-green-400/30 to-emerald-400/30 rounded-full blur-xl"></div>
+                    <div className="absolute -bottom-10 -left-10 w-20 h-20 bg-gradient-to-br from-emerald-400/30 to-teal-400/30 rounded-full blur-xl"></div>
                     
                     {/* Discrete Exit Button */}
                     <button
                         type="button"
                         onClick={onClose}
-                        className="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100/80 hover:bg-gray-200/90 text-gray-500 hover:text-gray-700 transition-all duration-200 backdrop-blur-sm border border-gray-300/50 hover:border-gray-400/60 shadow-sm hover:shadow-md group"
+                        className="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-green-100/80 hover:bg-green-200/90 text-green-600 hover:text-green-800 transition-all duration-200 backdrop-blur-sm border border-green-300/50 hover:border-green-400/60 shadow-sm hover:shadow-md group"
                         aria-label="Close modal"
                     >
                         <svg 
@@ -83,10 +83,10 @@ export const AuthModal = ({
                     <form className="space-y-4" onSubmit={isSignupMode ? onAuthEmailPasswordSignup : onAuthEmailPasswordLogin}>
                         <div className="text-center">
                             <h5 className="text-2xl font-bold bg-gradient-to-r from-gray-800 via-blue-600 to-purple-600 bg-clip-text text-transparent">
-                                {isSignupMode ? 'Create Your Account' : 'Welcome Back'}
+                                {isSignupMode ? 'Create Your Account' : 'Sign In to Continue'}
                             </h5>
                             <p className="text-sm text-gray-600 mt-2">
-                                {isSignupMode ? 'Join the future of education' : 'Please sign in to continue learning'}
+                                {isSignupMode ? 'Join the future of education' : 'Welcome back! Please sign in to your account'}
                             </p>
                         </div> 
             
@@ -140,7 +140,7 @@ export const AuthModal = ({
                                         id="fullName"
                                         value={fullName}
                                         onChange={(e) => setFullName(e.target.value)}
-                                        className="bg-white/95 backdrop-blur-sm border border-gray-400/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/70 focus:border-blue-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-gray-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
+                                        className="bg-white/95 backdrop-blur-sm border border-green-300/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-green-500/70 focus:border-green-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-green-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
                                         placeholder="Enter your full name"
                                         required
                                     />
@@ -154,7 +154,7 @@ export const AuthModal = ({
                                         id="username"
                                         value={username}
                                         onChange={(e) => setUsername(e.target.value)}
-                                        className="bg-white/95 backdrop-blur-sm border border-gray-400/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/70 focus:border-blue-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-gray-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
+                                        className="bg-white/95 backdrop-blur-sm border border-green-300/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-green-500/70 focus:border-green-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-green-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
                                         placeholder="Choose a username"
                                         required
                                     />
@@ -189,7 +189,7 @@ export const AuthModal = ({
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         placeholder="••••••••"
-                                        className="bg-white/95 backdrop-blur-sm border border-gray-400/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/70 focus:border-blue-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-gray-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
+                                        className="bg-white/95 backdrop-blur-sm border border-green-300/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-green-500/70 focus:border-green-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-green-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
                                         required
                                     />
                                 </div>
@@ -203,7 +203,7 @@ export const AuthModal = ({
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
                                         placeholder="••••••••"
-                                        className="bg-white/95 backdrop-blur-sm border border-gray-400/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/70 focus:border-blue-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-gray-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
+                                        className="bg-white/95 backdrop-blur-sm border border-green-300/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-green-500/70 focus:border-green-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-green-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
                                         required
                                     />
                                 </div>
@@ -219,7 +219,7 @@ export const AuthModal = ({
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="••••••••"
-                                    className="bg-white/95 backdrop-blur-sm border border-gray-400/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/70 focus:border-blue-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-gray-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
+                                    className="bg-white/95 backdrop-blur-sm border border-green-300/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-green-500/70 focus:border-green-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-green-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
                                     required
                                 />
                             </div>
@@ -239,7 +239,7 @@ export const AuthModal = ({
                                 <label htmlFor="remember" className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                                     Remember me
                                 </label>
-                                <a href="#" className="ms-auto text-sm text-blue-700 hover:underline dark:text-blue-500">
+                                <a href="#" className="ms-auto text-sm text-blue-700 hover:text-blue-800 font-semibold bg-blue-50/80 hover:bg-blue-100/80 px-3 py-1 rounded-lg border border-blue-200/50 hover:border-blue-300/60 dark:text-blue-400 dark:bg-blue-900/30 dark:hover:bg-blue-800/40 dark:border-blue-700/50 transition-all duration-200 shadow-sm hover:shadow-md">
                                     Forgot password?
                                 </a>
                             </div>
@@ -248,7 +248,7 @@ export const AuthModal = ({
                         <button
                             type="submit"
                             disabled={isLoginLoading || (isSignupMode && (!selectedRole || password !== confirmPassword))}
-                            className="w-full text-white bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300/50 font-semibold rounded-xl text-sm px-5 py-3.5 text-center shadow-lg transform transition-all duration-200 hover:scale-105 hover:shadow-xl disabled:opacity-50 disabled:transform-none disabled:shadow-none"
+                            className="w-full text-white bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300/50 font-semibold rounded-xl text-sm px-5 py-3.5 text-center shadow-lg transform transition-all duration-200 hover:scale-105 hover:shadow-xl disabled:opacity-50 disabled:transform-none disabled:shadow-none"
                         >
                             {isLoginLoading ? (
                                 <div className="flex items-center justify-center space-x-2">
@@ -275,7 +275,7 @@ export const AuthModal = ({
                             type="button"
                             onClick={isSignupMode ? onAuthGoogleSignup : onAuthGoogleLogin}
                             disabled={isLoginLoading}
-                            className="w-full flex items-center justify-center gap-3 py-3 px-5 text-sm font-medium text-gray-700 bg-white/95 backdrop-blur-sm rounded-xl border border-gray-400/60 hover:bg-white hover:border-gray-500/70 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500/50 disabled:opacity-50 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
+                            className="w-full flex items-center justify-center gap-3 py-3 px-5 text-sm font-medium text-gray-700 bg-white/95 backdrop-blur-sm rounded-xl border border-green-300/60 hover:bg-green-50/80 hover:border-green-400/70 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500/50 disabled:opacity-50 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
                         >
                             <img 
                                 src="https://www.google.com/favicon.ico" 
@@ -302,20 +302,20 @@ export const AuthModal = ({
                                             setFullName('');
                                             setUsername('');
                                         }}
-                                        className="text-blue-700 hover:text-blue-800 font-semibold hover:underline dark:text-blue-500 transition-colors duration-200"
+                                        className="text-blue-700 hover:text-blue-800 font-semibold bg-blue-50/80 hover:bg-blue-100/80 px-3 py-1 rounded-lg border border-blue-200/50 hover:border-blue-300/60 dark:text-blue-400 dark:bg-blue-900/30 dark:hover:bg-blue-800/40 dark:border-blue-700/50 transition-all duration-200 shadow-sm hover:shadow-md"
                                     >
-                                        Sign in
+                                        Sign in here
                                     </button>
                                 </>
                             ) : (
                                 <>
-                                    Not registered?{" "}
+                                    New to the platform?{" "}
                                     <button 
                                         type="button"
                                         onClick={() => setIsSignupMode(true)}
-                                        className="text-blue-700 hover:text-blue-800 font-semibold hover:underline dark:text-blue-500 transition-colors duration-200"
+                                        className="text-blue-700 hover:text-blue-800 font-semibold bg-blue-50/80 hover:bg-blue-100/80 px-3 py-1 rounded-lg border border-blue-200/50 hover:border-blue-300/60 dark:text-blue-400 dark:bg-blue-900/30 dark:hover:bg-blue-800/40 dark:border-blue-700/50 transition-all duration-200 shadow-sm hover:shadow-md"
                                     >
-                                        Create account
+                                        Create your account
                                     </button>
                                 </>
                             )}
