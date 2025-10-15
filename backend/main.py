@@ -32,37 +32,12 @@ import firebase_admin
 from firebase_admin import credentials
 from dotenv import load_dotenv
 import pathlib
-
-# Optional Firebase initialization (guarded for deployment environments without credentials)
+# we need to load the env file because it contains the GOOGLE_APPLICATION_CREDENTIALS
 basedir = pathlib.Path(__file__).parent
 load_dotenv(basedir / ".env")
-try:
-    FIREBASE_ACTIVE = os.getenv("FIREBASE_ACTIVE", "false").lower() == "true"
-    if FIREBASE_ACTIVE:
-        # Try base64 encoded service account first (for production)
-        service_account_b64 = os.getenv("SERVICE_ACCOUNT_JSON_B64")
-        if service_account_b64:
-            import base64
-            with open("service_account.json", "wb") as f:
-                f.write(base64.b64decode(service_account_b64))
-            cred_path = "service_account.json"
-            print("[startup] Using base64 encoded service account credentials.")
-        else:
-            # Fallback to file path (for development)
-            cred_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", str(basedir / "service-account.json"))
-            print(f"[startup] Using service account file: {cred_path}")
-        
-        if os.path.exists(cred_path):
-            cred = credentials.Certificate(cred_path)
-            if not firebase_admin._apps:
-                firebase_admin.initialize_app(cred)
-            print("TAI:", firebase_admin.get_app().project_id)
-        else:
-            print(f"[startup] FIREBASE_ACTIVE is true but credentials not found at: {cred_path}. Skipping Firebase init.")
-    else:
-        print("[startup] Firebase disabled (FIREBASE_ACTIVE=false).")
-except Exception as e:
-    print(f"[startup] Firebase init skipped due to error: {e}")
+cred = credentials.Certificate(basedir / "service-account.json")
+firebase_admin.initialize_app(cred)
+print("TAI:",firebase_admin.get_app().project_id)
 
 
 
