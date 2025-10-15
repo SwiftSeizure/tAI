@@ -40,8 +40,11 @@ import base64
 #load_dotenv(basedir / ".env")
 
 # This version for deployment
-service_account_info = json.loads(os.environ["SERVICE_ACCOUNT_JSON"])
-cred = credentials.Certificate(service_account_info)
+svc_json = os.getenv("SERVICE_ACCOUNT_JSON")
+if svc_json is None:
+    raise ValueError("SERVICE_ACCOUNT_JSON environment variable is not set")
+svc_dct = json.loads(svc_json)
+cred = credentials.Certificate(svc_dct)
 firebase_admin.initialize_app(cred)
 print("TAI:",firebase_admin.get_app().project_id)
 
