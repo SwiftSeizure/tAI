@@ -28,30 +28,12 @@ https://medium.com/%40gabriel.cournelle/firebase-authentication-in-the-backend-w
 Firebase Auth Flow implimented from the above link
 Mixed with some troubleshooting from AI
 """
-import firebase_admin
-from firebase_admin import credentials
-from dotenv import load_dotenv
-import pathlib
-
-# Optional Firebase initialization (guarded for deployment environments without credentials)
+# we need to load the env file because it contains the GOOGLE_APPLICATION_CREDENTIALS
 basedir = pathlib.Path(__file__).parent
 load_dotenv(basedir / ".env")
-try:
-    FIREBASE_ACTIVE = os.getenv("FIREBASE_ACTIVE", "false").lower() == "true"
-    if FIREBASE_ACTIVE:
-        cred_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", str(basedir / "service-account.json"))
-        if os.path.exists(cred_path):
-            cred = credentials.Certificate(cred_path)
-            if not firebase_admin._apps:
-                firebase_admin.initialize_app(cred)
-            print("TAI:", firebase_admin.get_app().project_id)
-        else:
-            print(f"[startup] FIREBASE_ACTIVE is true but credentials not found at: {cred_path}. Skipping Firebase init.")
-    else:
-        print("[startup] Firebase disabled (FIREBASE_ACTIVE=false).")
-except Exception as e:
-    print(f"[startup] Firebase init skipped due to error: {e}")
-
+cred = credentials.Certificate(basedir / "service-account.json")
+firebase_admin.initialize_app(cred)
+print("TAI:",firebase_admin.get_app().project_id)
 
 
 app = FastAPI(
