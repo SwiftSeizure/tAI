@@ -40,9 +40,8 @@ import base64
 #load_dotenv(basedir / ".env")
 
 # This version for deployment
-##svc_dct = json.loads(base64.b64decode(b64).decode("utf-8")) #type:ignore
-cred = credentials.Certificate("/app/backend/service-account.json")
-
+service_account_info = json.loads(os.environ["SERVICE_ACCOUNT_JSON"])
+cred = credentials.Certificate(service_account_info)
 firebase_admin.initialize_app(cred)
 print("TAI:",firebase_admin.get_app().project_id)
 
