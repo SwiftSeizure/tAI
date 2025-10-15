@@ -30,7 +30,8 @@ const DayComponent = ( {
     handleOnClickDeleteDay, 
     handleOnClickDeleteMaterial, 
     handleOnClickDeleteAssignment,
-    refreshKey = 0  // Add refreshKey prop to trigger data refresh
+    refreshKey = 0,  // Add refreshKey prop to trigger data refresh
+    selectedContent = null  // Add selectedContent prop
 }  ) => { 
 
     // State to store materials and assignments for the day
@@ -110,13 +111,13 @@ const DayComponent = ( {
 
 
     return (
-        <div className={`p-2 m-2 rounded-lg font-nunito text-[#2c3e50] ease-in-out duration-300 opacity-0 animate-fade-in-slide-up transform
+        <div className={`p-3 m-2 rounded-xl font-nunito ease-in-out duration-300 opacity-0 animate-fade-in-slide-up transform border shadow-sm
             ${isExpanded
-              ? "bg-pink-400 border-pink-400 font-bold pb-3"
-              : "bg-blue-400 bg-opacity-30 hover:bg-pink-400 hover:border-pink-500 hover:font-bold hover:scale-105"}
+              ? "bg-gradient-to-r from-green-400/35 to-emerald-400/65 border-green-300 font-bold pb-4 text-white shadow-md"
+              : "bg-white border-gray-200 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:border-green-300 hover:font-semibold hover:scale-[1.01] text-gray-700 hover:shadow-md"}
           `}
             onClick={handleDayClicked}>
-                <h4 className={` pl-4 ${isExpanded ? "pb-2 font-bold": "pb-0"} `}>
+                <h4 className={`pl-4 text-lg transition-colors duration-300 ${isExpanded ? "pb-3 font-bold text-white" : "pb-0 font-semibold"}`}>
                     {day?.name} 
                 </h4>
 
@@ -132,7 +133,12 @@ const DayComponent = ( {
                         <AnimatePresence>
                             <>
                             {user.role === "teacher" && (
-                                <button onClick={() => handleOnClickDeleteDay(day)}>Delete Day</button>
+                                <button 
+                                    onClick={() => handleOnClickDeleteDay(day)}
+                                    className="mb-3 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 hover:border-red-300 transition-all duration-200"
+                                >
+                                    Delete Day
+                                </button>
                             )}
                                 {materials && materials.length > 0 && (
                                     <motion.div 
@@ -149,14 +155,14 @@ const DayComponent = ( {
                                             {materials.map(material => (
                                                 <li key={`material-${material.id}`}> 
                                                     <button
-                                                        className={`flex items-center pt-2 pb-3 ml-1 mr-3 px-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300 w-full max-w-[calc(100%-1rem)] ${material.name === selected ? 'bg-slate-400 translate-x-1' : ''}`}
+                                                        className={`flex items-center py-3 ml-1 mr-3 px-4 rounded-xl bg-white border hover:translate-x-1 ease-in-out duration-300 w-full max-w-[calc(100%-1rem)] shadow-sm hover:shadow-md ${selectedContent && selectedContent.name === material.name ? 'bg-blue-50 border-blue-300 translate-x-1 shadow-md' : 'border-gray-200 hover:border-blue-200 hover:bg-blue-50'}`}
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             onMaterialSelect(day.id, material);
                                                         }}
                                                     >
-                                                        <FaFile className="mr-3 text-base text-yellow-500 flex-shrink-0" />
-                                                        <span className="font-sans text-sm text-gray-600 font-md tracking-wide truncate">{material.name}</span>
+                                                        <FaFile className="mr-3 text-base text-green-500 flex-shrink-0" />
+                                                        <span className="font-sans text-sm text-gray-700 font-medium tracking-wide truncate">{material.name}</span>
                                                     </button> 
                                                     {user.role === "teacher" && (
                                                         <button 
@@ -165,9 +171,10 @@ const DayComponent = ( {
                                                                 handleOnClickDeleteMaterial(material); 
                                                                 setSelectedDay(day); 
                                                             }} 
-                                                            className="ml-2"
+                                                            className="ml-2 p-2 rounded-lg hover:bg-red-50 transition-all duration-200 group"
+                                                            title="Delete Material"
                                                             > 
-                                                            <FaTrash className="mr-3 text-base text-yellow-500" />
+                                                            <FaTrash className="text-sm text-red-400 group-hover:text-red-600 transition-colors" />
                                                         </button>
                                                     )}
                                                 </li> 
@@ -178,13 +185,13 @@ const DayComponent = ( {
                                 )} 
                                 {user.role === "teacher" && (
                                     <button 
-                                        className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
+                                        className="flex items-center py-3 ml-1 px-4 rounded-xl bg-gradient-to-r from-green-100 to-emerald-100 border border-green-200 hover:from-green-200 hover:to-emerald-200 hover:border-green-300 hover:translate-x-1 ease-in-out duration-300 shadow-sm hover:shadow-md"
                                         onClick={ (e) => {
                                             e.stopPropagation();
                                             handleAddMaterial(day.id)
                                         }}
                                     >
-                                        <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Material</span>
+                                        <span className="font-sans text-sm text-green-700 font-semibold tracking-wide">+ Add Material</span>
                                     </button> 
                                 )}
             
@@ -203,7 +210,7 @@ const DayComponent = ( {
                                             {assignments.map(assignment => (
                                                 <li key={`assignment-${assignment.id}`} > 
                                                     <button
-                                                        className={`flex items-center pt-2 pb-3 ml-1 mr-3 px-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300 w-full max-w-[calc(100%-1rem)] ${assignment.name === selected ? 'bg-slate-400 translate-x-1' : ''}`}
+                                                        className={`flex items-center py-3 ml-1 mr-3 px-4 rounded-xl bg-white border hover:translate-x-1 ease-in-out duration-300 w-full max-w-[calc(100%-1rem)] shadow-sm hover:shadow-md ${selectedContent && selectedContent.name === assignment.name ? 'bg-blue-50 border-blue-300 translate-x-1 shadow-md' : 'border-gray-200 hover:border-blue-200 hover:bg-blue-50'}`}
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             onAssignmentSelect(day.id, assignment); 
@@ -211,15 +218,19 @@ const DayComponent = ( {
                                                         }} 
                                                     >
                                                 
-                                                        <MdAssignment className="mr-3 text-base text-red-500 flex-shrink-0" />
-                                                        <span className="font-sans text-sm text-gray-600 font-md tracking-wide truncate">{assignment.name}</span>
+                                                        <MdAssignment className="mr-3 text-base text-emerald-500 flex-shrink-0" />
+                                                        <span className="font-sans text-sm text-gray-700 font-medium tracking-wide truncate">{assignment.name}</span>
                                                     </button> 
                                                     {user.role === "teacher" && (
-                                                        <button onClick={(e) => { 
-                                                            e.stopPropagation();
-                                                            handleOnClickDeleteAssignment(assignment)
-                                                        }} > 
-                                                            <FaTrash className="mr-3 text-base text-yellow-500" />
+                                                        <button 
+                                                            onClick={(e) => { 
+                                                                e.stopPropagation();
+                                                                handleOnClickDeleteAssignment(assignment)
+                                                            }} 
+                                                            className="ml-2 p-2 rounded-lg hover:bg-red-50 transition-all duration-200 group"
+                                                            title="Delete Assignment"
+                                                        > 
+                                                            <FaTrash className="text-sm text-red-400 group-hover:text-red-600 transition-colors" />
                                                         </button>
                                                     )}
                                                 </li>
@@ -229,13 +240,13 @@ const DayComponent = ( {
                                 )}  
                                 {user.role === "teacher" && (
                                     <button 
-                                        className="flex items-center pt-2 pb-3 ml-1 pl-2 rounded-md bg-slate-300 hover:translate-x-1 ease-in-out duration-300"
+                                        className="flex items-center py-3 ml-1 px-4 rounded-xl bg-gradient-to-r from-green-100 to-emerald-100 border border-green-200 hover:from-green-200 hover:to-emerald-200 hover:border-green-300 hover:translate-x-1 ease-in-out duration-300 shadow-sm hover:shadow-md"
                                         onClick={ (e) => {
                                             e.stopPropagation();
                                             handleAddAssignment(day.id); 
                                         }}
                                     >
-                                        <span className="font-sans text-sm text-gray-600 font-md tracking-wide">Add Assignment</span>
+                                        <span className="font-sans text-sm text-green-700 font-semibold tracking-wide">+ Add Assignment</span>
                                     </button>
                                 )}
                             </>

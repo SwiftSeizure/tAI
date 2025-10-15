@@ -28,7 +28,8 @@ const ModuleComponent = ( {
     onClickDeleteDay, 
     onClickDeleteMaterial, 
     onClickDeleteAssignment,
-    refreshKey = 0  // Add refreshKey prop to trigger refresh
+    refreshKey = 0,  // Add refreshKey prop to trigger refresh
+    selectedContent = null  // Add selectedContent prop
 } ) => {   
  
     // State to track whether the module is expanded or not
@@ -72,26 +73,31 @@ const ModuleComponent = ( {
         <div > 
 
             {user.role === "teacher" && (
-                <div>
-                    <button onClick={handleOnClickDeleteModule}>Delete Module</button>
+                <div className="mb-3">
+                    <button 
+                        onClick={handleOnClickDeleteModule}
+                        className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 hover:border-red-300 transition-all duration-200"
+                    >
+                        Delete Module
+                    </button>
                 </div>
             )} 
 
 
             {/* Header section for the module */}
             <div  
-                className={`p-2 rounded-md cursor-pointer flex flex-row items-center transition-all duration-300 ease-in-out transform hover:scale-105 hover:font-bold
-                    ${ isExpanded ? "bg-pink-400 border-pink-500 scale-105 font-bold" : "bg-blue-400 bg-opacity-30 hover:bg-pink-400 hover:border-pink-500"
+                className={`p-4 rounded-2xl cursor-pointer flex flex-row items-center transition-all duration-300 ease-in-out transform hover:scale-[1.02] shadow-sm border
+                    ${ isExpanded ? "bg-gradient-to-r from-green-500/60 to-emerald-500/60 border-green-400 scale-[1.02] font-bold text-white shadow-lg" : "bg-white border-gray-200 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:border-green-300 hover:shadow-md"
                 }`}
                 onClick={toggleExpand} // Toggle expand/collapse on click
             >  
                 {/* Icon for the module */} 
-                <div className="pr-2 text-lg text-blue-500"> 
+                <div className={`pr-3 text-xl transition-colors duration-300 ${isExpanded ? 'text-white' : 'text-green-600'}`}> 
                     <FaBookOpen /> 
                 </div> 
 
                 {/* Title Text for the module */}
-                <div className="font-nunito font-bold text-[1.1rem] m-0 text-[#2c3e50]"> 
+                <div className={`font-nunito font-bold text-lg m-0 transition-colors duration-300 ${isExpanded ? 'text-white' : 'text-gray-700'}`}> 
                     {module.name}    
                 </div> 
             </div>  
@@ -118,12 +124,18 @@ const ModuleComponent = ( {
                                     handleOnClickDeleteMaterial={handleOnClickDeleteMaterial} 
                                     handleOnClickDeleteAssignment={handleOnClickDeleteAssignment}
                                     refreshKey={refreshKey}
+                                    selectedContent={selectedContent}
                                 /> 
                             </li> 
                         ))}  
                         {user.role === "teacher" && (
-                            <div>
-                                <button onClick={() => onAddDay(module.id)}>Add Day</button>
+                            <div className="mt-3">
+                                <button 
+                                    onClick={() => onAddDay(module.id)}
+                                    className="px-4 py-2 text-sm font-semibold text-green-700 bg-gradient-to-r from-green-100 to-emerald-100 border border-green-200 rounded-xl hover:from-green-200 hover:to-emerald-200 hover:border-green-300 transition-all duration-300 shadow-sm hover:shadow-md"
+                                >
+                                    + Add Day
+                                </button>
                             </div>
                         )}
                     </ul>
