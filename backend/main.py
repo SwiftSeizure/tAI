@@ -39,7 +39,19 @@ load_dotenv(basedir / ".env")
 try:
     FIREBASE_ACTIVE = os.getenv("FIREBASE_ACTIVE", "false").lower() == "true"
     if FIREBASE_ACTIVE:
-        cred_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", str(basedir / "service-account.json"))
+        # Try base64 encoded service account first (for production)
+        service_account_b64 = os.getenv("SERVICE_ACCOUNT_JSON_B64")
+        if service_account_b64:
+            import base64
+            with open("service_account.json", "wb") as f:
+                f.write(base64.b64decode(service_account_b64))
+            cred_path = "service_account.json"
+            print("[startup] Using base64 encoded service account credentials.")
+        else:
+            # Fallback to file path (for development)
+            cred_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", str(basedir / "service-account.json"))
+            print(f"[startup] Using service account file: {cred_path}")
+        
         if os.path.exists(cred_path):
             cred = credentials.Certificate(cred_path)
             if not firebase_admin._apps:
