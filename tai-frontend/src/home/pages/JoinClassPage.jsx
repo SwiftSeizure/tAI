@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { postJoinClass } from "../services/post-join-class";
 import { useClass } from "../../store/class-store";
 import { useCurrentUser } from "../../store/user-store";
+import { ensureStudentExists } from "../services/ensure-student-exists";
 
 /**
  * JoinClassPage Component
@@ -23,6 +24,20 @@ const JoinClassPage = () => {
         e.preventDefault(); 
 
        try {
+            console.log("Attempting to join class with:", { 
+                studentID: user.id, 
+                classCode: classCode,
+                userRole: user.role,
+                userName: user.name 
+            });
+
+            // Ensure the student exists in the database before trying to enroll
+            if (user.role === 'student') {
+                console.log("Ensuring student exists in database...");
+                await ensureStudentExists();
+                console.log("Student record confirmed.");
+            }
+
             const requestBody = {   
                 studentID: user.id,
                 classCode: classCode,
@@ -35,8 +50,29 @@ const JoinClassPage = () => {
             navigate('/unitpage'); 
        } 
        catch (error) {  
-            //TODO Add error message for user here 
-            console.log("Error joining class:", error); 
+            console.error("Detailed error joining class:", {
+                error: error,
+                message: error.message,
+                response: error.response?.data,
+                status: error.response?.status,
+                studentID: user.id,
+                classCode: classCode
+            }); 
+            
+            // Show user-friendly error message
+            if (error.response?.status === 404) {
+                if (error.response.data?.message?.includes('student')) {
+                    alert("Your student account was not found. Please try creating a new account or contact support.");
+                } else if (error.response.data?.message?.includes('class')) {
+                    alert("Class code not found. Please check the class code and try again.");
+                } else {
+                    alert("Could not find the class or student record. Please contact your teacher.");
+                }
+            } else if (error.response?.status === 401) {
+                alert("Authentication error. Please log in again.");
+            } else {
+                alert("Failed to join class. Please try again or contact your teacher.");
+            }
        }
     };
 
