@@ -29,7 +29,8 @@ const DayComponent = ( {
     handleAddAssignment, 
     handleOnClickDeleteDay, 
     handleOnClickDeleteMaterial, 
-    handleOnClickDeleteAssignment
+    handleOnClickDeleteAssignment,
+    refreshKey = 0  // Add refreshKey prop to trigger data refresh
 }  ) => { 
 
     // State to store materials and assignments for the day
@@ -105,7 +106,7 @@ const DayComponent = ( {
         return () => {
             isCancelled = true;
         };
-    }, [isExpanded, day?.id]);
+    }, [isExpanded, day?.id, refreshKey]);  // Add refreshKey to dependencies
 
 
     return (

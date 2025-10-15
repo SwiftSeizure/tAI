@@ -73,6 +73,9 @@ const TeacherStudentModulePage = () => {
 
     // Module Management
     const [selectedModuleId, setSelectedModuleId] = useState(null);
+    
+    // Refresh Key for triggering day component refreshes
+    const [refreshKey, setRefreshKey] = useState(0);
 
     // Delete Module Management
     const [currentDeleteModule, setCurrentDeleteModule] = useState(null); 
@@ -238,9 +241,15 @@ const TeacherStudentModulePage = () => {
              
             await fetchModules(currentUnit.id);  
             
-            //force refresh here
+            // Trigger refresh of day components to show new material immediately
+            setRefreshKey(prev => prev + 1);
 
-            handleMaterialSelect(selectedDay.id, materialData.file.name, materialData.name); 
+            // Create proper material object for selection
+            const newMaterial = {
+                name: materialData.name,
+                filename: materialData.file.name
+            };
+            handleMaterialSelect(selectedDay.id, newMaterial); 
         } 
         catch (error) { 
             console.error('Error creating material:', error);
@@ -263,8 +272,16 @@ const TeacherStudentModulePage = () => {
             await postCreateAssignment(selectedDay.id, fileName, formData); 
              
             await fetchModules(currentUnit.id); 
+            
+            // Trigger refresh of day components to show new assignment immediately
+            setRefreshKey(prev => prev + 1);
 
-            handleAssignmentSelect(selectedDay.id, assignmentData.filename, assignmentData.name); 
+            // Create proper assignment object for selection
+            const newAssignment = {
+                name: assignmentData.name,
+                filename: assignmentData.file.name
+            };
+            handleAssignmentSelect(selectedDay.id, newAssignment); 
         } 
         catch (error) { 
             console.error('Error creating assignment:', error);
@@ -339,6 +356,9 @@ const TeacherStudentModulePage = () => {
             console.log('Selected day:', selectedDay); 
             await deleteMaterial(selectedDay.id, currentDeleteMaterial.filename);
             await fetchModules(currentUnit.id);
+            
+            // Trigger refresh of day components to hide deleted material immediately
+            setRefreshKey(prev => prev + 1);
         } catch (error) {
             console.error('Error deleting material:', error);
         }
@@ -359,6 +379,9 @@ const TeacherStudentModulePage = () => {
             console.log('Deleting assignment:', currentDeleteAssignment); 
             await deleteAssignment(selectedDay.id, currentDeleteAssignment.filename);
             await fetchModules(currentUnit.id);
+            
+            // Trigger refresh of day components to hide deleted assignment immediately
+            setRefreshKey(prev => prev + 1);
         } catch (error) {
             console.error('Error deleting assignment:', error);
         }
@@ -454,6 +477,7 @@ const TeacherStudentModulePage = () => {
                             onClickDeleteDay={handleOpenDeleteDayModal}
                             onClickDeleteMaterial={handleOpenDeleteMaterialModal}
                             onClickDeleteAssignment={handleOpenDeleteAssignmentModal}
+                            refreshKey={refreshKey}
                         />
                     ))}
 

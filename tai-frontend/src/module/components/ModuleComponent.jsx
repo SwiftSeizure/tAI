@@ -27,7 +27,8 @@ const ModuleComponent = ( {
     onClickDeleteModule,
     onClickDeleteDay, 
     onClickDeleteMaterial, 
-    onClickDeleteAssignment
+    onClickDeleteAssignment,
+    refreshKey = 0  // Add refreshKey prop to trigger refresh
 } ) => {   
  
     // State to track whether the module is expanded or not
@@ -116,6 +117,7 @@ const ModuleComponent = ( {
                                     handleOnClickDeleteDay={handleOnClickDeleteDay} 
                                     handleOnClickDeleteMaterial={handleOnClickDeleteMaterial} 
                                     handleOnClickDeleteAssignment={handleOnClickDeleteAssignment}
+                                    refreshKey={refreshKey}
                                 /> 
                             </li> 
                         ))}  
