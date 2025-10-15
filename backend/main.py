@@ -33,11 +33,6 @@ from firebase_admin import credentials
 from dotenv import load_dotenv
 import pathlib
 import json
-import base64
-# we need to load the env file because it contains the GOOGLE_APPLICATION_CREDENTIALS
-# unneeded in production because we will set the env var directly there
-#basedir = pathlib.Path(__file__).parent
-#load_dotenv(basedir / ".env")
 
 # This version for deployment
 svc_json = os.getenv("SERVICE_ACCOUNT_JSON")
