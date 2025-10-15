@@ -2,11 +2,11 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../../auth/firebase';
-import { NavBar } from '../../shared/components/NavBar';
 import { useUser } from '../../store/user-store';
 import { AuthModal } from '../modals/AuthModal'; 
 import '../../App.css'; 
-import { contentSections, subTitle } from '../constants/content'; 
+import { contentSections, subTitle } from '../constants/content';  
+import { getUserType } from '../services/get-user-type';
 
 const LoginPage = () => {
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -81,10 +81,6 @@ const LoginPage = () => {
         if (!email || !password) {
             setLoginError("Please fill in all fields");
             return;
-        } 
-        if (!selectedRole) {
-            setLoginError("Please select a role");
-            return;
         }
 
         setIsLoginLoading(true); 
@@ -95,13 +91,12 @@ const LoginPage = () => {
             const idToken = await userCredentials.user.getIdToken();    
             await localStorage.setItem('authToken', idToken);   
             console.log("userCredentials", userCredentials);
-
-            // TODO send auth token to banckend to take user id from user and tell me if student or teacher
+            const userRole = await getUserType();
 
             await setUser({
                 id: userCredentials.user.uid,
                 name: userCredentials.user.displayName,
-                role: selectedRole,
+                role: userRole,
                 email: userCredentials.user.email,   
                 token: idToken
             });
@@ -120,7 +115,21 @@ const LoginPage = () => {
         setIsLoginLoading(true);
         setLoginError("");
         try {
-            await signInWithPopup(auth, googleProvider);
+            // TODO get this user and then get the creds form the be   
+            const userCredentials = await signInWithPopup(auth, googleProvider);
+            const idToken = await userCredentials.user.getIdToken();    
+            await localStorage.setItem('authToken', idToken);   
+            console.log("userCredentials", userCredentials); 
+            const userRole = await getUserType();
+
+            await setUser({
+                id: userCredentials.user.uid,
+                name: userCredentials.user.displayName,
+                role: userRole,
+                email: userCredentials.user.email,   
+                token: idToken
+            });
+            
             setIsAuthModalOpen(false);
             navigate('/home');
         } catch (error) {

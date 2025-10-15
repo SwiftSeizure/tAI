@@ -9,9 +9,14 @@ import api from "../../shared/services/axios";
 export const postNewUnit = async (classID, unitName) => {
     try {
         const requestBody = {
-            name: unitName,
-            settings: {}
-        };
+            name: unitName, 
+            published: false,
+            settings: {
+                additionalProp1: {}
+            }
+        }; 
+
+        console.log('Sending request with body:', JSON.stringify(requestBody, null, 2));
 
         const response = await api.post(
             `/classroom/${classID}/unit`,
@@ -28,7 +33,16 @@ export const postNewUnit = async (classID, unitName) => {
             data: response.data
         };
     } catch (error) {
-        console.error('Error creating unit:', error);
+        console.error('Error creating unit:', error); 
+        console.error('Error creating unit:', {
+            message: error.message,
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            responseData: error.response?.data,  // This will show the validation errors
+            url: error.config?.url,
+            method: error.config?.method,
+            requestData: error.config?.data
+        });
         return {
             success: false,
             error: error.response?.data?.message || 'Failed to create unit'

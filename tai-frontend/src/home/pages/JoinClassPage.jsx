@@ -40,46 +40,62 @@ const JoinClassPage = () => {
        }
     };
 
-
-
     return(   
-
         <>  
-        <div className="h-screen w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient"> 
-
-            {/* Title card for the page */}
-            < NavBar 
-            title="Join a Class"  
-            intro={true}
-            /> 
-
-            {/* Main content section for joining a class */}
-            <form onSubmit={ handleJoinClass } className="flex flex-col items-center justify-center p-5">
-                <h1 className="text-3xl font-extrabold text-center mb-4 text-gray-900 font-nunito"> 
-                    Enter the class code below to join a class.
-                </h1> 
-                <input 
-                    className="w-1/2 p-2 rounded border border-gray-300 text-base mb-2.5" 
-                    id="classCode"
-                    type="text" 
-                    placeholder="Enter Class Code"  
-                    onChange={(e) => setClassCode(e.target.value)}
-                >   
-                </input> 
-                <button className="inline-block w-[200px] cursor-pointer border-2 border-gray-300 rounded-lg p-4 m-2 bg-transparent
-                    font-medium text-[1.1rem] text-gray-800 text-center font-nunito
-                    transition-all duration-300 ease-in-out
-                    hover:border-gray-400 hover:-translate-y-1 hover:shadow-lg
-                    active:-translate-y-0.5 active:shadow-md
-                    focus:outline-none focus:outline-offset-2">  
+        <NavBar title={"Join a Class"} /> 
+        
+        <form onSubmit={handleJoinClass} className="flex flex-col items-center">
+            
+            {/* Class Code Input Section - Styled like ClassSettings */}
+            <div className="w-full max-w-2xl"> 
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2 text-center">
                     Join Class
-                </button> 
-            </form> 
+                </h3>
+                
+                <div className="space-y-3">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Enter the class code provided by your teacher to join the class.
+                    </p>
+                    
+                    <div className="space-y-2">
+                        <label
+                            htmlFor="class-code-input"
+                            className="block text-sm font-semibold text-gray-900 dark:text-white mb-1"
+                        >
+                            Class Code
+                        </label>
+                        <input
+                            id="class-code-input"
+                            type="text"
+                            placeholder="Enter Class Code"
+                            value={classCode}
+                            onChange={(e) => setClassCode(e.target.value)}
+                            className="w-full rounded-lg border border-gray-300 dark:border-gray-600 
+                                        dark:bg-gray-800 dark:text-white p-2.5 text-sm focus:ring-2 
+                                        focus:ring-blue-500 focus:outline-none transition-all duration-200
+                                        hover:border-gray-400 dark:hover:border-gray-500"
+                            required
+                        />
+                    </div>
+                </div>
+            </div> 
 
-        </div>
+            <div className="h-12"></div>
+
+            <button 
+                type="submit"
+                className="inline-block w-[200px] cursor-pointer border-2 border-gray-300 rounded-lg p-4 m-2 bg-transparent
+                         font-medium text-[1.1rem] text-gray-800 text-center font-nunito
+                         transition-all duration-300 ease-in-out
+                         hover:border-gray-400 hover:-translate-y-1 hover:shadow-lg
+                         active:-translate-y-0.5 active:shadow-md
+                         focus:outline-none focus:outline-offset-2"
+            >  
+                Join Class
+            </button>
+        </form>
         </>
     ); 
-
 }; 
 
 export default JoinClassPage;

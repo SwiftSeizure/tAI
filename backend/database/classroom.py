@@ -94,6 +94,7 @@ def create_new_unit(classroomID: int, unit: CreateUnit, session: Session) -> DBU
         sequence = sequence_number,
         classID = classroomID,
         settings = unit.settings,
+        published = unit.published
         
     )
     
