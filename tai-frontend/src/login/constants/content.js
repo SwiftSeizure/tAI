@@ -12,7 +12,7 @@ export const contentSections = [
             "TAi is an AI-powered education platform designed to make teaching more intuitive and impactful. By combining deep learning insights with modern classroom workflows, we help teachers save time, personalize learning, and stay connected with their students in real time."
     }, 
     {
-        title: "Intelligent Content Management",
+        title: "Smart Content Management",
         content: 
             "Simplify your workflow with smart organization. TAi automatically categorizes lessons, units, and materials—suggesting improvements and related resources through adaptive AI models trained to understand your teaching style."
     },
