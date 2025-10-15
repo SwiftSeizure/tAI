@@ -52,18 +52,35 @@ export const AuthModal = ({
 
     if (AUTH_TOGGLE) {
         return (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 overflow-y-auto">
                 <div 
                     ref={modalRef}
-                    className="w-full max-w-md p-4 bg-white/95 backdrop-blur-md border border-gray-200/20 rounded-2xl shadow-2xl sm:p-6 md:p-8 dark:bg-gray-800/95 dark:border-gray-700/20 relative overflow-hidden"
+                    className="w-full max-w-2xl p-4 bg-white/98 backdrop-blur-xl border border-gray-300/40 rounded-2xl shadow-2xl sm:p-6 md:p-8 dark:bg-gray-800/98 dark:border-gray-600/40 relative overflow-hidden my-4"
                 >
                     {/* FANG Background Elements */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-green-50/30 to-purple-50/30 animate-gradient-shift pointer-events-none"></div>
-                    <div className="absolute -top-10 -right-10 w-20 h-20 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-xl"></div>
-                    <div className="absolute -bottom-10 -left-10 w-20 h-20 bg-gradient-to-br from-green-400/20 to-blue-400/20 rounded-full blur-xl"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-green-50/40 to-purple-50/40 animate-gradient-shift pointer-events-none"></div>
+                    <div className="absolute -top-10 -right-10 w-20 h-20 bg-gradient-to-br from-blue-400/30 to-purple-400/30 rounded-full blur-xl"></div>
+                    <div className="absolute -bottom-10 -left-10 w-20 h-20 bg-gradient-to-br from-green-400/30 to-blue-400/30 rounded-full blur-xl"></div>
+                    
+                    {/* Discrete Exit Button */}
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100/80 hover:bg-gray-200/90 text-gray-500 hover:text-gray-700 transition-all duration-200 backdrop-blur-sm border border-gray-300/50 hover:border-gray-400/60 shadow-sm hover:shadow-md group"
+                        aria-label="Close modal"
+                    >
+                        <svg 
+                            className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                     
                     <div className="relative z-10">
-                    <form className="space-y-6" onSubmit={isSignupMode ? onAuthEmailPasswordSignup : onAuthEmailPasswordLogin}>
+                    <form className="space-y-4" onSubmit={isSignupMode ? onAuthEmailPasswordSignup : onAuthEmailPasswordLogin}>
                         <div className="text-center">
                             <h5 className="text-2xl font-bold bg-gradient-to-r from-gray-800 via-blue-600 to-purple-600 bg-clip-text text-transparent">
                                 {isSignupMode ? 'Create Your Account' : 'Welcome Back'}
@@ -81,24 +98,24 @@ export const AuthModal = ({
 
                         {/* Role Selection for Signup */}
                         {isSignupMode && (
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <label className="block text-sm font-medium text-gray-900 dark:text-white">
                                     I am a...
                                 </label>
-                                <div className="grid grid-cols-2 gap-3">
+                                <div className="grid grid-cols-2 gap-4">
                                     {['Teacher', 'Student'].map((role) => (
                                         <button
                                             key={role}
                                             type="button"
                                             onClick={() => setSelectedRole(role.toLowerCase())}
-                                            className={`p-4 rounded-xl border-2 transition-all duration-300 text-sm font-medium ${
+                                            className={`p-3 rounded-xl border-2 transition-all duration-300 text-sm font-medium ${
                                                 selectedRole === role.toLowerCase()
                                                     ? 'border-blue-500 bg-gradient-to-br from-blue-50 to-purple-50 text-blue-700 shadow-md transform scale-105'
                                                     : 'border-gray-200 hover:border-gray-300 text-gray-700 hover:bg-gray-50'
                                             }`}
                                         >
-                                            <div className="flex flex-col items-center space-y-2">
-                                                <div className={`text-xl ${
+                                            <div className="flex items-center justify-center space-x-2">
+                                                <div className={`text-lg ${
                                                     selectedRole === role.toLowerCase() ? 'text-blue-600' : 'text-gray-500'
                                                 }`}>
                                                     {role === 'Teacher' ? '👨‍🏫' : '👨‍🎓'}
@@ -111,39 +128,37 @@ export const AuthModal = ({
                             </div>
                         )}
 
-                        {/* Full Name for Signup */}
+                        {/* Full Name and Username for Signup */}
                         {isSignupMode && (
-                            <div>
-                                <label htmlFor="fullName" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                    Full Name
-                                </label>
-                                <input
-                                    type="text"
-                                    id="fullName"
-                                    value={fullName}
-                                    onChange={(e) => setFullName(e.target.value)}
-                                    className="bg-white/70 backdrop-blur-sm border border-gray-300/50 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 block w-full p-3 transition-all duration-200 dark:bg-gray-600/70 dark:border-gray-500/50 dark:placeholder-gray-400 dark:text-white"
-                                    placeholder="Enter your full name"
-                                    required
-                                />
-                            </div>
-                        )}
-
-                        {/* Username for Signup */}
-                        {isSignupMode && (
-                            <div>
-                                <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                    Username
-                                </label>
-                                <input
-                                    type="text"
-                                    id="username"
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
-                                    className="bg-white/70 backdrop-blur-sm border border-gray-300/50 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 block w-full p-3 transition-all duration-200 dark:bg-gray-600/70 dark:border-gray-500/50 dark:placeholder-gray-400 dark:text-white"
-                                    placeholder="Choose a username"
-                                    required
-                                />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label htmlFor="fullName" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        Full Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="fullName"
+                                        value={fullName}
+                                        onChange={(e) => setFullName(e.target.value)}
+                                        className="bg-white/95 backdrop-blur-sm border border-gray-400/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/70 focus:border-blue-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-gray-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
+                                        placeholder="Enter your full name"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        Username
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="username"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        className="bg-white/95 backdrop-blur-sm border border-gray-400/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/70 focus:border-blue-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-gray-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
+                                        placeholder="Choose a username"
+                                        required
+                                    />
+                                </div>
                             </div>
                         )}
 
@@ -156,40 +171,55 @@ export const AuthModal = ({
                                 id="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="bg-white/70 backdrop-blur-sm border border-gray-300/50 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 block w-full p-3 transition-all duration-200 dark:bg-gray-600/70 dark:border-gray-500/50 dark:placeholder-gray-400 dark:text-white"
+                                className="bg-white/95 backdrop-blur-sm border border-gray-400/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/70 focus:border-blue-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-gray-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
                                 placeholder={isSignupMode ? "your@email.com" : "name@school.edu"}
                                 required
                             />
                         </div>
 
-                        <div>
-                            <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                {isSignupMode ? 'Create Password' : 'Your password'}
-                            </label>
-                            <input
-                                type="password"
-                                id="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="••••••••"
-                                className="bg-white/70 backdrop-blur-sm border border-gray-300/50 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 block w-full p-3 transition-all duration-200 dark:bg-gray-600/70 dark:border-gray-500/50 dark:placeholder-gray-400 dark:text-white"
-                                required
-                            />
-                        </div>
-
-                        {/* Confirm Password for Signup */}
-                        {isSignupMode && (
+                        {isSignupMode ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        Create Password
+                                    </label>
+                                    <input
+                                        type="password"
+                                        id="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        placeholder="••••••••"
+                                        className="bg-white/95 backdrop-blur-sm border border-gray-400/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/70 focus:border-blue-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-gray-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label htmlFor="confirmPassword" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        Confirm Password
+                                    </label>
+                                    <input
+                                        type="password"
+                                        id="confirmPassword"
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        placeholder="••••••••"
+                                        className="bg-white/95 backdrop-blur-sm border border-gray-400/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/70 focus:border-blue-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-gray-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
+                                        required
+                                    />
+                                </div>
+                            </div>
+                        ) : (
                             <div>
-                                <label htmlFor="confirmPassword" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                    Confirm Password
+                                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    Your password
                                 </label>
                                 <input
                                     type="password"
-                                    id="confirmPassword"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    id="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                     placeholder="••••••••"
-                                    className="bg-white/70 backdrop-blur-sm border border-gray-300/50 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 block w-full p-3 transition-all duration-200 dark:bg-gray-600/70 dark:border-gray-500/50 dark:placeholder-gray-400 dark:text-white"
+                                    className="bg-white/95 backdrop-blur-sm border border-gray-400/60 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/70 focus:border-blue-500/70 block w-full p-3 transition-all duration-200 dark:bg-gray-700/95 dark:border-gray-500/60 dark:placeholder-gray-400 dark:text-white shadow-sm"
                                     required
                                 />
                             </div>
@@ -245,7 +275,7 @@ export const AuthModal = ({
                             type="button"
                             onClick={isSignupMode ? onAuthGoogleSignup : onAuthGoogleLogin}
                             disabled={isLoginLoading}
-                            className="w-full flex items-center justify-center gap-3 py-3 px-5 text-sm font-medium text-gray-700 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-300/50 hover:bg-white/90 hover:border-gray-400/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500/50 disabled:opacity-50 shadow-sm hover:shadow-md transition-all duration-200 transform hover:scale-[1.02]"
+                            className="w-full flex items-center justify-center gap-3 py-3 px-5 text-sm font-medium text-gray-700 bg-white/95 backdrop-blur-sm rounded-xl border border-gray-400/60 hover:bg-white hover:border-gray-500/70 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500/50 disabled:opacity-50 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
                         >
                             <img 
                                 src="https://www.google.com/favicon.ico" 
