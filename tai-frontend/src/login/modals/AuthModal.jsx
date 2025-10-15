@@ -29,9 +29,7 @@ export const AuthModal = ({
     password,
     setPassword,
     rememberMe,
-    setRememberMe, 
-    selectedRole,
-    setSelectedRole
+    setRememberMe,
 }) => { 
     
     const modalRef = useRef(null);
@@ -52,37 +50,6 @@ export const AuthModal = ({
                         <h5 className="text-xl font-medium text-gray-900 dark:text-white">
                             Please Sign in to Continue Learning
                         </h5> 
-
-                        <div className="mb-2">
-                            <div className="flex items-center justify-center space-x-4">
-                                <button
-                                    type="button"
-                                    onClick={() => { 
-                                        setSelectedRole('teacher') 
-                                    }}
-                                    className={`px-6 py-2 rounded-lg font-medium transition-colors ${
-                                        selectedRole === 'teacher'
-                                            ? 'bg-blue-600 text-white shadow-md'
-                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
-                                    }`}
-                                >
-                                    Teacher
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => { 
-                                        setSelectedRole('student') 
-                                    }}
-                                    className={`px-6 py-2 rounded-lg font-medium transition-colors ${
-                                        selectedRole === 'student'
-                                            ? 'bg-blue-600 text-white shadow-md'
-                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
-                                    }`}
-                                >
-                                    Student
-                                </button>
-                            </div>
-                        </div>
             
                         {loginError && (
                             <div className="p-3 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800">

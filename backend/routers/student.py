@@ -20,7 +20,6 @@ router = APIRouter(prefix="/student", tags=["student"])
                 409: {"model": ClientErrorResponse},
             },
             summary="Enroll a student in a class.")
- 
 def enroll_student(update:AddEnrollment , 
                    user: Annotated[dict, Depends(get_firebase_user_from_token)],
                    session: DBSession) -> int:

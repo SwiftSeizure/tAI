@@ -172,7 +172,7 @@ const TeacherStudentHomePage = () => {
     const handlePublishClass = async (classroom) => {   
         console.log("classroom", classroom); 
         try { 
-            postPublishClass(classroom.id); 
+            await postPublishClass(classroom.id); 
             fetchClasses(user.id, user.role); 
         } 
         catch (error) { 
