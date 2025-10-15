@@ -1,17 +1,19 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth, googleProvider } from '../../auth/firebase';
 import { useUser } from '../../store/user-store';
 import { AuthModal } from '../modals/AuthModal'; 
 import '../../App.css'; 
 import { contentSections, subTitle } from '../constants/content';  
 import { getUserType } from '../services/get-user-type';
+import { createStudent } from '../services/create-student';
+import { createTeacher } from '../services/create-teacher';
 
 const LoginPage = () => {
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [selectedRole, setSelectedRole] = useState('');
-    const sectionsRef = useRef([]); 
+    const sectionsRef = useRef([]);
     const heroRef = useRef(null);
     const subtitleRef = useRef(null);
     const buttonRef = useRef(null);
@@ -22,6 +24,8 @@ const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
+    const [fullName, setFullName] = useState('');
+    const [username, setUsername] = useState('');
 
     const navigate = useNavigate();
     const [{ user }, { setUser }] = useUser();
@@ -109,7 +113,125 @@ const LoginPage = () => {
         } finally {
             setIsLoginLoading(false);
         }
+    };
+
+    const handleAuthEmailPasswordSignup = async (e) => {
+        e.preventDefault();
+        if (!email || !password || !fullName || !username || !selectedRole) {
+            setLoginError("Please fill in all fields and select a role");
+            return;
+        }
+
+        setIsLoginLoading(true);
+        setLoginError("");
+
+        try {
+            // Store the selected role and user info in localStorage temporarily
+            // This will be used by the getUserType service to create the right account type
+            localStorage.setItem('pendingUserRole', selectedRole);
+            localStorage.setItem('pendingUserFullName', fullName);
+            localStorage.setItem('pendingUserUsername', username);
+            
+            // Create Firebase account
+            const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+            
+            // Update the user's display name
+            await updateProfile(userCredentials.user, {
+                displayName: fullName
+            });
+            
+            const idToken = await userCredentials.user.getIdToken();
+            await localStorage.setItem('authToken', idToken);
+            
+            // Use existing getUserType infrastructure which will now create the account based on stored role
+            const userRole = await getUserType();
+            
+            // Clean up temporary storage
+            localStorage.removeItem('pendingUserRole');
+            localStorage.removeItem('pendingUserFullName');
+            localStorage.removeItem('pendingUserUsername');
+            
+            await setUser({
+                id: userCredentials.user.uid,
+                name: fullName,
+                role: userRole,
+                email: userCredentials.user.email,
+                token: idToken
+            });
+            
+            setIsAuthModalOpen(false);
+            navigate('/home');
+        } catch (error) {
+            console.error(error);
+            // Clean up temporary storage on error
+            localStorage.removeItem('pendingUserRole');
+            localStorage.removeItem('pendingUserFullName');
+            localStorage.removeItem('pendingUserUsername');
+            
+            if (error.code === 'auth/email-already-in-use') {
+                setLoginError("An account with this email already exists.");
+            } else if (error.code === 'auth/weak-password') {
+                setLoginError("Password should be at least 6 characters.");
+            } else {
+                setLoginError("Failed to create account. Please try again.");
+            }
+        } finally {
+            setIsLoginLoading(false);
+        }
     }; 
+
+    const handleAuthGoogleSignup = async () => {
+        if (!selectedRole) {
+            setLoginError("Please select whether you're a student or teacher first.");
+            return;
+        }
+
+        setIsLoginLoading(true);
+        setLoginError("");
+        
+        try {
+            const userCredentials = await signInWithPopup(auth, googleProvider);
+            const idToken = await userCredentials.user.getIdToken();
+            await localStorage.setItem('authToken', idToken);
+            
+            const displayName = userCredentials.user.displayName || userCredentials.user.email?.split('@')[0] || 'User';
+            const username = userCredentials.user.email?.split('@')[0] || `user_${Date.now()}`;
+            
+            // Store the selected role and user info for getUserType to use
+            localStorage.setItem('pendingUserRole', selectedRole);
+            localStorage.setItem('pendingUserFullName', displayName);
+            localStorage.setItem('pendingUserUsername', username);
+            
+            // Use existing getUserType infrastructure
+            const userRole = await getUserType();
+            
+            // Clean up temporary storage
+            localStorage.removeItem('pendingUserRole');
+            localStorage.removeItem('pendingUserFullName');
+            localStorage.removeItem('pendingUserUsername');
+            
+            await setUser({
+                id: userCredentials.user.uid,
+                name: displayName,
+                role: userRole,
+                email: userCredentials.user.email,
+                token: idToken
+            });
+            
+            setIsAuthModalOpen(false);
+            navigate('/home');
+        } catch (error) {
+            console.error(error);
+            // Clean up temporary storage on error
+            localStorage.removeItem('pendingUserRole');
+            localStorage.removeItem('pendingUserFullName');
+            localStorage.removeItem('pendingUserUsername');
+            
+            setLoginError("Failed to sign up with Google. Please try again.");
+        } finally {
+            setIsLoginLoading(false);
+        }
+    };
 
     const handleAuthGoogleLogin = async () => {
         setIsLoginLoading(true);
@@ -229,9 +351,10 @@ const LoginPage = () => {
             <AuthModal
                 isOpen={isAuthModalOpen}
                 onClose={handleCloseAuthModal}
-                role={selectedRole}
                 onAuthEmailPasswordLogin={handleAuthEmailPasswordLogin}
-                onAuthGoogleLogin={handleAuthGoogleLogin} 
+                onAuthGoogleLogin={handleAuthGoogleLogin}
+                onAuthEmailPasswordSignup={handleAuthEmailPasswordSignup}
+                onAuthGoogleSignup={handleAuthGoogleSignup}
                 loginError={loginError}
                 isLoginLoading={isLoginLoading}
                 email={email}
@@ -239,9 +362,13 @@ const LoginPage = () => {
                 password={password}
                 setPassword={setPassword}
                 rememberMe={rememberMe}
-                setRememberMe={setRememberMe} 
+                setRememberMe={setRememberMe}
                 selectedRole={selectedRole}
                 setSelectedRole={setSelectedRole}
+                fullName={fullName}
+                setFullName={setFullName}
+                username={username}
+                setUsername={setUsername}
             />
 
             <style jsx>{`
@@ -263,6 +390,16 @@ const LoginPage = () => {
                 
                 .animate-scrollGradient {
                     animation: scrollGradient 10s ease-in-out infinite;
+                }
+                
+                @keyframes gradient-shift {
+                    0%, 100% { background-position: 0% 50%; }
+                    50% { background-position: 100% 50%; }
+                }
+                
+                .animate-gradient-shift {
+                    background-size: 200% 200%;
+                    animation: gradient-shift 8s ease-in-out infinite;
                 }
             `}</style>
         </>
