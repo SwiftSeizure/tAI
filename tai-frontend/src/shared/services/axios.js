@@ -84,8 +84,8 @@ api.interceptors.response.use(
             } catch (error) {
                 console.error('Failed to refresh token:', error);
                 // Redirect to login if we can't refresh the token
-                if (window.location.pathname !== '/login') {
-                    window.location.href = '/login';
+                if (window.location.pathname !== '/') {
+                    window.location.href = '/';
                 }
                 return Promise.reject(error);
             }
