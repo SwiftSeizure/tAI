@@ -12,7 +12,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY backend/service-account.json /app/backend/service-account.json
 COPY pyproject.toml poetry.lock* /app/
 
 RUN pip install --no-cache-dir poetry && poetry config virtualenvs.create false \
