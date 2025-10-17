@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'; 
-import ProfileModal from "../modals/ProfileModal";
+import ProfileModal from "../modals/ProfileModal"; 
+import { updateProfile } from 'firebase/auth';
+import { auth } from '../../auth/firebase'; 
+import { useUser } from '../../store/user-store';
 
 import '../../App.css';
 export const NavBar = ({ title, settings }) => { 
 
-    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false); 
+    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);  
+    const [{user}, { setUser }] = useUser();
 
 
     const navigate = useNavigate();
@@ -29,9 +32,37 @@ export const NavBar = ({ title, settings }) => {
         setIsProfileModalOpen(false);
     } 
 
-    const handleOnChangeDisplayName = () => { 
-        // call the api to change the users display name here 
-        console.log("changing the display name to: " )
+    const handleOnSaveInformation = async (profilePictureURL, displayName, email) => { 
+        console.log("Save Information clicked"); 
+
+        const user = auth.currentUser; 
+
+        try { 
+            if (displayName || profilePictureURL) {
+                await updateProfile(user, { 
+                    displayName: displayName || user.displayName, 
+                    photoURL: profilePictureURL || user.photoURL 
+                });
+            } 
+
+            //todo, handle email since it requires reauthentication 
+
+            await setUser({
+                ...user, 
+                name: displayName, 
+                photoURL: profilePictureURL
+            });
+
+
+
+        } catch (error) {
+            console.error("Error updating profile:", error);
+        }
+        // Add API call to update user information here if these values are not null 
+
+
+
+        setIsProfileModalOpen(false); 
     }
 
     return (
@@ -78,7 +109,7 @@ export const NavBar = ({ title, settings }) => {
             <ProfileModal
                 isOpen={isProfileModalOpen} 
                 onClose={handleCloseProfileModal} 
-                onChangeDisplayName={handleOnChangeDisplayName}
+                onSaveInformation={handleOnSaveInformation}
             />
         </>
     );

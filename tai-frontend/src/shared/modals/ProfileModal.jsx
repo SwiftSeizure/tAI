@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react"; 
 import { useCurrentUser } from "../../store/user-store";
 
-export default function ProfileModal({ isOpen, onClose, onChangeDisplayName, currentUser }) {
+export default function ProfileModal({ isOpen, onClose, onSaveInformation, currentUser }) {
     const modalRef = useRef(null);  
 
     // TODO: Add the functionality to update the display name here, send the API call in the NAV bar component and update the local storage there too
@@ -10,6 +10,7 @@ export default function ProfileModal({ isOpen, onClose, onChangeDisplayName, cur
 
     const [displayName, setDisplayName] = useState(user?.displayName || "");
     const [email, setEmail] = useState(user?.email || "");
+    const [profilePictureURL, setProfilePictureURL] = useState(user?.photoURL || "");
 
     const handleClickOutside = (event) => {
         if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -34,9 +35,9 @@ export default function ProfileModal({ isOpen, onClose, onChangeDisplayName, cur
         };
     }, [isOpen, currentUser]);
 
-    const handleSave = () => {
-        if (onChangeDisplayName) {
-            onChangeDisplayName(displayName);
+    const handleSave = async () => {
+        if (onSaveInformation) {
+            await onSaveInformation(profilePictureURL, displayName, email);
         }
         onClose();
     };
@@ -87,7 +88,8 @@ export default function ProfileModal({ isOpen, onClose, onChangeDisplayName, cur
                     
                     {/* Modal body */}
                     <div className="space-y-4">
-                        {/* Avatar */} 
+                        {/* Avatar */}  
+
                         {/* TODO: Add avatar upload */}
                         <div className="flex justify-center">
                             <div className="relative">
