@@ -215,7 +215,8 @@ const LoginPage = () => {
                 name: displayName,
                 role: userRole,
                 email: userCredentials.user.email,
-                token: idToken
+                token: idToken,
+                profilePicture: userCredentials.user.photoURL
             });
             
             setIsAuthModalOpen(false);
@@ -249,7 +250,8 @@ const LoginPage = () => {
                 name: userCredentials.user.displayName,
                 role: userRole,
                 email: userCredentials.user.email,   
-                token: idToken
+                token: idToken,
+                profilePicture: userCredentials.user.photoURL
             });
             
             setIsAuthModalOpen(false);
