@@ -71,29 +71,36 @@ const CreateClassPage = () => {
 
     return(  
         <>  
-        <NavBar title={"Create a Class"} />
-        
-        <form onSubmit={handleCreateClass} className="flex flex-col items-center">
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 bg-[length:200%_200%]" style={{animation: 'gradient-shift 15s ease-in-out infinite'}}>
+            <NavBar title={"Create a Class"} />
+            
+            <div className="max-w-2xl mx-auto mt-8">
+                <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
 
-            <ClassSettings 
-                onClassNameChange={handleClassNameChange}
-            />
+                    <form onSubmit={handleCreateClass} className="space-y-8">
+                        <ClassSettings 
+                            onClassNameChange={handleClassNameChange}
+                        />
 
-            <ChatSettings 
-                onSettingsChange={handleSettingsChange}
-            />
+                        <ChatSettings 
+                            onSettingsChange={handleSettingsChange}
+                        />
 
-            <button 
-                type="submit"
-                className="inline-block w-[200px] cursor-pointer border-2 border-gray-300 rounded-lg p-4 m-2 bg-transparent
-                         font-medium text-[1.1rem] text-gray-800 text-center font-nunito
-                         transition-all duration-300 ease-in-out
-                         hover:border-gray-400 hover:-translate-y-1 hover:shadow-lg
-                         active:-translate-y-0.5 active:shadow-md
-                         focus:outline-none focus:outline-offset-2">
-                Create Class
-            </button>
-        </form>
+                        <div className="flex justify-center">
+                            <button 
+                                type="submit"
+                                className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg 
+                                         hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 
+                                         focus:ring-blue-500 transition-colors duration-200 shadow-sm
+                                         hover:shadow-md w-full sm:w-auto"
+                            >
+                                Create Class
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         </>
     ); 
 

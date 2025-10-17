@@ -73,6 +73,9 @@ const TeacherStudentModulePage = () => {
 
     // Module Management
     const [selectedModuleId, setSelectedModuleId] = useState(null);
+    
+    // Refresh Key for triggering day component refreshes
+    const [refreshKey, setRefreshKey] = useState(0);
 
     // Delete Module Management
     const [currentDeleteModule, setCurrentDeleteModule] = useState(null); 
@@ -238,9 +241,15 @@ const TeacherStudentModulePage = () => {
              
             await fetchModules(currentUnit.id);  
             
-            //force refresh here
+            // Trigger refresh of day components to show new material immediately
+            setRefreshKey(prev => prev + 1);
 
-            handleMaterialSelect(selectedDay.id, materialData.file.name, materialData.name); 
+            // Create proper material object for selection
+            const newMaterial = {
+                name: materialData.name,
+                filename: materialData.file.name
+            };
+            handleMaterialSelect(selectedDay.id, newMaterial); 
         } 
         catch (error) { 
             console.error('Error creating material:', error);
@@ -263,8 +272,16 @@ const TeacherStudentModulePage = () => {
             await postCreateAssignment(selectedDay.id, fileName, formData); 
              
             await fetchModules(currentUnit.id); 
+            
+            // Trigger refresh of day components to show new assignment immediately
+            setRefreshKey(prev => prev + 1);
 
-            handleAssignmentSelect(selectedDay.id, assignmentData.filename, assignmentData.name); 
+            // Create proper assignment object for selection
+            const newAssignment = {
+                name: assignmentData.name,
+                filename: assignmentData.file.name
+            };
+            handleAssignmentSelect(selectedDay.id, newAssignment); 
         } 
         catch (error) { 
             console.error('Error creating assignment:', error);
@@ -339,6 +356,9 @@ const TeacherStudentModulePage = () => {
             console.log('Selected day:', selectedDay); 
             await deleteMaterial(selectedDay.id, currentDeleteMaterial.filename);
             await fetchModules(currentUnit.id);
+            
+            // Trigger refresh of day components to hide deleted material immediately
+            setRefreshKey(prev => prev + 1);
         } catch (error) {
             console.error('Error deleting material:', error);
         }
@@ -359,6 +379,9 @@ const TeacherStudentModulePage = () => {
             console.log('Deleting assignment:', currentDeleteAssignment); 
             await deleteAssignment(selectedDay.id, currentDeleteAssignment.filename);
             await fetchModules(currentUnit.id);
+            
+            // Trigger refresh of day components to hide deleted assignment immediately
+            setRefreshKey(prev => prev + 1);
         } catch (error) {
             console.error('Error deleting assignment:', error);
         }
@@ -439,7 +462,7 @@ const TeacherStudentModulePage = () => {
                 <> 
                 <div>  
                     {/* Map all of the module components to the ModulePage */}
-                    <h1 className="modules-heading"> {currentUnit?.name } Modules</h1> 
+                    <h1 className="text-2xl font-bold text-gray-800 mb-6 tracking-tight"> {currentUnit?.name } Modules</h1> 
                     {modules.map(module => (
                         <ModuleComponent 
                             key={module.id}
@@ -454,13 +477,15 @@ const TeacherStudentModulePage = () => {
                             onClickDeleteDay={handleOpenDeleteDayModal}
                             onClickDeleteMaterial={handleOpenDeleteMaterialModal}
                             onClickDeleteAssignment={handleOpenDeleteAssignmentModal}
+                            refreshKey={refreshKey}
+                            selectedContent={selectedContent}
                         />
                     ))}
 
                     {user.role === "teacher" && (
                         <button 
                             onClick={() => setShowAddModuleModal(true)}
-                            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                            className="mt-6 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-2xl hover:from-green-700 hover:to-emerald-700 focus:ring-4 focus:ring-green-200 transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95 border border-green-500/20"
                         >
                             Add Module
                         </button>
@@ -477,18 +502,18 @@ const TeacherStudentModulePage = () => {
      */
     return(  
         <>   
-        <div className="h-screen w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient">
+        <div className="h-screen w-screen bg-gradient-to-br from-gray-50 via-green-50 to-emerald-50 bg-[length:100%_200%] animate-scrollGradient">
             
             <NavBar title={currentUnit?.name || 'Loading...'} /> 
 
-            <div className="grid grid-cols-[280px_1fr_auto] gap-5 p-5 relative h-[calc(90vh-90px)] max-w-full overflow-x-hidden">  
+            <div className="grid grid-cols-[300px_1fr_auto] gap-6 p-6 relative h-[calc(90vh-90px)] max-w-full overflow-x-hidden">  
                 {/* Sidebar for modules */}
-                <div className="bg-white rounded-lg shadow-md p-4 overflow-auto"> 
+                <div className="relative bg-gradient-to-br from-gray-100/95 via-blue-100/85 to-cyan-100/95 bg-[length:200%_200%] backdrop-blur-lg rounded-2xl shadow-lg border border-gray-300/60 p-6 overflow-auto" style={{animation: 'gradient-shift 12s ease-in-out infinite'}}>
                     {renderModules()} 
                 </div>  
 
                 {/* Main content area for displaying selected module content */}
-                <div className="bg-white rounded-lg shadow-md p-4 overflow-auto"> 
+                <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-lg border border-gray-200/50 p-6 overflow-auto"> 
                     <MainContent 
                         displayType={displayType}
                         currentUnit={currentUnit}

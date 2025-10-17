@@ -146,7 +146,8 @@ def create_teacher(teacherID: str, name: str, username: str, session: Session) -
     new_teacher = DBTeacher(
         id=teacherID,
         name=name,
-        userName=username
+        userName=username,
+        password_hash="firebase_auth"  # Placeholder for Firebase-authenticated users
     )
     
     session.add(new_teacher)

@@ -152,14 +152,7 @@ const TeacherStudentUnitPage = () => {
 
     return(  
         <>   
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 relative overflow-hidden">
-                
-                {/* Subtle Background Elements */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute -top-40 -right-32 w-96 h-96 bg-blue-100 rounded-full opacity-20 blur-3xl"></div>
-                    <div className="absolute top-1/3 -left-40 w-96 h-96 bg-purple-100 rounded-full opacity-20 blur-3xl"></div>
-                    <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-green-100 rounded-full opacity-20 blur-3xl"></div>
-                </div>
+            <div className="min-h-screen bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 bg-[length:200%_200%]" style={{animation: 'gradient-shift 18s ease-in-out infinite'}}>
 
                 {/* NavBar */}
                 <NavBar 
@@ -171,15 +164,17 @@ const TeacherStudentUnitPage = () => {
                 <div className="relative max-w-7xl mx-auto px-6 py-12">
                     
                     {/* Section Header */}
-                    <div className="mb-12">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                            {`${currentClass?.name?.trim()}'s Units`}
-                        </h2>
-                        <p className="text-gray-600">
-                            {user?.role === 'teacher' 
-                                ? 'Manage your units and course content' 
-                                : 'Access your learning units and materials'}
-                        </p>
+                    <div className="mx-auto bg-white rounded-2xl shadow-sm p-6 mb-8 border border-gray-100 w-fit">
+                        <div className="flex flex-col items-center">
+                            <h2 className="text-3xl font-bold text-gray-900">
+                                {`${currentClass?.name?.trim()}'s Units`}
+                            </h2>
+                            <p className="text-gray-600 text-center mt-2">
+                                {user?.role === 'teacher' 
+                                    ? 'Manage your units and course content' 
+                                    : 'Access your learning units and materials'}
+                            </p>
+                        </div>
                     </div>
 
                     {/* Grid container for unit cards */}
