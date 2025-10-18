@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'; 
 import ProfileModal from "../modals/ProfileModal"; 
-import { updateProfile } from 'firebase/auth';
+import { updateProfile, sendEmailVerification, updateEmail, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 import { auth } from '../../auth/firebase'; 
 import { useUser } from '../../store/user-store';
+import VerificationModal from '../modals/VerificationModal';
 
 import '../../App.css';
 export const NavBar = ({ title, settings }) => { 
@@ -13,6 +14,8 @@ export const NavBar = ({ title, settings }) => {
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);  
     const [{user}, { setUser }] = useUser();
 
+    const [pendingEmail, setPendingEmail] = useState(null);
+    const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
 
     const navigate = useNavigate();
 
@@ -30,41 +33,65 @@ export const NavBar = ({ title, settings }) => {
 
     const handleCloseProfileModal = () => { 
         setIsProfileModalOpen(false);
+    }  
+
+    const handleCloseVerificationModal = () => { 
+        setIsVerificationModalOpen(false);
     } 
 
-    const handleOnSaveInformation = async (profilePictureURL, displayName, email) => { 
+    const handleOnSaveInformation = async (profilePictureURL, displayName, newEmail, password) => { 
         console.log("Save Information clicked"); 
-
         const user = auth.currentUser; 
-
+    
         try { 
+            // Update profile if needed
             if (displayName || profilePictureURL) {
                 await updateProfile(user, { 
                     displayName: displayName || user.displayName, 
                     photoURL: profilePictureURL || user.photoURL 
                 });
-            } 
-
-            //todo, handle email since it requires reauthentication 
-
+            }  
+    
+            // Handle email change
+            if (newEmail && newEmail !== user.email) {
+                // First re-authenticate
+                const credential = EmailAuthProvider.credential(user.email, password);
+                await reauthenticateWithCredential(user, credential);
+                
+                // Send verification email first
+                await sendEmailVerification(user);
+                
+                // Show verification modal with new email
+                setPendingEmail(newEmail); 
+                setIsVerificationModalOpen(true);
+                
+                // Don't update email yet - wait for verification
+                // The user will need to click the verification link
+                return;
+            }
+    
+            // If no email change, update local state and close modal
             await setUser({
                 ...user, 
-                name: displayName, 
-                photoURL: profilePictureURL
+                name: displayName || user.displayName, 
+                photoURL: profilePictureURL || user.photoURL,
             });
-
-
-
+            
+            setIsProfileModalOpen(false);
+    
         } catch (error) {
             console.error("Error updating profile:", error);
+            // Handle specific errors
+            if (error.code === 'auth/requires-recent-login') {
+                alert('Please log in again to update your email.');
+            } else {
+                alert(error.message);
+            }
+            throw error;
         }
-        // Add API call to update user information here if these values are not null 
+    };
 
-
-
-        setIsProfileModalOpen(false); 
-    }
-
+    
     return (
         <>
             <nav className="bg-white/95 backdrop-blur-lg border-b border-gray-200/50 w-full sticky top-0 z-50 shadow-sm">
@@ -110,6 +137,12 @@ export const NavBar = ({ title, settings }) => {
                 isOpen={isProfileModalOpen} 
                 onClose={handleCloseProfileModal} 
                 onSaveInformation={handleOnSaveInformation}
+            /> 
+
+            <VerificationModal
+                isOpen={isVerificationModalOpen}
+                onClose={handleCloseVerificationModal}
+                newEmail={pendingEmail}
             />
         </>
     );
