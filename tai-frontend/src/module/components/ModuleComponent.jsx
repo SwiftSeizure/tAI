@@ -1,7 +1,9 @@
 import React, { useState } from "react";  
 import DayComponent from "./DayComponent";
 import { FaBookOpen } from "react-icons/fa"; 
-import { useCurrentUser } from "../../store/user-store"; 
+import { useCurrentUser } from "../../store/user-store";  
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 
 /**
@@ -70,43 +72,54 @@ const ModuleComponent = ( {
         <> 
 
         {/* Everything this module will be wrapped in */}
-        <div > 
-
-            {user.role === "teacher" && (
-                <div className="mb-3">
-                    <button 
-                        onClick={handleOnClickDeleteModule}
-                        className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 hover:border-red-300 transition-all duration-200"
-                    >
-                        Delete Module
-                    </button>
-                </div>
-            )} 
-
+        <div className="mb-3"> 
 
             {/* Header section for the module */}
             <div  
-                className={`p-4 rounded-2xl cursor-pointer flex flex-row items-center transition-all duration-300 ease-in-out transform hover:scale-[1.02] shadow-sm border
-                    ${ isExpanded ? "bg-gradient-to-r from-green-500/60 to-emerald-500/60 border-green-400 scale-[1.02] font-bold text-white shadow-lg" : "bg-white border-gray-200 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:border-green-300 hover:shadow-md"
-                }`}
+                className={`p-3 rounded-lg cursor-pointer flex flex-row items-center justify-between transition-colors duration-200 border
+                    ${isExpanded 
+                        ? "bg-blue-600 border-blue-600 text-white shadow-sm" 
+                        : "bg-white border-gray-300 hover:bg-gray-50 hover:border-gray-400"
+                    }`}
                 onClick={toggleExpand} // Toggle expand/collapse on click
             >  
-                {/* Icon for the module */} 
-                <div className={`pr-3 text-xl transition-colors duration-300 ${isExpanded ? 'text-white' : 'text-green-600'}`}> 
-                    <FaBookOpen /> 
-                </div> 
+                <div className="flex items-center">
+                    {/* Icon for the module */} 
+                    <div className={`pr-3 text-lg transition-colors duration-200 ${isExpanded ? 'text-white' : 'text-blue-600'}`}> 
+                        <FaBookOpen /> 
+                    </div> 
 
-                {/* Title Text for the module */}
-                <div className={`font-nunito font-bold text-lg m-0 transition-colors duration-300 ${isExpanded ? 'text-white' : 'text-gray-700'}`}> 
-                    {module.name}    
-                </div> 
-            </div>  
+                    {/* Title Text for the module */}
+                    <div className={`font-medium text-sm transition-colors duration-200 ${isExpanded ? 'text-white' : 'text-gray-900'}`}> 
+                        {module.name}    
+                    </div>  
+                </div>
+
+                {user.role === "teacher" && (
+                    <button 
+                        onClick={(e) => {
+                            e.stopPropagation(); // Prevent toggling expand when clicking delete
+                            handleOnClickDeleteModule();
+                        }}
+                        className={`p-1.5 rounded-md transition-colors duration-200 ml-2 ${
+                            isExpanded 
+                                ? "text-white/90 hover:bg-white/20" 
+                                : "text-gray-400 hover:text-red-600 hover:bg-red-50"
+                        }`}
+                        title="Delete Module"
+                    >
+                        <DeleteIcon sx={{ fontSize: 18 }} />
+                    </button>
+                )}
+            </div>   
+            
 
             {/* Content section for the module, displayed only when expanded */}
             {isExpanded && module.days && ( 
-                <div className={`transition-all duration-500 ease-in-out overflow-hidden ${
-                        isExpanded ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}`}>   
-                    <ul className="">        
+                <div className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                        isExpanded ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
+                    }`}>   
+                    <ul className="mt-2 space-y-1.5 pl-2">        
                         {/* Map through the days in the module and render DayComponent for each day in the module*/}      
                         {Array.isArray(module.days) && [...module.days].map((day, index) => (   
                             <li 
@@ -129,10 +142,10 @@ const ModuleComponent = ( {
                             </li> 
                         ))}  
                         {user.role === "teacher" && (
-                            <div className="mt-3">
+                            <div className="mt-2">
                                 <button 
                                     onClick={() => onAddDay(module.id)}
-                                    className="px-4 py-2 text-sm font-semibold text-green-700 bg-gradient-to-r from-green-100 to-emerald-100 border border-green-200 rounded-xl hover:from-green-200 hover:to-emerald-200 hover:border-green-300 transition-all duration-300 shadow-sm hover:shadow-md"
+                                    className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 hover:border-blue-300 transition-colors duration-200"
                                 >
                                     + Add Day
                                 </button>

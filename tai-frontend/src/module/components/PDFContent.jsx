@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 const PDFContent = ({ fileURL }) => {
     const [scale, setScale] = useState(100);
 
-    // Ability to add the custom controlls here 
+    // Ability to add the custom controlls here  TODO to make look a lot better 
 
     // Build the PDF URL with zoom parameter
     const getPDFUrl = () => {
