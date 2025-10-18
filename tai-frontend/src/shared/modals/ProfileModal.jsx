@@ -150,48 +150,62 @@ export default function ProfileModal({ isOpen, onClose, onSaveInformation, curre
                                 id="email"
                                 value={newEmail}
                                 onChange={(e) => setNewEmail(e.target.value)}
-                                className="bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400"
+                                className="bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400"
                             />
                         </div>
                     </div>
 
                     {/* Password */}
                     {newEmail !== user.email && (
-    <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 border border-red-200 dark:border-red-800">
-        <div className="flex items-center">
-            <svg className="flex-shrink-0 w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h.01a1 1 0 100-2H10V9z" clipRule="evenodd" />
-            </svg>
-            <span className="font-medium">Security Verification Required</span>
-        </div>
-        <div className="mt-2 pl-8">
-            <div className="space-y-2">
-                <div>
-                    <label 
-                        htmlFor="password" 
-                        className="block text-sm font-medium text-red-700 dark:text-red-400"
-                    >
-                        Enter your current password to confirm email change
-                    </label>
-                    <div className="mt-1 relative rounded-md shadow-sm">
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="block w-full rounded-md border-red-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                            placeholder="••••••••"
-                            autoComplete="current-password"
-                        />
-                    </div>
-                    <p className="mt-1 text-xs text-red-600 dark:text-red-400">
-                        For security reasons, please verify your identity to change your email.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-)}
+                        <div className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 border border-red-200 dark:border-red-800">
+                            <div className="flex items-center">
+                                <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 bg-red-100 dark:bg-red-900/30 rounded-full mr-2">
+                                    <svg
+                                        className="w-5 h-5 text-red-600 dark:text-red-400"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 20 20"
+                                    >
+                                        <path
+                                            stroke="currentColor"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                        />
+                                    </svg>
+                                </div>
+                                <span className="font-medium">Security Verification Required</span>
+                            </div>
+                            <div className="mt-2 ">
+                                <div className="space-y-2">
+                                    <div>
+                                        <label 
+                                            htmlFor="password" 
+                                            className="block text-sm font-medium text-red-700 dark:text-red-400"
+                                        >
+                                            Enter your current password to confirm email change
+                                        </label>
+                                        <div className="mt-1 relative rounded-md shadow-sm">
+
+                                            <input
+                                                type="password"
+                                                id="password"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)} 
+                                                placeholder="••••••••"
+                                                className="bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-lg block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400"
+                                            />
+                                        </div>
+                                        <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+                                            For security reasons, please verify your identity to change your email.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Modal footer */}
                     <div className="flex items-center pt-4 border-t border-gray-200 dark:border-gray-600">
