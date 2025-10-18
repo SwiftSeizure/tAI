@@ -25,9 +25,6 @@ export const NavBar = ({ title, settings }) => {
     };
 
     const handleOpenProfile = () => { 
-
-        console.log("Edit Profile clicked");
-        // Add navigation or modal opening here  
         setIsProfileModalOpen(true); 
     }; 
 
@@ -39,16 +36,15 @@ export const NavBar = ({ title, settings }) => {
         setIsVerificationModalOpen(false);
     } 
 
-    const handleOnSaveInformation = async (profilePictureURL, displayName, newEmail, password) => { 
-        console.log("Save Information clicked"); 
+    const handleOnSaveInformation = async (avatarFile, displayName, newEmail, password) => { 
         const user = auth.currentUser; 
     
         try { 
             // Update profile if needed
-            if (displayName || profilePictureURL) {
+            if (displayName || avatarFile) {
                 await updateProfile(user, { 
                     displayName: displayName || user.displayName, 
-                    photoURL: profilePictureURL || user.photoURL 
+                    photoURL: avatarFile || user.photoURL 
                 });
             }  
     
@@ -65,8 +61,7 @@ export const NavBar = ({ title, settings }) => {
                 setPendingEmail(newEmail); 
                 setIsVerificationModalOpen(true);
                 
-                // Don't update email yet - wait for verification
-                // The user will need to click the verification link
+                // Don't update email yet - wait for verification then will update once they login
                 return;
             }
     
@@ -74,7 +69,7 @@ export const NavBar = ({ title, settings }) => {
             await setUser({
                 ...user, 
                 name: displayName || user.displayName, 
-                photoURL: profilePictureURL || user.photoURL,
+                photoURL: avatarFile || user.photoURL,
             });
             
             setIsProfileModalOpen(false);
@@ -119,24 +114,32 @@ export const NavBar = ({ title, settings }) => {
                         </h1>
                     </div>
 
-                    {/* Right side: Profile */}
-                    <div className="flex items-center gap-4 min-w-[140px] justify-end">
-                        <button
-                            className="group flex items-center gap-3 px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:ring-blue-200 transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95 border border-blue-500/20"
-                            onClick={handleOpenProfile}
-                            title="Edit Profile"
-                        >
-                            <AccountCircleIcon fontSize="small" className="group-hover:scale-110 transition-transform duration-300" />
-                            <span className="hidden sm:inline font-medium">Profile</span>
-                        </button>
-                    </div>
+                    <button onClick={handleOpenProfile}>  
+                        {user.photoURL ? (
+                            <img 
+                                className="w-10 h-10 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500" 
+                                src={user.photoURL} 
+                                alt="Bordered avatar"
+                            />
+                        ) : (
+                            <div className="relative w-10 h-10">
+                                <div className="absolute inset-0 rounded-full ring-2 ring-gray-300 dark:ring-gray-500" />
+                                <div className="relative inline-flex items-center justify-center w-full h-full overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                                    <span className="font-medium text-gray-600 dark:text-gray-300">
+                                        {user.displayName?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase()}
+                                    </span>
+                                </div>
+                            </div>
+                        )}
+                    </button>
                 </div>
             </nav> 
 
             <ProfileModal
                 isOpen={isProfileModalOpen} 
                 onClose={handleCloseProfileModal} 
-                onSaveInformation={handleOnSaveInformation}
+                onSaveInformation={handleOnSaveInformation} 
+                user={user}
             /> 
 
             <VerificationModal

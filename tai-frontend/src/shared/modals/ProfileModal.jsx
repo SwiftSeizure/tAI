@@ -1,12 +1,7 @@
 import React, { useRef, useEffect, useState } from "react"; 
-import { useCurrentUser } from "../../store/user-store";
 
-export default function ProfileModal({ isOpen, onClose, onSaveInformation, currentUser }) {
+export default function ProfileModal({ isOpen, onClose, onSaveInformation, user }) {
     const modalRef = useRef(null);  
-
-    // TODO: Add the functionality to update the display name here, send the API call in the NAV bar component and update the local storage there too
-
-    const { user } = useCurrentUser();
 
     const [displayName, setDisplayName] = useState(user?.displayName || "");
     const [newEmail, setNewEmail] = useState(user?.email || "");
@@ -34,7 +29,7 @@ export default function ProfileModal({ isOpen, onClose, onSaveInformation, curre
             document.removeEventListener('mousedown', handleClickOutside);
             document.body.style.overflow = 'unset';
         };
-    }, [isOpen, currentUser]);
+    }, [isOpen, user]);
 
     const handleSave = async () => {
         if (onSaveInformation) {
@@ -91,32 +86,28 @@ export default function ProfileModal({ isOpen, onClose, onSaveInformation, curre
                     <div className="space-y-4">
                         {/* Avatar */}  
 
-                        {/* TODO: Add avatar upload */}
-                        <div className="flex justify-center">
-                            <div className="relative">
-                                <div className="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center overflow-hidden">
-                                    {currentUser?.photoURL ? (
+                        {/* TODO: Add avatar upload */} 
+                        <div className="flex justify-center"> 
+                            <div className="relative w-24 h-24">
+                                {user?.photoURL ? (
+                                    <div className="w-full h-full p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500">
                                         <img 
-                                            src={currentUser.photoURL} 
+                                            src={user.photoURL} 
                                             alt="Profile" 
-                                            className="w-full h-full object-cover"
+                                            className="w-full h-full rounded-full object-cover"
                                         />
-                                    ) : (
-                                        <svg
-                                            className="w-12 h-12 text-gray-400 dark:text-gray-500"
-                                            fill="currentColor"
-                                            viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <path
-                                                fillRule="evenodd"
-                                                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                                                clipRule="evenodd"
-                                            />
-                                        </svg>
-                                    )}
-                                </div>
-                            </div>
+                                    </div>
+                                ) : (
+                                    <div className="relative w-full h-full">
+                                        <div className="absolute inset-0 rounded-full ring-2 ring-gray-300 dark:ring-gray-500" />
+                                        <div className="relative flex items-center justify-center w-full h-full overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                                            <span className="text-4xl font-medium text-gray-600 dark:text-gray-300">
+                                                {user?.displayName?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase()}
+                                            </span>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>  
                         </div>
 
                         {/* Display Name */}
