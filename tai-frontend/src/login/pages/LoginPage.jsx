@@ -1,6 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword, signInWithPopup, getAuth, createUserWithEmailAndPassword, updateProfile, setPersistence, browserSessionPersistence } from 'firebase/auth';
+import { 
+    signInWithEmailAndPassword, 
+    signInWithPopup, 
+    getAuth, 
+    createUserWithEmailAndPassword, 
+    updateProfile, 
+    setPersistence, 
+    browserSessionPersistence 
+} from 'firebase/auth';
 import { auth, googleProvider } from '../../auth/firebase';
 import { useUser } from '../../store/user-store';
 import { AuthModal } from '../modals/AuthModal'; 
