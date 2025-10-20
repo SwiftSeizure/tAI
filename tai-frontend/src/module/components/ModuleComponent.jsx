@@ -85,12 +85,12 @@ const ModuleComponent = ( {
             >  
                 <div className="flex items-center">
                     {/* Icon for the module */} 
-                    <div className={`pr-3 text-lg transition-colors duration-200 ${isExpanded ? 'text-white' : 'text-blue-600'}`}> 
+                    <div className={`pr-2 text-base transition-colors duration-200 ${isExpanded ? 'text-white' : 'text-blue-600'}`}> 
                         <FaBookOpen /> 
                     </div> 
 
                     {/* Title Text for the module */}
-                    <div className={`font-medium text-sm transition-colors duration-200 ${isExpanded ? 'text-white' : 'text-gray-900'}`}> 
+                    <div className={`font-semibold text-sm transition-colors duration-200 ${isExpanded ? 'text-white' : 'text-gray-900'}`}> 
                         {module.name}    
                     </div>  
                 </div>
@@ -101,7 +101,7 @@ const ModuleComponent = ( {
                             e.stopPropagation(); // Prevent toggling expand when clicking delete
                             handleOnClickDeleteModule();
                         }}
-                        className={`p-1.5 rounded-md transition-colors duration-200 ml-2 ${
+                        className={`p-1.5 rounded-lg transition-colors duration-200 ml-2 ${
                             isExpanded 
                                 ? "text-white/90 hover:bg-white/20" 
                                 : "text-gray-400 hover:text-red-600 hover:bg-red-50"
@@ -145,7 +145,7 @@ const ModuleComponent = ( {
                             <div className="mt-2">
                                 <button 
                                     onClick={() => onAddDay(module.id)}
-                                    className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 hover:border-blue-300 transition-colors duration-200"
+                                    className="px-3 py-2 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 hover:border-blue-300 transition-colors duration-200 w-full"
                                 >
                                     + Add Day
                                 </button>
