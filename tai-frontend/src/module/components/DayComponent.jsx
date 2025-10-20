@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";  
-import { FaFile, FaTrash } from "react-icons/fa";
+import { FaFile } from "react-icons/fa";
 import { MdAssignment } from "react-icons/md"; 
 import { motion, AnimatePresence } from 'framer-motion'; 
 import { useCurrentUser } from "../../store/user-store"; 
 import { useDay } from "../../store/day-store"; 
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 import { getDayAssignments } from "../services/get-day-assignments"; 
@@ -111,31 +112,34 @@ const DayComponent = ( {
 
 
     return (
-        <div className={`p-3 m-2 rounded-xl font-nunito ease-in-out duration-300 opacity-0 animate-fade-in-slide-up transform border shadow-sm
+        <div className={`p-3 rounded-lg cursor-pointer transition-all duration-200 border
             ${isExpanded
-              ? "bg-gradient-to-r from-green-400/35 to-emerald-400/65 border-green-300 font-bold pb-4 text-white shadow-md"
-              : "bg-white border-gray-200 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:border-green-300 hover:font-semibold hover:scale-[1.01] text-gray-700 hover:shadow-md"}
+              ? "bg-green-500 border-green-500 text-white shadow-sm"
+              : "bg-white border-gray-300 hover:bg-gray-50 hover:border-gray-400"}
           `}
             onClick={handleDayClicked}>
-                <h4 className={`pl-4 text-lg transition-colors duration-300 ${isExpanded ? "pb-3 font-bold text-white" : "pb-0 font-semibold"}`}>
+                <h4 className={`font-semibold text-sm transition-colors duration-200 ${isExpanded ? "text-white mb-3" : "text-gray-900"}`}>
                     {day?.name} 
                 </h4>
 
             {/* Content section for the day */}
             {isExpanded && (
-                <div className="p-2 bg-white rounded-lg">
+                <div className="bg-white rounded-lg p-3">
                     {loading ? (
-                        <div className="flex items-center pl-4 gap-3">
+                        <div className="flex items-center gap-3 text-gray-600">
                             <div className="w-5 h-5 border-[3px] border-blue-400 border-opacity-30 border-t-blue-500 rounded-full animate-spin"></div>
-                            <span>Loading resources...</span>
+                            <span className="text-sm">Loading resources...</span>
                         </div>
                     ) : (
                         <AnimatePresence>
                             <>
                             {user.role === "teacher" && (
                                 <button 
-                                    onClick={() => handleOnClickDeleteDay(day)}
-                                    className="mb-3 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 hover:border-red-300 transition-all duration-200"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleOnClickDeleteDay(day);
+                                    }}
+                                    className="mb-3 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 hover:border-red-300 transition-colors duration-200"
                                 >
                                     Delete Day
                                 </button>
@@ -146,23 +150,24 @@ const DayComponent = ( {
                                         initial={{ height: 0, opacity: 0 }}
                                         animate={{ height: "auto", opacity: 1 }}
                                         exit={{ height: 0, opacity: 0 }}
-                                        transition={{ duration: 0.4 }}
+                                        transition={{ duration: 0.3 }}
+                                        className="mb-3"
                                     >
-                                        <h5 className="font-nunito font-bold text-md text-gray-500 uppercase tracking-wide m-2">
+                                        <h5 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
                                             Materials
                                         </h5>
-                                        <ul>
+                                        <ul className="space-y-1.5">
                                             {materials.map(material => (
-                                                <li key={`material-${material.id}`}> 
+                                                <li key={`material-${material.id}`} className="flex items-center gap-1"> 
                                                     <button
-                                                        className={`flex items-center py-3 ml-1 mr-3 px-4 rounded-xl bg-white border hover:translate-x-1 ease-in-out duration-300 w-full max-w-[calc(100%-1rem)] shadow-sm hover:shadow-md ${selectedContent && selectedContent.name === material.name ? 'bg-blue-50 border-blue-300 translate-x-1 shadow-md' : 'border-gray-200 hover:border-blue-200 hover:bg-blue-50'}`}
+                                                        className={`flex items-center gap-2 py-2 px-3 rounded-lg border transition-all duration-200 flex-1 ${selectedContent && selectedContent.name === material.name ? 'bg-blue-50 border-blue-300 shadow-sm' : 'bg-white border-gray-200 hover:border-blue-200 hover:bg-blue-50'}`}
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             onMaterialSelect(day.id, material);
                                                         }}
                                                     >
-                                                        <FaFile className="mr-3 text-base text-green-500 flex-shrink-0" />
-                                                        <span className="font-sans text-sm text-gray-700 font-medium tracking-wide truncate">{material.name}</span>
+                                                        <FaFile className="text-sm text-green-500 flex-shrink-0" />
+                                                        <span className="text-sm text-gray-700 font-medium truncate">{material.name}</span>
                                                     </button> 
                                                     {user.role === "teacher" && (
                                                         <button 
@@ -171,10 +176,10 @@ const DayComponent = ( {
                                                                 handleOnClickDeleteMaterial(material); 
                                                                 setSelectedDay(day); 
                                                             }} 
-                                                            className="ml-2 p-2 rounded-lg hover:bg-red-50 transition-all duration-200 group"
+                                                            className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors duration-200"
                                                             title="Delete Material"
-                                                            > 
-                                                            <FaTrash className="text-sm text-red-400 group-hover:text-red-600 transition-colors" />
+                                                        > 
+                                                            <DeleteIcon sx={{ fontSize: 18 }} />
                                                         </button>
                                                     )}
                                                 </li> 
@@ -185,13 +190,13 @@ const DayComponent = ( {
                                 )} 
                                 {user.role === "teacher" && (
                                     <button 
-                                        className="flex items-center py-3 ml-1 px-4 rounded-xl bg-gradient-to-r from-green-100 to-emerald-100 border border-green-200 hover:from-green-200 hover:to-emerald-200 hover:border-green-300 hover:translate-x-1 ease-in-out duration-300 shadow-sm hover:shadow-md"
+                                        className="mb-3 px-3 py-2 text-sm font-medium text-green-600 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 hover:border-green-300 transition-colors duration-200 w-full"
                                         onClick={ (e) => {
                                             e.stopPropagation();
                                             handleAddMaterial(day.id)
                                         }}
                                     >
-                                        <span className="font-sans text-sm text-green-700 font-semibold tracking-wide">+ Add Material</span>
+                                        + Add Material
                                     </button> 
                                 )}
             
@@ -201,16 +206,17 @@ const DayComponent = ( {
                                         initial={{ height: 0, opacity: 0 }}
                                         animate={{ height: "auto", opacity: 1 }}
                                         exit={{ height: 0, opacity: 0 }}
-                                        transition={{ duration: 0.4 }}
+                                        transition={{ duration: 0.3 }}
+                                        className="mb-3"
                                     >
-                                        <h5 className="font-nunito font-bold text-md text-gray-500 uppercase tracking-wide m-2">
+                                        <h5 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
                                             Assignments
                                         </h5>
-                                        <ul>
+                                        <ul className="space-y-1.5">
                                             {assignments.map(assignment => (
-                                                <li key={`assignment-${assignment.id}`} > 
+                                                <li key={`assignment-${assignment.id}`} className="flex items-center gap-1"> 
                                                     <button
-                                                        className={`flex items-center py-3 ml-1 mr-3 px-4 rounded-xl bg-white border hover:translate-x-1 ease-in-out duration-300 w-full max-w-[calc(100%-1rem)] shadow-sm hover:shadow-md ${selectedContent && selectedContent.name === assignment.name ? 'bg-blue-50 border-blue-300 translate-x-1 shadow-md' : 'border-gray-200 hover:border-blue-200 hover:bg-blue-50'}`}
+                                                        className={`flex items-center gap-2 py-2 px-3 rounded-lg border transition-all duration-200 flex-1 ${selectedContent && selectedContent.name === assignment.name ? 'bg-blue-50 border-blue-300 shadow-sm' : 'bg-white border-gray-200 hover:border-blue-200 hover:bg-blue-50'}`}
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             onAssignmentSelect(day.id, assignment); 
@@ -218,8 +224,8 @@ const DayComponent = ( {
                                                         }} 
                                                     >
                                                 
-                                                        <MdAssignment className="mr-3 text-base text-emerald-500 flex-shrink-0" />
-                                                        <span className="font-sans text-sm text-gray-700 font-medium tracking-wide truncate">{assignment.name}</span>
+                                                        <MdAssignment className="text-sm text-emerald-500 flex-shrink-0" />
+                                                        <span className="text-sm text-gray-700 font-medium truncate">{assignment.name}</span>
                                                     </button> 
                                                     {user.role === "teacher" && (
                                                         <button 
@@ -227,10 +233,10 @@ const DayComponent = ( {
                                                                 e.stopPropagation();
                                                                 handleOnClickDeleteAssignment(assignment)
                                                             }} 
-                                                            className="ml-2 p-2 rounded-lg hover:bg-red-50 transition-all duration-200 group"
+                                                            className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors duration-200"
                                                             title="Delete Assignment"
                                                         > 
-                                                            <FaTrash className="text-sm text-red-400 group-hover:text-red-600 transition-colors" />
+                                                            <DeleteIcon sx={{ fontSize: 18 }} />
                                                         </button>
                                                     )}
                                                 </li>
@@ -240,13 +246,13 @@ const DayComponent = ( {
                                 )}  
                                 {user.role === "teacher" && (
                                     <button 
-                                        className="flex items-center py-3 ml-1 px-4 rounded-xl bg-gradient-to-r from-green-100 to-emerald-100 border border-green-200 hover:from-green-200 hover:to-emerald-200 hover:border-green-300 hover:translate-x-1 ease-in-out duration-300 shadow-sm hover:shadow-md"
+                                        className="px-3 py-2 text-sm font-medium text-green-600 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 hover:border-green-300 transition-colors duration-200 w-full"
                                         onClick={ (e) => {
                                             e.stopPropagation();
                                             handleAddAssignment(day.id); 
                                         }}
                                     >
-                                        <span className="font-sans text-sm text-green-700 font-semibold tracking-wide">+ Add Assignment</span>
+                                        + Add Assignment
                                     </button>
                                 )}
                             </>
