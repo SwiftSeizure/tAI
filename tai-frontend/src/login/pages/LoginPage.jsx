@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup, getAuth, createUserWithEmailAndPassword, updateProfile, setPersistence, browserSessionPersistence } from 'firebase/auth';
 import { auth, googleProvider } from '../../auth/firebase';
 import { useUser } from '../../store/user-store';
 import { AuthModal } from '../modals/AuthModal'; 
@@ -157,7 +157,10 @@ const LoginPage = () => {
                 role: userRole,
                 email: userCredentials.user.email,
                 token: idToken
-            });
+            }); 
+
+            const auth = getAuth();
+            setPersistence(auth, browserSessionPersistence);
             
             setIsAuthModalOpen(false);
             navigate('/home');
@@ -217,7 +220,10 @@ const LoginPage = () => {
                 email: userCredentials.user.email,
                 token: idToken,
                 profilePicture: userCredentials.user.photoURL
-            });
+            }); 
+
+            const auth = getAuth();
+            setPersistence(auth, browserSessionPersistence);
             
             setIsAuthModalOpen(false);
             navigate('/home');
