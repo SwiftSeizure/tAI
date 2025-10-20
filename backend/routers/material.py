@@ -28,7 +28,7 @@ router=APIRouter(prefix="/material", tags=["material"])
 
 #BASE_DIR = Path(__file__).parent.parent.parent
 
-DATA_ROOT = Path(os.getenv("DATA_ROOT", Path(__file__).parent))
+DATA_ROOT = Path(os.environ["DATA_ROOT"], Path(__file__).parent)
 
 
 #Create a validator instance
