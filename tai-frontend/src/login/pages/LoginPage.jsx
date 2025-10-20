@@ -288,26 +288,26 @@ const LoginPage = () => {
 
     return (
         <>
-            <div className="h-screen w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient flex flex-col items-center justify-start overflow-y-auto relative">
+            <div className="min-h-screen w-full bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 bg-[length:200%_200%] flex flex-col items-center justify-start overflow-y-auto relative" style={{animation: 'gradient-shift 15s ease-in-out infinite'}}>
                 
                 {/* Subtle Background Elements */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute -top-40 -right-32 w-80 h-80 bg-blue-100 rounded-full opacity-20 blur-3xl"></div>
-                    <div className="absolute top-80 -left-40 w-80 h-80 bg-purple-100 rounded-full opacity-20 blur-3xl"></div>
+                    <div className="absolute -top-40 -right-32 w-80 h-80 bg-purple-100 rounded-full opacity-30 blur-3xl"></div>
+                    <div className="absolute top-80 -left-40 w-80 h-80 bg-blue-100 rounded-full opacity-30 blur-3xl"></div>
                 </div>
 
                 {/* Hero Section */}
-                <section className="pt-32 pb-16 text-center w-3/4 relative z-10">
-                    <div className="max-w-2xl mx-auto">
+                <section className="pt-32 pb-20 text-center w-full max-w-4xl px-6 relative z-10">
+                    <div className="max-w-3xl mx-auto">
                         {/* Main Title */}
                         <div 
                             ref={heroRef}
-                            className="opacity-0 translate-y-8 transition-all duration-1000 ease-out mb-8"
+                            className="opacity-0 translate-y-8 transition-all duration-1000 ease-out mb-6"
                         >
-                            <h1 className="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 leading-tight">
+                            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight mb-4">
                                 Welcome to Teaching
                                 <br />
-                                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                <span className="text-blue-600">
                                     Revolutionalized
                                 </span>
                             </h1>
@@ -316,9 +316,9 @@ const LoginPage = () => {
                         {/* Subtitle */}
                         <div 
                             ref={subtitleRef}
-                            className="opacity-0 translate-y-8 transition-all duration-1000 ease-out mb-10"
+                            className="opacity-0 translate-y-8 transition-all duration-1000 ease-out mb-12"
                         >
-                            <p className="text-lg text-gray-700 font-nunito leading-relaxed">
+                            <p className="text-lg text-gray-700 leading-relaxed max-w-2xl mx-auto">
                                 {subTitle}
                             </p>
                         </div>
@@ -330,38 +330,50 @@ const LoginPage = () => {
                         >
                             <button 
                                 type="button" 
-                                className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                                className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-colors duration-200 shadow-sm hover:shadow-md"
                                 onClick={handleLoginClick}
                             >
-                                Login to Learn
+                                Get Started
                             </button>
                         </div>
                     </div>
                 </section>
 
                 {/* Content Sections with Scroll Reveal */}
-                <section className="w-full bg-white py-20 relative z-10">
-                    <div className="max-w-4xl mx-auto px-4">
+                <section className="w-full py-20 relative z-10">
+                    <div className="max-w-4xl mx-auto px-6">
                         {/* Section Header */}
                         <div 
                             ref={sectionHeaderRef}
-                            className="text-center mb-12 opacity-0 translate-y-8 transition-all duration-1000 ease-out"
+                            className="text-center mb-16 opacity-0 translate-y-8 transition-all duration-1000 ease-out"
                         >
-                            <h2 className="text-3xl font-bold mb-4">The Future of Education</h2>
+                            <h2 className="text-3xl font-bold text-gray-900 mb-2">The Future of Education</h2>
+                            <p className="text-gray-700">Discover what makes our platform different</p>
                         </div>
 
-                        {contentSections.map((section, i) => (
-                            <div
-                                key={i}
-                                ref={el => sectionsRef.current[i] = el}
-                                className="opacity-0 translate-y-10 transition-all duration-700 ease-out mb-16 text-center"
-                            >
-                                <h3 className="text-2xl font-semibold text-gray-900 mb-4">{section.title}</h3>
-                                <p className="text-lg text-gray-700 leading-relaxed">{section.content}</p>
-                            </div>
-                        ))}
+                        <div className="space-y-16">
+                            {contentSections.map((section, i) => (
+                                <div
+                                    key={i}
+                                    ref={el => sectionsRef.current[i] = el}
+                                    className="opacity-0 translate-y-10 transition-all duration-700 ease-out text-center bg-white/60 backdrop-blur-sm rounded-2xl p-8 shadow-lg"
+                                >
+                                    <h3 className="text-2xl font-semibold text-gray-900 mb-4">{section.title}</h3>
+                                    <p className="text-lg text-gray-700 leading-relaxed">{section.content}</p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </section>
+
+                {/* Footer */}
+                <footer className="w-full py-8 relative z-10 border-t border-white/20">
+                    <div className="max-w-4xl mx-auto px-6 text-center">
+                        <p className="text-sm text-gray-700">
+                            © 2025 Teaching Revolutionalized. All rights reserved.
+                        </p>
+                    </div>
+                </footer>
             </div>
 
             <AuthModal
@@ -398,24 +410,9 @@ const LoginPage = () => {
                     transform: translateY(0) !important;
                 }
                 
-                @keyframes scrollGradient {
-                    0% { background-position: 0% 0%; }
-                    50% { background-position: 0% 100%; }
-                    100% { background-position: 0% 0%; }
-                }
-                
-                .animate-scrollGradient {
-                    animation: scrollGradient 10s ease-in-out infinite;
-                }
-                
                 @keyframes gradient-shift {
                     0%, 100% { background-position: 0% 50%; }
                     50% { background-position: 100% 50%; }
-                }
-                
-                .animate-gradient-shift {
-                    background-size: 200% 200%;
-                    animation: gradient-shift 8s ease-in-out infinite;
                 }
             `}</style>
         </>
