@@ -10,7 +10,9 @@ import { deleteClass } from "../services/delete-class";
 import { getStudentsEnrolled } from "../services/get-students-enrolled";  
 import { deleteStudentFromClass } from "../services/delete-student-from-class";  
 import { postPublishClass } from "../services/post-publish-class";   
-import { putUpdateClassSettings } from "../services/put-update-class-settings";
+import { putUpdateClassSettings } from "../services/put-update-class-settings"; 
+import { postCanvasCode } from "../services/post-canvas-code"; 
+import { putUpdateClassName } from "../services/put-update-class-name";
 
 import DeleteModal from "../../shared/modals/DeleteModal"; 
 import RosterModal from "../modals/RosterModal";
@@ -104,8 +106,21 @@ const TeacherStudentHomePage = () => {
 
     const handleOnSaveSettings = async (formData) => { 
         try { 
-            //This is where updating logic will go  
-            await putUpdateClassSettings(selectedClass.id, formData); 
+            //This is where updating logic will go   
+            //TODO: Update name separately 
+            if (formData.name) {
+                await putUpdateClassName(selectedClass.id, formData.name); 
+            }
+
+            if (formData.settings) {
+                await putUpdateClassSettings(selectedClass.id, formData.settings); 
+            }
+
+            if (formData.canvasCode) {
+                await postCanvasCode(selectedClass.id, formData.canvasCode); 
+            }  
+            
+            await fetchClasses(user.id, user.role); 
             // Right now this handles both settings and name, now we need to update name then settings. 
             // refresh the classes here 
         }
@@ -302,7 +317,7 @@ const TeacherStudentHomePage = () => {
                     onClose={handleCloseSettingsModal}
                     classroom={selectedClass} 
                     onSaveSettings={handleOnSaveSettings} 
-                    onCanvasCodeChange={handleOnCanvasCodeChange}
+                    // onCanvasCodeChange={handleOnCanvasCodeChange}
                 />
             )} 
 

@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChatSettings } from "../components/ChatSettings";
 import { ClassSettings } from "../components/ClassSettings";   
-import { CanvasCodeSettings } from "../components/CanvasCodeSettings";
+import { CanvasCodeSettings } from "../components/CanvasCodeSettings"; 
 
-export const SettingsModal = ({ isOpen, onClose, classroom, onSaveSettings, onCanvasCodeChange }) => {
+
+export const SettingsModal = ({ isOpen, onClose, classroom, onSaveSettings }) => {
 	const modalRef = useRef(null);
 
 	const handleClickOutside = (event) => {
@@ -27,7 +28,8 @@ export const SettingsModal = ({ isOpen, onClose, classroom, onSaveSettings, onCa
 
 	const [formData, setFormData] = useState({
 		name: "",
-		settings: {}
+		settings: {},
+		canvasCode: ""
 	}); 
 
     if (!isOpen) {
@@ -55,7 +57,10 @@ export const SettingsModal = ({ isOpen, onClose, classroom, onSaveSettings, onCa
 	}; 
 
 	const handleCanvasCodeChange = (canvasCode) => {
-		
+		setFormData((prev) => ({
+			...prev,
+			canvasCode: canvasCode
+		}));
 	};
 
 	const handleOnClose = () => {

@@ -7,7 +7,7 @@ import { ClassSettings} from "../../shared/components/ClassSettings";
 import { useCurrentUser } from "../../store/user-store";
 import { useClass } from "../../store/class-store";
 import { CanvasCodeSettings } from "../../shared/components/CanvasCodeSettings";
-import { postCanvasCode } from "../services/postCanvasCode";
+import { postCanvasCode } from "../services/post-canvas-code";
 
 
 /**
@@ -48,13 +48,12 @@ const CreateClassPage = () => {
                     chatSetting: selectedChatSetting
                 }, 
                 published: false
-            };
+            }; 
 
-            const response = await postCreateClass(user.id, requestBody); 
+            const response = await postCreateClass(user.id, requestBody);  
             // Will have to split this up into 2 once routes are implemented 
             await fetchClasses(user.id, user.role);
-            await setCurrentClass(response.data.id);  
-
+            await setCurrentClass(response.data.id);   
             if (newCanvasCode !== "") {
                 await postCanvasCode(response.data.id, newCanvasCode);
             }
