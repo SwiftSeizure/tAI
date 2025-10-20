@@ -288,7 +288,7 @@ const LoginPage = () => {
 
     return (
         <>
-            <div className="min-h-screen w-full bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 bg-[length:200%_200%] flex flex-col items-center justify-start overflow-y-auto relative" style={{animation: 'gradient-shift 15s ease-in-out infinite'}}>
+           <div className="min-h-screen w-full flex flex-col items-center justify-start overflow-y-auto relative gradient-bg">
                 
                 {/* Subtle Background Elements */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -328,13 +328,16 @@ const LoginPage = () => {
                             ref={buttonRef}
                             className="opacity-0 translate-y-8 transition-all duration-1000 ease-out"
                         >
-                            <button 
-                                type="button" 
-                                className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-colors duration-200 shadow-sm hover:shadow-md"
-                                onClick={handleLoginClick}
-                            >
-                                Get Started
-                            </button>
+<button
+  type="button"
+  className="px-8 py-3 bg-white text-gray-800 font-medium rounded-xl 
+             shadow-md hover:shadow-lg hover:bg-gray-50 
+             transition-all duration-200 border border-gray-200"
+  onClick={handleLoginClick}
+> 
+<span className="relative z-10 text-blue-600">Get Started</span>
+</button>
+
                         </div>
                     </div>
                 </section>
@@ -367,10 +370,10 @@ const LoginPage = () => {
                 </section>
 
                 {/* Footer */}
-                <footer className="w-full py-8 relative z-10 border-t border-white/20">
+                <footer className="w-full py-6 bg-gray-200 border-t border-gray-200">
                     <div className="max-w-4xl mx-auto px-6 text-center">
-                        <p className="text-sm text-gray-700">
-                            © 2025 Teaching Revolutionalized. All rights reserved.
+                        <p className="text-sm text-gray-500">
+                            © 2025 TAi. All rights reserved.
                         </p>
                     </div>
                 </footer>
@@ -398,23 +401,42 @@ const LoginPage = () => {
                 username={username}
                 setUsername={setUsername}
             />
+        <style jsx>{`
+            .gradient-bg {
+                background: linear-gradient(-45deg, #add8e6, #ffb6c1, #90ee90, #add8e6);
+                background-size: 400% 400%;
+                animation: gradientCycle 20s ease infinite;
+            }
+            
+            @keyframes gradientCycle {
+                0% {
+                    background-position: 0% 50%;
+                }
+                25% {
+                    background-position: 50% 100%;
+                }
+                50% {
+                    background-position: 100% 50%;
+                }
+                75% {
+                    background-position: 50% 0%;
+                }
+                100% {
+                    background-position: 0% 50%;
+                }
+            }
+            
+            .animate-in {
+                opacity: 1 !important;
+                transform: translateY(0) !important;
+            }
+            
+            .fade-in-up {
+                opacity: 1 !important;
+                transform: translateY(0) !important;
+            }
+        `}</style>
 
-            <style jsx>{`
-                .animate-in {
-                    opacity: 1 !important;
-                    transform: translateY(0) !important;
-                }
-                
-                .fade-in-up {
-                    opacity: 1 !important;
-                    transform: translateY(0) !important;
-                }
-                
-                @keyframes gradient-shift {
-                    0%, 100% { background-position: 0% 50%; }
-                    50% { background-position: 100% 50%; }
-                }
-            `}</style>
         </>
     );
 };
