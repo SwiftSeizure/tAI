@@ -22,7 +22,7 @@ class DBTeacher(Base):
     name = Column(String(25), nullable=False)
     userName = Column(String(25), nullable=False)
     password_hash = Column(String(255), nullable=False)
-    profilePic = Column(String(225), nullable=True) # the value of this is the path to the profile picture
+    # profilePic = Column(String(225), nullable=True) # the value of this is the path to the profile picture - commented out until feature is implemented
     
     classes = relationship("DBClass", back_populates="owner", cascade="all, delete")
 

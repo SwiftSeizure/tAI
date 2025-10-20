@@ -17,6 +17,43 @@ def InitializeDB():
     Base.metadata.create_all(bind=engine)
     print("Database tables created successfully.")
 
+def MigrateDB():
+    """Migrate existing database to add missing columns"""
+    print("Migrating database schema...")
+    
+    db: Session = SessionLocal()
+    try:
+        from sqlalchemy import text
+        
+        # Add profilePic column to teacher table if it doesn't exist
+        try:
+            db.execute(text("ALTER TABLE teacher ADD COLUMN \"profilePic\" VARCHAR(225)"))
+            print("Added 'profilePic' column to teacher table.")
+        except Exception as e:
+            if "already exists" in str(e) or "duplicate column" in str(e):
+                print("'profilePic' column already exists in teacher table.")
+            else:
+                print(f"Error adding profilePic column: {e}")
+        
+        # Add published column to unit table if it doesn't exist
+        try:
+            db.execute(text("ALTER TABLE unit ADD COLUMN published BOOLEAN NOT NULL DEFAULT false"))
+            print("Added 'published' column to unit table.")
+        except Exception as e:
+            if "already exists" in str(e) or "duplicate column" in str(e):
+                print("'published' column already exists in unit table.")
+            else:
+                print(f"Error adding published column: {e}")
+        
+        db.commit()
+        print("Database migration completed successfully.")
+        
+    except Exception as e:
+        db.rollback()
+        print(f"Error during migration: {e}")
+    finally:
+        db.close()
+
 def PopulateDB(file: str = SEED_FILE_PATH): 
     # Drop and recreate database schema only when explicitly called
     Base.metadata.drop_all(bind=engine)
