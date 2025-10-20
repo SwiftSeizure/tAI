@@ -301,7 +301,8 @@ const TeacherStudentHomePage = () => {
                     isOpen={isSettingsModalOpen}
                     onClose={handleCloseSettingsModal}
                     classroom={selectedClass} 
-                    onSaveSettings={handleOnSaveSettings}
+                    onSaveSettings={handleOnSaveSettings} 
+                    onCanvasCodeChange={handleOnCanvasCodeChange}
                 />
             )} 
 

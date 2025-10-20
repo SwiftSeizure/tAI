@@ -6,6 +6,8 @@ import { ChatSettings } from "../../shared/components/ChatSettings";
 import { ClassSettings} from "../../shared/components/ClassSettings";
 import { useCurrentUser } from "../../store/user-store";
 import { useClass } from "../../store/class-store";
+import { CanvasCodeSettings } from "../../shared/components/CanvasCodeSettings";
+import { postCanvasCode } from "../services/postCanvasCode";
 
 
 /**
@@ -19,14 +21,25 @@ const CreateClassPage = () => {
     // TODO: Add the functionality to create a class here 
     const [newClassName, setNewClassName] = useState(""); 
     const [selectedChatSetting, setSelectedChatSetting] = useState(null);
-    
+    const [newCanvasCode, setNewCanvasCode] = useState("");
+
     const { user } = useCurrentUser(); 
     const [, { fetchClasses, setCurrentClass } ] = useClass();  
     const navigate = useNavigate();
 
 
     const handleCreateClass = async (e) => {  
-        e.preventDefault();
+        e.preventDefault(); 
+
+        if (newClassName === "") {
+            alert("Please enter a class name.");
+            return;
+        }
+
+        if (selectedChatSetting === null) {
+            alert("Please select a chat setting.");
+            return;
+        }
 
         try {  
             const requestBody = { 
@@ -40,17 +53,15 @@ const CreateClassPage = () => {
             const response = await postCreateClass(user.id, requestBody); 
             // Will have to split this up into 2 once routes are implemented 
             await fetchClasses(user.id, user.role);
-            await setCurrentClass(response.data.id); 
-            navigate('/unitpage');
+            await setCurrentClass(response.data.id);  
 
-            // show class code if present in the response (try several common keys)
-            //const classCode = response?.data?.classCode ?? response?.data?.code ?? response?.data?.class_code;
-            const classCode = response.data.classCode;
-            if (classCode) {
-                alert(`Class code: ${classCode}`);
-            } else {
-                console.warn('CreateClassPage: class code not found in response', response);
+            if (newCanvasCode !== "") {
+                await postCanvasCode(response.data.id, newCanvasCode);
             }
+
+
+
+            navigate('/unitpage');
             
         }
 
@@ -65,7 +76,11 @@ const CreateClassPage = () => {
 
     const handleClassNameChange = (className) => {
         setNewClassName(className);
-    };
+    }; 
+
+    const handleCanvasCodeChange = (canvasCode) => {
+        setNewCanvasCode(canvasCode);
+    }; 
 
 
 
@@ -84,6 +99,10 @@ const CreateClassPage = () => {
 
                         <ChatSettings 
                             onSettingsChange={handleSettingsChange}
+                        /> 
+
+                        <CanvasCodeSettings 
+                            onCanvasCodeChange={handleCanvasCodeChange}
                         />
 
                         <div className="flex justify-center">
