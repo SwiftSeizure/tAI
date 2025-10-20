@@ -28,7 +28,8 @@ router=APIRouter(prefix="/material", tags=["material"])
 
 #BASE_DIR = Path(__file__).parent.parent.parent
 
-DATA_ROOT = Path(os.environ["DATA_ROOT"], Path(__file__).parent)
+# Use DATA_ROOT from env if provided (Fly sets "/var/appdata"), otherwise default to project root
+DATA_ROOT = Path(os.getenv("DATA_ROOT") or str(Path(__file__).parent.parent.parent))
 
 
 #Create a validator instance
@@ -146,7 +147,7 @@ async def upload_single_file(dayID: int,
 
     UPLOAD_DIR = DATA_ROOT / "uploads" / "material" / str(dayID)
 
-    UPLOAD_DIR.mkdir(exist_ok=True)
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
     
     # Use the original filename from the uploaded file
     if not file.filename:
