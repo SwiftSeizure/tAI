@@ -115,13 +115,13 @@ export const NavBar = ({ title, settings }) => {
                     </div>
 
                     <button onClick={handleOpenProfile}>  
-                        {user.photoURL ? (
+                        {/* {user.photoURL ? (
                             <img 
                                 className="w-10 h-10 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500" 
                                 src={user.photoURL} 
                                 alt="Bordered avatar"
                             />
-                        ) : (
+                        ) : ( */}
                             <div className="relative w-10 h-10">
                                 <div className="absolute inset-0 rounded-full ring-2 ring-gray-300 dark:ring-gray-500" />
                                 <div className="relative inline-flex items-center justify-center w-full h-full overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
@@ -130,7 +130,7 @@ export const NavBar = ({ title, settings }) => {
                                     </span>
                                 </div>
                             </div>
-                        )}
+                        {/* )} */}
                     </button>
                 </div>
             </nav> 

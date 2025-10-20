@@ -89,7 +89,7 @@ export default function ProfileModal({ isOpen, onClose, onSaveInformation, user 
                         {/* TODO: Add avatar upload */} 
                         <div className="flex justify-center"> 
                             <div className="relative w-24 h-24">
-                                {user?.photoURL ? (
+                                {/* {user?.photoURL ? (
                                     <div className="w-full h-full p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500">
                                         <img 
                                             src={user.photoURL} 
@@ -97,7 +97,7 @@ export default function ProfileModal({ isOpen, onClose, onSaveInformation, user 
                                             className="w-full h-full rounded-full object-cover"
                                         />
                                     </div>
-                                ) : (
+                                ) : ( */}
                                     <div className="relative w-full h-full">
                                         <div className="absolute inset-0 rounded-full ring-2 ring-gray-300 dark:ring-gray-500" />
                                         <div className="relative flex items-center justify-center w-full h-full overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
@@ -106,7 +106,7 @@ export default function ProfileModal({ isOpen, onClose, onSaveInformation, user 
                                             </span>
                                         </div>
                                     </div>
-                                )}
+                                {/* )} */}
                             </div>  
                         </div>
 
