@@ -288,26 +288,26 @@ const LoginPage = () => {
 
     return (
         <>
-            <div className="h-screen w-screen bg-gradient-to-b from-blue-200 via-green-200 to-blue-200 bg-[length:100%_200%] animate-scrollGradient flex flex-col items-center justify-start overflow-y-auto relative">
+           <div className="min-h-screen w-full flex flex-col items-center justify-start overflow-y-auto relative gradient-bg">
                 
                 {/* Subtle Background Elements */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute -top-40 -right-32 w-80 h-80 bg-blue-100 rounded-full opacity-20 blur-3xl"></div>
-                    <div className="absolute top-80 -left-40 w-80 h-80 bg-purple-100 rounded-full opacity-20 blur-3xl"></div>
+                    <div className="absolute -top-40 -right-32 w-80 h-80 bg-purple-100 rounded-full opacity-30 blur-3xl"></div>
+                    <div className="absolute top-80 -left-40 w-80 h-80 bg-blue-100 rounded-full opacity-30 blur-3xl"></div>
                 </div>
 
                 {/* Hero Section */}
-                <section className="pt-32 pb-16 text-center w-3/4 relative z-10">
-                    <div className="max-w-2xl mx-auto">
+                <section className="pt-32 pb-20 text-center w-full max-w-4xl px-6 relative z-10">
+                    <div className="max-w-3xl mx-auto">
                         {/* Main Title */}
                         <div 
                             ref={heroRef}
-                            className="opacity-0 translate-y-8 transition-all duration-1000 ease-out mb-8"
+                            className="opacity-0 translate-y-8 transition-all duration-1000 ease-out mb-6"
                         >
-                            <h1 className="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 leading-tight">
+                            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight mb-4">
                                 Welcome to Teaching
                                 <br />
-                                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                <span className="text-blue-600">
                                     Revolutionalized
                                 </span>
                             </h1>
@@ -316,9 +316,9 @@ const LoginPage = () => {
                         {/* Subtitle */}
                         <div 
                             ref={subtitleRef}
-                            className="opacity-0 translate-y-8 transition-all duration-1000 ease-out mb-10"
+                            className="opacity-0 translate-y-8 transition-all duration-1000 ease-out mb-12"
                         >
-                            <p className="text-lg text-gray-700 font-nunito leading-relaxed">
+                            <p className="text-lg text-gray-700 leading-relaxed max-w-2xl mx-auto">
                                 {subTitle}
                             </p>
                         </div>
@@ -328,40 +328,55 @@ const LoginPage = () => {
                             ref={buttonRef}
                             className="opacity-0 translate-y-8 transition-all duration-1000 ease-out"
                         >
-                            <button 
-                                type="button" 
-                                className="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-                                onClick={handleLoginClick}
-                            >
-                                Login to Learn
-                            </button>
+<button
+  type="button"
+  className="px-8 py-3 bg-white text-gray-800 font-medium rounded-xl 
+             shadow-md hover:shadow-lg hover:bg-gray-50 
+             transition-all duration-200 border border-gray-200"
+  onClick={handleLoginClick}
+> 
+<span className="relative z-10 text-blue-600">Get Started</span>
+</button>
+
                         </div>
                     </div>
                 </section>
 
                 {/* Content Sections with Scroll Reveal */}
-                <section className="w-full bg-white py-20 relative z-10">
-                    <div className="max-w-4xl mx-auto px-4">
+                <section className="w-full py-20 relative z-10">
+                    <div className="max-w-4xl mx-auto px-6">
                         {/* Section Header */}
                         <div 
                             ref={sectionHeaderRef}
-                            className="text-center mb-12 opacity-0 translate-y-8 transition-all duration-1000 ease-out"
+                            className="text-center mb-16 opacity-0 translate-y-8 transition-all duration-1000 ease-out"
                         >
-                            <h2 className="text-3xl font-bold mb-4">The Future of Education</h2>
+                            <h2 className="text-3xl font-bold text-gray-900 mb-2">The Future of Education</h2>
+                            <p className="text-gray-700">Discover what makes our platform different</p>
                         </div>
 
-                        {contentSections.map((section, i) => (
-                            <div
-                                key={i}
-                                ref={el => sectionsRef.current[i] = el}
-                                className="opacity-0 translate-y-10 transition-all duration-700 ease-out mb-16 text-center"
-                            >
-                                <h3 className="text-2xl font-semibold text-gray-900 mb-4">{section.title}</h3>
-                                <p className="text-lg text-gray-700 leading-relaxed">{section.content}</p>
-                            </div>
-                        ))}
+                        <div className="space-y-16">
+                            {contentSections.map((section, i) => (
+                                <div
+                                    key={i}
+                                    ref={el => sectionsRef.current[i] = el}
+                                    className="opacity-0 translate-y-10 transition-all duration-700 ease-out text-center bg-white/60 backdrop-blur-sm rounded-2xl p-8 shadow-lg"
+                                >
+                                    <h3 className="text-2xl font-semibold text-gray-900 mb-4">{section.title}</h3>
+                                    <p className="text-lg text-gray-700 leading-relaxed">{section.content}</p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </section>
+
+                {/* Footer */}
+                <footer className="w-full py-6 bg-gray-200 border-t border-gray-200">
+                    <div className="max-w-4xl mx-auto px-6 text-center">
+                        <p className="text-sm text-gray-500">
+                            © 2025 TAi. All rights reserved.
+                        </p>
+                    </div>
+                </footer>
             </div>
 
             <AuthModal
@@ -386,38 +401,42 @@ const LoginPage = () => {
                 username={username}
                 setUsername={setUsername}
             />
+        <style jsx>{`
+            .gradient-bg {
+                background: linear-gradient(-45deg, #add8e6, #ffb6c1, #90ee90, #add8e6);
+                background-size: 400% 400%;
+                animation: gradientCycle 20s ease infinite;
+            }
+            
+            @keyframes gradientCycle {
+                0% {
+                    background-position: 0% 50%;
+                }
+                25% {
+                    background-position: 50% 100%;
+                }
+                50% {
+                    background-position: 100% 50%;
+                }
+                75% {
+                    background-position: 50% 0%;
+                }
+                100% {
+                    background-position: 0% 50%;
+                }
+            }
+            
+            .animate-in {
+                opacity: 1 !important;
+                transform: translateY(0) !important;
+            }
+            
+            .fade-in-up {
+                opacity: 1 !important;
+                transform: translateY(0) !important;
+            }
+        `}</style>
 
-            <style jsx>{`
-                .animate-in {
-                    opacity: 1 !important;
-                    transform: translateY(0) !important;
-                }
-                
-                .fade-in-up {
-                    opacity: 1 !important;
-                    transform: translateY(0) !important;
-                }
-                
-                @keyframes scrollGradient {
-                    0% { background-position: 0% 0%; }
-                    50% { background-position: 0% 100%; }
-                    100% { background-position: 0% 0%; }
-                }
-                
-                .animate-scrollGradient {
-                    animation: scrollGradient 10s ease-in-out infinite;
-                }
-                
-                @keyframes gradient-shift {
-                    0%, 100% { background-position: 0% 50%; }
-                    50% { background-position: 100% 50%; }
-                }
-                
-                .animate-gradient-shift {
-                    background-size: 200% 200%;
-                    animation: gradient-shift 8s ease-in-out infinite;
-                }
-            `}</style>
         </>
     );
 };

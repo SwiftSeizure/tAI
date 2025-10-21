@@ -422,11 +422,13 @@ const TeacherStudentModulePage = () => {
                         />
                     ))}
 
+                    {/* Add Module Button */}
                     {user.role === "teacher" && (
                         <button 
                             onClick={() => setShowAddModuleModal(true)}
-                            className="mt-6 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-2xl hover:from-green-700 hover:to-emerald-700 focus:ring-4 focus:ring-green-200 transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95 border border-green-500/20"
+                            className="w-full p-3 rounded-lg border-2 border-dashed border-gray-300 bg-white hover:bg-gray-50 hover:border-blue-400 transition-colors duration-200 text-gray-600 hover:text-blue-600 font-medium text-sm flex items-center justify-center gap-2"
                         >
+                            <span className="text-lg">+</span>
                             Add Module
                         </button>
                     )}
