@@ -30,7 +30,7 @@ router=APIRouter(prefix="/assignment", tags=["assignment"])
 
 #BASE_DIR = Path(__file__).parent.parent.parent
 
-DATA_ROOT = Path(os.getenv("DATA_ROOT", Path(__file__).parent.parent.parent))
+DATA_ROOT = Path(os.getenv("DATA_ROOT") or str(Path(__file__).parent.parent.parent))
 
 
 
