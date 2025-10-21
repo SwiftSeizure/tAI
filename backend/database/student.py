@@ -179,7 +179,8 @@ def create_student(teacherID: str, name: str, username: str, session: Session) -
     new_student = DBStudent(
         id=teacherID,
         name=name,
-        userName=username
+        userName=username,
+        password_hash="firebase_auth"  # Placeholder for Firebase-authenticated users
     )
     
     # Add student to database

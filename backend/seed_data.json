@@ -7,7 +7,7 @@
       "password_hash": "hashed_pw_1"
     },
     {
-      "id": "2AxKHm2eHjQ5syF2jB3Qug4b9ua2",
+      "id": "MoXcBl1ofcYvVTqlUI8TGgoImzN2",
       "name": "Ms. Smith",
       "userName": "smithman",
       "password_hash": "hashed_pw_1"
@@ -49,7 +49,7 @@
     {
       "id": 1,
       "name": "Classroom 1",
-      "ownerID": "2AxKHm2eHjQ5syF2jB3Qug4b9ua2",
+      "ownerID": "MoXcBl1ofcYvVTqlUI8TGgoImzN2",
       "settings": {
         "difficulty": "medium"
       },
@@ -69,7 +69,7 @@
     {
       "id": 3,
       "name": "Classroom 3",
-      "ownerID": "2AxKHm2eHjQ5syF2jB3Qug4b9ua2",
+      "ownerID": "MoXcBl1ofcYvVTqlUI8TGgoImzN2",
       "settings": {
         "difficulty": "medium"
       },

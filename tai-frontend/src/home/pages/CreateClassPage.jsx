@@ -6,6 +6,8 @@ import { ChatSettings } from "../../shared/components/ChatSettings";
 import { ClassSettings} from "../../shared/components/ClassSettings";
 import { useCurrentUser } from "../../store/user-store";
 import { useClass } from "../../store/class-store";
+import { CanvasCodeSettings } from "../../shared/components/CanvasCodeSettings";
+import { postCanvasCode } from "../services/post-canvas-code";
 
 
 /**
@@ -19,14 +21,25 @@ const CreateClassPage = () => {
     // TODO: Add the functionality to create a class here 
     const [newClassName, setNewClassName] = useState(""); 
     const [selectedChatSetting, setSelectedChatSetting] = useState(null);
-    
+    const [newCanvasCode, setNewCanvasCode] = useState("");
+
     const { user } = useCurrentUser(); 
     const [, { fetchClasses, setCurrentClass } ] = useClass();  
     const navigate = useNavigate();
 
 
     const handleCreateClass = async (e) => {  
-        e.preventDefault();
+        e.preventDefault(); 
+
+        if (newClassName === "") {
+            alert("Please enter a class name.");
+            return;
+        }
+
+        if (selectedChatSetting === null) {
+            alert("Please select a chat setting.");
+            return;
+        }
 
         try {  
             const requestBody = { 
@@ -35,22 +48,19 @@ const CreateClassPage = () => {
                     chatSetting: selectedChatSetting
                 }, 
                 published: false
-            };
+            }; 
 
-            const response = await postCreateClass(user.id, requestBody); 
+            const response = await postCreateClass(user.id, requestBody);  
             // Will have to split this up into 2 once routes are implemented 
             await fetchClasses(user.id, user.role);
-            await setCurrentClass(response.data.id); 
-            navigate('/unitpage');
-
-            // show class code if present in the response (try several common keys)
-            //const classCode = response?.data?.classCode ?? response?.data?.code ?? response?.data?.class_code;
-            const classCode = response.data.classCode;
-            if (classCode) {
-                alert(`Class code: ${classCode}`);
-            } else {
-                console.warn('CreateClassPage: class code not found in response', response);
+            await setCurrentClass(response.data.id);   
+            if (newCanvasCode !== "") {
+                await postCanvasCode(response.data.id, newCanvasCode);
             }
+
+
+
+            navigate('/unitpage');
             
         }
 
@@ -65,35 +75,54 @@ const CreateClassPage = () => {
 
     const handleClassNameChange = (className) => {
         setNewClassName(className);
-    };
+    }; 
+
+    const handleCanvasCodeChange = (canvasCode) => {
+        setNewCanvasCode(canvasCode);
+    }; 
 
 
 
     return(  
         <>  
-        <NavBar title={"Create a Class"} />
-        
-        <form onSubmit={handleCreateClass} className="flex flex-col items-center">
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 bg-[length:200%_200%]" style={{animation: 'gradient-shift 15s ease-in-out infinite'}}>
+            <NavBar title={"Create a Class"} />
+            
+            <div className="max-w-2xl mx-auto mt-8">
+                <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
 
-            <ClassSettings 
-                onClassNameChange={handleClassNameChange}
-            />
+                    <form onSubmit={handleCreateClass} className="space-y-8"> 
+                        <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-2 text-center">
+                            Class Settings
+                        </h3> 
 
-            <ChatSettings 
-                onSettingsChange={handleSettingsChange}
-            />
+                        <ClassSettings 
+                            onClassNameChange={handleClassNameChange}
+                        />
 
-            <button 
-                type="submit"
-                className="inline-block w-[200px] cursor-pointer border-2 border-gray-300 rounded-lg p-4 m-2 bg-transparent
-                         font-medium text-[1.1rem] text-gray-800 text-center font-nunito
-                         transition-all duration-300 ease-in-out
-                         hover:border-gray-400 hover:-translate-y-1 hover:shadow-lg
-                         active:-translate-y-0.5 active:shadow-md
-                         focus:outline-none focus:outline-offset-2">
-                Create Class
-            </button>
-        </form>
+                        <ChatSettings 
+                            onSettingsChange={handleSettingsChange}
+                        /> 
+
+                        <CanvasCodeSettings 
+                            onCanvasCodeChange={handleCanvasCodeChange}
+                        />
+
+                        <div className="flex justify-center">
+                            <button 
+                                type="submit"
+                                className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg 
+                                         hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 
+                                         focus:ring-blue-500 transition-colors duration-200 shadow-sm
+                                         hover:shadow-md w-full sm:w-auto"
+                            >
+                                Create Class
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         </>
     ); 
 

@@ -23,6 +23,7 @@ from backend.exceptions import EntityNotFoundException, UploadNotFoundException,
 
 
 
+
 """ 
 https://medium.com/%40gabriel.cournelle/firebase-authentication-in-the-backend-with-fastapi-4ff3d5db55ca
 Firebase Auth Flow implimented from the above link

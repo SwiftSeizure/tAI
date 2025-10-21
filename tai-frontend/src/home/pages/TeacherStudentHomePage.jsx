@@ -11,6 +11,8 @@ import { getStudentsEnrolled } from "../services/get-students-enrolled";
 import { deleteStudentFromClass } from "../services/delete-student-from-class";  
 import { postPublishClass } from "../services/post-publish-class";   
 import { putUpdateClassSettings } from "../services/put-update-class-settings"; 
+import { postCanvasCode } from "../services/post-canvas-code"; 
+import { putUpdateClassName } from "../services/put-update-class-name";
 
 import DeleteModal from "../../shared/modals/DeleteModal"; 
 import RosterModal from "../modals/RosterModal";
@@ -104,8 +106,21 @@ const TeacherStudentHomePage = () => {
 
     const handleOnSaveSettings = async (formData) => { 
         try { 
-            //This is where updating logic will go  
-            await putUpdateClassSettings(selectedClass.id, formData); 
+            //This is where updating logic will go   
+            //TODO: Update name separately 
+            if (formData.name) {
+                await putUpdateClassName(selectedClass.id, formData.name); 
+            }
+
+            if (formData.settings) {
+                await putUpdateClassSettings(selectedClass.id, formData.settings); 
+            }
+
+            if (formData.canvasCode) {
+                await postCanvasCode(selectedClass.id, formData.canvasCode); 
+            }  
+            
+            await fetchClasses(user.id, user.role); 
             // Right now this handles both settings and name, now we need to update name then settings. 
             // refresh the classes here 
         }
@@ -246,14 +261,7 @@ const TeacherStudentHomePage = () => {
 
     return ( 
         <>   
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 relative overflow-hidden">
-                
-                {/* Subtle Background Elements */}
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute -top-40 -right-32 w-96 h-96 bg-blue-100 rounded-full opacity-20 blur-3xl"></div>
-                    <div className="absolute top-1/3 -left-40 w-96 h-96 bg-purple-100 rounded-full opacity-20 blur-3xl"></div>
-                    <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-green-100 rounded-full opacity-20 blur-3xl"></div>
-                </div>
+            <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 bg-[length:200%_200%]" style={{animation: 'gradient-shift 15s ease-in-out infinite'}}>
 
                 {/* NavBar */}
                 <NavBar title={title} />
@@ -262,15 +270,17 @@ const TeacherStudentHomePage = () => {
                 <div className="relative max-w-7xl mx-auto px-6 py-12">
                     
                     {/* Section Header */}
-                    <div className="mb-12">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                            {user?.role === 'teacher' ? 'Your Classes' : 'My Classes'}
-                        </h2>
-                        <p className="text-gray-600">
+                    <div className="mx-auto bg-white rounded-2xl shadow-sm p-6 mb-8 border border-gray-100 w-fit">
+                        <div className="flex flex-col items-center justify-center gap-2">
+                            <h2 className="text-3xl font-bold text-gray-900">
+                                {user?.role === 'teacher' ? 'Your Classes' : 'My Classes'}
+                            </h2> 
+                            <p className="text-gray-600">
                             {user?.role === 'teacher' 
                                 ? 'Manage your classes and track student progress' 
                                 : 'Access your enrolled classes and learning materials'}
                         </p>
+                        </div>
                     </div>
 
                     {/* Grid container for class cards */}
@@ -306,7 +316,8 @@ const TeacherStudentHomePage = () => {
                     isOpen={isSettingsModalOpen}
                     onClose={handleCloseSettingsModal}
                     classroom={selectedClass} 
-                    onSaveSettings={handleOnSaveSettings}
+                    onSaveSettings={handleOnSaveSettings} 
+                    // onCanvasCodeChange={handleOnCanvasCodeChange}
                 />
             )} 
 
