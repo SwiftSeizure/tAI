@@ -41,8 +41,6 @@ const DayComponent = ( {
     // State to store assignments for the day
     const [assignments, setAssignments] = useState([]);
 
-    const [selected, setSelected] = useState([null]); 
-
     // State to store loading state
     const [loading, setLoading] = useState(false); 
 

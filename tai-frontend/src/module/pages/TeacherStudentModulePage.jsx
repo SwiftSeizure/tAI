@@ -444,11 +444,11 @@ const TeacherStudentModulePage = () => {
      */
  return(  
     <>   
-            <div className="h-screen w-screen bg-gradient-to-br from-gray-50 via-green-50 to-emerald-50 bg-[length:100%_200%] animate-scrollGradient">
+        <div className="h-screen w-screen bg-gradient-to-br from-gray-50 via-green-50 to-emerald-50 bg-[length:100%_200%] animate-scrollGradient">
         
         <NavBar title={currentUnit?.name || 'Loading...'} /> 
 
-        <div className="grid grid-cols-[300px_1fr_auto] gap-6 p-6 relative h-[calc(90vh-90px)] max-w-full overflow-x-hidden">  
+        <div className="grid grid-cols-[300px_1fr_auto] gap-6 p-6 relative h-[calc(100vh-90px)] max-w-full overflow-x-hidden">  
             {/* Sidebar for modules */}
             <div className="bg-white rounded-2xl shadow-lg p-6 overflow-auto">
                 {renderModules()} 
