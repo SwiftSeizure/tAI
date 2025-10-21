@@ -13,22 +13,18 @@ export const ClassSettings = ({ onClassNameChange }) => {
 
     return (
         <div className="w-full max-w-2xl"> 
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2 text-center">
-                Class Settings
-            </h3>
             
-            <div className="space-y-3">
+            <div className="space-y-2">
+
+                
+                <div className="space-y-2">
+
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2 text-center">
+                            Class Name
+                        </h3> 
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                     Enter a name for your class.
                 </p>
-                
-                <div className="space-y-2">
-                    <label
-                        htmlFor="class-name-input"
-                        className="block text-sm font-semibold text-gray-900 dark:text-white mb-1"
-                    >
-                        Class Name
-                    </label>
                     <input
                         id="class-name-input"
                         type="text"
