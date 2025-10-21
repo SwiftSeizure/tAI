@@ -30,7 +30,7 @@ router=APIRouter(prefix="/assignment", tags=["assignment"])
 
 #BASE_DIR = Path(__file__).parent.parent.parent
 
-DATA_ROOT = Path(os.getenv("DATA_ROOT", Path(__file__).parent.parent.parent))
+DATA_ROOT = Path(os.getenv("DATA_ROOT") or str(Path(__file__).parent.parent.parent))
 
 
 
@@ -181,7 +181,7 @@ async def upload_assignment(dayID: int,
 
     UPLOAD_DIR = DATA_ROOT / "uploads" / "assignment" / str(dayID)
 
-    UPLOAD_DIR.mkdir(exist_ok=True)
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
     
     # Use the original filename from the uploaded file
     if not file.filename:

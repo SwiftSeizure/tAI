@@ -6,14 +6,15 @@ primary_region = "den"
   # uses your Dockerfile automatically
 
 [env]
-  DATA_ROOT = "/var/appdata"
+  DATA_ROOT = "/var/data"
   PORT = "8080"
   NODE_ENV = "production"
-  INIT_DB_TABLES_ONLY = "true"
+  MIGRATE_DB = "true"
+  FIREBASE_ACTIVE = "true"
 
 [[mounts]]
   source = "data"
-  destination = "/var/appdata"
+  destination = "/var/data"
 
 [[services]]
   internal_port = 8080
