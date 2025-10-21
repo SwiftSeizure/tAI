@@ -19,8 +19,7 @@ export const ClassSettings = ({ onClassNameChange }) => {
             
             <div className="space-y-3">
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Enter a name for your class (if left blank, the class name will
-                    stay the same).
+                    Enter a name for your class.
                 </p>
                 
                 <div className="space-y-2">
