@@ -237,6 +237,7 @@ const LoginPage = () => {
             navigate('/home');
         } catch (error) {
             console.error(error);
+            setIsLoginLoading(false);
             // Clean up temporary storage on error
             localStorage.removeItem('pendingUserRole');
             localStorage.removeItem('pendingUserFullName');
@@ -272,6 +273,7 @@ const LoginPage = () => {
             navigate('/home');
         } catch (error) {
             console.error(error);
+            setIsLoginLoading(false);
             setLoginError("Failed to sign in with Google. Please try again.");
         } finally {
             setIsLoginLoading(false);
@@ -403,7 +405,7 @@ const LoginPage = () => {
             />
         <style jsx>{`
             .gradient-bg {
-                background: linear-gradient(-45deg, #add8e6, #ffb6c1, #90ee90, #add8e6);
+                background: linear-gradient(-45deg, #add8e6, #ffb6c1,rgb(158, 236, 158), #add8e6);
                 background-size: 400% 400%;
                 animation: gradientCycle 20s ease infinite;
             }
