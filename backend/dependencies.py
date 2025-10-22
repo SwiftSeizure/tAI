@@ -9,10 +9,10 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 # Database connection URL
-DB_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.environ["DATABASE_URL"]
 
 # Create an engine that will connect to the database
-engine = create_engine(DB_URL, pool_size=5, max_overflow=10)
+engine = create_engine(DATABASE_URL, pool_size=5, max_overflow=10)
 
 # Create a session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

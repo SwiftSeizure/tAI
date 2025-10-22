@@ -91,7 +91,11 @@ const CreateClassPage = () => {
             <div className="max-w-2xl mx-auto mt-8">
                 <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
 
-                    <form onSubmit={handleCreateClass} className="space-y-8">
+                    <form onSubmit={handleCreateClass} className="space-y-8"> 
+                        <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-2 text-center">
+                            Class Settings
+                        </h3> 
+
                         <ClassSettings 
                             onClassNameChange={handleClassNameChange}
                         />

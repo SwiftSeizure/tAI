@@ -3,7 +3,7 @@ from fastapi.responses import FileResponse
 from typing import Annotated
 from fastapi import Depends
 from backend.auth import get_firebase_user_from_token
-from backend.exceptions import UploadNotFoundException, ClientErrorResponse, DuplicateNameException
+from backend.exceptions import UploadNotFoundException, ClientErrorResponse, DuplicateNameException, UnauthorizedException
 from backend.database import material as db_material
 from backend.database import day as db_day
 from backend.dependencies import DBSession
@@ -28,7 +28,8 @@ router=APIRouter(prefix="/material", tags=["material"])
 
 #BASE_DIR = Path(__file__).parent.parent.parent
 
-DATA_ROOT = Path(os.getenv("DATA_ROOT", Path(__file__).parent.parent.parent))
+# Use DATA_ROOT from env if provided (Fly sets "/var/appdata"), otherwise default to project root
+DATA_ROOT = Path(os.getenv("DATA_ROOT") or str(Path(__file__).parent.parent.parent))
 
 
 #Create a validator instance
@@ -136,7 +137,7 @@ async def upload_single_file(dayID: int,
     user_id = user["uid"]
     teacher_id = db_day.get_teacher_by_day_id(dayID, session)
     if user_id != teacher_id and user_id != "test-user":
-            raise UnauthorizedException("delete assignment") 
+            raise UnauthorizedException("upload assignment") 
     
     """Upload a single file with basic validation"""
     if file.filename == "":
@@ -146,7 +147,7 @@ async def upload_single_file(dayID: int,
 
     UPLOAD_DIR = DATA_ROOT / "uploads" / "material" / str(dayID)
 
-    UPLOAD_DIR.mkdir(exist_ok=True)
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
     
     # Use the original filename from the uploaded file
     if not file.filename:
