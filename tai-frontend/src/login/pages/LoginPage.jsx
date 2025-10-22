@@ -167,8 +167,8 @@ const LoginPage = () => {
                 token: idToken
             }); 
 
-            const auth = getAuth();
-            setPersistence(auth, browserSessionPersistence);
+            const auth = await getAuth();
+            await setPersistence(auth, browserSessionPersistence);
             
             setIsAuthModalOpen(false);
             navigate('/home');
@@ -230,8 +230,8 @@ const LoginPage = () => {
                 profilePicture: userCredentials.user.photoURL
             }); 
 
-            const auth = getAuth();
-            setPersistence(auth, browserSessionPersistence);
+            const auth = await getAuth();
+            await setPersistence(auth, browserSessionPersistence);
             
             setIsAuthModalOpen(false);
             navigate('/home');
