@@ -2,8 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
     signInWithEmailAndPassword, 
-    signInWithPopup, 
-    getAuth, 
+    signInWithPopup,
     createUserWithEmailAndPassword, 
     updateProfile, 
     setPersistence, 
@@ -167,7 +166,6 @@ const LoginPage = () => {
                 token: idToken
             }); 
 
-            const auth = await getAuth();
             await setPersistence(auth, browserSessionPersistence);
             
             setIsAuthModalOpen(false);
@@ -230,7 +228,6 @@ const LoginPage = () => {
                 profilePicture: userCredentials.user.photoURL
             }); 
 
-            const auth = await getAuth();
             await setPersistence(auth, browserSessionPersistence);
             
             setIsAuthModalOpen(false);
