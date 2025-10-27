@@ -5,34 +5,33 @@ import TeacherStudentUnitPage from '../src/unit/pages/TeacherStudentUnitPage';
 import TeacherStudentModulePage from '../src/module/pages/TeacherStudentModulePage'; 
 import CreateClassPage from '../src/home/pages/CreateClassPage'; 
 import JoinClassPage from '../src/home/pages/JoinClassPage'; 
-import CreateUnitPage from '../src/unit/pages/CreateUnitPage';  
+import CreateUnitPage from '../src/unit/pages/CreateUnitPage';
+import NotFoundPage from './shared/pages/NotFoundPage';
 
 function App() { 
 
-  return (
-    <BrowserRouter>
-      <div className="App">
-        <Routes>  
+	return (
+	  	<BrowserRouter>
+	  	  	<div className="App">
+	  	  	  	<Routes>  
+	  	  	  	  	{/* Universal Routes */}
+	  	  	  	  	<Route path="/" element={<LoginPage />} />
 
-          {/* Universal Routes */}
-          <Route path="/" element={<LoginPage />} />
-           
-          <Route path="/home" element={<TeacherStudentHomePage /> } />    
-          <Route path="/unitpage" element={<TeacherStudentUnitPage /> } />     
-          <Route path="/modulepage" element={ <TeacherStudentModulePage /> } /> 
+	  	  	  	  	<Route path="/home" element={<TeacherStudentHomePage /> } />    
+	  	  	  	  	<Route path="/unitpage" element={<TeacherStudentUnitPage /> } />     
+	  	  	  	  	<Route path="/modulepage" element={ <TeacherStudentModulePage /> } /> 
 
-          {/* Class Specific Routes */}
-          <Route path="/createclass" element={ <CreateClassPage />} /> 
-          <Route path="/joinclass" element={ <JoinClassPage /> } /> 
+	  	  	  	  	{/* Class Specific Routes */}
+	  	  	  	  	<Route path="/createclass" element={ <CreateClassPage />} /> 
+	  	  	  	  	<Route path="/joinclass" element={ <JoinClassPage /> } /> 
+	  	  	  	  	{/* Unit Specific Routes */}
+	  	  	  	  	<Route path="/createunit" element={ <CreateUnitPage /> } />
 
-          {/* Unit Specific Routes */}
-          <Route path="/createunit" element={ <CreateUnitPage /> } />
-
-          
-        </Routes>
-      </div>
-    </BrowserRouter>
-  );
+  	  	  	  	  	{/* 404 - Catch all unmatched routes */}
+  	  	  	  	  	<Route path="*" element={<NotFoundPage />} />
+	  	  	  	</Routes>
+	  	  	</div>
+	  	</BrowserRouter>
+	);
 }
-
 export default App;
