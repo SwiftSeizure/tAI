@@ -140,18 +140,18 @@ const TeacherStudentUnitPage = () => {
             ))}  
             {user.role === "teacher" 
                 ? 
-                <>
-                    <UnitCard 
-                        key={null} 
-                        unit={null}  
-                        onClick={handleUnitSelect} 
-                        onClickDelete={handleOpenDeleteModal}
-                    />   
-                    
-                    <StatisticsCard />
-                </>
+                <UnitCard 
+                    key={null} 
+                    unit={null}  
+                    onClick={handleUnitSelect} 
+                    onClickDelete={handleOpenDeleteModal}
+                />   
                 : null
-            }
+            } 
+
+            {user.role === "teacher" && units.length > 0 && (
+                <StatisticsCard />
+            )}
             </>
         )
     };
