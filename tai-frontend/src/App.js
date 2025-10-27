@@ -23,7 +23,8 @@ function App() {
 
 	  	  	  	  	{/* Class Specific Routes */}
 	  	  	  	  	<Route path="/createclass" element={ <CreateClassPage />} /> 
-	  	  	  	  	<Route path="/joinclass" element={ <JoinClassPage /> } /> 
+	  	  	  	  	<Route path="/joinclass" element={ <JoinClassPage /> } />  
+					
 	  	  	  	  	{/* Unit Specific Routes */}
 	  	  	  	  	<Route path="/createunit" element={ <CreateUnitPage /> } />
 
