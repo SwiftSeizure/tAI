@@ -10,8 +10,9 @@ import { useIsAuthenticated } from "../../store/user-store";
 import { useAllUnits, useUnitLoading, useUnitError } from "../../store/unit-store"; 
 import DeleteModal from "../../shared/modals/DeleteModal";
 import { deleteUnit } from "../services/delete-unit"; 
-import { putPublishUnit } from "../services/put-publish-unit"; 
- 
+import { putPublishUnit } from "../services/put-publish-unit";  
+import { StatisticsCard } from "../components/StatisticsCard";
+
 
 /**
  * TeacherStudentUnitPage 
@@ -138,12 +139,17 @@ const TeacherStudentUnitPage = () => {
                 />
             ))}  
             {user.role === "teacher" 
-                ? <UnitCard 
-                    key={null} 
-                    unit={null}  
-                    onClick={handleUnitSelect} 
-                    onClickDelete={handleOpenDeleteModal}
-                />
+                ? 
+                <>
+                    <UnitCard 
+                        key={null} 
+                        unit={null}  
+                        onClick={handleUnitSelect} 
+                        onClickDelete={handleOpenDeleteModal}
+                    />   
+                    
+                    <StatisticsCard />
+                </>
                 : null
             }
             </>
