@@ -21,7 +21,7 @@ export default function NotFoundPage() {
                                        shadow-md hover:shadow-lg transition-all duration-200 focus:ring-4 
                                        focus:ring-blue-300 focus:outline-none"
                         >
-                            Back to Home
+                            Back to Login
                         </button>
                     </Link>
                 </div>
