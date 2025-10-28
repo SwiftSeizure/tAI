@@ -2,12 +2,15 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload, Session
 from backend.database.schema import DBClass, DBEnrolled, DBUnit,DBStudent
 from backend.exceptions import EntityNotFoundException, DuplicateNameException
-from backend.models import ClassroomStudent, CreateUnit, ClassroomNameUpdate, ClassroomSettingsUpdate
+from backend.models import ClassroomStudent, CreateUnit, ClassroomNameUpdate, ClassroomSettingsUpdate, CanvasData
 from backend.database.day import delete_day_files
 
+# Cavnas Stuff
 from cryptography.fernet import Fernet
 import os
 from dotenv import load_dotenv
+import httpx
+
 
 basedir = __import__("pathlib").Path(__file__).parent
 load_dotenv(basedir / ".env")   # loads .env in repo root
@@ -157,7 +160,7 @@ def update_classroom_settings(classroomID: int, settings: ClassroomSettingsUpdat
 
 
 
-def add_canvas_api_key(classID: int, api_key: str, session: Session):
+def add_canvas_api_key(classID: int, data: CanvasData, session: Session):
     """Add a new Canvas API key for a classroom.
         The API key is encrypted before being stored in the database.
     
@@ -173,7 +176,10 @@ def add_canvas_api_key(classID: int, api_key: str, session: Session):
     if not classroom:
         raise EntityNotFoundException("classroom", classID) # type: ignore
 
-    classroom.canvas_api_key = fernet.encrypt(api_key.encode()) # type: ignore
+    classroom.canvas_api_key = fernet.encrypt(data.api_key.encode()) # type: ignore
+    classroom.canvas_class_id = data.class_id # type: ignore
+    classroom.canvas_domain_name = data.domain_name # type: ignore
+    create_new_unit(classID, CreateUnit(name="Canvas Modules", settings={}, published=False), session)
     session.commit()
     
     
@@ -257,3 +263,14 @@ def update_classroom_published_status(classroomID: int, session: Session) -> Non
         raise EntityNotFoundException("classroom", classroomID) # type: ignore
     classroom.published = not classroom.published # type: ignore
     session.commit()
+    
+    
+    
+    
+# ---------------------------------------------------------------------------------------------#
+# Start of Canvas integration
+def get_canvas_class():
+    """Fetch class info from canvas."""
+    # TODO get class
+    # GET /api/v1/courses/:course_id
+    pass
