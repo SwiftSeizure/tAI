@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from .schema import DBMaterial, DBDay
+from .schema import DBMaterial, DBDay, DBPrompt_Count_Material
 from backend.exceptions import EntityNotFoundException, UploadNotFoundException
 from pathlib import Path
 
@@ -68,3 +68,17 @@ def get_RemoteID(path: str, session: Session):
     material = session.execute(stmt).scalar_one_or_none()
     ret = material.remoteID if material else None
     return ret 
+
+def increment_prompt_count_material(materialID: int, studentID: str, session: Session):
+    stmt = select(DBPrompt_Count_Material).filter(
+        DBPrompt_Count_Material.materialID == materialID,
+        DBPrompt_Count_Material.studentID == studentID
+    )
+    prompt_count = session.execute(stmt).scalar_one_or_none()
+    if not prompt_count:
+        prompt_count = DBPrompt_Count_Material(materialID=materialID, count=1)
+        session.add(prompt_count)
+    else:
+        prompt_count.count += 1
+    session.commit()
+    return prompt_count
