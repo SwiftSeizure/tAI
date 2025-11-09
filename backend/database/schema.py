@@ -75,7 +75,7 @@ class DBModule(Base):
     __tablename__ = "module"
 
     id = Column(Integer, primary_key = True, index = True)
-    name = Column(String(25), nullable=False)
+    name = Column(String(255), nullable=False)
     sequence = Column(Integer, nullable=False)
     unitID = Column(ForeignKey("unit.id",ondelete="CASCADE"))
 
@@ -83,6 +83,9 @@ class DBModule(Base):
     days = relationship("DBDay",back_populates="module",cascade="all, delete-orphan")
 
     settings = Column(JSON, nullable=True)
+    
+    canvas_id = Column(String(255), nullable=True)
+    
 
 
 class DBDay(Base):
@@ -158,4 +161,3 @@ class DBResponse(Base):
     conversation = relationship("DBConversation", back_populates="responses")    
 
     
-

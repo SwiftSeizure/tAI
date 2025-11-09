@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload, Session
-from backend.database.schema import DBClass, DBEnrolled, DBUnit,DBStudent
+from backend.database.schema import DBClass, DBEnrolled, DBUnit,DBStudent, DBModule
 from backend.exceptions import EntityNotFoundException, DuplicateNameException
 from backend.models import ClassroomStudent, CreateUnit, ClassroomNameUpdate, ClassroomSettingsUpdate, CanvasData
 from backend.database.day import delete_day_files
@@ -181,6 +181,7 @@ def add_canvas_api_key(classID: int, data: CanvasData, session: Session):
     classroom.canvas_domain_name = data.domain_name # type: ignore
     create_new_unit(classID, CreateUnit(name="Canvas Modules", settings={}, published=False), session)
     session.commit()
+    get_canvas_modules(classID, session)
     
     
 def delete_classroom(classroomID: int, session: Session) -> None:
@@ -269,8 +270,48 @@ def update_classroom_published_status(classroomID: int, session: Session) -> Non
     
 # ---------------------------------------------------------------------------------------------#
 # Start of Canvas integration
-def get_canvas_class():
-    """Fetch class info from canvas."""
-    # TODO get class
-    # GET /api/v1/courses/:course_id
-    pass
+def get_canvas_modules(classID: int, session: Session) -> None:
+    """Return DBModule objects for the unit named "Canvas Modules" in a class.
+
+    Returns None when Canvas connection info isn't configured on the classroom.
+    Raises EntityNotFoundException if the classroom or the "Canvas Modules" unit can't be found.
+    """
+    classroom = get_classroom(classID, session)
+    if not classroom:
+        raise EntityNotFoundException("classroom", classID) # type: ignore
+    
+    # Data needed for API call
+    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode() # type: ignore
+    class_id = classroom.canvas_class_id # type: ignore
+    domain_name = classroom.canvas_domain_name # type: ignore
+    
+    # Get the unit the modules will go in
+    stmt = select(DBUnit).filter(
+        DBUnit.classID == classID,
+        DBUnit.name == "Canvas Modules")
+    canvas_unit = session.execute(stmt).scalar_one_or_none()
+    if not canvas_unit:
+        raise EntityNotFoundException("unit", "Canvas Modules") # type: ignore  
+    
+    # Create the get request and call it
+    headers = {
+        "Authorization": f"Bearer {api_key}"
+    }
+    url = f"https://{domain_name}/api/v1/courses/{class_id}/modules"
+    r = httpx.get(url, headers=headers)
+    modules = r.json()
+    
+    # Add modules to the database
+    for module in modules:
+        if len(module['name']) > 255:
+            module['name'] = module['name'][:255]
+        db_module = DBModule(
+            name = module['name'],
+            sequence = module['position'],
+            unitID = canvas_unit.id,
+            canvas_id = module['id']  # type: ignore
+        )
+        session.add(db_module)
+    session.commit()
+
+    
