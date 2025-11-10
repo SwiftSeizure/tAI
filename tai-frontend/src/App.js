@@ -1,38 +1,41 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'; 
+import { BrowserRouter, Routes, Route } from 'react-router-dom'; 
 import LoginPage from '../src/login/pages/LoginPage'; 
 import TeacherStudentHomePage from '../src/home/pages/TeacherStudentHomePage'; 
 import TeacherStudentUnitPage from '../src/unit/pages/TeacherStudentUnitPage';
 import TeacherStudentModulePage from '../src/module/pages/TeacherStudentModulePage'; 
 import CreateClassPage from '../src/home/pages/CreateClassPage'; 
 import JoinClassPage from '../src/home/pages/JoinClassPage'; 
-import CreateUnitPage from '../src/unit/pages/CreateUnitPage';  
+import CreateUnitPage from '../src/unit/pages/CreateUnitPage';
+import NotFoundPage from './shared/pages/NotFoundPage';
+import ClassStatisticsPage from './shared/pages/ClassStatisticsPage';
 
 function App() { 
 
-  return (
-    <BrowserRouter>
-      <div className="App">
-        <Routes>  
+	return (
+	  	<BrowserRouter>
+	  	  	<div className="App">
+	  	  	  	<Routes>  
+	  	  	  	  	{/* Universal Routes */}
+	  	  	  	  	<Route path="/" element={<LoginPage />} />
 
-          {/* Universal Routes */}
-          <Route path="/" element={<LoginPage />} />
-           
-          <Route path="/home" element={<TeacherStudentHomePage /> } />    
-          <Route path="/unitpage" element={<TeacherStudentUnitPage /> } />     
-          <Route path="/modulepage" element={ <TeacherStudentModulePage /> } /> 
+	  	  	  	  	<Route path="/home" element={<TeacherStudentHomePage /> } />    
+	  	  	  	  	<Route path="/unitpage" element={<TeacherStudentUnitPage /> } />     
+	  	  	  	  	<Route path="/modulepage" element={ <TeacherStudentModulePage /> } /> 
 
-          {/* Class Specific Routes */}
-          <Route path="/createclass" element={ <CreateClassPage />} /> 
-          <Route path="/joinclass" element={ <JoinClassPage /> } /> 
+	  	  	  	  	{/* Class Specific Routes */}
+	  	  	  	  	<Route path="/createclass" element={ <CreateClassPage />} /> 
+	  	  	  	  	<Route path="/joinclass" element={ <JoinClassPage /> } />   
 
-          {/* Unit Specific Routes */}
-          <Route path="/createunit" element={ <CreateUnitPage /> } />
+					<Route path="/statistics" element={<ClassStatisticsPage />} />
 
-          
-        </Routes>
-      </div>
-    </BrowserRouter>
-  );
+	  	  	  	  	{/* Unit Specific Routes */}
+	  	  	  	  	<Route path="/createunit" element={ <CreateUnitPage /> } />
+
+  	  	  	  	  	{/* 404 - Catch all unmatched routes */}
+  	  	  	  	  	<Route path="*" element={<NotFoundPage />} />
+	  	  	  	</Routes>
+	  	  	</div>
+	  	</BrowserRouter>
+	);
 }
-
 export default App;
