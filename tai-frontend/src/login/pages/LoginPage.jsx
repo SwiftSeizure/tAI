@@ -150,6 +150,10 @@ const LoginPage = () => {
             const idToken = await userCredentials.user.getIdToken();
             await localStorage.setItem('authToken', idToken);
             
+            // If problems persist, add an API call to BE to ensure that user exists here
+            // This is a temporary fix to allow time for the user to be created and populated in the BE and Firebase
+            await new Promise(resolve => setTimeout(resolve, 5000));
+
             // Use existing getUserType infrastructure which will now create the account based on stored role
             const userRole = await getUserType();
             
@@ -327,16 +331,15 @@ const LoginPage = () => {
                             ref={buttonRef}
                             className="opacity-0 translate-y-8 transition-all duration-1000 ease-out"
                         >
-<button
-  type="button"
-  className="px-8 py-3 bg-white text-gray-800 font-medium rounded-xl 
-             shadow-md hover:shadow-lg hover:bg-gray-50 
-             transition-all duration-200 border border-gray-200"
-  onClick={handleLoginClick}
-> 
-<span className="relative z-10 text-blue-600">Get Started</span>
-</button>
-
+                            <button
+                              type="button"
+                              className="px-8 py-3 bg-white text-gray-800 font-medium rounded-xl 
+                                         shadow-md hover:shadow-lg hover:bg-gray-50 
+                                         transition-all duration-200 border border-gray-200"
+                              onClick={handleLoginClick}
+                            > 
+                            <span className="relative z-10 text-blue-600">Get Started</span>
+                            </button>
                         </div>
                     </div>
                 </section>
