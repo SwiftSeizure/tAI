@@ -9,6 +9,26 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarEle
 export default function ClassStatisticsPage() {
     const { currentClass } = useCurrentClass();
 
+    const handlePieClick = (event, elements, chart) => {
+        if (elements.length > 0) {
+            const clickedElement = elements[0];
+            const label = chart.data.labels[clickedElement.index];
+            const value = chart.data.datasets[clickedElement.datasetIndex].data[clickedElement.index];
+            console.log(`Clicked on ${label}: ${value}`);
+            // Add your custom logic here
+        }
+    }; 
+
+    const handleBarClick = (event, elements, chart) => {
+        if (elements.length > 0) {
+            const clickedElement = elements[0];
+            const label = chart.data.labels[clickedElement.index];
+            const value = chart.data.datasets[clickedElement.datasetIndex].data[clickedElement.index];
+            console.log(`Clicked on ${label}: ${value}`);
+            // Add your custom logic here
+        }
+    }; 
+
     // Mock data for assignments
     const assignmentQuestions = [
         { name: 'Assignment 1: Intro to React', value: 45 },
@@ -55,6 +75,7 @@ export default function ClassStatisticsPage() {
 
     const chartOptions = {
         responsive: true,
+        onClick: handlePieClick,
         maintainAspectRatio: false,
         plugins: {
             legend: {
@@ -102,7 +123,8 @@ export default function ClassStatisticsPage() {
     };
 
     const barChartOptions = {
-        responsive: true,
+        responsive: true, 
+        onClick: handleBarClick,
         maintainAspectRatio: false,
         plugins: {
             legend: {
@@ -151,7 +173,7 @@ export default function ClassStatisticsPage() {
                 }
             },
         },
-    };
+    }; 
 
     return (
         <>
