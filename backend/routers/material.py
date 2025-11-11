@@ -213,3 +213,31 @@ async def upload_single_file(dayID: int,
             summary="Get remoteID for given path.")
 def get_RemoteID(path: str, session: DBSession):
     return db_material.get_RemoteID(path, session)
+
+
+@router.post("/{materialID}/{studentID}/prompt",
+            status_code=201,
+            responses={
+                409: {"model": ClientErrorResponse},
+            },
+            summary="Increment the prompt count for a material.")
+def increment_prompt_count(materialID: int, studentID: str, session: DBSession):
+    return db_material.increment_prompt_count_material(materialID, studentID, session)
+
+@router.get("/{materialID}/{studentID}/prompt",
+            status_code=200,
+            responses={
+                404: {"model": ClientErrorResponse},
+            },
+            summary="Get the prompt count for a material.")
+def get_prompt_count(materialID: int, studentID: str, session: DBSession):
+    return db_material.get_prompt_count_material(materialID, studentID, session)
+
+@router.get("/{materialID}/prompt",
+            status_code=200,
+            responses={
+                404: {"model": ClientErrorResponse},
+            },
+            summary="Get the prompt count for all students for a material.")
+def get_prompt_count_all(materialID: int, session: DBSession):
+    return db_material.get_prompt_count_all_material(materialID, session)

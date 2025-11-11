@@ -76,9 +76,32 @@ def increment_prompt_count_material(materialID: int, studentID: str, session: Se
     )
     prompt_count = session.execute(stmt).scalar_one_or_none()
     if not prompt_count:
-        prompt_count = DBPrompt_Count_Material(materialID=materialID, count=1)
+        prompt_count = DBPrompt_Count_Material(materialID=materialID, studentID=studentID, count=1)
         session.add(prompt_count)
     else:
         prompt_count.count += 1
     session.commit()
     return prompt_count
+
+
+def get_prompt_count_material(materialID: int, studentID: str, session: Session):
+    stmt = select(DBPrompt_Count_Material).filter(
+        DBPrompt_Count_Material.materialID == materialID,
+        DBPrompt_Count_Material.studentID == studentID
+    )
+    prompt_count = session.execute(stmt).scalar_one_or_none()
+    return prompt_count.count if prompt_count else 0
+
+def get_prompt_count_all_material(materialID: int, session: Session):
+    stmt = select(DBPrompt_Count_Material).filter(
+        DBPrompt_Count_Material.materialID == materialID
+    )
+    prompt_counts = session.execute(stmt).scalars().all()
+    return {prompt_count.studentID: prompt_count.count for prompt_count in prompt_counts}
+
+def get_material_id_by_path(path: str, session: Session):
+    stmt = select(DBMaterial).filter(
+        DBMaterial.path == path
+    )
+    material = session.execute(stmt).scalar_one_or_none()
+    return material.id if material else None

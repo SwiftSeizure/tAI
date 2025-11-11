@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from backend.database.schema import DBAssignment
+from backend.database.schema import DBAssignment, DBPrompt_Count_Assignment
 from backend.exceptions import UploadNotFoundException
 
 def delete_assignment(dayID: int, filename: str, session: Session) -> None:
@@ -67,3 +67,39 @@ def get_RemoteID(path: str, session: Session):
     assignment = session.execute(stmt).scalar_one_or_none()
     ret = assignment.remoteID if assignment else None
     return ret 
+
+def increment_prompt_count_assignment(assignmentID: int, studentID: str, session: Session):
+    stmt = select(DBPrompt_Count_Assignment).filter(
+        DBPrompt_Count_Assignment.assignmentID == assignmentID,
+        DBPrompt_Count_Assignment.studentID == studentID
+    )
+    prompt_count = session.execute(stmt).scalar_one_or_none()
+    if not prompt_count:
+        prompt_count = DBPrompt_Count_Assignment(assignmentID=assignmentID,studentID=studentID, count=1)
+        session.add(prompt_count)
+    else:
+        prompt_count.count += 1
+    session.commit()
+    return prompt_count
+
+def get_prompt_count_assignment(assignmentID: int, studentID: str, session: Session):
+    stmt = select(DBPrompt_Count_Assignment).filter(
+        DBPrompt_Count_Assignment.assignmentID == assignmentID,
+        DBPrompt_Count_Assignment.studentID == studentID
+    )
+    prompt_count = session.execute(stmt).scalar_one_or_none()
+    return prompt_count.count if prompt_count else 0
+
+def get_prompt_count_all_assignment(assignmentID: int, session: Session):
+    stmt = select(DBPrompt_Count_Assignment).filter(
+        DBPrompt_Count_Assignment.assignmentID == assignmentID
+    )
+    prompt_counts = session.execute(stmt).scalars().all()
+    return {prompt_count.studentID: prompt_count.count for prompt_count in prompt_counts}  
+
+def get_assignment_id_by_path(path: str, session: Session):
+    stmt = select(DBAssignment).filter(
+        DBAssignment.path == path
+    )
+    assignment = session.execute(stmt).scalar_one_or_none()
+    return assignment.id if assignment else None
