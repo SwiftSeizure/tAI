@@ -6,7 +6,7 @@ import {
     createUserWithEmailAndPassword, 
     updateProfile, 
     setPersistence, 
-    browserSessionPersistence 
+    browserLocalPersistence
 } from 'firebase/auth';
 import { auth, googleProvider } from '../../auth/firebase';
 import { useUser } from '../../store/user-store';
@@ -98,10 +98,13 @@ const LoginPage = () => {
         setLoginError("");
 
         try {
+            // Set persistence to LOCAL before signing in
+            await setPersistence(auth, browserLocalPersistence);
+            
             const userCredentials = await signInWithEmailAndPassword(auth, email, password); 
             const idToken = await userCredentials.user.getIdToken();    
             await localStorage.setItem('authToken', idToken);   
-            console.log("userCredentials", userCredentials);
+            
             const userRole = await getUserType();
 
             await setUser({
@@ -199,6 +202,9 @@ const LoginPage = () => {
         setLoginError("");
         
         try {
+            // Set persistence to LOCAL before signing in
+            await setPersistence(auth, browserLocalPersistence);
+            
             const userCredentials = await signInWithPopup(auth, googleProvider);
             const idToken = await userCredentials.user.getIdToken();
             await localStorage.setItem('authToken', idToken);
@@ -226,9 +232,7 @@ const LoginPage = () => {
                 email: userCredentials.user.email,
                 token: idToken,
                 profilePicture: userCredentials.user.photoURL
-            }); 
-
-            await setPersistence(auth, browserSessionPersistence);
+            });
             
             setIsAuthModalOpen(false);
             navigate('/home');
@@ -250,11 +254,12 @@ const LoginPage = () => {
         setIsLoginLoading(true);
         setLoginError("");
         try {
-            // TODO get this user and then get the creds form the be   
+            // Set persistence to LOCAL before signing in
+            await setPersistence(auth, browserLocalPersistence);
+            
             const userCredentials = await signInWithPopup(auth, googleProvider);
             const idToken = await userCredentials.user.getIdToken();    
-            await localStorage.setItem('authToken', idToken);   
-            console.log("userCredentials", userCredentials); 
+            await localStorage.setItem('authToken', idToken);
             const userRole = await getUserType();
 
             await setUser({
