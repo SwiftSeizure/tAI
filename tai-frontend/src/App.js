@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './auth/firebase';
 import { useUser } from './store/user-store';
-import { getUserType } from './home/services/get-user-type';
+import { getUserType } from './login/services/get-user-type';
 import LoginPage from './login/pages/LoginPage'; 
 import TeacherStudentHomePage from './home/pages/TeacherStudentHomePage'; 
 import TeacherStudentUnitPage from './unit/pages/TeacherStudentUnitPage';
