@@ -169,7 +169,7 @@ const LoginPage = () => {
                 token: idToken
             }); 
 
-            await setPersistence(auth, browserSessionPersistence);
+            await setPersistence(auth, browserLocalPersistence);
             
             setIsAuthModalOpen(false);
             navigate('/home');
