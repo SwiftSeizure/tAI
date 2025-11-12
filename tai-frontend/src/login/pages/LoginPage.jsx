@@ -14,8 +14,6 @@ import { AuthModal } from '../modals/AuthModal';
 import '../../App.css'; 
 import { contentSections, subTitle } from '../constants/content';  
 import { getUserType } from '../services/get-user-type';
-import { createStudent } from '../services/create-student';
-import { createTeacher } from '../services/create-teacher';
 
 const LoginPage = () => {
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);

@@ -1,19 +1,69 @@
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'; 
-import LoginPage from '../src/login/pages/LoginPage'; 
-import TeacherStudentHomePage from '../src/home/pages/TeacherStudentHomePage'; 
-import TeacherStudentUnitPage from '../src/unit/pages/TeacherStudentUnitPage';
-import TeacherStudentModulePage from '../src/module/pages/TeacherStudentModulePage'; 
-import CreateClassPage from '../src/home/pages/CreateClassPage'; 
-import JoinClassPage from '../src/home/pages/JoinClassPage'; 
-import CreateUnitPage from '../src/unit/pages/CreateUnitPage';  
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './auth/firebase';
+import { useUser } from './store/user-store';
+import { getUserType } from './home/services/get-user-type';
+import LoginPage from './login/pages/LoginPage'; 
+import TeacherStudentHomePage from './home/pages/TeacherStudentHomePage'; 
+import TeacherStudentUnitPage from './unit/pages/TeacherStudentUnitPage';
+import TeacherStudentModulePage from './module/pages/TeacherStudentModulePage'; 
+import CreateClassPage from './home/pages/CreateClassPage'; 
+import JoinClassPage from './home/pages/JoinClassPage'; 
+import CreateUnitPage from './unit/pages/CreateUnitPage';  
 
 function App() { 
+  const [{ user }, { setUser }] = useUser();
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
+
+  useEffect(() => {
+    // Listen for auth state changes
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        try {
+          // User is signed in - restore session
+          const idToken = await firebaseUser.getIdToken();
+          const userRole = await getUserType();
+          
+          await setUser({
+            id: firebaseUser.uid,
+            name: firebaseUser.displayName,
+            role: userRole,
+            email: firebaseUser.email,
+            token: idToken,
+            profilePicture: firebaseUser.photoURL
+          });
+        } catch (error) {
+          console.error('Error restoring user session:', error);
+        }
+      } else {
+        // User is signed out
+        await setUser(null);
+      }
+      
+      setIsAuthChecking(false);
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, [setUser]);
+
+  // Show loading state while checking auth
+  if (isAuthChecking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <BrowserRouter>
       <div className="App">
         <Routes>  
-
           {/* Universal Routes */}
           <Route path="/" element={<LoginPage />} />
            
@@ -27,8 +77,6 @@ function App() {
 
           {/* Unit Specific Routes */}
           <Route path="/createunit" element={ <CreateUnitPage /> } />
-
-          
         </Routes>
       </div>
     </BrowserRouter>
