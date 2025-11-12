@@ -1,9 +1,9 @@
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload, Session
-from backend.database.schema import DBClass, DBEnrolled, DBUnit,DBStudent, DBModule
+from backend.database.schema import DBClass, DBEnrolled, DBUnit,DBStudent, DBModule, DBDay
 from backend.exceptions import EntityNotFoundException, DuplicateNameException
 from backend.models import ClassroomStudent, CreateUnit, ClassroomNameUpdate, ClassroomSettingsUpdate, CanvasData
-from backend.database.day import delete_day_files
+from backend.database.day import delete_day_files, get_canvas_materials
 
 # Cavnas Stuff
 from cryptography.fernet import Fernet
@@ -11,14 +11,21 @@ import os
 from dotenv import load_dotenv
 import httpx
 
+# User/Security Stuff
+from backend.exceptions import UnauthorizedException
+from fastapi import Depends
+from backend.auth import get_firebase_user_from_token
+from typing import Any, Annotated
 
+# Also Canvas
 basedir = __import__("pathlib").Path(__file__).parent
 load_dotenv(basedir / ".env")   # loads .env in repo root
-
 fernet_key = os.getenv("FERNET_KEY")
 if not fernet_key:
     raise EntityNotFoundException("FERNET_KEY", "environment variable")
 fernet = Fernet(fernet_key)
+
+
 
 def get_classroom(classroomID: int, session: Session) -> DBClass | None:
     """Get a DBClass object by its ID.
@@ -160,7 +167,7 @@ def update_classroom_settings(classroomID: int, settings: ClassroomSettingsUpdat
 
 
 
-def add_canvas_api_key(classID: int, data: CanvasData, session: Session):
+async def add_canvas_api_key(classID: int, data: CanvasData, user: Annotated[dict, Depends(get_firebase_user_from_token)], session: Session):
     """Add a new Canvas API key for a classroom.
         The API key is encrypted before being stored in the database.
     
@@ -179,9 +186,9 @@ def add_canvas_api_key(classID: int, data: CanvasData, session: Session):
     classroom.canvas_api_key = fernet.encrypt(data.api_key.encode()) # type: ignore
     classroom.canvas_class_id = data.class_id # type: ignore
     classroom.canvas_domain_name = data.domain_name # type: ignore
-    create_new_unit(classID, CreateUnit(name="Canvas Modules", settings={}, published=False), session)
+    create_new_unit(classID, CreateUnit(name="Canvas Modules", settings={}, published=False,), session)
     session.commit()
-    get_canvas_modules(classID, session)
+    await get_canvas_modules(classID, user, session)
     
     
 def delete_classroom(classroomID: int, session: Session) -> None:
@@ -270,7 +277,7 @@ def update_classroom_published_status(classroomID: int, session: Session) -> Non
     
 # ---------------------------------------------------------------------------------------------#
 # Start of Canvas integration
-def get_canvas_modules(classID: int, session: Session) -> None:
+async def get_canvas_modules(classID: int, user: Annotated[dict, Depends(get_firebase_user_from_token)], session: Session) -> None:
     """Return DBModule objects for the unit named "Canvas Modules" in a class.
 
     Returns None when Canvas connection info isn't configured on the classroom.
@@ -303,6 +310,7 @@ def get_canvas_modules(classID: int, session: Session) -> None:
     
     # Add modules to the database
     for module in modules:
+        # Create module
         if len(module['name']) > 255:
             module['name'] = module['name'][:255]
         db_module = DBModule(
@@ -312,6 +320,18 @@ def get_canvas_modules(classID: int, session: Session) -> None:
             canvas_id = module['id']  # type: ignore
         )
         session.add(db_module)
-    session.commit()
+        session.commit()
+        
+        # Add day container
+        db_day = DBDay(
+            name="",
+            sequence=10,
+            moduleID=db_module.id,
+        )
+        
+        session.add(db_day)
+        session.commit()
+        await get_canvas_materials(classroom, db_day, db_module, user, session)
+    
 
     

@@ -1,9 +1,32 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 from backend.exceptions import EntityNotFoundException
-from backend.database.schema import DBAssignment,DBMaterial,DBDay
+from backend.database.schema import DBAssignment,DBMaterial,DBDay, DBClass, DBModule
 from pathlib import Path
 import shutil, os
+
+# Cavnas Stuff
+from cryptography.fernet import Fernet
+import os
+from dotenv import load_dotenv
+import httpx
+from fastapi import File, UploadFile
+from backend.routers.material import upload_single_file
+import tempfile
+
+# User/Security Stuff
+from backend.exceptions import UnauthorizedException
+from fastapi import Depends
+from backend.auth import get_firebase_user_from_token
+from typing import Any, Annotated
+
+# Also Canvas
+basedir = __import__("pathlib").Path(__file__).parent
+load_dotenv(basedir / ".env")   # loads .env in repo root
+fernet_key = os.getenv("FERNET_KEY")
+if not fernet_key:
+    raise EntityNotFoundException("FERNET_KEY", "environment variable")
+fernet = Fernet(fernet_key)
 
 
 def get_day(dayId:int, session:Session) -> DBDay:
@@ -195,3 +218,43 @@ def get_teacher_by_day_id(dayID: int, session: Session) -> str:
     if not day:
         raise EntityNotFoundException("day", dayID) # type: ignore
     return day.module.unit.class_.ownerID
+
+# Canvas Things --------------------------------------------------------------------
+async def get_canvas_materials(classroom: DBClass, db_day: DBDay, db_module: DBModule, user: Annotated[dict, Depends(get_firebase_user_from_token)], session: Session):
+    
+    # Data needed for API call
+    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode() # type: ignore
+    class_id = classroom.canvas_class_id # type: ignore
+    module_id = db_module.canvas_id # type: ignore
+    domain_name = classroom.canvas_domain_name # type: ignore
+    
+    # Create the get request and call it
+    headers = {
+        "Authorization": f"Bearer {api_key}"
+    }
+    url = f"https://{domain_name}/api/v1/courses/{class_id}/modules/{module_id}/items"
+    r = httpx.get(url, headers=headers)
+    items = r.json()
+    
+    for item in items:
+        if item['type'] == 'File':
+            url = f"https://{domain_name}/api/v1/courses/{class_id}/files/{item['content_id']}"
+            r = httpx.get(url, headers=headers)
+            file_info = r.json()
+            
+            print(file_info)
+            mime_type = file_info['mime_class']
+            download_url = file_info['url']
+            filename = file_info['filename']
+            
+            with httpx.Client(follow_redirects=True) as client:
+                resp = client.get(download_url)
+                resp.raise_for_status()
+                with tempfile.NamedTemporaryFile(delete=False) as tmp:
+                    tmp.write(resp.content)
+                    temp_path = tmp.name
+                    
+                    tmp_file = UploadFile(filename=filename, file=open(temp_path, "rb"))
+            
+                    await upload_single_file(db_day.id, item['title'], user, session, tmp_file) #type: ignore
+            

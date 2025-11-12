@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Form
-from typing import Any, Annotated
 
 from backend.database import classroom as classroom_db
 from backend.database.schema import DBTeacher, DBUnit, DBClass
@@ -9,6 +8,7 @@ from backend.models import ClassroomStudentsResponse, ClientErrorResponse, Class
 from backend.exceptions import UnauthorizedException
 from fastapi import Depends
 from backend.auth import get_firebase_user_from_token
+from typing import Any, Annotated
 
 router = APIRouter(prefix="/classroom", tags=["classroom"])
 
@@ -79,7 +79,7 @@ def create_new_unit(classID: int,
                  404: {"model": ClientErrorResponse},
              },
              summary="Create a new Canvas API key for the classroom. Must be an authenticated teacher.")
-def add_canvas_api_key(classID: int, 
+async def add_canvas_api_key(classID: int, 
                         canvasData: CanvasData, 
                         user: Annotated[dict, Depends(get_firebase_user_from_token)],
                         session: DBSession):
@@ -100,7 +100,7 @@ def add_canvas_api_key(classID: int,
     if user["uid"] != teacherID:
         raise UnauthorizedException("create canvas API key")
 
-    classroom_db.add_canvas_api_key(classID, canvasData, session)
+    await classroom_db.add_canvas_api_key(classID, canvasData, user, session)
 
 
 @router.put("/name/{classroomID}",
