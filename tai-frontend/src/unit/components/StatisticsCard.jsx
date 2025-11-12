@@ -64,10 +64,10 @@ const StatisticsCard = ({ classData, onClick }) => {
                 </div> */}
 
                 {/* View Details Button */} 
-                <div className="flex flex-wrap gap-2 pt-0 border-t border-gray-100">
+                <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100">
                     <button 
                         onClick={onClick}
-                        className="mt-4 w-full py-2.5 px-4 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200 hover:border-blue-300 text-blue-700 font-medium text-sm transition-all duration-200 hover:shadow-sm group/btn"
+                        className="w-full py-3 px-4 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200 hover:border-blue-300 text-blue-700 font-medium text-sm transition-all duration-200 hover:shadow-sm group/btn flex items-center justify-center"
                     >
                         <div className="flex items-center justify-center">
                             <BarChartIcon fontSize="small" />
