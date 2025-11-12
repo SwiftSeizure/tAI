@@ -338,8 +338,9 @@ const LoginPage = () => {
                                 className="relative px-20 py-7 text-2xl font-semibold rounded-2xl 
                                      transition-all duration-300 hover:scale-105
                                      w-full
-                                     border-2 border-transparent
-                                     hover:bg-gradient-to-r hover:border-blue-400 hover:border-2
+                                     border border-blue-400/50
+                                     hover:border-2 hover:border-blue-400
+                                     hover:bg-gradient-to-r 
                                      hover:from-blue-400/10 hover:via-cyan-400/10 hover:to-blue-600/10
                                      group"
                                 onClick={handleLoginClick}
