@@ -101,7 +101,6 @@ const LoginPage = () => {
             
             const userCredentials = await signInWithEmailAndPassword(auth, email, password); 
             const idToken = await userCredentials.user.getIdToken();    
-            await localStorage.setItem('authToken', idToken);   
             
             const userRole = await getUserType();
 
@@ -149,7 +148,6 @@ const LoginPage = () => {
             });
             
             const idToken = await userCredentials.user.getIdToken();
-            await localStorage.setItem('authToken', idToken);
             
             // Use existing getUserType infrastructure which will now create the account based on stored role
             const userRole = await getUserType();
@@ -205,7 +203,6 @@ const LoginPage = () => {
             
             const userCredentials = await signInWithPopup(auth, googleProvider);
             const idToken = await userCredentials.user.getIdToken();
-            await localStorage.setItem('authToken', idToken);
             
             const displayName = userCredentials.user.displayName || userCredentials.user.email?.split('@')[0] || 'User';
             const username = userCredentials.user.email?.split('@')[0] || `user_${Date.now()}`;
@@ -257,7 +254,6 @@ const LoginPage = () => {
             
             const userCredentials = await signInWithPopup(auth, googleProvider);
             const idToken = await userCredentials.user.getIdToken();    
-            await localStorage.setItem('authToken', idToken);
             const userRole = await getUserType();
 
             await setUser({
