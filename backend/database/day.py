@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 import httpx
 from fastapi import File, UploadFile
 from backend.routers.material import upload_single_file
+from backend.routers.assignment import upload_assignment
 import tempfile
 
 # User/Security Stuff
@@ -242,8 +243,6 @@ async def get_canvas_materials(classroom: DBClass, db_day: DBDay, db_module: DBM
             r = httpx.get(url, headers=headers)
             file_info = r.json()
             
-            print(file_info)
-            mime_type = file_info['mime_class']
             download_url = file_info['url']
             filename = file_info['filename']
             
@@ -253,8 +252,51 @@ async def get_canvas_materials(classroom: DBClass, db_day: DBDay, db_module: DBM
                 with tempfile.NamedTemporaryFile(delete=False) as tmp:
                     tmp.write(resp.content)
                     temp_path = tmp.name
-                    
                     tmp_file = UploadFile(filename=filename, file=open(temp_path, "rb"))
             
                     await upload_single_file(db_day.id, item['title'], user, session, tmp_file) #type: ignore
-            
+                    
+async def get_canvas_assignments(classroom: DBClass, db_day: DBDay, db_module: DBModule, user: Annotated[dict, Depends(get_firebase_user_from_token)], session: Session):
+    # Data needed for API call
+    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode() # type: ignore
+    class_id = classroom.canvas_class_id # type: ignore
+    module_id = db_module.canvas_id # type: ignore
+    domain_name = classroom.canvas_domain_name # type: ignore
+    
+    # Create the get request and call it
+    headers = {
+        "Authorization": f"Bearer {api_key}"
+    }
+    url = f"https://{domain_name}/api/v1/courses/{class_id}/modules/{module_id}/items"
+    r = httpx.get(url, headers=headers)
+    items = r.json()
+    
+    for item in items:
+        
+        if item['type'] == 'Assignment':
+            url = f"https://{domain_name}/api/v1/courses/{class_id}/assignments/{item['content_id']}"
+            r = httpx.get(url, headers=headers)
+            assignment_info = r.json()
+            description = assignment_info["description"].split("=")
+            for i in range(len(description)):
+                
+                # Look for data-api-endpoint in description (these are links to files in the assingment description)
+                if "data-api-endpoint" in description[i]:
+                    url = description[i+1].split('"')[1]
+                    if "files" in url:
+                        
+                        r = httpx.get(url, headers=headers)
+                        file_info = r.json()
+                    
+                        download_url = file_info['url']
+                        filename = file_info['filename']
+                        
+                        with httpx.Client(follow_redirects=True) as client:
+                            resp = client.get(download_url)
+                            resp.raise_for_status()
+                            with tempfile.NamedTemporaryFile(delete=False) as tmp:
+                                tmp.write(resp.content)
+                                temp_path = tmp.name
+                                tmp_file = UploadFile(filename=filename, file=open(temp_path, "rb"))
+                        
+                                await upload_assignment(db_day.id, item['title'], user, session, tmp_file) #type: ignore

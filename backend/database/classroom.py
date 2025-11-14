@@ -3,7 +3,7 @@ from sqlalchemy.orm import selectinload, Session
 from backend.database.schema import DBClass, DBEnrolled, DBUnit,DBStudent, DBModule, DBDay
 from backend.exceptions import EntityNotFoundException, DuplicateNameException
 from backend.models import ClassroomStudent, CreateUnit, ClassroomNameUpdate, ClassroomSettingsUpdate, CanvasData
-from backend.database.day import delete_day_files, get_canvas_materials
+from backend.database.day import delete_day_files, get_canvas_materials, get_canvas_assignments
 
 # Cavnas Stuff
 from cryptography.fernet import Fernet
@@ -331,6 +331,7 @@ async def get_canvas_modules(classID: int, user: Annotated[dict, Depends(get_fir
         
         session.add(db_day)
         session.commit()
+        await get_canvas_assignments(classroom, db_day, db_module, user, session)
         await get_canvas_materials(classroom, db_day, db_module, user, session)
     
 
