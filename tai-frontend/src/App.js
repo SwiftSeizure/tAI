@@ -10,7 +10,8 @@ import TeacherStudentUnitPage from './unit/pages/TeacherStudentUnitPage';
 import TeacherStudentModulePage from './module/pages/TeacherStudentModulePage';
 import CreateClassPage from './home/pages/CreateClassPage';
 import JoinClassPage from './home/pages/JoinClassPage';
-import CreateUnitPage from './unit/pages/CreateUnitPage';
+import CreateUnitPage from './unit/pages/CreateUnitPage'; 
+import NotFoundPage from './shared/pages/NotFoundPage';
 
 function App() {
     const [{ user }, { setUser, clearUser }] = useUser();
