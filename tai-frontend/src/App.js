@@ -123,11 +123,6 @@ function App() {
 
                     {/* Unit Specific Routes */}
                     <Route path="/createunit" element={<CreateUnitPage />} />
-                </Routes>
-            </div>
-        </BrowserRouter>
-    );
-}
 
   	  	  	  	  	{/* 404 - Catch all unmatched routes */}
   	  	  	  	  	<Route path="*" element={<NotFoundPage />} />
