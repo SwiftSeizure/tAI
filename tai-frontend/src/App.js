@@ -129,4 +129,11 @@ function App() {
     );
 }
 
+  	  	  	  	  	{/* 404 - Catch all unmatched routes */}
+  	  	  	  	  	<Route path="*" element={<NotFoundPage />} />
+	  	  	  	</Routes>
+	  	  	</div>
+	  	</BrowserRouter>
+	);
+}
 export default App;

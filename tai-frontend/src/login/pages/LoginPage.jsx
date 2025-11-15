@@ -149,6 +149,10 @@ const LoginPage = () => {
             
             const idToken = await userCredentials.user.getIdToken();
             
+            // If problems persist, add an API call to BE to ensure that user exists here
+            // This is a temporary fix to allow time for the user to be created and populated in the BE and Firebase
+            await new Promise(resolve => setTimeout(resolve, 5000));
+
             // Use existing getUserType infrastructure which will now create the account based on stored role
             const userRole = await getUserType();
             
@@ -305,7 +309,9 @@ const LoginPage = () => {
                             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight mb-4">
                                 Welcome to Teaching
                                 <br />
-                                <span className="text-blue-600">
+                                <span
+                                    className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-600 animate-gradient"
+                                >
                                     Revolutionalized
                                 </span>
                             </h1>
@@ -326,16 +332,22 @@ const LoginPage = () => {
                             ref={buttonRef}
                             className="opacity-0 translate-y-8 transition-all duration-1000 ease-out"
                         >
-<button
-  type="button"
-  className="px-8 py-3 bg-white text-gray-800 font-medium rounded-xl 
-             shadow-md hover:shadow-lg hover:bg-gray-50 
-             transition-all duration-200 border border-gray-200"
-  onClick={handleLoginClick}
-> 
-<span className="relative z-10 text-blue-600">Get Started</span>
-</button>
-
+                            <button
+                                type="button"
+                                className="relative px-20 py-7 text-2xl font-semibold rounded-2xl 
+                                     transition-all duration-300 hover:scale-105
+                                     w-full
+                                     border border-blue-400/50
+                                     hover:border-2 hover:border-blue-400
+                                     hover:bg-gradient-to-r 
+                                     hover:from-blue-400/10 hover:via-cyan-400/10 hover:to-blue-600/10
+                                     group"
+                                onClick={handleLoginClick}
+                            >
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-600 animate-gradient group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-500 group-hover:via-cyan-500 group-hover:to-blue-700 text-4xl">
+                                    Get Started
+                                </span>
+                            </button>
                         </div>
                     </div>
                 </section>
@@ -401,7 +413,7 @@ const LoginPage = () => {
             />
         <style jsx>{`
             .gradient-bg {
-                background: linear-gradient(-45deg, #add8e6, #ffb6c1,rgb(158, 236, 158), #add8e6);
+                background: linear-gradient(-45deg, #add8e6, #f9c7cfff,rgba(170, 241, 170, 1), #add8e6);
                 background-size: 400% 400%;
                 animation: gradientCycle 20s ease infinite;
             }
@@ -432,6 +444,19 @@ const LoginPage = () => {
             .fade-in-up {
                 opacity: 1 !important;
                 transform: translateY(0) !important;
+            }
+
+            .animate-gradient {
+                animation: gradientShift 15s ease-in-out infinite;
+            }
+
+            @keyframes gradientShift {
+                0%, 100% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+            } 
+            @keyframes borderMove {
+                0% { transform: translateX(-100%); }
+                100% { transform: translateX(100%); }
             }
         `}</style>
 
