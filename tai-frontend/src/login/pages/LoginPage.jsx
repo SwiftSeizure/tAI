@@ -6,7 +6,7 @@ import {
     createUserWithEmailAndPassword, 
     updateProfile, 
     setPersistence, 
-    browserSessionPersistence 
+    browserLocalPersistence
 } from 'firebase/auth';
 import { auth, googleProvider } from '../../auth/firebase';
 import { useUser } from '../../store/user-store';
@@ -14,8 +14,6 @@ import { AuthModal } from '../modals/AuthModal';
 import '../../App.css'; 
 import { contentSections, subTitle } from '../constants/content';  
 import { getUserType } from '../services/get-user-type';
-import { createStudent } from '../services/create-student';
-import { createTeacher } from '../services/create-teacher';
 
 const LoginPage = () => {
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -98,10 +96,12 @@ const LoginPage = () => {
         setLoginError("");
 
         try {
+            // Set persistence to LOCAL before signing in
+            await setPersistence(auth, browserLocalPersistence);
+            
             const userCredentials = await signInWithEmailAndPassword(auth, email, password); 
             const idToken = await userCredentials.user.getIdToken();    
-            await localStorage.setItem('authToken', idToken);   
-            console.log("userCredentials", userCredentials);
+            
             const userRole = await getUserType();
 
             await setUser({
@@ -148,7 +148,6 @@ const LoginPage = () => {
             });
             
             const idToken = await userCredentials.user.getIdToken();
-            await localStorage.setItem('authToken', idToken);
             
             // If problems persist, add an API call to BE to ensure that user exists here
             // This is a temporary fix to allow time for the user to be created and populated in the BE and Firebase
@@ -170,7 +169,7 @@ const LoginPage = () => {
                 token: idToken
             }); 
 
-            await setPersistence(auth, browserSessionPersistence);
+            await setPersistence(auth, browserLocalPersistence);
             
             setIsAuthModalOpen(false);
             navigate('/home');
@@ -203,9 +202,11 @@ const LoginPage = () => {
         setLoginError("");
         
         try {
+            // Set persistence to LOCAL before signing in
+            await setPersistence(auth, browserLocalPersistence);
+            
             const userCredentials = await signInWithPopup(auth, googleProvider);
             const idToken = await userCredentials.user.getIdToken();
-            await localStorage.setItem('authToken', idToken);
             
             const displayName = userCredentials.user.displayName || userCredentials.user.email?.split('@')[0] || 'User';
             const username = userCredentials.user.email?.split('@')[0] || `user_${Date.now()}`;
@@ -230,9 +231,7 @@ const LoginPage = () => {
                 email: userCredentials.user.email,
                 token: idToken,
                 profilePicture: userCredentials.user.photoURL
-            }); 
-
-            await setPersistence(auth, browserSessionPersistence);
+            });
             
             setIsAuthModalOpen(false);
             navigate('/home');
@@ -254,11 +253,11 @@ const LoginPage = () => {
         setIsLoginLoading(true);
         setLoginError("");
         try {
-            // TODO get this user and then get the creds form the be   
+            // Set persistence to LOCAL before signing in
+            await setPersistence(auth, browserLocalPersistence);
+            
             const userCredentials = await signInWithPopup(auth, googleProvider);
             const idToken = await userCredentials.user.getIdToken();    
-            await localStorage.setItem('authToken', idToken);   
-            console.log("userCredentials", userCredentials); 
             const userRole = await getUserType();
 
             await setUser({
