@@ -27,22 +27,58 @@ export default function ClassStatisticsPage() {
             console.log(`Clicked on ${label}: ${value}`);
             // Add your custom logic here
         }
-    }; 
+    };  
+
+
+    // All API calls bellow can give classID to the backend and the current userID unless noted otherwise
 
     // Mock data for assignments
     const assignmentQuestions = [
-        { name: 'Assignment 1: Intro to React', value: 45 },
-        { name: 'Assignment 2: State Management', value: 32 },
-        { name: 'Assignment 3: API Integration', value: 28 },
-        { name: 'Assignment 4: Testing', value: 15 },
+        { name: 'Assignment 1: Intro to React', assignmentID: 1, value: 45 },
+        { name: 'Assignment 2: State Management', assignmentID: 2, value: 32 },
+        { name: 'Assignment 3: API Integration', assignmentID: 3, value: 28 },
+        { name: 'Assignment 4: Testing', assignmentID: 4, value: 15 },
     ];
 
     // Mock data for materials
     const materialQuestions = [
-        { name: 'Module 1: Basics', value: 52 },
-        { name: 'Module 2: Advanced Concepts', value: 38 },
-        { name: 'Module 3: Best Practices', value: 25 },
-        { name: 'Module 4: Real-world Examples', value: 19 },
+        { name: 'Module 1: Basics', materialID: 1, value: 52 },
+        { name: 'Module 2: Advanced Concepts', materialID: 2, value: 38 },
+        { name: 'Module 3: Best Practices', materialID: 3, value: 25 },
+        { name: 'Module 4: Real-world Examples', materialID: 4, value: 19 },
+    ]; 
+
+    
+    // This is so that we can display the stats for all students and which ones are asking the most questions
+    // This will give an assingmentID or materialID to the backend
+    const mockStudentsAssignmentAndMaterialsPromptCount = [
+        {name: 'Student 1', studentID: 1, value: 10},
+        {name: 'Student 2', studentID: 2, value: 15},
+        {name: 'Student 3', studentID: 3, value: 20},
+        {name: 'Student 4', studentID: 4, value: 25},
+        {name: 'Student 5', studentID: 5, value: 30},
+        {name: 'Student 6', studentID: 6, value: 35},
+        {name: 'Student 7', studentID: 7, value: 40},
+        {name: 'Student 8', studentID: 8, value: 45},
+        {name: 'Student 9', studentID: 9, value: 50},
+        {name: 'Student 10', studentID: 10, value: 55},
+    ];
+
+    // This is so that we can display the stats for a specific student. 
+    // This will give an studentID to the backend
+    const mockSpecificStudentStats = [
+        {name: 'student 1', assignmentID: 1, value: 10},
+        {name: 'student 1', assignmentID: 2, value: 15},
+        {name: 'student 1', assignmentID: 3, value: 20},
+        {name: 'student 1', assignmentID: 4, value: 25},
+    ]; 
+
+    // This is so that we can display the stats for all students and which ones are asking the most questions
+    const mockAllStudentStats = [
+        { name: 'Student 1', studentID: 1, value: 10 },
+        { name: 'Student 2', studentID: 2, value: 15 },
+        { name: 'Student 3', studentID: 3, value: 20 },
+        { name: 'Student 4', studentID: 4, value: 25 },
     ];
 
     const COLORS = ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b'];

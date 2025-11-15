@@ -88,52 +88,47 @@ export const NavBar = ({ title, settings }) => {
 
     
     return (
-        <>
-            <nav className="bg-white/95 backdrop-blur-lg border-b border-gray-200/50 w-full sticky top-0 z-50 shadow-sm">
-                <div className="max-w-screen-2xl flex items-center justify-between mx-auto px-8 py-4">
-                    {/* Left side: Back button */}
-                    <div className="flex items-center min-w-[140px]">
-                        {title !== "" && (
-                            <button
-                                className="group flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 hover:bg-gray-50 hover:shadow-md active:scale-95 border border-gray-200/50 hover:border-gray-300"
-                                onClick={(e) => goBackPage(e)}
-                                title="Go Back"
-                            >
-                                <ArrowBackIcon 
-                                    className="text-gray-500 group-hover:text-gray-700 transition-colors duration-300" 
-                                    fontSize="medium"
-                                />
-                            </button>
-                        )}
-                    </div>
-
-                    {/* Center: Title */}
-                    <div className="flex-1 flex justify-center">
-                        <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent tracking-tight">
-                            {title}
-                        </h1>
-                    </div>
-
-                    <button onClick={handleOpenProfile}>  
-                        {/* {user.photoURL ? (
-                            <img 
-                                className="w-10 h-10 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500" 
-                                src={user.photoURL} 
-                                alt="Bordered avatar"
-                            />
-                        ) : ( */}
-                            <div className="relative w-10 h-10">
-                                <div className="absolute inset-0 rounded-full ring-2 ring-gray-300 dark:ring-gray-500" />
-                                <div className="relative inline-flex items-center justify-center w-full h-full overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-                                    <span className="font-medium text-gray-600 dark:text-gray-300">
-                                        {user.displayName?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase()}
-                                    </span>
+            <>
+                <nav className="bg-white/95 backdrop-blur-lg border-b border-gray-200/50 w-full sticky top-0 z-50 shadow-sm">
+                    <div className="max-w-screen-2xl w-full flex items-center justify-between mx-auto px-8 py-4">
+                        {/* Left side: Back button - Fixed width to match right side */}
+                        <div className="w-[140px] flex items-center justify-start">
+                            {title !== "" && (
+                                <button
+                                    className="group flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 hover:bg-gray-50 hover:shadow-md active:scale-95 border border-gray-200/50 hover:border-gray-300"
+                                    onClick={(e) => goBackPage(e)}
+                                    title="Go Back"
+                                >
+                                    <ArrowBackIcon 
+                                        className="text-gray-500 group-hover:text-gray-700 transition-colors duration-300" 
+                                        fontSize="medium"
+                                    />
+                                </button>
+                            )}
+                        </div>
+                        
+                        {/* Center: Title - Takes remaining space but centers its content */}
+                        <div className="flex-1 flex justify-center px-4">
+                            <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent tracking-tight whitespace-nowrap leading-tight pb-0.5">
+                                {title}
+                            </h1>
+                        </div>
+                        
+                        {/* Right side: Profile - Fixed width to match left side */}
+                        <div className="w-[140px] flex items-center justify-end">
+                            <button onClick={handleOpenProfile} className="flex items-center justify-end">  
+                                <div className="relative w-10 h-10">
+                                    <div className="absolute inset-0 rounded-full ring-2 ring-gray-300 dark:ring-gray-500" />
+                                    <div className="relative inline-flex items-center justify-center w-full h-full overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                                        <span className="font-medium text-gray-600 dark:text-gray-300">
+                                            {user.displayName?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase()}
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                        {/* )} */}
-                    </button>
-                </div>
-            </nav> 
+                            </button>
+                        </div>
+                    </div>
+                </nav>
 
             <ProfileModal
                 isOpen={isProfileModalOpen} 
