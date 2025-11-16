@@ -239,5 +239,14 @@ def get_prompt_count(materialID: int, studentID: str, session: DBSession):
                 404: {"model": ClientErrorResponse},
             },
             summary="Get the prompt count for all students for a material.")
-def get_prompt_count_all(materialID: int, session: DBSession):
+def get_prompt_count_all_students(materialID: int, session: DBSession):
     return db_material.get_prompt_count_all_material(materialID, session)
+
+@router.get("/prompt/all",
+            status_code=200,
+            responses={
+                404: {"model": ClientErrorResponse},
+            },
+            summary="Get the prompt count for all materials.")
+def get_prompt_count_all(session: DBSession):
+    return db_material.get_prompt_count_all(session)

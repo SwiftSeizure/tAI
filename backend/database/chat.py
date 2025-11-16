@@ -14,7 +14,7 @@ from backend.routers import assignment
 from backend.routers.material import get_file  # unchanged
 from backend.database.schema import DBPrompt_Count_Material, DBPrompt_Count_Assignment
 from backend.database.material import increment_prompt_count_material, get_prompt_count_material, get_prompt_count_all_material
-from backend.database.assignment import increment_prompt_count_assignment, get_prompt_count_assignment, get_prompt_count_all_assignment
+from backend.database.assignment import increment_prompt_count_assignment, get_prompt_count_assignment, get_prompt_count_all_students
 from backend.database.material import get_material_id_by_path
 from backend.database.assignment import get_assignment_id_by_path
 

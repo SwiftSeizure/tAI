@@ -90,7 +90,7 @@ def get_prompt_count_assignment(assignmentID: int, studentID: str, session: Sess
     prompt_count = session.execute(stmt).scalar_one_or_none()
     return prompt_count.count if prompt_count else 0
 
-def get_prompt_count_all_assignment(assignmentID: int, session: Session):
+def get_prompt_count_all_students(assignmentID: int, session: Session):
     stmt = select(DBPrompt_Count_Assignment).filter(
         DBPrompt_Count_Assignment.assignmentID == assignmentID
     )
@@ -103,3 +103,8 @@ def get_assignment_id_by_path(path: str, session: Session):
     )
     assignment = session.execute(stmt).scalar_one_or_none()
     return assignment.id if assignment else None
+
+def get_prompt_count_all(session: Session):
+    stmt = select(DBPrompt_Count_Assignment)
+    prompt_counts = session.execute(stmt).scalars().all()
+    return {prompt_count.assignmentID: prompt_count.count for prompt_count in prompt_counts}

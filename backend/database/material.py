@@ -105,3 +105,8 @@ def get_material_id_by_path(path: str, session: Session):
     )
     material = session.execute(stmt).scalar_one_or_none()
     return material.id if material else None
+
+def get_prompt_count_all(session: Session):
+    stmt = select(DBPrompt_Count_Material)
+    prompt_counts = session.execute(stmt).scalars().all()
+    return {prompt_count.materialID: prompt_count.count for prompt_count in prompt_counts}
