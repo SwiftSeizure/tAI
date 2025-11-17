@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, JSON,Boolean,Text
+from sqlalchemy import Column, Integer, String, ForeignKey, JSON,Boolean,Text, DATETIME
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+from datetime import datetime
 
 # Declare the base class for models
 Base = declarative_base()
@@ -112,6 +113,7 @@ class DBAssignment(Base):
     path = Column(String(255),nullable=False)
     remoteID = Column(String(255),nullable=True)
     dayId = Column(ForeignKey("day.id", ondelete="CASCADE"))
+    updated_at = Column(DATETIME, nullable=True)
 
     day = relationship("DBDay", back_populates="assignments")
 
@@ -125,6 +127,7 @@ class DBMaterial(Base):
     path = Column(String(255),nullable=False)
     remoteID = Column(String(255),nullable=True)
     dayId = Column(ForeignKey("day.id", ondelete="CASCADE"))
+    updated_at = Column(DATETIME, nullable=True)
 
     day = relationship("DBDay", back_populates="materials")
 

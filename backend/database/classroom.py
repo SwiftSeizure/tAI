@@ -3,7 +3,7 @@ from sqlalchemy.orm import selectinload, Session
 from backend.database.schema import DBClass, DBEnrolled, DBUnit,DBStudent, DBModule, DBDay
 from backend.exceptions import EntityNotFoundException, DuplicateNameException
 from backend.models import ClassroomStudent, CreateUnit, ClassroomNameUpdate, ClassroomSettingsUpdate, CanvasData
-from backend.database.day import delete_day_files, get_canvas_materials, get_canvas_assignments
+from backend.database.day import delete_day_files, get_canvas_materials, get_canvas_assignments, update_canvas_assignments, update_canvas_materials
 
 # Cavnas Stuff
 from cryptography.fernet import Fernet
@@ -46,7 +46,7 @@ def get_classroom(classroomID: int, session: Session) -> DBClass | None:
         raise EntityNotFoundException("classroom", classroomID) # type: ignore
     return classroom
 
-def get_class_units(classroomID: int, session: Session) -> list[DBClass]:
+async def get_class_units(classroomID: int, user: Annotated[dict, Depends(get_firebase_user_from_token)], session: Session) -> list[DBClass]:
     """Get all units in a classroom.
 
     Args:
@@ -62,6 +62,12 @@ def get_class_units(classroomID: int, session: Session) -> list[DBClass]:
     classroom = get_classroom(classroomID, session)
     if not classroom:
         raise EntityNotFoundException("classroom", classroomID) # type: ignore
+    
+    # Update Canvas Modules unit if it exists
+    for unit in classroom.units:
+        if unit.name == "Canvas Modules":
+            await update_canvas_modules(classroomID, unit, user, session)
+    
     return classroom.units
 
 def create_new_unit(classroomID: int, unit: CreateUnit, session: Session) -> DBUnit:
@@ -335,4 +341,75 @@ async def get_canvas_modules(classID: int, user: Annotated[dict, Depends(get_fir
         await get_canvas_materials(classroom, db_day, db_module, user, session)
     
 
+async def update_canvas_modules(classID: int, unit: DBUnit, user: Annotated[dict, Depends(get_firebase_user_from_token)], session: Session) -> None:
+    """Update the Canvas Modules unit in a classroom.
+
+    Args:
+        classID (int): The ID of the classroom to update.
+        unit (DBUnit): The Canvas Modules unit to update.
+        session (Session): The database session.
+    """
+    classroom = get_classroom(classID, session)
+    if not classroom:
+        raise EntityNotFoundException("classroom", classID) # type: ignore
     
+    # Data needed for API call
+    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode() # type: ignore
+    class_id = classroom.canvas_class_id # type: ignore
+    domain_name = classroom.canvas_domain_name # type: ignore
+    
+    # Get the unit the modules will go in
+    stmt = select(DBUnit).filter(
+        DBUnit.classID == classID,
+        DBUnit.name == "Canvas Modules")
+    canvas_unit = session.execute(stmt).scalar_one_or_none()
+    if not canvas_unit:
+        raise EntityNotFoundException("unit", "Canvas Modules") # type: ignore  
+    
+    # Create the get request and call it
+    headers = {
+        "Authorization": f"Bearer {api_key}"
+    }
+    url = f"https://{domain_name}/api/v1/courses/{class_id}/modules"
+    r = httpx.get(url, headers=headers)
+    modules = r.json()
+    
+    # Add modules to the database
+    for module in modules:
+        # See if this module already exists
+        stmt = select(DBModule).filter(
+            DBModule.unitID == unit.id,
+            DBModule.canvas_id == module['id']
+        )
+        existing_module = session.execute(stmt).scalar_one_or_none()
+        if existing_module:
+            await update_canvas_assignments(classroom, existing_module.days[0], existing_module, user, session)
+            await update_canvas_materials(classroom, existing_module.days[0], existing_module, user, session)
+            continue
+        
+        if len(module['name']) > 255:
+            module['name'] = module['name'][:255]
+        db_module = DBModule(
+            name = module['name'],
+            sequence = module['position'],
+            unitID = canvas_unit.id,
+            canvas_id = module['id']  # type: ignore
+        )
+        session.add(db_module)
+        session.commit()
+        
+        # Add day container
+        db_day = DBDay(
+            name="",
+            sequence=10,
+            moduleID=db_module.id,
+        )
+        
+        session.add(db_day)
+        session.commit()
+        
+        
+        await update_canvas_assignments(classroom, db_day, db_module, user, session)
+        await update_canvas_materials(classroom, db_day, db_module, user, session)
+        
+        

@@ -19,7 +19,7 @@ router = APIRouter(prefix="/classroom", tags=["classroom"])
                  404: {"model": ClientErrorResponse}
              },
             summary="Retrieve units for the given classroom. Must be the authenticated teacher.")
-def get_class_units(classID: int, 
+async def get_class_units(classID: int, 
                      user: Annotated[dict, Depends(get_firebase_user_from_token)],
                      session: DBSession) -> ClassroomResponse:
     """ Retrieve all of a teachers classes for their home page.
@@ -35,7 +35,7 @@ def get_class_units(classID: int,
         ClassroomResponse: A response model containing the units for the classroom.
     """
     
-    db_units = classroom_db.get_class_units(classID, session) 
+    db_units = await classroom_db.get_class_units(classID, user, session) 
     units = [ClassroomUnit(id=u.id, name=u.name, published=u.published) for u in db_units] # type: ignore
     return ClassroomResponse(units=units)
 
