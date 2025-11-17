@@ -29,6 +29,8 @@ export default function ClassStatisticsPage() {
     const [studentData, setStudentData] = useState(null);
     const [selectedItemName, setSelectedItemName] = useState('');
     const [selectedItemType, setSelectedItemType] = useState('');
+    const [showAllAssignments, setShowAllAssignments] = useState(false);
+    const [showAllMaterials, setShowAllMaterials] = useState(false);
 
     const hasAssignments = assignmentsData.length > 0;
     const hasMaterials = materialsData.length > 0;
@@ -63,9 +65,33 @@ export default function ClassStatisticsPage() {
     const populateAssignmentStudentPrompts = async (id) => {
         try {
             const response = await getAssignmentStudentPrompts(id); 
-            console.log("Assignment student prompts in response:", response);
-            //setStudentData(response);   
+            console.log("Assignment student prompts in response:", response);  
+            //setStudentData(response);  
+            const fakeResponse = {
+                "1": {
+                    "studentName": "Student 1",
+                    "count": 5
+                },
+                "2": {
+                    "studentName": "Student 2",
+                    "count": 10
+                },
+                "3": {
+                    "studentName": "Student 3",
+                    "count": 15
+                }
+            };
+            setStudentData(fakeResponse);  
+        } catch (error) {
+            console.error("Error fetching assignment student prompts:", error);
+            setStudentData(null);
+        } 
+    };
 
+    const populateMaterialStudentPrompts = async (id) => {
+        try {
+            const response = await getMaterialStudentPrompts(id); 
+            console.log("Material student prompts in response:", response);
             //setStudentData(response);   
             const fakeResponse = {
                 "1": {
@@ -82,18 +108,6 @@ export default function ClassStatisticsPage() {
                 }
             };
             setStudentData(fakeResponse); 
-
-        } catch (error) {
-            console.error("Error fetching assignment student prompts:", error);
-            setStudentData(null);
-        } 
-    };
-
-    const populateMaterialStudentPrompts = async (id) => {
-        try {
-            const response = await getMaterialStudentPrompts(id); 
-            console.log("Material student prompts in response:", response);
-            setStudentData(response);  
         } catch (error) {
             console.error("Error fetching material student prompts:", error);
             setStudentData(null);
@@ -334,6 +348,16 @@ export default function ClassStatisticsPage() {
 
     const totalPrompts = studentTableData.reduce((sum, s) => sum + s.count, 0);
 
+    // Sort and prepare assignments data for table
+    const sortedAssignments = [...assignmentsData].sort((a, b) => b.value - a.value);
+    const displayedAssignments = showAllAssignments ? sortedAssignments : sortedAssignments.slice(0, 3);
+    const totalAssignmentPrompts = assignmentsData.reduce((sum, a) => sum + a.value, 0);
+
+    // Sort and prepare materials data for table
+    const sortedMaterials = [...materialsData].sort((a, b) => b.value - a.value);
+    const displayedMaterials = showAllMaterials ? sortedMaterials : sortedMaterials.slice(0, 3);
+    const totalMaterialPrompts = materialsData.reduce((sum, m) => sum + m.value, 0);
+
     return (
         <div className="min-h-screen bg-gray-50">
             <NavBar />
@@ -343,24 +367,134 @@ export default function ClassStatisticsPage() {
                 </h1>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                    {/* Assignments Pie Chart */}
+                    {/* Assignments Section */}
                     <div className="bg-white p-6 rounded-xl shadow-md">
                         <h2 className="text-lg font-semibold mb-4">Assignment Prompts</h2>
                         {hasAssignments ? (
-                            <div className="h-80">
-                                <Pie data={assignmentData} options={chartOptions} />
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                {/* Pie Chart */}
+                                <div className="h-80">
+                                    <Pie data={assignmentData} options={chartOptions} />
+                                </div>
+                                
+                                {/* Top Assignments Table */}
+                                <div className="flex flex-col">
+                                    <div className="text-sm text-gray-600 mb-3">
+                                        {assignmentsData.length} assignments • {totalAssignmentPrompts} total prompts
+                                    </div>
+                                    <div className="flex-1 overflow-hidden">
+                                        <table className="min-w-full divide-y divide-gray-200">
+                                            <colgroup>
+                                                <col className="w-16" />
+                                                <col className="min-w-[150px]" />
+                                                <col className="w-24" />
+                                            </colgroup>
+                                            <thead className="bg-gray-50">
+                                                <tr>
+                                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                                        Rank
+                                                    </th>
+                                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        Assignment
+                                                    </th>
+                                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                                        Prompts
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="bg-white divide-y divide-gray-200">
+                                                {displayedAssignments.map((assignment, index) => (
+                                                    <tr key={assignment.assignmentID} className="hover:bg-gray-50">
+                                                        <td className="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                            #{index + 1}
+                                                        </td>
+                                                        <td className="px-3 py-2 text-sm text-gray-900 truncate max-w-[150px]" title={assignment.name}>
+                                                            {assignment.name}
+                                                        </td>
+                                                        <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-900 font-medium">
+                                                            {assignment.value}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    {assignmentsData.length > 3 && (
+                                        <button
+                                            onClick={() => setShowAllAssignments(!showAllAssignments)}
+                                            className="mt-3 text-sm text-blue-600 hover:text-blue-800 underline self-start"
+                                        >
+                                            {showAllAssignments ? 'Show Less' : `Show All (${assignmentsData.length})`}
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         ) : (
                             <NoDataMessage message="No assignment prompts available" />
                         )}
                     </div>
 
-                    {/* Materials Pie Chart */}
+                    {/* Materials Section */}
                     <div className="bg-white p-6 rounded-xl shadow-md">
                         <h2 className="text-lg font-semibold mb-4">Material Prompts</h2>
                         {hasMaterials ? (
-                            <div className="h-80">
-                                <Pie data={materialData} options={chartOptions} />
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                {/* Pie Chart */}
+                                <div className="h-80">
+                                    <Pie data={materialData} options={chartOptions} />
+                                </div>
+                                
+                                {/* Top Materials Table */}
+                                <div className="flex flex-col">
+                                    <div className="text-sm text-gray-600 mb-3">
+                                        {materialsData.length} materials • {totalMaterialPrompts} total prompts
+                                    </div>
+                                    <div className="flex-1 overflow-hidden">
+                                        <table className="min-w-full divide-y divide-gray-200">
+                                            <colgroup>
+                                                <col className="w-16" />
+                                                <col className="min-w-[150px]" />
+                                                <col className="w-24" />
+                                            </colgroup>
+                                            <thead className="bg-gray-50">
+                                                <tr>
+                                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                                        Rank
+                                                    </th>
+                                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        Material
+                                                    </th>
+                                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                                        Prompts
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="bg-white divide-y divide-gray-200">
+                                                {displayedMaterials.map((material, index) => (
+                                                    <tr key={material.materialID} className="hover:bg-gray-50">
+                                                        <td className="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                            #{index + 1}
+                                                        </td>
+                                                        <td className="px-3 py-2 text-sm text-gray-900 truncate max-w-[150px]" title={material.name}>
+                                                            {material.name}
+                                                        </td>
+                                                        <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-900 font-medium">
+                                                            {material.value}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    {materialsData.length > 3 && (
+                                        <button
+                                            onClick={() => setShowAllMaterials(!showAllMaterials)}
+                                            className="mt-3 text-sm text-blue-600 hover:text-blue-800 underline self-start"
+                                        >
+                                            {showAllMaterials ? 'Show Less' : `Show All (${materialsData.length})`}
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         ) : (
                             <NoDataMessage message="No material prompts available" />
@@ -395,7 +529,7 @@ export default function ClassStatisticsPage() {
                                 </p>
                             </div>
                             <button
-                                onClick={() => setStudentData(null)}
+                                onClick={setStudentData}
                                 className="text-sm text-gray-600 hover:text-gray-900 underline"
                             >
                                 Clear Selection
