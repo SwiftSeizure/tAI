@@ -171,3 +171,85 @@ def generatePracticeQuestion(studentID: str, path: Optional[str], session: Sessi
         question_text = "Unable to generate practice question at this time."
     
     return {"question": question_text}
+
+
+def validatePracticeAnswer(studentID: str, path: Optional[str], question: str, answer: str, session: Session) -> dict[str, Any]:
+    """
+    Validates a student's answer to a practice question.
+    
+    Args:
+        studentID: The student's Firebase UID
+        path: The path to the assignment/material file
+        question: The practice question that was asked
+        answer: The student's answer
+        session: Database session
+        
+    Returns:
+        dict with 'is_correct' (bool) and 'feedback' (str) keys
+    """
+    
+    if client is None:
+        return {"is_correct": False, "feedback": "Answer validation is not configured. Please set OPENAI_API_KEY."}
+    
+    # Build content items for OpenAI
+    content_items: list[dict[str, str]] = [
+        { 
+            "type": "input_text", 
+            "text": f"""You are a helpful teacher's assistant evaluating a student's answer to a practice question.
+
+Question: {question}
+
+Student's Answer: {answer}
+
+Evaluate if the student's answer is correct. Consider the answer correct if it demonstrates understanding of the key concept, even if the wording is slightly different. Be lenient with minor spelling or formatting issues.
+
+Respond with ONLY a JSON object in this exact format:
+{{"is_correct": true/false, "feedback": "brief feedback message"}}
+
+If correct, provide encouraging feedback. If incorrect, provide a hint about what to consider without giving away the answer."""
+        }
+    ]
+    
+    # Add file context if path is provided
+    if path is not None and isinstance(path, str) and len(path) > 0:
+        remoteID = db_assignment.get_RemoteID(path, session) if path.startswith("uploads/assignment") else db_material.get_RemoteID(path, session)
+        if remoteID is not None and isinstance(remoteID, str) and len(remoteID) > 0:
+            content_items.append({ "type": "input_file", "file_id": remoteID })
+    
+    # Call OpenAI API
+    openai_input: Any = [
+        {
+            "role": "user",
+            "content": content_items
+        }
+    ]
+    
+    try:
+        ai_response = client.responses.create(
+            model="gpt-4.1",
+            input=openai_input
+        )
+        
+        try:
+            response_text = ai_response.output_text
+        except Exception:
+            try:
+                response_text = str(ai_response)
+            except Exception:
+                response_text = '{"is_correct": false, "feedback": "Unable to validate answer at this time."}'
+        
+        # Parse the JSON response
+        import json
+        try:
+            result = json.loads(response_text)
+            # Ensure the result has the required keys
+            if "is_correct" not in result or "feedback" not in result:
+                result = {"is_correct": False, "feedback": "Unable to validate answer at this time."}
+        except json.JSONDecodeError:
+            result = {"is_correct": False, "feedback": "Unable to validate answer at this time."}
+            
+    except Exception as e:
+        print(f"Error validating practice answer: {e}")
+        result = {"is_correct": False, "feedback": "Unable to validate answer at this time."}
+    
+    return result

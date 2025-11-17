@@ -6,6 +6,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import { getPracticeQuestion } from '../services/get-practice-question';
+import { validatePracticeAnswer } from '../services/validate-practice-answer';
 
 /**
  * ChatFeature Component
@@ -32,6 +33,8 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, sele
     const [isTransparent, setIsTransparent] = useState(false);
     const [practiceQuestion, setPracticeQuestion] = useState(null);
     const [practiceAnswer, setPracticeAnswer] = useState('');
+    const [answerFeedback, setAnswerFeedback] = useState(null); // {is_correct: bool, feedback: string}
+    const [isValidatingAnswer, setIsValidatingAnswer] = useState(false);
     const [isLoadingQuestion, setIsLoadingQuestion] = useState(false);
     const { currentChat, currentChatId, setCurrentChat } = useCurrentChat();
     
@@ -107,15 +110,29 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, sele
     const handleSubmitPracticeAnswer = async () => {
         if (!practiceAnswer.trim()) return;
         
-        // Send the practice answer as a regular chat message
-        const fullMessage = `My answer to the practice question: ${practiceAnswer}`;
-        const answerToSubmit = practiceAnswer;
-        setPracticeAnswer('');
+        setIsValidatingAnswer(true);
+        setAnswerFeedback(null);
         
         try {
-            await onSendMessage(fullMessage);
+            const result = await validatePracticeAnswer(
+                user.id,
+                displayType,
+                selectedDay.id,
+                selectedContent.filename,
+                practiceQuestion,
+                practiceAnswer
+            );
+            
+            setAnswerFeedback(result);
+            setPracticeAnswer('');
         } catch (error) {
-            console.error('Error submitting practice answer:', error);
+            console.error('Error validating practice answer:', error);
+            setAnswerFeedback({
+                is_correct: false,
+                feedback: 'Unable to validate answer at this time. Please try again.'
+            });
+        } finally {
+            setIsValidatingAnswer(false);
         }
     };
 
@@ -127,6 +144,8 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, sele
 
         setIsLoadingQuestion(true);
         setPracticeQuestion(null);
+        setAnswerFeedback(null);
+        setPracticeAnswer('');
 
         try {
             const response = await getPracticeQuestion(
@@ -321,7 +340,11 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, sele
                                         <h3 className="text-sm font-semibold text-purple-300">Practice: Level 1</h3>
                                     </div>
                                     <button
-                                        onClick={() => setPracticeQuestion(null)}
+                                        onClick={() => {
+                                            setPracticeQuestion(null);
+                                            setAnswerFeedback(null);
+                                            setPracticeAnswer('');
+                                        }}
                                         className="text-purple-300 hover:text-purple-100 transition-colors"
                                         aria-label="Close practice question"
                                     >
@@ -331,35 +354,95 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, sele
                                     </button>
                                 </div>
                                 
-                                <div className={`text-gray-100 mb-4 whitespace-pre-wrap ${
+                                <div className={`text-gray-100 mb-4 break-words overflow-wrap-anywhere ${
                                     isTransparent ? 'text-shadow-lg' : ''
-                                }`}>
+                                }`} style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
                                     <ReactMarkdown 
                                         remarkPlugins={[remarkGfm, remarkMath]}
                                         rehypePlugins={[rehypeKatex]}
+                                        components={{
+                                            // Customize rendering for better spacing and containment
+                                            p: ({node, ...props}) => <p className="mb-4 last:mb-0 leading-7" style={{ wordBreak: 'normal', overflowWrap: 'anywhere' }} {...props} />,
+                                            ul: ({node, ...props}) => <ul className="list-disc pl-6 mb-4 space-y-2" style={{ wordBreak: 'normal', overflowWrap: 'anywhere' }} {...props} />,
+                                            ol: ({node, ...props}) => <ol className="list-decimal pl-6 mb-4 space-y-2" style={{ wordBreak: 'normal', overflowWrap: 'anywhere' }} {...props} />,
+                                            li: ({node, ...props}) => <li className="leading-7" style={{ wordBreak: 'normal', overflowWrap: 'anywhere' }} {...props} />,
+                                            code: ({node, inline, ...props}) => 
+                                                inline 
+                                                    ? <code className="bg-purple-800/50 text-purple-100 px-1.5 py-0.5 rounded text-sm font-mono" style={{ wordBreak: 'break-all', overflowWrap: 'anywhere' }} {...props} />
+                                                    : <code className="block bg-purple-950/70 text-purple-100 p-4 rounded-lg my-4 text-sm font-mono whitespace-pre-wrap" style={{ wordBreak: 'normal', overflowWrap: 'anywhere' }} {...props} />,
+                                            pre: ({node, ...props}) => <pre className="bg-purple-950/70 rounded-lg my-4 whitespace-pre-wrap" style={{ wordBreak: 'normal', overflowWrap: 'anywhere' }} {...props} />,
+                                            strong: ({node, ...props}) => <strong className="font-semibold" {...props} />,
+                                            em: ({node, ...props}) => <em className="italic" {...props} />,
+                                            h1: ({node, ...props}) => <h1 className="text-2xl font-bold mb-4 mt-6" style={{ wordBreak: 'normal', overflowWrap: 'anywhere' }} {...props} />,
+                                            h2: ({node, ...props}) => <h2 className="text-xl font-bold mb-3 mt-5" style={{ wordBreak: 'normal', overflowWrap: 'anywhere' }} {...props} />,
+                                            h3: ({node, ...props}) => <h3 className="text-lg font-bold mb-2 mt-4" style={{ wordBreak: 'normal', overflowWrap: 'anywhere' }} {...props} />,
+                                            blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-purple-400 pl-4 italic my-4" style={{ wordBreak: 'normal', overflowWrap: 'anywhere' }} {...props} />,
+                                            hr: ({node, ...props}) => <hr className="my-6 border-purple-400" {...props} />,
+                                            div: ({node, ...props}) => <div style={{ wordBreak: 'normal', overflowWrap: 'anywhere' }} {...props} />,
+                                            span: ({node, ...props}) => <span style={{ wordBreak: 'normal', overflowWrap: 'anywhere' }} {...props} />,
+                                        }}
                                     >
                                         {practiceQuestion}
                                     </ReactMarkdown>
                                 </div>
 
-                                {/* Answer input area within practice question box */}
-                                <div className="flex gap-2 mt-4">
-                                    <input
-                                        type="text"
-                                        value={practiceAnswer}
-                                        onChange={(e) => setPracticeAnswer(e.target.value)}
-                                        onKeyDown={handlePracticeAnswerKeyDown}
-                                        placeholder="Type your answer here..."
-                                        className="flex-1 px-4 py-2 bg-purple-950/50 text-gray-100 border border-purple-400/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent placeholder-purple-300/50"
-                                    />
-                                    <button
-                                        onClick={handleSubmitPracticeAnswer}
-                                        disabled={!practiceAnswer.trim()}
-                                        className="px-5 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                    >
-                                        Submit
-                                    </button>
-                                </div>
+                                {/* Answer input area or feedback display */}
+                                {answerFeedback ? (
+                                    <div className={`p-4 rounded-lg border-2 ${
+                                        answerFeedback.is_correct 
+                                            ? 'bg-green-900/40 border-green-500' 
+                                            : 'bg-red-900/40 border-red-500'
+                                    }`}>
+                                        <div className="flex items-center gap-2 mb-2">
+                                            {answerFeedback.is_correct ? (
+                                                <>
+                                                    <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    <span className="text-green-300 font-semibold text-lg">You were correct!</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    <span className="text-red-300 font-semibold text-lg">Not quite right</span>
+                                                </>
+                                            )}
+                                        </div>
+                                        <p className={`${answerFeedback.is_correct ? 'text-green-100' : 'text-red-100'}`}>
+                                            {answerFeedback.feedback}
+                                        </p>
+                                        <button
+                                            onClick={() => {
+                                                setAnswerFeedback(null);
+                                                setPracticeAnswer('');
+                                            }}
+                                            className="mt-3 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-500 transition-colors"
+                                        >
+                                            Try Again
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="flex gap-2 mt-4">
+                                        <input
+                                            type="text"
+                                            value={practiceAnswer}
+                                            onChange={(e) => setPracticeAnswer(e.target.value)}
+                                            onKeyDown={handlePracticeAnswerKeyDown}
+                                            placeholder="Type your answer here..."
+                                            className="flex-1 px-4 py-2 bg-purple-950/50 text-gray-100 border border-purple-400/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent placeholder-purple-300/50"
+                                            disabled={isValidatingAnswer}
+                                        />
+                                        <button
+                                            onClick={handleSubmitPracticeAnswer}
+                                            disabled={!practiceAnswer.trim() || isValidatingAnswer}
+                                            className="px-5 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                        >
+                                            {isValidatingAnswer ? 'Checking...' : 'Submit'}
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

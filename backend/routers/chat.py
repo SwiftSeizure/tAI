@@ -2,7 +2,7 @@ from fastapi import APIRouter, Form
 from backend.models import ChatResponse
 from backend.models import ClientErrorResponse
 from backend.dependencies import DBSession
-from backend.database.chat import queryBot, generatePracticeQuestion
+from backend.database.chat import queryBot, generatePracticeQuestion, validatePracticeAnswer
 from backend.database.schema import DBConversation, DBMessage, DBResponse
 
 from typing import Annotated
@@ -59,4 +59,33 @@ async def getPracticeQuestion(
     """
     
     result = generatePracticeQuestion(studentID, path, session)
+    return result
+
+
+@router.post("/validate-practice-answer/{path:path}", 
+            response_model=dict,
+            responses={404: {"model": ClientErrorResponse}},
+            status_code=200, 
+            summary="Validate a student's answer to a practice question")
+async def validateAnswer(
+    studentID: str,
+    path: str,
+    user: Annotated[dict, Depends(get_firebase_user_from_token)],
+    session: DBSession,
+    question: str = Form(...),
+    answer: str = Form(...)
+) -> dict:
+    """Validate a student's answer to a practice question.
+    
+    Args:
+        studentID (str): The ID of the student (Firebase UID).
+        path (str): The relative path of the content.
+        question (str): The practice question that was asked.
+        answer (str): The student's answer.
+        
+    Returns:
+        dict: A dictionary with 'is_correct' (bool) and 'feedback' (str) keys.
+    """
+    
+    result = validatePracticeAnswer(studentID, path, question, answer, session)
     return result
