@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavBar } from '../../shared/components/NavBar';
 import { useCurrentClass } from '../../store/class-store';
 import { Pie, Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js'; 
+import { getAssignmentsPrompts } from '../../shared/services/get-assignments-prompts';
+import { getMaterialsPrompts } from '../../shared/services/get-materials-prompts';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 export default function ClassStatisticsPage() {
-    const { currentClass } = useCurrentClass();
+    const { currentClass } = useCurrentClass(); 
+    const [assignmentsPrompts, setAssignmentsPrompts] = useState([]);
+    const [materialsPrompts, setMaterialsPrompts] = useState([]);
 
     const handlePieClick = (event, elements, chart) => {
         if (elements.length > 0) {
@@ -27,7 +31,32 @@ export default function ClassStatisticsPage() {
             console.log(`Clicked on ${label}: ${value}`);
             // Add your custom logic here
         }
-    };  
+    };   
+
+    const fetchAssignmentsPrompts = async () => {
+        try {
+            const response = await getAssignmentsPrompts();
+            setAssignmentsPrompts(response);
+        } catch (error) {
+            console.error('Error fetching assignments prompts:', error);
+        }
+    };
+
+    const fetchMaterialsPrompts = async () => {
+        try {
+            const response = await getMaterialsPrompts();
+            setMaterialsPrompts(response);
+        } catch (error) {
+            console.error('Error fetching materials prompts:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchAssignmentsPrompts();
+        fetchMaterialsPrompts(); 
+        console.log(assignmentsPrompts);
+        console.log(materialsPrompts);
+    }, []); 
 
 
     // All API calls bellow can give classID to the backend and the current userID unless noted otherwise
