@@ -14,10 +14,9 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarEle
 const generateRandomColors = (count) => {
     const colors = [];
     for (let i = 0; i < count; i++) {
-        // Generate random hue between 0-360, with good saturation and lightness
         const hue = Math.floor(Math.random() * 360);
-        const saturation = 70 + Math.random() * 30;  // 70-100%
-        const lightness = 40 + Math.random() * 40;   // 40-80%
+        const saturation = 70 + Math.random() * 30;
+        const lightness = 40 + Math.random() * 40;
         colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
     }
     return colors;
@@ -27,10 +26,13 @@ export default function ClassStatisticsPage() {
     const { currentClass } = useCurrentClass(); 
     const [assignmentsData, setAssignmentsData] = useState([]);
     const [materialsData, setMaterialsData] = useState([]); 
-    const [studentData, setStudentData] = useState([]); 
+    const [studentData, setStudentData] = useState(null);
+    const [selectedItemName, setSelectedItemName] = useState('');
+    const [selectedItemType, setSelectedItemType] = useState('');
 
     const hasAssignments = assignmentsData.length > 0;
     const hasMaterials = materialsData.length > 0;
+    const hasStudentData = studentData && Object.keys(studentData).length > 0;
 
     const handleMaterialAssignmentPieClick = (event, elements, chart) => {
         if (elements.length > 0) {
@@ -39,10 +41,15 @@ export default function ClassStatisticsPage() {
             const id = assignmentsData[index]?.assignmentID || materialsData[index]?.materialID;
             
             if (id) {
-
                 if (assignmentsData.some(item => item.assignmentID === id)) {
+                    const assignment = assignmentsData.find(item => item.assignmentID === id);
+                    setSelectedItemName(assignment.name);
+                    setSelectedItemType('Assignment');
                     populateAssignmentStudentPrompts(id);
                 } else if (materialsData.some(item => item.materialID === id)) {
+                    const material = materialsData.find(item => item.materialID === id);
+                    setSelectedItemName(material.name);
+                    setSelectedItemType('Material');
                     populateMaterialStudentPrompts(id);
                 } else {
                     console.error('Could not determine if ID belongs to assignment or material:', id);
@@ -51,15 +58,44 @@ export default function ClassStatisticsPage() {
                 console.error('Could not find ID for clicked element');
             }
         }
-
     };  
 
     const populateAssignmentStudentPrompts = async (id) => {
-        console.log(`Populating assignment student prompts for assignment ID: ${id}`);
+        try {
+            const response = await getAssignmentStudentPrompts(id); 
+            console.log("Assignment student prompts in response:", response);
+
+            //setStudentData(response);   
+            const fakeResponse = {
+                "1": {
+                    "studentName": "Student 1",
+                    "count": 5
+                },
+                "2": {
+                    "studentName": "Student 2",
+                    "count": 10
+                },
+                "3": {
+                    "studentName": "Student 3",
+                    "count": 15
+                }
+            };
+            setStudentData(fakeResponse); 
+        } catch (error) {
+            console.error("Error fetching assignment student prompts:", error);
+            setStudentData(null);
+        } 
     };
 
     const populateMaterialStudentPrompts = async (id) => {
-        console.log(`Populating material student prompts for material ID: ${id}`);
+        try {
+            const response = await getMaterialStudentPrompts(id); 
+            console.log("Material student prompts in response:", response);
+            setStudentData(response);  
+        } catch (error) {
+            console.error("Error fetching material student prompts:", error);
+            setStudentData(null);
+        } 
     };
 
     const fetchAssignmentsPrompts = async () => {
@@ -67,7 +103,6 @@ export default function ClassStatisticsPage() {
             const response = await getAssignmentsPrompts();
             console.log("Assignments prompts in response:", response);
 
-            // Handle the case where response is an object with numeric keys
             if (response && typeof response === 'object' && !Array.isArray(response)) {
                 const formattedData = Object.entries(response).map(([id, item]) => ({
                     assignmentID: id,
@@ -91,7 +126,6 @@ export default function ClassStatisticsPage() {
             const response = await getMaterialsPrompts();
             console.log("Materials prompts in response:", response);
 
-            // Handle the case where response is an object with numeric keys
             if (response && typeof response === 'object' && !Array.isArray(response)) {
                 const formattedData = Object.entries(response).map(([id, item]) => ({
                     materialID: id,
@@ -110,32 +144,9 @@ export default function ClassStatisticsPage() {
         }
     };
 
-
     useEffect(() => {
         fetchAssignmentsPrompts(); 
-        // Example return value: 
-        // {
-        //     "102": {
-        //         "assignment": "Assignment 1",
-        //         "count": 10
-        //     },
-        //     "103": {
-        //         "assignment": "Assignment 2",
-        //         "count": 20
-        //     }
-        // }
         fetchMaterialsPrompts(); 
-        // Example return value: 
-        // {
-        //     "102": {
-        //         "material": "Material 1",
-        //         "count": 10
-        //     },
-        //     "103": {
-        //         "material": "Material 2",
-        //         "count": 20
-        //     }
-        // }
     }, []);
 
     const assignmentData = {
@@ -197,7 +208,6 @@ export default function ClassStatisticsPage() {
         },
     };
 
-    // Combined bar chart data
     const combinedBarData = {
         labels: assignmentsData.map(a => a.name),
         datasets: [
@@ -260,6 +270,71 @@ export default function ClassStatisticsPage() {
         }
     };
 
+    // Student bar chart data
+    const studentBarData = studentData ? {
+        labels: Object.values(studentData).map(s => s.studentName),
+        datasets: [{
+            label: 'Prompts',
+            data: Object.values(studentData).map(s => s.count),
+            backgroundColor: generateRandomColors(Object.keys(studentData).length),
+            borderRadius: 6,
+            borderWidth: 0,
+        }],
+    } : null;
+
+    const studentBarOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const value = context.raw || 0;
+                        return `${value} prompt${value !== 1 ? 's' : ''}`;
+                    }
+                },
+                enabled: true,
+                backgroundColor: 'white',
+                titleColor: '#111827',
+                bodyColor: '#374151',
+                borderColor: '#e5e7eb',
+                borderWidth: 1,
+                padding: 12,
+                cornerRadius: 8,
+                displayColors: true,
+            },
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                },
+                title: {
+                    display: true,
+                    text: 'Number of Prompts',
+                    font: {
+                        size: 12,
+                        family: "'Inter', sans-serif"
+                    },
+                    color: '#374151'
+                }
+            },
+            x: {
+                ticks: {
+                    font: {
+                        size: 11,
+                        family: "'Inter', sans-serif"
+                    },
+                    color: '#374151'
+                }
+            }
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-50">
             <NavBar />
@@ -294,9 +369,9 @@ export default function ClassStatisticsPage() {
                     </div>
                 </div>
 
-                {/* Combined Bar Chart - Only show if we have both assignments and materials */}
+                {/* Combined Bar Chart */}
                 {(hasAssignments || hasMaterials) && (
-                    <div className="bg-white p-6 rounded-xl shadow-md">
+                    <div className="bg-white p-6 rounded-xl shadow-md mb-8">
                         <h2 className="text-lg font-semibold mb-4">Material vs Assignment Prompt Comparison</h2>
                         {hasAssignments && hasMaterials ? (
                             <div className="h-96">
@@ -305,6 +380,30 @@ export default function ClassStatisticsPage() {
                         ) : (
                             <NoDataMessage message="Unfortunately, there is not enough data to show a comparison. Great job teaching!" />
                         )}
+                    </div>
+                )}
+
+                {/* Student Statistics Drill-Down */}
+                {hasStudentData && (
+                    <div className="bg-white p-6 rounded-xl shadow-md">
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-lg font-semibold">
+                                Student Prompts for {selectedItemType}: {selectedItemName}
+                            </h2>
+                            <button
+                                onClick={() => setStudentData(null)}
+                                className="text-sm text-gray-600 hover:text-gray-900 underline"
+                            >
+                                Clear Selection
+                            </button>
+                        </div>
+                        <div className="h-96">
+                            <Bar data={studentBarData} options={studentBarOptions} />
+                        </div>
+                        <div className="mt-4 text-sm text-gray-600">
+                            <p>Total Students: {Object.keys(studentData).length}</p>
+                            <p>Total Prompts: {Object.values(studentData).reduce((sum, s) => sum + s.count, 0)}</p>
+                        </div>
                     </div>
                 )}
             </div>
