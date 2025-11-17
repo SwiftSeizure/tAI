@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, File, UploadFile
+from fastapi import APIRouter, HTTPException, File, UploadFile, Query
 from fastapi.responses import FileResponse
 from typing import Annotated
 from fastapi import Depends
@@ -122,24 +122,23 @@ def delete_file(dayID: int,
 
 
 @router.post("/{dayID}/{filename}",
-
                 status_code=201,
                 responses={
                     409: {"model": ClientErrorResponse},
                     },
                 summary="Upload a material file for a specific day.")
 async def upload_single_file(dayID: int, 
-                             name: str, 
                              user: Annotated[dict, Depends(get_firebase_user_from_token)],
                              session: DBSession, 
-                             file: UploadFile = File(...)):
+                             file: UploadFile = File(...),
+                             name: str = Query(None)):
 
     user_id = user["uid"]
     teacher_id = db_day.get_teacher_by_day_id(dayID, session)
     if user_id != teacher_id and user_id != "test-user":
             raise UnauthorizedException("upload assignment") 
     
-    """Upload a single file with basic validation"""
+    # Upload a single file with basic validation
     if file.filename == "":
         raise HTTPException(status_code=400, detail="No file selected")
 

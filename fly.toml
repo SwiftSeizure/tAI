@@ -9,7 +9,7 @@ primary_region = "den"
   DATA_ROOT = "/var/data"
   PORT = "8080"
   NODE_ENV = "production"
-  MIGRATE_DB = "true"
+  INIT_DB_TABLES_ONLY = "true"
   FIREBASE_ACTIVE = "true"
 
 [[mounts]]

@@ -17,6 +17,12 @@
       "name": "Mr. Johnson",
       "userName": "bigJ",
       "password_hash": "hashed_pw_2"
+    },
+    { 
+      "id": "qwiXzhN5FRf2awpwHcNLZBW4UwB2",
+      "name": "Jimmy",
+      "userName": "jimmyMan",
+      "password_hash": "hashed_pw_1"
     }
   ],
   "student": [
