@@ -63,7 +63,6 @@ def get_prompt_count_all_students(assignmentID: int, session: DBSession):
             },
             summary="Get the prompt count for all assignments.")
 def get_prompt_count_all(
-    user: Annotated[dict, Depends(get_firebase_user_from_token)],
     session: DBSession
 ):
     return db_assignment.get_prompt_count_all(session)
