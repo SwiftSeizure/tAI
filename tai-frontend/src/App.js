@@ -127,7 +127,7 @@ function App() {
                     <Route path="/createunit" element={<CreateUnitPage />} /> 
 
                     {/* Class Statistics Routes */}
-                    <Route path="/classstatistics" element={<ClassStatisticsPage />} /> 
+                    <Route path="/statistics" element={<ClassStatisticsPage />} /> 
 
   	  	  	  	  	{/* 404 - Catch all unmatched routes */}
   	  	  	  	  	<Route path="*" element={<NotFoundPage />} />
