@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useCurrentChat } from '../../store/chat-store';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 /**
  * ChatFeature Component
@@ -21,6 +23,7 @@ import { useCurrentChat } from '../../store/chat-store';
  */
 const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent }) => {
     const [message, setMessage] = useState('');
+    const [isTransparent, setIsTransparent] = useState(false);
     const { currentChat, currentChatId, setCurrentChat } = useCurrentChat();
     
     // If no chatId is provided but we have displayType and selectedContent, generate a chatId
@@ -110,55 +113,153 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent }) =>
     }
 
     return (
-        <div className="flex flex-col h-full bg-white rounded-lg shadow-md overflow-hidden">
+        <div className={`flex flex-col h-full rounded-lg overflow-hidden ${
+            isTransparent ? '' : 'bg-gray-800/90 backdrop-blur-md shadow-md'
+        }`}>
+            {/* Header with transparency toggle */}
+            <div className={`flex items-center justify-between px-4 py-3 ${
+                isTransparent ? 'border-b border-gray-500/30 bg-black/30' : 'border-b border-gray-600 bg-gray-800/50'
+            }`}>
+                <div className="flex items-center gap-3">
+                    <h2 className="text-lg font-semibold text-gray-100">Chat</h2>
+                    <button
+                        onClick={() => setIsTransparent(!isTransparent)}
+                        className="flex items-center gap-2 px-3 py-1.5 text-sm bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-md transition-colors"
+                        title={isTransparent ? "Make background solid" : "Make background transparent"}
+                    >
+                        {isTransparent ? (
+                            <>
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                <span>Solid</span>
+                            </>
+                        ) : (
+                            <>
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                </svg>
+                                <span>Transparent</span>
+                            </>
+                        )}
+                    </button>
+                </div>
+                <div className="w-10"></div>
+            </div>
+            
             <div 
                 ref={convoRef}
-                className="flex-1 overflow-y-auto p-4 space-y-4"
+                className="flex-1 overflow-y-auto bg-transparent"
             >
                 {messages.map((msg, index) => (
                     <div 
                         key={`msg-${index}`}
-                        className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                        className={`w-full py-6 px-4 ${
+                            msg.role === 'user' 
+                                ? isTransparent ? 'bg-blue-600/20 border-l-4 border-blue-400' : 'bg-blue-900/40 border-l-4 border-blue-500'
+                                : isTransparent ? 'bg-gray-900/20' : 'bg-gray-700/30'
+                        }`}
                     >
-                        <div 
-                            className={`max-w-3/4 p-3 rounded-lg ${
-                                msg.role === 'user' 
-                                    ? 'bg-blue-500 text-white' 
-                                    : 'bg-gray-200 text-gray-800'
-                            }`}
-                        >
-                            {msg.content && typeof msg.content === 'object' 
-                                ? JSON.stringify(msg.content) 
-                                : msg.content}
+                        <div className="max-w-3xl mx-auto">
+                            <div className="flex gap-4">
+                                {/* Avatar */}
+                                <div className="flex-shrink-0">
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold ${
+                                        msg.role === 'user' 
+                                            ? 'bg-blue-600' 
+                                            : 'bg-green-600'
+                                    }`}>
+                                        {msg.role === 'user' ? 'U' : 'AI'}
+                                    </div>
+                                </div>
+                                
+                                {/* Message content */}
+                                <div className={`flex-1 min-w-0 ${
+                                    isTransparent ? 'text-white' : 'text-gray-100'
+                                }`} style={isTransparent ? {textShadow: '0 1px 3px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.8)'} : {}}>
+                                    {msg.role === 'user' ? (
+                                        // User messages: display as plain text
+                                        <div className="whitespace-pre-wrap font-medium">
+                                            {msg.content && typeof msg.content === 'object' 
+                                                ? JSON.stringify(msg.content) 
+                                                : msg.content}
+                                        </div>
+                                    ) : (
+                                        // Assistant messages: render as markdown
+                                        <ReactMarkdown 
+                                            remarkPlugins={[remarkGfm]}
+                                            components={{
+                                                // Customize rendering for better spacing
+                                                p: ({node, ...props}) => <p className="mb-4 last:mb-0 leading-7" {...props} />,
+                                                ul: ({node, ...props}) => <ul className="list-disc pl-6 mb-4 space-y-2" {...props} />,
+                                                ol: ({node, ...props}) => <ol className="list-decimal pl-6 mb-4 space-y-2" {...props} />,
+                                                li: ({node, ...props}) => <li className="leading-7" {...props} />,
+                                                code: ({node, inline, ...props}) => 
+                                                    inline 
+                                                        ? <code className="bg-gray-200 text-gray-900 px-1.5 py-0.5 rounded text-sm font-mono" {...props} />
+                                                        : <code className="block bg-gray-900 text-gray-100 p-4 rounded-lg my-4 overflow-x-auto text-sm font-mono" {...props} />,
+                                                pre: ({node, ...props}) => <pre className="bg-gray-900 rounded-lg my-4 overflow-x-auto" {...props} />,
+                                                strong: ({node, ...props}) => <strong className="font-semibold" {...props} />,
+                                                em: ({node, ...props}) => <em className="italic" {...props} />,
+                                                h1: ({node, ...props}) => <h1 className="text-2xl font-bold mb-4 mt-6" {...props} />,
+                                                h2: ({node, ...props}) => <h2 className="text-xl font-bold mb-3 mt-5" {...props} />,
+                                                h3: ({node, ...props}) => <h3 className="text-lg font-bold mb-2 mt-4" {...props} />,
+                                                blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-gray-300 pl-4 italic my-4" {...props} />,
+                                                hr: ({node, ...props}) => <hr className="my-6 border-gray-300" {...props} />,
+                                            }}
+                                        >
+                                            {msg.content && typeof msg.content === 'object' 
+                                                ? JSON.stringify(msg.content) 
+                                                : (msg.content || '')}
+                                        </ReactMarkdown>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 ))}
                 
                 {/* Loading indicator */}
                 {isLoading && (
-                    <div className="flex justify-start">
-                        <div className="bg-gray-200 text-gray-800 p-3 rounded-lg">
-                            Thinking...
+                    <div className={`w-full py-6 px-4 ${isTransparent ? 'bg-gray-900/20' : 'bg-gray-700/30'}`}>
+                        <div className="max-w-3xl mx-auto">
+                            <div className="flex gap-4">
+                                <div className="flex-shrink-0">
+                                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold bg-green-600">
+                                        AI
+                                    </div>
+                                </div>
+                                <div className="flex-1 min-w-0 text-gray-600">
+                                    <div className="flex items-center gap-1">
+                                        <span className="animate-bounce">●</span>
+                                        <span className="animate-bounce animation-delay-200">●</span>
+                                        <span className="animate-bounce animation-delay-400">●</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}
             </div>
 
-            <div className="p-4 border-t border-gray-200">
-                <div className="flex space-x-2">
+            <div className={`p-4 border-t backdrop-blur-sm ${
+                isTransparent ? 'border-gray-500/30 bg-black/30' : 'border-gray-600 bg-gray-800/90'
+            }`}>
+                <div className="max-w-3xl mx-auto flex gap-3">
                     <input
                         type="text"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Type your message..."
-                        className="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="flex-1 px-4 py-3 bg-gray-700 text-gray-100 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400"
                         disabled={isLoading}
                     />
                     <button
                         onClick={handleSend}
                         disabled={!message.trim() || isLoading}
-                        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                         Send
                     </button>
