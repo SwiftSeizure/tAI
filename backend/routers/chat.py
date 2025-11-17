@@ -2,7 +2,7 @@ from fastapi import APIRouter, Form
 from backend.models import ChatResponse
 from backend.models import ClientErrorResponse
 from backend.dependencies import DBSession
-from backend.database.chat import queryBot, generatePracticeQuestion, validatePracticeAnswer
+from backend.database.chat import queryBot, generatePracticeQuestion, generatePracticeQuestionWithLevel, validatePracticeAnswer
 from backend.database.schema import DBConversation, DBMessage, DBResponse
 
 from typing import Annotated
@@ -14,21 +14,21 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 
 @router.put("/{path:path}",response_model=ChatResponse,responses= {404:{"model": ClientErrorResponse}} 
            ,status_code=200, summary="Run query and update chat")
-async def queryResponse(studentID: str, 
-                        path: str, 
+async def queryResponse(
+                        path: str,
                         user: Annotated[dict, Depends(get_firebase_user_from_token)],
                         session:DBSession,
+                        studentID: str = None,
                         query: str = Form(...)) -> ChatResponse:
     """Run a query and update the chat.
 
-    Args:doc_validator.validate_file(file)
-
+    Args:
         studentID (str): The ID of the student (Firebase UID).
         path (str): The relative path of what context the chat is being run in.
         query (str): The query to run.
 
     Returns:
-        ChatResponse: The response containing the conversatiorint(path)n ID and name.
+        ChatResponse: The response containing the conversation ID and name.
     """
     
 
@@ -46,19 +46,23 @@ async def getPracticeQuestion(
     studentID: str,
     path: str,
     user: Annotated[dict, Depends(get_firebase_user_from_token)],
-    session: DBSession
+    session: DBSession,
+    classID: int = None,
+    level: int = 1
 ) -> dict[str, str]:
     """Generate a practice question based on the content at the given path.
     
     Args:
         studentID (str): The ID of the student (Firebase UID).
         path (str): The relative path of the content to generate a question from.
+        classID (int, optional): The ID of the class.
+        level (int): The difficulty level (default 1).
         
     Returns:
         dict: A dictionary with a 'question' key containing the generated practice question.
     """
     
-    result = generatePracticeQuestion(studentID, path, session)
+    result = generatePracticeQuestionWithLevel(studentID, classID, path, level, session)
     return result
 
 
@@ -73,7 +77,9 @@ async def validateAnswer(
     user: Annotated[dict, Depends(get_firebase_user_from_token)],
     session: DBSession,
     question: str = Form(...),
-    answer: str = Form(...)
+    answer: str = Form(...),
+    classID: int = None,
+    level: int = Form(1)
 ) -> dict:
     """Validate a student's answer to a practice question.
     
@@ -82,10 +88,12 @@ async def validateAnswer(
         path (str): The relative path of the content.
         question (str): The practice question that was asked.
         answer (str): The student's answer.
+        classID (int, optional): The ID of the class.
+        level (int): The current difficulty level.
         
     Returns:
-        dict: A dictionary with 'is_correct' (bool) and 'feedback' (str) keys.
+        dict: A dictionary with 'is_correct' (bool), 'feedback' (str), and 'next_level' (int) keys.
     """
     
-    result = validatePracticeAnswer(studentID, path, question, answer, session)
+    result = validatePracticeAnswer(studentID, classID, path, question, answer, level, session)
     return result

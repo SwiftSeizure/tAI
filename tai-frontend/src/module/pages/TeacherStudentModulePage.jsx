@@ -510,6 +510,7 @@ const TeacherStudentModulePage = () => {
                                 selectedContent={selectedContent}
                                 selectedDay={selectedDay}
                                 user={user}
+                                classID={currentUnit?.classID}
                                 onSendMessage={handleChatMessage}
                             />
                         </div>

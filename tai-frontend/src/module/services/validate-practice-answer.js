@@ -3,25 +3,28 @@ import api from "../../shared/services/axios";
 /**
  * Validate a student's answer to a practice question
  * @param {string} studentID - The student's Firebase UID
+ * @param {number} classID - The class ID
  * @param {string} displayType - Type of content ('material' or 'assignment')
  * @param {number} dayID - The day ID
  * @param {string} currentFileName - The current file name
  * @param {string} question - The practice question that was asked
  * @param {string} answer - The student's answer
- * @returns {Promise<{is_correct: boolean, feedback: string}>} Validation result
+ * @param {number} level - The current difficulty level
+ * @returns {Promise<{is_correct: boolean, feedback: string, next_level: number}>} Validation result
  */
-export const validatePracticeAnswer = async (studentID, displayType, dayID, currentFileName, question, answer) => {
+export const validatePracticeAnswer = async (studentID, classID, displayType, dayID, currentFileName, question, answer, level = 1) => {
     try {
         const url = `/chat/validate-practice-answer/uploads/${displayType}/${dayID}/${currentFileName}`;
         
-        console.log("Validating practice answer at:", url);
+        console.log("Validating practice answer at:", url, "level", level);
         
         const formData = new FormData();
         formData.append('question', question);
         formData.append('answer', answer);
+        formData.append('level', level);
         
         const response = await api.post(url, formData, {
-            params: { studentID }
+            params: { studentID, classID }
         });
         
         console.log("Validation response:", response.data);

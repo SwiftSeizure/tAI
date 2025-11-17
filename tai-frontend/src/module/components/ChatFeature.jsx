@@ -27,12 +27,14 @@ import { validatePracticeAnswer } from '../services/validate-practice-answer';
  * @param {Object} [selectedContent] - Currently selected content
  * @param {Object} [selectedDay] - Currently selected day
  * @param {Object} [user] - Current user object
+ * @param {number} [classID] - The class ID
  */
-const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, selectedDay, user }) => {
+const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, selectedDay, user, classID }) => {
     const [message, setMessage] = useState('');
     const [isTransparent, setIsTransparent] = useState(false);
     const [practiceQuestion, setPracticeQuestion] = useState(null);
     const [practiceAnswer, setPracticeAnswer] = useState('');
+    const [practiceLevel, setPracticeLevel] = useState(1); // Track current difficulty level
     const [answerFeedback, setAnswerFeedback] = useState(null); // {is_correct: bool, feedback: string}
     const [isValidatingAnswer, setIsValidatingAnswer] = useState(false);
     const [isLoadingQuestion, setIsLoadingQuestion] = useState(false);
@@ -116,30 +118,57 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, sele
         try {
             const result = await validatePracticeAnswer(
                 user.id,
+                classID,
                 displayType,
                 selectedDay.id,
                 selectedContent.filename,
                 practiceQuestion,
-                practiceAnswer
+                practiceAnswer,
+                practiceLevel
             );
             
             setAnswerFeedback(result);
             setPracticeAnswer('');
+            
+            // Update level based on result
+            if (result.next_level) {
+                setPracticeLevel(result.next_level);
+            }
         } catch (error) {
             console.error('Error validating practice answer:', error);
             setAnswerFeedback({
                 is_correct: false,
-                feedback: 'Unable to validate answer at this time. Please try again.'
+                feedback: 'Unable to validate answer at this time. Please try again.',
+                next_level: practiceLevel
             });
         } finally {
             setIsValidatingAnswer(false);
         }
     };
 
-    const handleGeneratePracticeQuestion = async () => {
+    const handleGeneratePracticeQuestion = async (recordSkipAsIncorrect = false) => {
         if (!user || !selectedDay || !selectedContent || !displayType) {
             console.error('Missing required data for practice question generation');
             return;
+        }
+
+        // If requested, record the skip as an incorrect attempt before generating new question
+        if (recordSkipAsIncorrect && practiceQuestion) {
+            try {
+                const path = `uploads/${displayType}/${selectedDay.id}/${selectedContent.filename}`;
+                await validatePracticeAnswer(
+                    user.id,
+                    classID,
+                    displayType,
+                    selectedDay.id,
+                    selectedContent.filename,
+                    practiceQuestion,
+                    '', // Empty answer to indicate skipped
+                    practiceLevel
+                );
+            } catch (error) {
+                console.error('Error recording skip attempt:', error);
+            }
         }
 
         setIsLoadingQuestion(true);
@@ -150,9 +179,11 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, sele
         try {
             const response = await getPracticeQuestion(
                 user.id,
+                classID,
                 displayType,
                 selectedDay.id,
-                selectedContent.filename
+                selectedContent.filename,
+                practiceLevel
             );
             
             if (response && response.question) {
@@ -242,7 +273,7 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, sele
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <span>Practice: Level 1</span>
+                                <span>Practice: Level {practiceLevel}</span>
                             </>
                         )}
                     </button>
@@ -337,7 +368,22 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, sele
                                         <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
-                                        <h3 className="text-sm font-semibold text-purple-300">Practice: Level 1</h3>
+                                        <h3 className="text-sm font-semibold text-purple-300">Practice: Level {practiceLevel}</h3>
+                                        <button
+                                            onClick={() => {
+                                                setAnswerFeedback(null);
+                                                setPracticeAnswer('');
+                                                handleGeneratePracticeQuestion(true);
+                                            }}
+                                            disabled={isLoadingQuestion}
+                                            className="ml-2 px-2 py-1 text-xs bg-purple-700 hover:bg-purple-600 text-purple-100 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                                            title="Generate a different question at the same level"
+                                        >
+                                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                            </svg>
+                                            {isLoadingQuestion ? 'Loading...' : 'Different Question'}
+                                        </button>
                                     </div>
                                     <button
                                         onClick={() => {
@@ -417,10 +463,11 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, sele
                                             onClick={() => {
                                                 setAnswerFeedback(null);
                                                 setPracticeAnswer('');
+                                                handleGeneratePracticeQuestion(false);
                                             }}
                                             className="mt-3 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-500 transition-colors"
                                         >
-                                            Try Again
+                                            {answerFeedback.is_correct ? 'Next Question' : 'Try Again'}
                                         </button>
                                     </div>
                                 ) : (
