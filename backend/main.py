@@ -35,24 +35,24 @@ from dotenv import load_dotenv
 import pathlib
 import json
 
-# This version for deployment
-## START Deployment needed
-# svc_json = os.getenv("SERVICE_ACCOUNT_JSON")
-# if svc_json is None:
-#     raise ValueError("SERVICE_ACCOUNT_JSON environment variable is not set")
-# svc_dct = json.loads(svc_json)
-# cred = credentials.Certificate(svc_dct)
-# firebase_admin.initialize_app(cred)
-# print("TAI:",firebase_admin.get_app().project_id) 
-## END Deployment needed
+# Firebase initialization - supports both deployment (env var) and local dev (file)
+svc_json = os.getenv("SERVICE_ACCOUNT_JSON")
+if svc_json:
+    # Production/deployment: use JSON from environment variable
+    svc_dct = json.loads(svc_json)
+    cred = credentials.Certificate(svc_dct)
+else:
+    # Local development: try to load from service-account.json file
+    service_account_path = pathlib.Path(__file__).parent / "service-account.json"
+    if service_account_path.exists():
+        print(f"Loading Firebase service account from local file: {service_account_path}")
+        cred = credentials.Certificate(str(service_account_path))
+    else:
+        raise ValueError(
+            "SERVICE_ACCOUNT_JSON environment variable is not set and "
+            f"service-account.json file not found at {service_account_path}"
+        )
 
-# This is for local
-## START Local needed
-service_account_path = os.path.join(os.path.dirname(__file__), 'service-account.json')
-if not os.path.exists(service_account_path):
-    raise FileNotFoundError(f"Service account file not found at {service_account_path}")
-
-cred = credentials.Certificate(service_account_path)
 firebase_admin.initialize_app(cred)
 print("TAI:", firebase_admin.get_app().project_id)
 ## END Local needed

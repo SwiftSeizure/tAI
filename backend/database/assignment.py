@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from backend.database.schema import DBAssignment
-from backend.exceptions import UploadNotFoundException
+from backend.database.schema import DBAssignment, DBConversation, DBPrompt_Count_Assignment
+from backend.exceptions import EntityNotFoundException, UploadNotFoundException
 
 def delete_assignment(dayID: int, filename: str, session: Session) -> None:
     """Delete an assignment from the database.
@@ -67,3 +67,58 @@ def get_RemoteID(path: str, session: Session):
     assignment = session.execute(stmt).scalar_one_or_none()
     ret = assignment.remoteID if assignment else None
     return ret 
+
+def increment_prompt_count_assignment(assignmentID: int, studentID: str, session: Session):
+    stmt = select(DBPrompt_Count_Assignment).filter(
+        DBPrompt_Count_Assignment.assignmentID == assignmentID,
+        DBPrompt_Count_Assignment.studentID == studentID
+    )
+    prompt_count = session.execute(stmt).scalar_one_or_none()
+    if not prompt_count:
+        prompt_count = DBPrompt_Count_Assignment(assignmentID=assignmentID,studentID=studentID, count=1)
+        session.add(prompt_count)
+    else:
+        prompt_count.count += 1
+    session.commit()
+    return prompt_count
+
+def get_prompt_count_assignment(assignmentID: int, studentID: str, session: Session):
+    stmt = select(DBAssignment).filter(
+        DBAssignment.id == assignmentID
+    )
+    assignment = session.execute(stmt).scalar_one_or_none()
+    if not assignment:
+        raise EntityNotFoundException("assignment", assignmentID)  # pyright: ignore[reportArgumentType]
+    stmt = select(DBConversation).filter(
+        DBConversation.studentID == studentID,
+        DBConversation.path == assignment.path
+    )
+    conversation = session.execute(stmt).scalar_one_or_none()
+    
+    return {"messages": conversation.messages, "responses": conversation.responses}  # pyright: ignore[reportUndefinedVariable, reportOptionalMemberAccess]
+
+def get_prompt_count_all_students(assignmentID: int, session: Session):
+    stmt = select(DBPrompt_Count_Assignment).filter(
+        DBPrompt_Count_Assignment.assignmentID == assignmentID
+    )
+    prompt_counts = session.execute(stmt).scalars().all()
+    return {prompt_count.studentID: prompt_count.count for prompt_count in prompt_counts}  
+
+def get_assignment_id_by_path(path: str, session: Session):
+    stmt = select(DBAssignment).filter(
+        DBAssignment.path == path
+    )
+    assignment = session.execute(stmt).scalar_one_or_none()
+    return assignment.id if assignment else None
+
+def get_prompt_count_all(session: Session):
+    stmt = select(DBPrompt_Count_Assignment)
+    prompt_counts = session.execute(stmt).scalars().all()
+
+    return_dict = {}
+    for prompt_count in prompt_counts:
+        return_dict[prompt_count.assignmentID] = {
+            "count": prompt_count.count,
+            "assignment": prompt_count.assignment.name
+        }
+    return return_dict
