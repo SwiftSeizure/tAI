@@ -298,13 +298,22 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, sele
                             <div className="flex gap-4">
                                 {/* Avatar */}
                                 <div className="flex-shrink-0">
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold ${
-                                        msg.role === 'user' 
-                                            ? 'bg-blue-600' 
-                                            : 'bg-green-600'
-                                    }`}>
-                                        {msg.role === 'user' ? 'U' : 'AI'}
-                                    </div>
+                                    {msg.role === 'user' ? (
+                                        // User avatar with initial
+                                        <div className="relative w-8 h-8">
+                                            <div className="absolute inset-0 rounded-full ring-2 ring-blue-400" />
+                                            <div className="relative inline-flex items-center justify-center w-full h-full overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                                                <span className="font-semibold text-gray-600 dark:text-gray-300">
+                                                    {user?.displayName?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || 'U'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        // AI avatar
+                                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold bg-green-600">
+                                            AI
+                                        </div>
+                                    )}
                                 </div>
                                 
                                 {/* Message content */}
