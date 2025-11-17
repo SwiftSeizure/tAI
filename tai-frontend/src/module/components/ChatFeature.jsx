@@ -2,6 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useCurrentChat } from '../../store/chat-store';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
+import { getPracticeQuestion } from '../services/get-practice-question';
 
 /**
  * ChatFeature Component
@@ -20,10 +24,14 @@ import remarkGfm from 'remark-gfm';
  * @param {Function} onSendMessage - Function to handle sending messages
  * @param {string} [displayType] - Type of content being displayed ('material' or 'assignment')
  * @param {Object} [selectedContent] - Currently selected content
+ * @param {Object} [selectedDay] - Currently selected day
+ * @param {Object} [user] - Current user object
  */
-const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent }) => {
+const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, selectedDay, user }) => {
     const [message, setMessage] = useState('');
     const [isTransparent, setIsTransparent] = useState(false);
+    const [practiceQuestion, setPracticeQuestion] = useState(null);
+    const [isLoadingQuestion, setIsLoadingQuestion] = useState(false);
     const { currentChat, currentChatId, setCurrentChat } = useCurrentChat();
     
     // If no chatId is provided but we have displayType and selectedContent, generate a chatId
@@ -88,6 +96,34 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent }) =>
         }
     };
 
+    const handleGeneratePracticeQuestion = async () => {
+        if (!user || !selectedDay || !selectedContent || !displayType) {
+            console.error('Missing required data for practice question generation');
+            return;
+        }
+
+        setIsLoadingQuestion(true);
+        setPracticeQuestion(null);
+
+        try {
+            const response = await getPracticeQuestion(
+                user.id,
+                displayType,
+                selectedDay.id,
+                selectedContent.filename
+            );
+            
+            if (response && response.question) {
+                setPracticeQuestion(response.question);
+            }
+        } catch (error) {
+            console.error('Error generating practice question:', error);
+            setPracticeQuestion('Unable to generate practice question at this time. Please try again.');
+        } finally {
+            setIsLoadingQuestion(false);
+        }
+    };
+
     // Show placeholder if no content is selected
     if (!effectiveChatId) {
         return (
@@ -144,9 +180,72 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent }) =>
                             </>
                         )}
                     </button>
+                    
+                    {/* Practice Question Button */}
+                    <button
+                        onClick={handleGeneratePracticeQuestion}
+                        disabled={isLoadingQuestion}
+                        className="flex items-center gap-2 px-3 py-1.5 text-sm bg-purple-700 hover:bg-purple-600 text-gray-100 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        title="Generate a practice question based on current content"
+                    >
+                        {isLoadingQuestion ? (
+                            <>
+                                <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                <span>Loading...</span>
+                            </>
+                        ) : (
+                            <>
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>Practice: Level 1</span>
+                            </>
+                        )}
+                    </button>
                 </div>
                 <div className="w-10"></div>
             </div>
+            
+            {/* Practice Question Display */}
+            {practiceQuestion && (
+                <div className={`mx-4 mt-4 p-4 rounded-lg border-2 ${
+                    isTransparent 
+                        ? 'bg-purple-900/30 border-purple-400/50 backdrop-blur-sm' 
+                        : 'bg-purple-900/40 border-purple-500'
+                }`}>
+                    <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                                <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <h3 className="text-sm font-semibold text-purple-300">Practice: Level 1</h3>
+                            </div>
+                            <div className={`text-gray-100 whitespace-pre-wrap ${
+                                isTransparent ? 'text-shadow-lg' : ''
+                            }`}>
+                                <ReactMarkdown 
+                                    remarkPlugins={[remarkGfm, remarkMath]}
+                                    rehypePlugins={[rehypeKatex]}
+                                >
+                                    {practiceQuestion}
+                                </ReactMarkdown>
+                            </div>
+                        </div>
+                        <button
+                            onClick={() => setPracticeQuestion(null)}
+                            className="text-purple-300 hover:text-purple-100 transition-colors"
+                            aria-label="Close practice question"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            )}
             
             <div 
                 ref={convoRef}
@@ -188,7 +287,8 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent }) =>
                                     ) : (
                                         // Assistant messages: render as markdown
                                         <ReactMarkdown 
-                                            remarkPlugins={[remarkGfm]}
+                                            remarkPlugins={[remarkGfm, remarkMath]}
+                                            rehypePlugins={[rehypeKatex]}
                                             components={{
                                                 // Customize rendering for better spacing
                                                 p: ({node, ...props}) => <p className="mb-4 last:mb-0 leading-7" {...props} />,

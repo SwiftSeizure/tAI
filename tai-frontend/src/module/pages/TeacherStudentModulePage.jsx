@@ -508,6 +508,8 @@ const TeacherStudentModulePage = () => {
                             <ChatFeature
                                 displayType={displayType}
                                 selectedContent={selectedContent}
+                                selectedDay={selectedDay}
+                                user={user}
                                 onSendMessage={handleChatMessage}
                             />
                         </div>

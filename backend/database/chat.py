@@ -112,3 +112,62 @@ def queryBot(studentID: str, path: Optional[str], prompt: str, session: Session)
 
     except Exception as e:
         raise InvalidClassCodeException() from e
+
+
+def generatePracticeQuestion(studentID: str, path: Optional[str], session: Session) -> dict[str, str]:
+    """
+    Generates a practice question based on the content at the given path.
+    Does not save to conversation history.
+    
+    Args:
+        studentID: The student's Firebase UID
+        path: The path to the assignment/material file
+        session: Database session
+        
+    Returns:
+        dict with 'question' key containing the generated practice question
+    """
+    
+    if client is None:
+        return {"question": "Practice question generator is not configured. Please set OPENAI_API_KEY."}
+    
+    # Build content items for OpenAI
+    content_items: list[dict[str, str]] = [
+        { 
+            "type": "input_text", 
+            "text": "You are a helpful teacher's assistant. Generate a single practice question based on the provided content. The question should test understanding of key concepts without giving away answers. IMPORTANT: Format your response using proper Markdown syntax. For mathematical expressions, use LaTeX notation: inline math with $...$ and display math with $$...$$. For example: $x^2 + y^2 = z^2$ or $$\\int_0^1 x dx$$. Use proper formatting for lists, code blocks, and other content. Make the question clear and well-formatted for student practice."
+        }
+    ]
+    
+    # Add file context if path is provided
+    if path is not None and isinstance(path, str) and len(path) > 0:
+        remoteID = db_assignment.get_RemoteID(path, session) if path.startswith("uploads/assignment") else db_material.get_RemoteID(path, session)
+        if remoteID is not None and isinstance(remoteID, str) and len(remoteID) > 0:
+            content_items.append({ "type": "input_file", "file_id": remoteID })
+    
+    # Call OpenAI API
+    openai_input: Any = [
+        {
+            "role": "user",
+            "content": content_items
+        }
+    ]
+    
+    try:
+        ai_response = client.responses.create(
+            model="gpt-4.1",
+            input=openai_input
+        )
+        
+        try:
+            question_text = ai_response.output_text
+        except Exception:
+            try:
+                question_text = str(ai_response)
+            except Exception:
+                question_text = "Unable to generate practice question at this time."
+    except Exception as e:
+        print(f"Error generating practice question: {e}")
+        question_text = "Unable to generate practice question at this time."
+    
+    return {"question": question_text}
