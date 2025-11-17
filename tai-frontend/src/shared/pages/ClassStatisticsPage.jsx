@@ -5,17 +5,11 @@ import { Pie, Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js'; 
 import { getAssignmentsPrompts } from '../services/get-assignments-prompt-count';
 import { getMaterialsPrompts } from '../services/get-materials-prompt-count';
+import { NoDataMessage } from '../components/NoDataMessage'; 
+import { getMaterialStudentPrompts } from '../services/get-material-student-prompts';
+import { getAssignmentStudentPrompts } from '../services/get-assignment-student-prompts';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
-
-const NoDataMessage = ({ message = "No data available" }) => (
-    <div className="flex flex-col items-center justify-center h-80 text-gray-500">
-        <svg className="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <p className="text-lg text-center">{message}</p>
-    </div>
-);   
 
 const generateRandomColors = (count) => {
     const colors = [];
@@ -33,66 +27,88 @@ export default function ClassStatisticsPage() {
     const { currentClass } = useCurrentClass(); 
     const [assignmentsData, setAssignmentsData] = useState([]);
     const [materialsData, setMaterialsData] = useState([]); 
+    const [studentData, setStudentData] = useState([]); 
 
     const hasAssignments = assignmentsData.length > 0;
     const hasMaterials = materialsData.length > 0;
 
-    const handlePieClick = (event, elements, chart) => {
+    const handleMaterialAssignmentPieClick = (event, elements, chart) => {
         if (elements.length > 0) {
             const clickedElement = elements[0];
-            const label = chart.data.labels[clickedElement.index];
-            const value = chart.data.datasets[clickedElement.datasetIndex].data[clickedElement.index];
-            console.log(`Clicked on ${label}: ${value}`);
-        }
-    }; 
+            const index = clickedElement.index;
+            const id = assignmentsData[index]?.assignmentID || materialsData[index]?.materialID;
+            
+            if (id) {
 
-const fetchAssignmentsPrompts = async () => {
-    try {
-        const response = await getAssignmentsPrompts();
-        console.log("Assignments prompts in response:", response);
-        
-        // Handle the case where response is an object with numeric keys
-        if (response && typeof response === 'object' && !Array.isArray(response)) {
-            const formattedData = Object.entries(response).map(([id, item]) => ({
-                assignmentID: id,
-                name: item.assignment || `Assignment ${id}`,
-                value: item.count || 0
-            }));
-            console.log("Formatted assignments data:", formattedData);
-            setAssignmentsData(formattedData);
-        } else {
-            console.error("Unexpected response format:", response);
+                if (assignmentsData.some(item => item.assignmentID === id)) {
+                    populateAssignmentStudentPrompts(id);
+                } else if (materialsData.some(item => item.materialID === id)) {
+                    populateMaterialStudentPrompts(id);
+                } else {
+                    console.error('Could not determine if ID belongs to assignment or material:', id);
+                }
+            } else {
+                console.error('Could not find ID for clicked element');
+            }
+        }
+
+    };  
+
+    const populateAssignmentStudentPrompts = async (id) => {
+        console.log(`Populating assignment student prompts for assignment ID: ${id}`);
+    };
+
+    const populateMaterialStudentPrompts = async (id) => {
+        console.log(`Populating material student prompts for material ID: ${id}`);
+    };
+
+    const fetchAssignmentsPrompts = async () => {
+        try {
+            const response = await getAssignmentsPrompts();
+            console.log("Assignments prompts in response:", response);
+
+            // Handle the case where response is an object with numeric keys
+            if (response && typeof response === 'object' && !Array.isArray(response)) {
+                const formattedData = Object.entries(response).map(([id, item]) => ({
+                    assignmentID: id,
+                    name: item.assignment || `Assignment ${id}`,
+                    value: item.count || 0
+                }));
+                console.log("Formatted assignments data:", formattedData);
+                setAssignmentsData(formattedData);
+            } else {
+                console.error("Unexpected response format:", response);
+                setAssignmentsData([]);
+            }
+        } catch (error) {
+            console.error('Error fetching assignments prompts:', error);
             setAssignmentsData([]);
         }
-    } catch (error) {
-        console.error('Error fetching assignments prompts:', error);
-        setAssignmentsData([]);
-    }
-};
+    };
 
-const fetchMaterialsPrompts = async () => {
-    try {
-        const response = await getMaterialsPrompts();
-        console.log("Materials prompts in response:", response);
-        
-        // Handle the case where response is an object with numeric keys
-        if (response && typeof response === 'object' && !Array.isArray(response)) {
-            const formattedData = Object.entries(response).map(([id, item]) => ({
-                materialID: id,
-                name: item.material || item.assignment || `Material ${id}`,
-                value: item.count || 0
-            }));
-            console.log("Formatted materials data:", formattedData);
-            setMaterialsData(formattedData);
-        } else {
-            console.error("Unexpected response format:", response);
+    const fetchMaterialsPrompts = async () => {
+        try {
+            const response = await getMaterialsPrompts();
+            console.log("Materials prompts in response:", response);
+
+            // Handle the case where response is an object with numeric keys
+            if (response && typeof response === 'object' && !Array.isArray(response)) {
+                const formattedData = Object.entries(response).map(([id, item]) => ({
+                    materialID: id,
+                    name: item.material || item.assignment || `Material ${id}`,
+                    value: item.count || 0
+                }));
+                console.log("Formatted materials data:", formattedData);
+                setMaterialsData(formattedData);
+            } else {
+                console.error("Unexpected response format:", response);
+                setMaterialsData([]);
+            }
+        } catch (error) {
+            console.error('Error fetching materials prompts:', error);
             setMaterialsData([]);
         }
-    } catch (error) {
-        console.error('Error fetching materials prompts:', error);
-        setMaterialsData([]);
-    }
-};
+    };
 
 
     useEffect(() => {
@@ -146,7 +162,7 @@ const fetchMaterialsPrompts = async () => {
 
     const chartOptions = {
         responsive: true,
-        onClick: handlePieClick,
+        onClick: handleMaterialAssignmentPieClick,
         maintainAspectRatio: false,
         plugins: {
             legend: {
@@ -251,7 +267,7 @@ const fetchMaterialsPrompts = async () => {
                 <h1 className="text-2xl font-bold text-gray-900 mb-8">
                     {currentClass?.name || 'Class'} Statistics
                 </h1>
-                
+
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                     {/* Assignments Pie Chart */}
                     <div className="bg-white p-6 rounded-xl shadow-md">
@@ -264,7 +280,7 @@ const fetchMaterialsPrompts = async () => {
                             <NoDataMessage message="No assignment prompts available" />
                         )}
                     </div>
-                    
+
                     {/* Materials Pie Chart */}
                     <div className="bg-white p-6 rounded-xl shadow-md">
                         <h2 className="text-lg font-semibold mb-4">Material Prompts</h2>
@@ -277,7 +293,7 @@ const fetchMaterialsPrompts = async () => {
                         )}
                     </div>
                 </div>
-                    
+
                 {/* Combined Bar Chart - Only show if we have both assignments and materials */}
                 {(hasAssignments || hasMaterials) && (
                     <div className="bg-white p-6 rounded-xl shadow-md">
