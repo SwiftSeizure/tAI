@@ -64,6 +64,7 @@ export default function ClassStatisticsPage() {
         try {
             const response = await getAssignmentStudentPrompts(id); 
             console.log("Assignment student prompts in response:", response);
+            //setStudentData(response);   
 
             //setStudentData(response);   
             const fakeResponse = {
@@ -81,6 +82,7 @@ export default function ClassStatisticsPage() {
                 }
             };
             setStudentData(fakeResponse); 
+
         } catch (error) {
             console.error("Error fetching assignment student prompts:", error);
             setStudentData(null);
@@ -270,30 +272,41 @@ export default function ClassStatisticsPage() {
         }
     };
 
-    // Student bar chart data
-    const studentBarData = studentData ? {
+    // Student pie chart data
+    const studentPieData = studentData ? {
         labels: Object.values(studentData).map(s => s.studentName),
         datasets: [{
             label: 'Prompts',
             data: Object.values(studentData).map(s => s.count),
             backgroundColor: generateRandomColors(Object.keys(studentData).length),
-            borderRadius: 6,
-            borderWidth: 0,
+            borderColor: '#fff',
+            borderWidth: 2,
         }],
     } : null;
 
-    const studentBarOptions = {
+    const studentPieOptions = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
             legend: {
-                display: false
+                position: 'right',
+                labels: {
+                    padding: 10,
+                    font: {
+                        size: 11,
+                        family: "'Inter', sans-serif"
+                    },
+                    color: '#374151'
+                }
             },
             tooltip: {
                 callbacks: {
                     label: function(context) {
+                        const label = context.label || '';
                         const value = context.raw || 0;
-                        return `${value} prompt${value !== 1 ? 's' : ''}`;
+                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        const percentage = ((value / total) * 100).toFixed(1);
+                        return `${label}: ${value} prompt${value !== 1 ? 's' : ''} (${percentage}%)`;
                     }
                 },
                 enabled: true,
@@ -307,33 +320,19 @@ export default function ClassStatisticsPage() {
                 displayColors: true,
             },
         },
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    precision: 0
-                },
-                title: {
-                    display: true,
-                    text: 'Number of Prompts',
-                    font: {
-                        size: 12,
-                        family: "'Inter', sans-serif"
-                    },
-                    color: '#374151'
-                }
-            },
-            x: {
-                ticks: {
-                    font: {
-                        size: 11,
-                        family: "'Inter', sans-serif"
-                    },
-                    color: '#374151'
-                }
-            }
-        }
     };
+
+    // Prepare student data for table
+    const studentTableData = studentData ? 
+        Object.values(studentData)
+            .sort((a, b) => b.count - a.count)
+            .map((student, index) => ({
+                ...student,
+                rank: index + 1
+            })) 
+        : [];
+
+    const totalPrompts = studentTableData.reduce((sum, s) => sum + s.count, 0);
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -386,10 +385,15 @@ export default function ClassStatisticsPage() {
                 {/* Student Statistics Drill-Down */}
                 {hasStudentData && (
                     <div className="bg-white p-6 rounded-xl shadow-md">
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-semibold">
-                                Student Prompts for {selectedItemType}: {selectedItemName}
-                            </h2>
+                        <div className="flex items-center justify-between mb-6">
+                            <div>
+                                <h2 className="text-lg font-semibold">
+                                    Student Prompts for {selectedItemType}: {selectedItemName}
+                                </h2>
+                                <p className="text-sm text-gray-600 mt-1">
+                                    {studentTableData.length} students • {totalPrompts} total prompts
+                                </p>
+                            </div>
                             <button
                                 onClick={() => setStudentData(null)}
                                 className="text-sm text-gray-600 hover:text-gray-900 underline"
@@ -397,12 +401,57 @@ export default function ClassStatisticsPage() {
                                 Clear Selection
                             </button>
                         </div>
-                        <div className="h-96">
-                            <Bar data={studentBarData} options={studentBarOptions} />
-                        </div>
-                        <div className="mt-4 text-sm text-gray-600">
-                            <p>Total Students: {Object.keys(studentData).length}</p>
-                            <p>Total Prompts: {Object.values(studentData).reduce((sum, s) => sum + s.count, 0)}</p>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            {/* Student Table */}
+                            <div className="overflow-hidden">
+                                <div className="overflow-y-auto max-h-96">
+                                    <table className="min-w-full divide-y divide-gray-200">
+                                        <thead className="bg-gray-50 sticky top-0">
+                                            <tr>
+                                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Rank
+                                                </th>
+                                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Student
+                                                </th>
+                                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Prompts
+                                                </th>
+                                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    %
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="bg-white divide-y divide-gray-200">
+                                            {studentTableData.map((student) => {
+                                                const percentage = ((student.count / totalPrompts) * 100).toFixed(1);
+                                                return (
+                                                    <tr key={student.studentID} className="hover:bg-gray-50">
+                                                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                            #{student.rank}
+                                                        </td>
+                                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                                            {student.studentName}
+                                                        </td>
+                                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                                            {student.count}
+                                                        </td>
+                                                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
+                                                            {percentage}%
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            {/* Student Pie Chart */}
+                            <div className="h-96">
+                                <Pie data={studentPieData} options={studentPieOptions} />
+                            </div>
                         </div>
                     </div>
                 )}
