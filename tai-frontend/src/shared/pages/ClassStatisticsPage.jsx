@@ -3,8 +3,8 @@ import { NavBar } from '../../shared/components/NavBar';
 import { useCurrentClass } from '../../store/class-store';
 import { Pie, Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js'; 
-import { getAssignmentsPrompts } from '../../shared/services/get-assignments-prompts';
-import { getMaterialsPrompts } from '../../shared/services/get-materials-prompts';
+import { getAssignmentsPrompts } from '../services/get-assignments-prompt-count';
+import { getMaterialsPrompts } from '../services/get-materials-prompt-count';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
