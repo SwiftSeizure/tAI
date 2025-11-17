@@ -56,6 +56,18 @@ def get_prompt_count(assignmentID: int, studentID: str, session: DBSession):
 def get_prompt_count_all_students(assignmentID: int, session: DBSession):
     return db_assignment.get_prompt_count_all_students(assignmentID, session)
 
+@router.get("/prompt/all",
+            status_code=200,
+            responses={
+                404: {"model": ClientErrorResponse},
+            },
+            summary="Get the prompt count for all assignments.")
+def get_prompt_count_all(
+    user: Annotated[dict, Depends(get_firebase_user_from_token)],
+    session: DBSession
+):
+    return db_assignment.get_prompt_count_all(session)
+
 @router.get("/{dayID}/{filename}",
             status_code=200,
             responses={
@@ -258,11 +270,3 @@ async def upload_assignment(dayID: int,
             summary="Get remoteID for given path.")
 def get_RemoteID(path: str, session: DBSession):
     return db_assignment.get_RemoteID(path, session)
-
-@router.get("/prompt/all",status_code=200,
-            responses={
-                404: {"model": ClientErrorResponse},
-            },
-            summary="Get the prompt count for all assignments.")
-def get_prompt_count_all(session: DBSession):
-    return db_assignment.get_prompt_count_all(session)

@@ -205,6 +205,18 @@ async def upload_single_file(dayID: int,
     return db_material.create_material(dayID, name, safe_filename, file.content_type, session, remoteID)    
 
 
+@router.get("/prompt/all",
+            status_code=200,
+            responses={
+                404: {"model": ClientErrorResponse},
+            },
+            summary="Get the prompt count for all materials.")
+def get_prompt_count_all(
+    user: Annotated[dict, Depends(get_firebase_user_from_token)],
+    session: DBSession
+):
+    return db_material.get_prompt_count_all(session)
+
 @router.get("/{path:path}",
             status_code=200,
             responses={
@@ -241,12 +253,3 @@ def get_prompt_count(materialID: int, studentID: str, session: DBSession):
             summary="Get the prompt count for all students for a material.")
 def get_prompt_count_all_students(materialID: int, session: DBSession):
     return db_material.get_prompt_count_all_material(materialID, session)
-
-@router.get("/prompt/all",
-            status_code=200,
-            responses={
-                404: {"model": ClientErrorResponse},
-            },
-            summary="Get the prompt count for all materials.")
-def get_prompt_count_all(session: DBSession):
-    return db_material.get_prompt_count_all(session)
