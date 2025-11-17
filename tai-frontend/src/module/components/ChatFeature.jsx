@@ -7,6 +7,7 @@ import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import { getPracticeQuestion } from '../services/get-practice-question';
 import { validatePracticeAnswer } from '../services/validate-practice-answer';
+import confetti from 'canvas-confetti';
 
 /**
  * ChatFeature Component
@@ -129,6 +130,42 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, sele
             
             setAnswerFeedback(result);
             setPracticeAnswer('');
+            
+            // Trigger confetti animation if answer is correct
+            if (result.is_correct) {
+                // Create a colorful confetti burst
+                const duration = 2000;
+                const animationEnd = Date.now() + duration;
+                const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+
+                function randomInRange(min, max) {
+                    return Math.random() * (max - min) + min;
+                }
+
+                const interval = setInterval(function() {
+                    const timeLeft = animationEnd - Date.now();
+
+                    if (timeLeft <= 0) {
+                        return clearInterval(interval);
+                    }
+
+                    const particleCount = 50 * (timeLeft / duration);
+                    
+                    // Burst from the left side
+                    confetti({
+                        ...defaults,
+                        particleCount,
+                        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+                    });
+                    
+                    // Burst from the right side
+                    confetti({
+                        ...defaults,
+                        particleCount,
+                        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+                    });
+                }, 250);
+            }
             
             // Update level based on result
             if (result.next_level) {
