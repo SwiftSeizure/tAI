@@ -8,10 +8,34 @@ import { getMaterialsPrompts } from '../services/get-materials-prompt-count';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
+const NoDataMessage = ({ message = "No data available" }) => (
+    <div className="flex flex-col items-center justify-center h-80 text-gray-500">
+        <svg className="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p className="text-lg text-center">{message}</p>
+    </div>
+);   
+
+const generateRandomColors = (count) => {
+    const colors = [];
+    for (let i = 0; i < count; i++) {
+        // Generate random hue between 0-360, with good saturation and lightness
+        const hue = Math.floor(Math.random() * 360);
+        const saturation = 70 + Math.random() * 30;  // 70-100%
+        const lightness = 40 + Math.random() * 40;   // 40-80%
+        colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
+    }
+    return colors;
+};
+
 export default function ClassStatisticsPage() {
     const { currentClass } = useCurrentClass(); 
-    const [assignmentsPrompts, setAssignmentsPrompts] = useState([]);
-    const [materialsPrompts, setMaterialsPrompts] = useState([]);
+    const [assignmentsData, setAssignmentsData] = useState([]);
+    const [materialsData, setMaterialsData] = useState([]); 
+
+    const hasAssignments = assignmentsData.length > 0;
+    const hasMaterials = materialsData.length > 0;
 
     const handlePieClick = (event, elements, chart) => {
         if (elements.length > 0) {
@@ -19,123 +43,105 @@ export default function ClassStatisticsPage() {
             const label = chart.data.labels[clickedElement.index];
             const value = chart.data.datasets[clickedElement.datasetIndex].data[clickedElement.index];
             console.log(`Clicked on ${label}: ${value}`);
-            // Add your custom logic here
         }
     }; 
 
-    const handleBarClick = (event, elements, chart) => {
-        if (elements.length > 0) {
-            const clickedElement = elements[0];
-            const label = chart.data.labels[clickedElement.index];
-            const value = chart.data.datasets[clickedElement.datasetIndex].data[clickedElement.index];
-            console.log(`Clicked on ${label}: ${value}`);
-            // Add your custom logic here
+const fetchAssignmentsPrompts = async () => {
+    try {
+        const response = await getAssignmentsPrompts();
+        console.log("Assignments prompts in response:", response);
+        
+        // Handle the case where response is an object with numeric keys
+        if (response && typeof response === 'object' && !Array.isArray(response)) {
+            const formattedData = Object.entries(response).map(([id, item]) => ({
+                assignmentID: id,
+                name: item.assignment || `Assignment ${id}`,
+                value: item.count || 0
+            }));
+            console.log("Formatted assignments data:", formattedData);
+            setAssignmentsData(formattedData);
+        } else {
+            console.error("Unexpected response format:", response);
+            setAssignmentsData([]);
         }
-    };   
+    } catch (error) {
+        console.error('Error fetching assignments prompts:', error);
+        setAssignmentsData([]);
+    }
+};
 
-    const fetchAssignmentsPrompts = async () => {
-        try {
-            const response = await getAssignmentsPrompts();
-            setAssignmentsPrompts(response);
-        } catch (error) {
-            console.error('Error fetching assignments prompts:', error);
+const fetchMaterialsPrompts = async () => {
+    try {
+        const response = await getMaterialsPrompts();
+        console.log("Materials prompts in response:", response);
+        
+        // Handle the case where response is an object with numeric keys
+        if (response && typeof response === 'object' && !Array.isArray(response)) {
+            const formattedData = Object.entries(response).map(([id, item]) => ({
+                materialID: id,
+                name: item.material || item.assignment || `Material ${id}`,
+                value: item.count || 0
+            }));
+            console.log("Formatted materials data:", formattedData);
+            setMaterialsData(formattedData);
+        } else {
+            console.error("Unexpected response format:", response);
+            setMaterialsData([]);
         }
-    };
+    } catch (error) {
+        console.error('Error fetching materials prompts:', error);
+        setMaterialsData([]);
+    }
+};
 
-    const fetchMaterialsPrompts = async () => {
-        try {
-            const response = await getMaterialsPrompts();
-            setMaterialsPrompts(response);
-        } catch (error) {
-            console.error('Error fetching materials prompts:', error);
-        }
-    };
 
     useEffect(() => {
-        fetchAssignmentsPrompts();
+        fetchAssignmentsPrompts(); 
+        // Example return value: 
+        // {
+        //     "102": {
+        //         "assignment": "Assignment 1",
+        //         "count": 10
+        //     },
+        //     "103": {
+        //         "assignment": "Assignment 2",
+        //         "count": 20
+        //     }
+        // }
         fetchMaterialsPrompts(); 
-        console.log(assignmentsPrompts);
-        console.log(materialsPrompts);
-    }, []); 
-
-
-    // All API calls bellow can give classID to the backend and the current userID unless noted otherwise
-
-    // Mock data for assignments
-    const assignmentQuestions = [
-        { name: 'Assignment 1: Intro to React', assignmentID: 1, value: 45 },
-        { name: 'Assignment 2: State Management', assignmentID: 2, value: 32 },
-        { name: 'Assignment 3: API Integration', assignmentID: 3, value: 28 },
-        { name: 'Assignment 4: Testing', assignmentID: 4, value: 15 },
-    ];
-
-    // Mock data for materials
-    const materialQuestions = [
-        { name: 'Module 1: Basics', materialID: 1, value: 52 },
-        { name: 'Module 2: Advanced Concepts', materialID: 2, value: 38 },
-        { name: 'Module 3: Best Practices', materialID: 3, value: 25 },
-        { name: 'Module 4: Real-world Examples', materialID: 4, value: 19 },
-    ]; 
-
-    
-    // This is so that we can display the stats for all students and which ones are asking the most questions
-    // This will give an assingmentID or materialID to the backend
-    const mockStudentsAssignmentAndMaterialsPromptCount = [
-        {name: 'Student 1', studentID: 1, value: 10},
-        {name: 'Student 2', studentID: 2, value: 15},
-        {name: 'Student 3', studentID: 3, value: 20},
-        {name: 'Student 4', studentID: 4, value: 25},
-        {name: 'Student 5', studentID: 5, value: 30},
-        {name: 'Student 6', studentID: 6, value: 35},
-        {name: 'Student 7', studentID: 7, value: 40},
-        {name: 'Student 8', studentID: 8, value: 45},
-        {name: 'Student 9', studentID: 9, value: 50},
-        {name: 'Student 10', studentID: 10, value: 55},
-    ];
-
-    // This is so that we can display the stats for a specific student. 
-    // This will give an studentID to the backend
-    const mockSpecificStudentStats = [
-        {name: 'student 1', assignmentID: 1, value: 10},
-        {name: 'student 1', assignmentID: 2, value: 15},
-        {name: 'student 1', assignmentID: 3, value: 20},
-        {name: 'student 1', assignmentID: 4, value: 25},
-    ]; 
-
-    // This is so that we can display the stats for all students and which ones are asking the most questions
-    const mockAllStudentStats = [
-        { name: 'Student 1', studentID: 1, value: 10 },
-        { name: 'Student 2', studentID: 2, value: 15 },
-        { name: 'Student 3', studentID: 3, value: 20 },
-        { name: 'Student 4', studentID: 4, value: 25 },
-    ];
-
-    const COLORS = ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b'];
+        // Example return value: 
+        // {
+        //     "102": {
+        //         "material": "Material 1",
+        //         "count": 10
+        //     },
+        //     "103": {
+        //         "material": "Material 2",
+        //         "count": 20
+        //     }
+        // }
+    }, []);
 
     const assignmentData = {
-        labels: assignmentQuestions.map(a => a.name),
-        datasets: [
-            {
-                label: 'Questions',
-                data: assignmentQuestions.map(a => a.value),
-                backgroundColor: COLORS,
-                borderColor: '#fff',
-                borderWidth: 2,
-            },
-        ],
+        labels: assignmentsData.map(a => a.name),
+        datasets: [{
+            label: 'Questions',
+            data: assignmentsData.map(a => a.value),
+            backgroundColor: generateRandomColors(assignmentsData.length),
+            borderColor: '#fff',
+            borderWidth: 2,
+        }],
     };
 
     const materialData = {
-        labels: materialQuestions.map(m => m.name),
-        datasets: [
-            {
-                label: 'Questions',
-                data: materialQuestions.map(m => m.value),
-                backgroundColor: COLORS,
-                borderColor: '#fff',
-                borderWidth: 2,
-            },
-        ],
+        labels: materialsData.map(m => m.name),
+        datasets: [{
+            label: 'Questions',
+            data: materialsData.map(m => m.value),
+            backgroundColor: generateRandomColors(materialsData.length),
+            borderColor: '#fff',
+            borderWidth: 2,
+        }],
     };
 
     const chartOptions = {
@@ -155,6 +161,13 @@ export default function ClassStatisticsPage() {
                 }
             },
             tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const label = context.label || '';
+                        const value = context.raw || 0;
+                        return `${label}: ${value} prompt${value !== 1 ? 's' : ''}`;
+                    }
+                },
                 enabled: true,
                 backgroundColor: 'white',
                 titleColor: '#111827',
@@ -168,28 +181,27 @@ export default function ClassStatisticsPage() {
         },
     };
 
-    // Bar chart data combining both
+    // Combined bar chart data
     const combinedBarData = {
-        labels: ['Assignment 1', 'Assignment 2', 'Assignment 3', 'Assignment 4'],
+        labels: assignmentsData.map(a => a.name),
         datasets: [
             {
-                label: 'Assignment Questions',
-                data: assignmentQuestions.map(a => a.value),
-                backgroundColor: '#3b82f6',
+                label: 'Assignment Prompts',
+                data: assignmentsData.map(a => a.value),
+                backgroundColor: generateRandomColors(assignmentsData.length, 0.8),
                 borderRadius: 6,
             },
             {
-                label: 'Material Questions',
-                data: materialQuestions.map(m => m.value),
-                backgroundColor: '#8b5cf6',
+                label: 'Material Prompts',
+                data: materialsData.map(m => m.value),
+                backgroundColor: generateRandomColors(materialsData.length, 0.6),
                 borderRadius: 6,
             },
         ],
     };
 
     const barChartOptions = {
-        responsive: true, 
-        onClick: handleBarClick,
+        responsive: true,
         maintainAspectRatio: false,
         plugins: {
             legend: {
@@ -204,6 +216,14 @@ export default function ClassStatisticsPage() {
                 }
             },
             tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const label = context.dataset.label || '';
+                        const value = context.raw || 0;
+                        return `${label}: ${value} prompt${value !== 1 ? 's' : ''}`;
+                    }
+                },
+                enabled: true,
                 backgroundColor: 'white',
                 titleColor: '#111827',
                 bodyColor: '#374151',
@@ -211,146 +231,67 @@ export default function ClassStatisticsPage() {
                 borderWidth: 1,
                 padding: 12,
                 cornerRadius: 8,
+                displayColors: true,
             },
         },
         scales: {
-            x: {
-                grid: {
-                    display: false,
-                },
-                ticks: {
-                    color: '#6b7280',
-                    font: {
-                        size: 11
-                    }
-                }
-            },
             y: {
                 beginAtZero: true,
-                grid: {
-                    color: '#f3f4f6',
-                },
                 ticks: {
-                    color: '#6b7280',
-                    font: {
-                        size: 11
-                    }
+                    precision: 0
                 }
-            },
-        },
-    }; 
+            }
+        }
+    };
 
     return (
-        <>
-            <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 bg-[length:200%_200%]" style={{animation: 'gradient-shift 15s ease-in-out infinite'}}>
-                <NavBar title="Class Statistics" classID={currentClass?.id} />
+        <div className="min-h-screen bg-gray-50">
+            <NavBar />
+            <div className="container mx-auto px-4 py-8">
+                <h1 className="text-2xl font-bold text-gray-900 mb-8">
+                    {currentClass?.name || 'Class'} Statistics
+                </h1>
                 
-                <div className="relative max-w-7xl mx-auto px-6 py-12">
-                    {/* Page Header */}
-                    <div className="mx-auto bg-white rounded-2xl shadow-sm p-6 mb-8 border border-gray-100 w-fit">
-                        <div className="flex flex-col items-center">
-                            <h1 className="text-3xl font-bold text-gray-900">
-                                Student Engagement Analytics
-                            </h1>
-                            <p className="text-gray-600 text-center mt-2">
-                                Track student questions and engagement across assignments and materials. 
-                                Click on any chart section to view detailed breakdowns by topic and student.
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Pie Charts Section */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                        {/* Assignment Questions Pie Chart */}
-                        <div className="bg-white rounded-lg shadow-lg p-6">
-                            <h2 className="text-xl font-semibold text-gray-900 mb-4 text-center">
-                                Questions by Assignment
-                            </h2>
-                            <div className="h-80 mb-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    {/* Assignments Pie Chart */}
+                    <div className="bg-white p-6 rounded-xl shadow-md">
+                        <h2 className="text-lg font-semibold mb-4">Assignment Prompts</h2>
+                        {hasAssignments ? (
+                            <div className="h-80">
                                 <Pie data={assignmentData} options={chartOptions} />
                             </div>
-                            {/* Stats Summary */}
-                            <div className="space-y-2 pt-4 border-t border-gray-100">
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-gray-600">Total Questions</span>
-                                    <span className="font-semibold text-gray-900">
-                                        {assignmentQuestions.reduce((sum, item) => sum + item.value, 0)}
-                                    </span>
-                                </div>
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-gray-600">Most Active</span>
-                                    <span className="font-semibold text-gray-900">
-                                        Assignment 1
-                                    </span>
-                                </div>
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-gray-600">Average per Assignment</span>
-                                    <span className="font-semibold text-gray-900">
-                                        {Math.round(assignmentQuestions.reduce((sum, item) => sum + item.value, 0) / assignmentQuestions.length)}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Material Questions Pie Chart */}
-                        <div className="bg-white rounded-lg shadow-lg p-6">
-                            <h2 className="text-xl font-semibold text-gray-900 mb-4 text-center">
-                                Questions by Material
-                            </h2>
-                            <div className="h-80 mb-4">
+                        ) : (
+                            <NoDataMessage message="No assignment prompts available" />
+                        )}
+                    </div>
+                    
+                    {/* Materials Pie Chart */}
+                    <div className="bg-white p-6 rounded-xl shadow-md">
+                        <h2 className="text-lg font-semibold mb-4">Material Prompts</h2>
+                        {hasMaterials ? (
+                            <div className="h-80">
                                 <Pie data={materialData} options={chartOptions} />
                             </div>
-                            {/* Stats Summary */}
-                            <div className="space-y-2 pt-4 border-t border-gray-100">
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-gray-600">Total Questions</span>
-                                    <span className="font-semibold text-gray-900">
-                                        {materialQuestions.reduce((sum, item) => sum + item.value, 0)}
-                                    </span>
-                                </div>
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-gray-600">Most Active</span>
-                                    <span className="font-semibold text-gray-900">
-                                        Module 1
-                                    </span>
-                                </div>
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-gray-600">Average per Material</span>
-                                    <span className="font-semibold text-gray-900">
-                                        {Math.round(materialQuestions.reduce((sum, item) => sum + item.value, 0) / materialQuestions.length)}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Bar Chart Comparison */}
-                    <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-                        <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                            Comparative Analysis
-                        </h2>
-                        <div className="h-96">
-                            <Bar data={combinedBarData} options={barChartOptions} />
-                        </div>
-                    </div>
-
-                    {/* Placeholder for future sections */}
-                    <div className="bg-white rounded-lg shadow-lg p-6 border-2 border-dashed border-gray-300">
-                        <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                            Coming Soon: Detailed Breakdowns
-                        </h2>
-                        <p className="text-gray-600 mb-3">
-                            Click on chart sections above to view:
-                        </p>
-                        <ul className="space-y-2 text-sm text-gray-600 ml-4">
-                            <li>• Questions by specific topics within each assignment/material</li>
-                            <li>• Individual student engagement metrics</li>
-                            <li>• Time-based trends and patterns</li>
-                            <li>• Question complexity analysis</li>
-                        </ul>
+                        ) : (
+                            <NoDataMessage message="No material prompts available" />
+                        )}
                     </div>
                 </div>
+                    
+                {/* Combined Bar Chart - Only show if we have both assignments and materials */}
+                {(hasAssignments || hasMaterials) && (
+                    <div className="bg-white p-6 rounded-xl shadow-md">
+                        <h2 className="text-lg font-semibold mb-4">Material vs Assignment Prompt Comparison</h2>
+                        {hasAssignments && hasMaterials ? (
+                            <div className="h-96">
+                                <Bar data={combinedBarData} options={barChartOptions} />
+                            </div>
+                        ) : (
+                            <NoDataMessage message="Unfortunately, there is not enough data to show a comparison. Great job teaching!" />
+                        )}
+                    </div>
+                )}
             </div>
-        </>
-    );
+        </div>
+    ); 
 }
