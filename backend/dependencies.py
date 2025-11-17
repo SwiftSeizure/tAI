@@ -9,7 +9,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 # Database connection URL
-DATABASE_URL = os.environ["DATABASE_URL"]
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 # Create an engine that will connect to the database
 engine = create_engine(DATABASE_URL, pool_size=5, max_overflow=10)

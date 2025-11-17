@@ -37,6 +37,36 @@ DATA_ROOT = Path(os.getenv("DATA_ROOT") or str(Path(__file__).parent.parent.pare
 # Create a validator instance
 doc_validator = DocumentValidator(max_size= 25 * 1024 * 1024)
 
+# Prompt count routes must come before the generic file route to avoid route conflicts
+@router.get("/{assignmentID}/{studentID}/prompt",
+            status_code=200,
+            responses={
+                404: {"model": ClientErrorResponse},
+            },
+            summary="Get the prompt count for an assignment for a specific student.")
+def get_prompt_count(assignmentID: int, studentID: str, session: DBSession):
+    return db_assignment.get_prompt_count_assignment(assignmentID, studentID, session)
+
+@router.get("/{assignmentID}/prompt",
+            status_code=200,
+            responses={
+                404: {"model": ClientErrorResponse},
+            },
+            summary="Get the prompt count for all students for an assignment.")
+def get_prompt_count_all_students(assignmentID: int, session: DBSession):
+    return db_assignment.get_prompt_count_all_students(assignmentID, session)
+
+@router.get("/prompt/all",
+            status_code=200,
+            responses={
+                404: {"model": ClientErrorResponse},
+            },
+            summary="Get the prompt count for all assignments.")
+def get_prompt_count_all(
+    session: DBSession
+):
+    return db_assignment.get_prompt_count_all(session)
+
 @router.get("/{dayID}/{filename}",
             status_code=200,
             responses={
