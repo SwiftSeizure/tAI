@@ -114,4 +114,11 @@ def get_assignment_id_by_path(path: str, session: Session):
 def get_prompt_count_all(session: Session):
     stmt = select(DBPrompt_Count_Assignment)
     prompt_counts = session.execute(stmt).scalars().all()
-    return {prompt_count.assignmentID: prompt_count.count for prompt_count in prompt_counts}
+
+    return_dict = {}
+    for prompt_count in prompt_counts:
+        return_dict[prompt_count.assignmentID] = {
+            "count": prompt_count.count,
+            "assignment": prompt_count.assignment.name
+        }
+    return return_dict
