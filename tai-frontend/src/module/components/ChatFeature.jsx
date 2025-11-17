@@ -212,7 +212,7 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, sele
             {practiceQuestion && (
                 <div className={`mx-4 mt-4 p-4 rounded-lg border-2 ${
                     isTransparent 
-                        ? 'bg-purple-900/30 border-purple-400/50 backdrop-blur-sm' 
+                        ? 'bg-purple-900/30 border-purple-400/50' 
                         : 'bg-purple-900/40 border-purple-500'
                 }`}>
                     <div className="flex items-start justify-between gap-3">
@@ -343,8 +343,8 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, sele
                 )}
             </div>
 
-            <div className={`p-4 border-t backdrop-blur-sm ${
-                isTransparent ? 'border-gray-500/30 bg-black/30' : 'border-gray-600 bg-gray-800/90'
+            <div className={`p-4 border-t backdrop-blur-md ${
+                isTransparent ? 'border-gray-500/30 bg-black/70' : 'border-gray-600 bg-gray-800/90'
             }`}>
                 <div className="max-w-3xl mx-auto flex gap-3">
                     <input
