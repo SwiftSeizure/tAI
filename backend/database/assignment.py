@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from backend.database.schema import DBAssignment, DBPrompt_Count_Assignment
-from backend.exceptions import UploadNotFoundException
+from backend.database.schema import DBAssignment, DBConversation, DBPrompt_Count_Assignment
+from backend.exceptions import EntityNotFoundException, UploadNotFoundException
 
 def delete_assignment(dayID: int, filename: str, session: Session) -> None:
     """Delete an assignment from the database.
@@ -83,12 +83,19 @@ def increment_prompt_count_assignment(assignmentID: int, studentID: str, session
     return prompt_count
 
 def get_prompt_count_assignment(assignmentID: int, studentID: str, session: Session):
-    stmt = select(DBPrompt_Count_Assignment).filter(
-        DBPrompt_Count_Assignment.assignmentID == assignmentID,
-        DBPrompt_Count_Assignment.studentID == studentID
+    stmt = select(DBAssignment).filter(
+        DBAssignment.id == assignmentID
     )
-    prompt_count = session.execute(stmt).scalar_one_or_none()
-    return prompt_count.count if prompt_count else 0
+    assignment = session.execute(stmt).scalar_one_or_none()
+    if not assignment:
+        raise EntityNotFoundException("assignment", assignmentID)  # pyright: ignore[reportArgumentType]
+    stmt = select(DBConversation).filter(
+        DBConversation.studentID == studentID,
+        DBConversation.path == assignment.path
+    )
+    conversation = session.execute(stmt).scalar_one_or_none()
+    
+    return {"messages": conversation.messages, "responses": conversation.responses}  # pyright: ignore[reportUndefinedVariable, reportOptionalMemberAccess]
 
 def get_prompt_count_all_students(assignmentID: int, session: Session):
     stmt = select(DBPrompt_Count_Assignment).filter(
