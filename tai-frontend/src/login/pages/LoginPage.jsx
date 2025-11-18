@@ -134,33 +134,29 @@ const LoginPage = () => {
 
         try {
             // Store the selected role and user info in localStorage temporarily
-            // This will be used by the getUserType service to create the right account type
             localStorage.setItem('pendingUserRole', selectedRole);
             localStorage.setItem('pendingUserFullName', fullName);
             localStorage.setItem('pendingUserUsername', username);
-            
+
             // Create Firebase account
             const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
-            
+
             // Update the user's display name
             await updateProfile(userCredentials.user, {
                 displayName: fullName
             });
-            
-            const idToken = await userCredentials.user.getIdToken();
-            
-            // If problems persist, add an API call to BE to ensure that user exists here
-            // This is a temporary fix to allow time for the user to be created and populated in the BE and Firebase
-            await new Promise(resolve => setTimeout(resolve, 5000));
 
-            // Use existing getUserType infrastructure which will now create the account based on stored role
+            const idToken = await userCredentials.user.getIdToken();
+
+            // REMOVED: The 5-second delay - getUserType now handles the waiting internally
+            // Use getUserType which will create the account and wait until it's ready
             const userRole = await getUserType();
-            
+
             // Clean up temporary storage
             localStorage.removeItem('pendingUserRole');
             localStorage.removeItem('pendingUserFullName');
             localStorage.removeItem('pendingUserUsername');
-            
+
             await setUser({
                 id: userCredentials.user.uid,
                 name: fullName,
@@ -170,28 +166,31 @@ const LoginPage = () => {
             }); 
 
             await setPersistence(auth, browserLocalPersistence);
-            
+
             setIsAuthModalOpen(false);
             navigate('/home');
         } catch (error) {
-            console.error(error);
+            console.error("Signup error:", error);
             // Clean up temporary storage on error
             localStorage.removeItem('pendingUserRole');
             localStorage.removeItem('pendingUserFullName');
             localStorage.removeItem('pendingUserUsername');
-            
+
             if (error.code === 'auth/email-already-in-use') {
                 setLoginError("An account with this email already exists.");
             } else if (error.code === 'auth/weak-password') {
                 setLoginError("Password should be at least 6 characters.");
+            } else if (error.message && error.message.includes('Failed to create user account')) {
+                setLoginError("Account creation failed. Please try again or contact support.");
             } else {
                 setLoginError("Failed to create account. Please try again.");
             }
         } finally {
             setIsLoginLoading(false);
         }
-    }; 
+    };
 
+    // Updated handleAuthGoogleSignup with better error handling
     const handleAuthGoogleSignup = async () => {
         if (!selectedRole) {
             setLoginError("Please select whether you're a student or teacher first.");
@@ -200,30 +199,30 @@ const LoginPage = () => {
 
         setIsLoginLoading(true);
         setLoginError("");
-        
+
         try {
             // Set persistence to LOCAL before signing in
             await setPersistence(auth, browserLocalPersistence);
-            
+
             const userCredentials = await signInWithPopup(auth, googleProvider);
             const idToken = await userCredentials.user.getIdToken();
-            
+
             const displayName = userCredentials.user.displayName || userCredentials.user.email?.split('@')[0] || 'User';
             const username = userCredentials.user.email?.split('@')[0] || `user_${Date.now()}`;
-            
+
             // Store the selected role and user info for getUserType to use
             localStorage.setItem('pendingUserRole', selectedRole);
             localStorage.setItem('pendingUserFullName', displayName);
             localStorage.setItem('pendingUserUsername', username);
-            
-            // Use existing getUserType infrastructure
+
+            // Use getUserType which will create the account and wait until it's ready
             const userRole = await getUserType();
-            
+
             // Clean up temporary storage
             localStorage.removeItem('pendingUserRole');
             localStorage.removeItem('pendingUserFullName');
             localStorage.removeItem('pendingUserUsername');
-            
+
             await setUser({
                 id: userCredentials.user.uid,
                 name: displayName,
@@ -232,18 +231,21 @@ const LoginPage = () => {
                 token: idToken,
                 profilePicture: userCredentials.user.photoURL
             });
-            
+
             setIsAuthModalOpen(false);
             navigate('/home');
         } catch (error) {
-            console.error(error);
-            setIsLoginLoading(false);
+            console.error("Google signup error:", error);
             // Clean up temporary storage on error
             localStorage.removeItem('pendingUserRole');
             localStorage.removeItem('pendingUserFullName');
             localStorage.removeItem('pendingUserUsername');
-            
-            setLoginError("Failed to sign up with Google. Please try again.");
+
+            if (error.message && error.message.includes('Failed to create user account')) {
+                setLoginError("Account creation failed. Please try again or contact support.");
+            } else {
+                setLoginError("Failed to sign up with Google. Please try again.");
+            }
         } finally {
             setIsLoginLoading(false);
         }
