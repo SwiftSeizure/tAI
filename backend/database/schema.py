@@ -107,7 +107,7 @@ class DBAssignment(Base):
     __tablename__ = "assignment"
 
     id = Column(Integer, primary_key = True, index = True)
-    name = Column(String(25), nullable=False)
+    name = Column(String(255), nullable=False)
     filename = Column(String(225), nullable=False)
     sequence = Column(Integer, nullable=False)
     path = Column(String(255),nullable=False)
