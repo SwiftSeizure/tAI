@@ -1,9 +1,10 @@
 import api from "../../shared/services/axios";
+import { auth } from "../../auth/firebase";
 
 export const createTeacher = async (name, username) => {
     try {
-        const token = localStorage.getItem('authToken');
-        if (!token) {
+        const idToken = await auth.currentUser?.getIdToken();
+        if (!idToken) {
             throw new Error('No authentication token found');
         }
 
@@ -12,7 +13,7 @@ export const createTeacher = async (name, username) => {
             username: username
         }, {
             headers: {
-                'Authorization': `Bearer ${token}`,
+                'Authorization': `Bearer ${idToken}`,
                 'Content-Type': 'application/json'
             }
         });
