@@ -127,12 +127,3 @@ def get_teacher_by_module_id(moduleID: int, session: Session) -> str:
     if not module:
         raise EntityNotFoundException("module", moduleID) # type: ignore
     return module.unit.class_.ownerID
-
-
-# ---------------------------------------------------------------------------------------------#
-# Start of Canvas integration
-
-def get_canvas_modules(moduleID: int) -> None: #TODO return something?
-    """Fetch class modules from canvas."""
-    # TODO get module
-    # GET /api/v1/courses/:course_id/modules
