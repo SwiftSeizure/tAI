@@ -142,6 +142,13 @@ const TeacherStudentUnitPage = () => {
                     onClickPublish={handlePublishUnit}
                 />
             ))}  
+            
+            {user.role === "teacher" && units.length > 0 && (
+                <StatisticsCard 
+                    classData={currentClass}
+                    onClick={handleStatisticsClick}
+                />
+            )}
             {user.role === "teacher" 
                 ? 
                 <UnitCard 
@@ -152,13 +159,6 @@ const TeacherStudentUnitPage = () => {
                 />   
                 : null
             } 
-
-            {user.role === "teacher" && units.length > 0 && (
-                <StatisticsCard 
-                    classData={currentClass}
-                    onClick={handleStatisticsClick}
-                />
-            )}
             </>
         )
     };

@@ -10,7 +10,13 @@ from backend.models import ChatResponse, ClientErrorResponse, ChatMessage, ChatR
 from backend.database.schema import DBConversation, DBMessage, DBResponse, DBPracticeAttempt
 from backend.database.student import get_student
 from backend.exceptions import EntityNotFoundException, InvalidClassCodeException
+from backend.routers import assignment
 from backend.routers.material import get_file  # unchanged
+from backend.database.schema import DBPrompt_Count_Material, DBPrompt_Count_Assignment
+from backend.database.material import increment_prompt_count_material, get_prompt_count_material, get_prompt_count_all_material
+from backend.database.assignment import increment_prompt_count_assignment, get_prompt_count_assignment, get_prompt_count_all_students
+from backend.database.material import get_material_id_by_path
+from backend.database.assignment import get_assignment_id_by_path
 
 import backend.database.assignment as db_assignment
 import backend.database.material as db_material
@@ -95,6 +101,18 @@ def queryBot(studentID: str, path: Optional[str], prompt: str, session: Session)
         message = DBMessage(content=prompt, conversationID=conversationID)
 
         db_response = DBResponse(content=assistant_text, conversationID=conversationID)
+
+        if path is not None and isinstance(path, str) and len(path) > 0:
+            if path.startswith("uploads/assignment"):
+                print("Incrementing prompt count for assignment")
+                assignmentID = get_assignment_id_by_path(path, session)
+                increment_prompt_count_assignment(assignmentID, studentID, session)  # pyright: ignore[reportArgumentType]
+                print("Prompt count incremented for assignment")
+            elif path.startswith("uploads/material"):
+                print("Incrementing prompt count for material")
+                materialID = get_material_id_by_path(path, session)
+                increment_prompt_count_material(materialID, studentID, session)  # pyright: ignore[reportArgumentType]
+                print("Prompt count incremented for material")
 
         session.add(message)
         session.add(db_response)

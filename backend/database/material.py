@@ -1,8 +1,9 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from .schema import DBMaterial, DBDay
+from .schema import DBMaterial, DBDay, DBPrompt_Count_Material
 from backend.exceptions import EntityNotFoundException, UploadNotFoundException
 from pathlib import Path
+from backend.database.student import get_student
 
 def delete_material(dayId: int, filename: str, session: Session):
     """Delete a material from the database and return its path.
@@ -68,3 +69,59 @@ def get_RemoteID(path: str, session: Session):
     material = session.execute(stmt).scalar_one_or_none()
     ret = material.remoteID if material else None
     return ret 
+
+def increment_prompt_count_material(materialID: int, studentID: str, session: Session):
+    stmt = select(DBPrompt_Count_Material).filter(
+        DBPrompt_Count_Material.materialID == materialID,
+        DBPrompt_Count_Material.studentID == studentID
+    )
+    prompt_count = session.execute(stmt).scalar_one_or_none()
+    if not prompt_count:
+        prompt_count = DBPrompt_Count_Material(materialID=materialID, studentID=studentID, count=1)
+        session.add(prompt_count)
+    else:
+        prompt_count.count += 1
+    session.commit()
+    return prompt_count
+
+
+def get_prompt_count_material(materialID: int, studentID: str, session: Session):
+    stmt = select(DBPrompt_Count_Material).filter(
+        DBPrompt_Count_Material.materialID == materialID,
+        DBPrompt_Count_Material.studentID == studentID
+    )
+    prompt_count = session.execute(stmt).scalar_one_or_none()
+    return prompt_count.count if prompt_count else 0
+
+def get_prompt_count_all_material(materialID: int, session: Session):
+    stmt = select(DBPrompt_Count_Material).filter(
+        DBPrompt_Count_Material.materialID == materialID
+    )
+    prompt_counts = session.execute(stmt).scalars().all()
+    return_dict = {}
+    for prompt_count in prompt_counts:
+        student = get_student(prompt_count.studentID, session) # type: ignore
+        return_dict[prompt_count.studentID] = {
+            "count": prompt_count.count,
+            "student": student.name
+        }
+    return return_dict
+
+def get_material_id_by_path(path: str, session: Session):
+    stmt = select(DBMaterial).filter(
+        DBMaterial.path == path
+    )
+    material = session.execute(stmt).scalar_one_or_none()
+    return material.id if material else None
+
+def get_prompt_count_all(session: Session):
+    stmt = select(DBPrompt_Count_Material)
+    prompt_counts = session.execute(stmt).scalars().all()
+
+    return_dict = {}
+    for prompt_count in prompt_counts:
+        return_dict[prompt_count.materialID] = {
+            "count": prompt_count.count,
+            "material": prompt_count.material.name
+        }
+    return return_dict

@@ -35,7 +35,7 @@ const StatisticsCard = ({ classData, onClick }) => {
 
                 {/* Description */}
                 <p className="mb-4 text-sm text-gray-600 leading-relaxed">
-                    View detailed analytics and insights about student performance and engagement
+                    Student performance and engagement analytics
                 </p>
 
                 {/* Quick Stats Preview */}
@@ -63,13 +63,18 @@ const StatisticsCard = ({ classData, onClick }) => {
                     </div>
                 </div> */}
 
-                {/* View Details Button */}
-                <button 
-                    onClick={onClick}
-                    className="mt-4 w-full py-2.5 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm transition-colors duration-200 shadow-sm hover:shadow-md"
-                >
-                    View Detailed Statistics
-                </button>
+                {/* View Details Button */} 
+                <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100">
+                    <button 
+                        onClick={onClick}
+                        className="w-full py-3 px-4 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200 hover:border-blue-300 text-blue-700 font-medium text-sm transition-all duration-200 hover:shadow-sm group/btn flex items-center justify-center"
+                    >
+                        <div className="flex items-center justify-center">
+                            <BarChartIcon fontSize="small" />
+                            <span>View Detailed Statistics</span>
+                        </div>
+                    </button> 
+                </div>
             </div>
         </div>
     );

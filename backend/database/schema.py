@@ -160,6 +160,28 @@ class DBResponse(Base):
 class DBPracticeAttempt(Base):
     __tablename__ = "practice_attempt"
 
+
+class DBPrompt_Count_Material(Base):
+    __tablename__ = "prompt_count_material"
+
+    id = Column(Integer, primary_key=True, index=True)
+    studentID = Column(String(128), ForeignKey("student.id", ondelete="CASCADE"))
+    materialID = Column(Integer, ForeignKey("material.id", ondelete="CASCADE"))
+    count = Column(Integer, nullable=False)
+
+    material = relationship("DBMaterial")
+    
+
+class DBPrompt_Count_Assignment(Base):
+    __tablename__ = "prompt_count_assignment"
+
+    id = Column(Integer, primary_key=True, index=True)
+    studentID = Column(String(128), ForeignKey("student.id", ondelete="CASCADE"))
+    assignmentID = Column(Integer, ForeignKey("assignment.id", ondelete="CASCADE"))
+    count = Column(Integer, nullable=False)
+
+    assignment = relationship("DBAssignment")
+
     id = Column(Integer, primary_key=True, index=True)
     studentID = Column(String(128), ForeignKey("student.id", ondelete="CASCADE"))
     classID = Column(Integer, ForeignKey("class.id", ondelete="CASCADE"))
