@@ -2,6 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from backend.database.schema import DBAssignment, DBConversation, DBPrompt_Count_Assignment
 from backend.exceptions import EntityNotFoundException, UploadNotFoundException
+import backend.database.student as student_db
 
 def delete_assignment(dayID: int, filename: str, session: Session) -> None:
     """Delete an assignment from the database.
@@ -104,7 +105,7 @@ def get_prompt_count_all_students(assignmentID: int, session: Session):
     prompt_counts = session.execute(stmt).scalars().all()
     return_dict = {}
     for prompt_count in prompt_counts:
-        student = get_student(prompt_count.studentID, session) # type: ignore
+        student = student_db.get_student(prompt_count.studentID, session) # type: ignore
         return_dict[prompt_count.studentID] = {
             "count": prompt_count.count,
             "student": student.name

@@ -7,7 +7,9 @@ import { getAssignmentsPrompts } from '../services/get-assignments-prompt-count'
 import { getMaterialsPrompts } from '../services/get-materials-prompt-count';
 import { NoDataMessage } from '../components/NoDataMessage'; 
 import { getMaterialStudentPrompts } from '../services/get-material-student-prompts';
-import { getAssignmentStudentPrompts } from '../services/get-assignment-student-prompts';
+import { getAssignmentStudentPrompts } from '../services/get-assignment-student-prompts'; 
+import { getMaterialStudentChat } from '../services/get-material-student-chat';
+import { getAssignmentStudentChat } from '../services/get-assignment-student-chat';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
@@ -29,14 +31,67 @@ export default function ClassStatisticsPage() {
     const [studentData, setStudentData] = useState(null);
     const [selectedItemName, setSelectedItemName] = useState('');
     const [selectedItemType, setSelectedItemType] = useState('');
+    const [selectedItemID, setSelectedItemID] = useState(null);
     const [showAllAssignments, setShowAllAssignments] = useState(false);
     const [showAllMaterials, setShowAllMaterials] = useState(false);
+    const [selectedStudent, setSelectedStudent] = useState(null);
+    const [chatHistory, setChatHistory] = useState(null);
+    const [loadingChat, setLoadingChat] = useState(false);
 
     const hasAssignments = assignmentsData.length > 0;
     const hasMaterials = materialsData.length > 0;
     const hasStudentData = studentData && Object.keys(studentData).length > 0;
+    const hasChatHistory = chatHistory && chatHistory.length > 0;
+
+    const handleStudentPieClick = async (event, elements, chart) => {
+        if (elements.length > 0) {
+            const clickedElement = elements[0];
+            const index = clickedElement.index;
+            const studentArray = Object.entries(studentData);
+            const [studentID, studentInfo] = studentArray[index]; 
+
+            console.log("Student ID line 52:", studentID);
+            console.log("Student Info line 53:", studentInfo); 
+            console.log("Student Name line 54:", studentInfo.student);
+            
+            setSelectedStudent({
+                id: studentID,
+                name: studentInfo.student
+            });
+
+            // Fetch chat history based on item type
+            setLoadingChat(true);
+            try {
+                let response;
+                if (selectedItemType === 'Assignment') {
+                    response = await getAssignmentStudentChat(selectedItemID, studentID);
+                } else if (selectedItemType === 'Material') {
+                    response = await getMaterialStudentChat(selectedItemID, studentID);
+                }
+                
+                // Handle response format - could be array or object
+                if (Array.isArray(response)) {
+                    setChatHistory(response);
+                } else if (response && typeof response === 'object') {
+                    // Convert object to array if needed
+                    setChatHistory(Object.values(response));
+                } else {
+                    setChatHistory([]);
+                }
+            } catch (error) {
+                console.error("Error fetching chat history:", error);
+                setChatHistory([]);
+            } finally {
+                setLoadingChat(false);
+            }
+        }
+    };
 
     const handleMaterialAssignmentPieClick = (event, elements, chart) => {
+        // Clear any selected student when changing assignment/material
+        setSelectedStudent(null);
+        setChatHistory(null);
+
         if (elements.length > 0) {
             const clickedElement = elements[0];
             const index = clickedElement.index;
@@ -47,11 +102,13 @@ export default function ClassStatisticsPage() {
                     const assignment = assignmentsData.find(item => item.assignmentID === id);
                     setSelectedItemName(assignment.name);
                     setSelectedItemType('Assignment');
+                    setSelectedItemID(id);
                     populateAssignmentStudentPrompts(id);
                 } else if (materialsData.some(item => item.materialID === id)) {
                     const material = materialsData.find(item => item.materialID === id);
                     setSelectedItemName(material.name);
                     setSelectedItemType('Material');
+                    setSelectedItemID(id);
                     populateMaterialStudentPrompts(id);
                 } else {
                     console.error('Could not determine if ID belongs to assignment or material:', id);
@@ -66,22 +123,8 @@ export default function ClassStatisticsPage() {
         try {
             const response = await getAssignmentStudentPrompts(id); 
             console.log("Assignment student prompts in response:", response);  
-            setStudentData(response);  
-            // const fakeResponse = {
-            //     "1": {
-            //         "studentName": "Student 1",
-            //         "count": 5
-            //     },
-            //     "2": {
-            //         "studentName": "Student 2",
-            //         "count": 10
-            //     },
-            //     "3": {
-            //         "studentName": "Student 3",
-            //         "count": 15
-            //     }
-            // };
-            // setStudentData(fakeResponse);  
+            await setStudentData(response); 
+            console.log("Student data line 124:", studentData);
         } catch (error) {
             console.error("Error fetching assignment student prompts:", error);
             setStudentData(null);
@@ -92,22 +135,7 @@ export default function ClassStatisticsPage() {
         try {
             const response = await getMaterialStudentPrompts(id); 
             console.log("Material student prompts in response:", response);
-            //setStudentData(response);   
-            const fakeResponse = {
-                "1": {
-                    "studentName": "Student 1",
-                    "count": 5
-                },
-                "2": {
-                    "studentName": "Student 2",
-                    "count": 10
-                },
-                "3": {
-                    "studentName": "Student 3",
-                    "count": 15
-                }
-            };
-            setStudentData(fakeResponse); 
+            setStudentData(response);
         } catch (error) {
             console.error("Error fetching material student prompts:", error);
             setStudentData(null);
@@ -163,7 +191,14 @@ export default function ClassStatisticsPage() {
     useEffect(() => {
         fetchAssignmentsPrompts(); 
         fetchMaterialsPrompts(); 
-    }, []);
+    }, []); 
+
+    const setInformationNull = () => {
+        setStudentData(null);
+        setSelectedStudent(null);
+        setChatHistory(null);
+        setSelectedItemID(null);
+    }
 
     const assignmentData = {
         labels: assignmentsData.map(a => a.name),
@@ -300,6 +335,7 @@ export default function ClassStatisticsPage() {
 
     const studentPieOptions = {
         responsive: true,
+        onClick: handleStudentPieClick,
         maintainAspectRatio: false,
         plugins: {
             legend: {
@@ -338,9 +374,10 @@ export default function ClassStatisticsPage() {
 
     // Prepare student data for table
     const studentTableData = studentData ? 
-        Object.values(studentData)
-            .sort((a, b) => b.count - a.count)
-            .map((student, index) => ({
+        Object.entries(studentData)
+            .sort((a, b) => b[1].count - a[1].count)
+            .map(([id, student], index) => ({
+                studentID: id,
                 ...student,
                 rank: index + 1
             })) 
@@ -358,6 +395,36 @@ export default function ClassStatisticsPage() {
     const displayedMaterials = showAllMaterials ? sortedMaterials : sortedMaterials.slice(0, 3);
     const totalMaterialPrompts = materialsData.reduce((sum, m) => sum + m.value, 0);
 
+    const handleStudentRowClick = async (studentID, studentName) => {
+        setSelectedStudent({
+            id: studentID,
+            name: studentName
+        });
+
+        setLoadingChat(true);
+        try {
+            let response;
+            if (selectedItemType === 'Assignment') {
+                response = await getAssignmentStudentChat(selectedItemID, studentID);
+            } else if (selectedItemType === 'Material') {
+                response = await getMaterialStudentChat(selectedItemID, studentID);
+            }
+            
+            if (Array.isArray(response)) {
+                setChatHistory(response);
+            } else if (response && typeof response === 'object') {
+                setChatHistory(Object.values(response));
+            } else {
+                setChatHistory([]);
+            }
+        } catch (error) {
+            console.error("Error fetching chat history:", error);
+            setChatHistory([]);
+        } finally {
+            setLoadingChat(false);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-50">
             <NavBar title="Statistics" />
@@ -372,32 +439,25 @@ export default function ClassStatisticsPage() {
                         <h2 className="text-lg font-semibold mb-4">Assignment Prompts</h2>
                         {hasAssignments ? (
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                {/* Pie Chart */}
                                 <div className="h-80">
                                     <Pie data={assignmentData} options={chartOptions} />
                                 </div>
                                 
-                                {/* Top Assignments Table */}
                                 <div className="flex flex-col">
                                     <div className="text-sm text-gray-600 mb-3">
                                         {assignmentsData.length} assignments • {totalAssignmentPrompts} total prompts
                                     </div>
                                     <div className="flex-1 overflow-hidden">
                                         <table className="min-w-full divide-y divide-gray-200">
-                                            <colgroup>
-                                                <col className="w-16" />
-                                                <col className="min-w-[150px]" />
-                                                <col className="w-24" />
-                                            </colgroup>
                                             <thead className="bg-gray-50">
                                                 <tr>
-                                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                         Rank
                                                     </th>
                                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                         Assignment
                                                     </th>
-                                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                         Prompts
                                                     </th>
                                                 </tr>
@@ -439,32 +499,25 @@ export default function ClassStatisticsPage() {
                         <h2 className="text-lg font-semibold mb-4">Material Prompts</h2>
                         {hasMaterials ? (
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                {/* Pie Chart */}
                                 <div className="h-80">
                                     <Pie data={materialData} options={chartOptions} />
                                 </div>
                                 
-                                {/* Top Materials Table */}
                                 <div className="flex flex-col">
                                     <div className="text-sm text-gray-600 mb-3">
                                         {materialsData.length} materials • {totalMaterialPrompts} total prompts
                                     </div>
                                     <div className="flex-1 overflow-hidden">
                                         <table className="min-w-full divide-y divide-gray-200">
-                                            <colgroup>
-                                                <col className="w-16" />
-                                                <col className="min-w-[150px]" />
-                                                <col className="w-24" />
-                                            </colgroup>
                                             <thead className="bg-gray-50">
                                                 <tr>
-                                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                         Rank
                                                     </th>
                                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                         Material
                                                     </th>
-                                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                         Prompts
                                                     </th>
                                                 </tr>
@@ -518,7 +571,7 @@ export default function ClassStatisticsPage() {
 
                 {/* Student Statistics Drill-Down */}
                 {hasStudentData && (
-                    <div className="bg-white p-6 rounded-xl shadow-md">
+                    <div className="bg-white p-6 rounded-xl shadow-md mb-8">
                         <div className="flex items-center justify-between mb-6">
                             <div>
                                 <h2 className="text-lg font-semibold">
@@ -529,7 +582,7 @@ export default function ClassStatisticsPage() {
                                 </p>
                             </div>
                             <button
-                                onClick={() => setStudentData(null)}
+                                onClick={setInformationNull}
                                 className="text-sm text-gray-600 hover:text-gray-900 underline"
                             >
                                 Clear Selection
@@ -560,13 +613,23 @@ export default function ClassStatisticsPage() {
                                         <tbody className="bg-white divide-y divide-gray-200">
                                             {studentTableData.map((student) => {
                                                 const percentage = ((student.count / totalPrompts) * 100).toFixed(1);
+                                                const isSelected = selectedStudent?.id === student.studentID; 
+                                                console.log("This is the info about a student", selectedStudent)
                                                 return (
-                                                    <tr key={student.studentID} className="hover:bg-gray-50">
+                                                    <tr 
+                                                        key={student.studentID} 
+                                                        onClick={() => handleStudentRowClick(student.studentID, student.student)}
+                                                        className={`cursor-pointer transition-colors ${
+                                                            isSelected 
+                                                                ? 'bg-blue-50 hover:bg-blue-100' 
+                                                                : 'hover:bg-gray-50'
+                                                        }`}
+                                                    >
                                                         <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
                                                             #{student.rank}
                                                         </td>
                                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                                                            {student.studentName}
+                                                            {student.student}
                                                         </td>
                                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
                                                             {student.count}
@@ -583,15 +646,79 @@ export default function ClassStatisticsPage() {
                             </div>
 
                             {/* Student Pie Chart */}
-                            <div className="h-96">
-                                <Pie data={studentPieData} options={studentPieOptions} />
-                            </div>
-
-                            {/* Specific Student Chat history */}
-                            <div className="h-96">
-                                {/* Here i want to lay out the chat history for the specific student */}
+                            <div className="h-96"> 
+                                <Pie data={studentPieData} options={studentPieOptions} /> 
+                                <p className="text-xs text-gray-500 text-center mt-2">
+                                    Click on a slice or table row to view chat history
+                                </p>
                             </div>
                         </div>
+                    </div>
+                )} 
+
+                {/* Specific Student Chat History */}
+                {selectedStudent && (
+                    <div className="bg-white p-6 rounded-xl shadow-md">
+                        <div className="flex items-center justify-between mb-6">
+                            <div>
+                                <h2 className="text-lg font-semibold">
+                                    Chat History: {selectedStudent.name}
+                                </h2>
+                                <p className="text-sm text-gray-600 mt-1">
+                                    {selectedItemType}: {selectedItemName}
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    setSelectedStudent(null);
+                                    setChatHistory(null);
+                                }}
+                                className="text-sm text-gray-600 hover:text-gray-900 underline"
+                            >
+                                Close Chat History
+                            </button>
+                        </div>
+
+                        {loadingChat ? (
+                            <div className="flex items-center justify-center h-64">
+                                <div className="text-gray-500">Loading chat history...</div>
+                            </div>
+                        ) : hasChatHistory ? (
+                            <div className="space-y-4 max-h-96 overflow-y-auto">
+                                {chatHistory.map((message, index) => (
+                                    <div 
+                                        key={index}
+                                        className={`p-4 rounded-lg ${
+                                            message.role === 'user' || message.sender === 'student'
+                                                ? 'bg-blue-50 ml-8'
+                                                : 'bg-gray-50 mr-8'
+                                        }`}
+                                    >
+                                        <div className="flex items-start justify-between mb-2">
+                                            <span className={`text-xs font-medium ${
+                                                message.role === 'user' || message.sender === 'student'
+                                                    ? 'text-blue-700'
+                                                    : 'text-gray-700'
+                                            }`}>
+                                                {message.role === 'user' || message.sender === 'student' 
+                                                    ? 'Student' 
+                                                    : 'AI Assistant'}
+                                            </span>
+                                            {message.timestamp && (
+                                                <span className="text-xs text-gray-500">
+                                                    {new Date(message.timestamp).toLocaleString()}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div className="text-sm text-gray-800 whitespace-pre-wrap">
+                                            {message.content || message.message || message.text}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <NoDataMessage message="No chat history available for this student" />
+                        )}
                     </div>
                 )}
             </div>
