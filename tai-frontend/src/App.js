@@ -10,7 +10,9 @@ import TeacherStudentUnitPage from './unit/pages/TeacherStudentUnitPage';
 import TeacherStudentModulePage from './module/pages/TeacherStudentModulePage';
 import CreateClassPage from './home/pages/CreateClassPage';
 import JoinClassPage from './home/pages/JoinClassPage';
-import CreateUnitPage from './unit/pages/CreateUnitPage';
+import CreateUnitPage from './unit/pages/CreateUnitPage';  
+import ClassStatisticsPage from './shared/pages/ClassStatisticsPage';
+import NotFoundPage from './shared/pages/NotFoundPage';
 
 function App() {
     const [{ user }, { setUser, clearUser }] = useUser();
@@ -121,13 +123,11 @@ function App() {
                     <Route path="/createclass" element={<CreateClassPage />} />
                     <Route path="/joinclass" element={<JoinClassPage />} />
 
-                    {/* Unit Specific Routes */}
-                    <Route path="/createunit" element={<CreateUnitPage />} />
-                </Routes>
-            </div>
-        </BrowserRouter>
-    );
-}
+                    {/* Unit Specific Routes */} 
+                    <Route path="/createunit" element={<CreateUnitPage />} /> 
+
+                    {/* Class Statistics Routes */}
+                    <Route path="/statistics" element={<ClassStatisticsPage />} /> 
 
   	  	  	  	  	{/* 404 - Catch all unmatched routes */}
   	  	  	  	  	<Route path="*" element={<NotFoundPage />} />
