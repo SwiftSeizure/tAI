@@ -586,6 +586,11 @@ export default function ClassStatisticsPage() {
                             <div className="h-96">
                                 <Pie data={studentPieData} options={studentPieOptions} />
                             </div>
+
+                            {/* Specific Student Chat history */}
+                            <div className="h-96">
+                                {/* Here i want to lay out the chat history for the specific student */}
+                            </div>
                         </div>
                     </div>
                 )}
