@@ -66,22 +66,22 @@ export default function ClassStatisticsPage() {
         try {
             const response = await getAssignmentStudentPrompts(id); 
             console.log("Assignment student prompts in response:", response);  
-            //setStudentData(response);  
-            const fakeResponse = {
-                "1": {
-                    "studentName": "Student 1",
-                    "count": 5
-                },
-                "2": {
-                    "studentName": "Student 2",
-                    "count": 10
-                },
-                "3": {
-                    "studentName": "Student 3",
-                    "count": 15
-                }
-            };
-            setStudentData(fakeResponse);  
+            setStudentData(response);  
+            // const fakeResponse = {
+            //     "1": {
+            //         "studentName": "Student 1",
+            //         "count": 5
+            //     },
+            //     "2": {
+            //         "studentName": "Student 2",
+            //         "count": 10
+            //     },
+            //     "3": {
+            //         "studentName": "Student 3",
+            //         "count": 15
+            //     }
+            // };
+            // setStudentData(fakeResponse);  
         } catch (error) {
             console.error("Error fetching assignment student prompts:", error);
             setStudentData(null);
