@@ -7,6 +7,7 @@ import { updateProfile, sendEmailVerification, updateEmail, reauthenticateWithCr
 import { auth } from '../../auth/firebase'; 
 import { useUser } from '../../store/user-store';
 import VerificationModal from '../modals/VerificationModal';
+import { putUpdateStudent } from '../services/put-update-student';
 
 import '../../App.css';
 export const NavBar = ({ title, settings }) => { 
@@ -42,10 +43,16 @@ export const NavBar = ({ title, settings }) => {
         try { 
             // Update profile if needed
             if (displayName || avatarFile) {
-                await updateProfile(user, { 
-                    displayName: displayName || user.displayName, 
-                    photoURL: avatarFile || user.photoURL 
-                });
+                console.log("Updating student name in backend..., displayName: ", displayName);
+                try {
+                    await putUpdateStudent(user.uid, displayName); 
+                    await updateProfile(user, { 
+                        displayName: displayName || user.displayName, 
+                        photoURL: avatarFile || user.photoURL 
+                    });
+                } catch (error) {
+                    console.error("Error updating student name in backend:", error);
+                }
             }  
     
             // Handle email change
