@@ -360,7 +360,7 @@ export default function ClassStatisticsPage() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <NavBar />
+            <NavBar title="Statistics" />
             <div className="container mx-auto px-4 py-8">
                 <h1 className="text-2xl font-bold text-gray-900 mb-8">
                     {currentClass?.name || 'Class'} Statistics
@@ -529,7 +529,7 @@ export default function ClassStatisticsPage() {
                                 </p>
                             </div>
                             <button
-                                onClick={setStudentData}
+                                onClick={() => setStudentData(null)}
                                 className="text-sm text-gray-600 hover:text-gray-900 underline"
                             >
                                 Clear Selection
