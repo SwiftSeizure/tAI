@@ -96,13 +96,19 @@ const LoginPage = () => {
         setLoginError("");
 
         try {
-            // Set persistence to LOCAL before signing in
             await setPersistence(auth, browserLocalPersistence);
             
             const userCredentials = await signInWithEmailAndPassword(auth, email, password); 
             const idToken = await userCredentials.user.getIdToken();    
-            
-            const userRole = await getUserType();
+
+            let userRole = null;
+            while (userRole === null || (userRole && userRole.error === "entity_not_found")) {
+                userRole = await getUserType();
+                if (userRole === null || (userRole && userRole.error === "entity_not_found")) {
+                    // Wait 1 second before retrying
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            }
 
             await setUser({
                 id: userCredentials.user.uid,
@@ -154,7 +160,14 @@ const LoginPage = () => {
             await new Promise(resolve => setTimeout(resolve, 5000));
 
             // Use existing getUserType infrastructure which will now create the account based on stored role
-            const userRole = await getUserType();
+            let userRole = null;
+            while (userRole === null || (userRole && userRole.error === "entity_not_found")) {
+                userRole = await getUserType();
+                if (userRole === null || (userRole && userRole.error === "entity_not_found")) {
+                    // Wait 1 second before retrying
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            }
             
             // Clean up temporary storage
             localStorage.removeItem('pendingUserRole');
@@ -217,7 +230,14 @@ const LoginPage = () => {
             localStorage.setItem('pendingUserUsername', username);
             
             // Use existing getUserType infrastructure
-            const userRole = await getUserType();
+            let userRole = null;
+            while (userRole === null || (userRole && userRole.error === "entity_not_found")) {
+                userRole = await getUserType();
+                if (userRole === null || (userRole && userRole.error === "entity_not_found")) {
+                    // Wait 1 second before retrying
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            }
             
             // Clean up temporary storage
             localStorage.removeItem('pendingUserRole');
@@ -258,7 +278,14 @@ const LoginPage = () => {
             
             const userCredentials = await signInWithPopup(auth, googleProvider);
             const idToken = await userCredentials.user.getIdToken();    
-            const userRole = await getUserType();
+            let userRole = null;
+            while (userRole === null || (userRole && userRole.error === "entity_not_found")) {
+                userRole = await getUserType();
+                if (userRole === null || (userRole && userRole.error === "entity_not_found")) {
+                    // Wait 1 second before retrying
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            }
 
             await setUser({
                 id: userCredentials.user.uid,
