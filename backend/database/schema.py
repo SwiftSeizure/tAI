@@ -157,6 +157,9 @@ class DBResponse(Base):
     conversation = relationship("DBConversation", back_populates="responses")    
 
 
+class DBPracticeAttempt(Base):
+    __tablename__ = "practice_attempt"
+
 
 class DBPrompt_Count_Material(Base):
     __tablename__ = "prompt_count_material"
@@ -179,3 +182,12 @@ class DBPrompt_Count_Assignment(Base):
 
     assignment = relationship("DBAssignment")
 
+    id = Column(Integer, primary_key=True, index=True)
+    studentID = Column(String(128), ForeignKey("student.id", ondelete="CASCADE"))
+    classID = Column(Integer, ForeignKey("class.id", ondelete="CASCADE"))
+    path = Column(String(255), nullable=False)  # Path to material or assignment
+    level = Column(Integer, nullable=False)  # Level of the question when answered
+    is_correct = Column(Boolean, nullable=False)  # Whether the answer was correct
+    
+    student = relationship("DBStudent")
+    class_ = relationship("DBClass")

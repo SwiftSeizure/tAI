@@ -157,3 +157,7 @@ def PopulateDB(file: str = SEED_FILE_PATH):
 
     finally:
         db.close()
+
+# Commented out to prevent automatic database seeding during development
+# Uncomment only when you want to reset and seed the database
+# PopulateDB()
