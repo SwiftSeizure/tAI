@@ -37,24 +37,24 @@ import json
 
 # This version for deployment
 ## START Deployment needed
-svc_json = os.getenv("SERVICE_ACCOUNT_JSON")
-if svc_json is None:
-    raise ValueError("SERVICE_ACCOUNT_JSON environment variable is not set")
-svc_dct = json.loads(svc_json)
-cred = credentials.Certificate(svc_dct)
-firebase_admin.initialize_app(cred)
-print("TAI:",firebase_admin.get_app().project_id) 
+# svc_json = os.getenv("SERVICE_ACCOUNT_JSON")
+# if svc_json is None:
+#     raise ValueError("SERVICE_ACCOUNT_JSON environment variable is not set")
+# svc_dct = json.loads(svc_json)
+# cred = credentials.Certificate(svc_dct)
+# firebase_admin.initialize_app(cred)
+# print("TAI:",firebase_admin.get_app().project_id) 
 ## END Deployment needed
 
 # This is for local
 ## START Local needed
-# service_account_path = os.path.join(os.path.dirname(__file__), 'service-account.json')
-# if not os.path.exists(service_account_path):
-#     raise FileNotFoundError(f"Service account file not found at {service_account_path}")
+service_account_path = os.path.join(os.path.dirname(__file__), 'service-account.json')
+if not os.path.exists(service_account_path):
+    raise FileNotFoundError(f"Service account file not found at {service_account_path}")
 
-# cred = credentials.Certificate(service_account_path)
-# firebase_admin.initialize_app(cred)
-# print("TAI:", firebase_admin.get_app().project_id)
+cred = credentials.Certificate(service_account_path)
+firebase_admin.initialize_app(cred)
+print("TAI:", firebase_admin.get_app().project_id)
 ## END Local needed
 
 
