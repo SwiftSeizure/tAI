@@ -16,12 +16,25 @@ const JoinClassPage = () => {
 
     // TODO: Add the functionality to join a class here  
     const [classCode, setClassCode] = useState(""); 
+    const [isLoading, setIsLoading] = useState(false);
     const [, { fetchClasses, setCurrentClass } ] = useClass();   
     const { user } = useCurrentUser(); 
     const navigate = useNavigate();  
 
     const handleJoinClass = async (e) => { 
         e.preventDefault(); 
+
+        if (!user || !user.id) {
+            alert("Please log in to join a class.");
+            return;
+        }
+
+        if (!classCode.trim()) {
+            alert("Please enter a class code.");
+            return;
+        }
+
+        setIsLoading(true);
 
        try {
             console.log("Attempting to join class with:", { 
@@ -34,8 +47,14 @@ const JoinClassPage = () => {
             // Ensure the student exists in the database before trying to enroll
             if (user.role === 'student') {
                 console.log("Ensuring student exists in database...");
-                await ensureStudentExists();
-                console.log("Student record confirmed.");
+                try {
+                    await ensureStudentExists();
+                    console.log("Student record confirmed.");
+                } catch (studentError) {
+                    console.error("Error ensuring student exists:", studentError);
+                    alert("There was an issue verifying your student account. Please try logging out and back in.");
+                    return;
+                }
             }
 
             const requestBody = {   
@@ -44,8 +63,17 @@ const JoinClassPage = () => {
             } 
             const classID = await postJoinClass(requestBody);    
             console.log("Class ID:", classID); 
-            await fetchClasses(user.id, user.role);
-            await setCurrentClass(classID);
+            
+            // Fetch classes and set current class
+            try {
+                await fetchClasses(user.id, user.role);
+                await setCurrentClass(classID);
+            } catch (fetchError) {
+                console.error("Error fetching classes after joining:", fetchError);
+                // Don't fail the whole operation if class fetching fails
+                // The user joined successfully, we can still navigate
+            }
+            
             console.log("Class joined successfully:", classCode); 
             navigate('/unitpage'); 
        } 
@@ -70,66 +98,84 @@ const JoinClassPage = () => {
                 }
             } else if (error.response?.status === 401) {
                 alert("Authentication error. Please log in again.");
+            } else if (error.message && error.message.includes('Network Error')) {
+                alert("Network error. Please check your internet connection and try again.");
             } else {
-                alert("Failed to join class. Please try again or contact your teacher.");
+                alert(`Failed to join class: ${error.message || 'Unknown error occurred'}. Please try again or contact your teacher.`);
             }
+       } finally {
+            setIsLoading(false);
        }
     };
 
     return(   
-        <>  
-        <NavBar title={"Join a Class"} /> 
-        
-        <form onSubmit={handleJoinClass} className="flex flex-col items-center">
+        <>   
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 bg-[length:200%_200%]" style={{animation: 'gradient-shift 15s ease-in-out infinite'}}>
+            <NavBar title={"Join a Class"} /> 
             
-            {/* Class Code Input Section - Styled like ClassSettings */}
-            <div className="w-full max-w-2xl"> 
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2 text-center">
-                    Join Class
-                </h3>
-                
-                <div className="space-y-3">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Enter the class code provided by your teacher to join the class.
-                    </p>
-                    
-                    <div className="space-y-2">
-                        <label
-                            htmlFor="class-code-input"
-                            className="block text-sm font-semibold text-gray-900 dark:text-white mb-1"
-                        >
-                            Class Code
-                        </label>
-                        <input
-                            id="class-code-input"
-                            type="text"
-                            placeholder="Enter Class Code"
-                            value={classCode}
-                            onChange={(e) => setClassCode(e.target.value)}
-                            className="w-full rounded-lg border border-gray-300 dark:border-gray-600 
-                                        dark:bg-gray-800 dark:text-white p-2.5 text-sm focus:ring-2 
-                                        focus:ring-blue-500 focus:outline-none transition-all duration-200
-                                        hover:border-gray-400 dark:hover:border-gray-500"
-                            required
-                        />
-                    </div>
+            <div className="max-w-2xl mx-auto mt-8">
+                <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
+
+                    <form onSubmit={handleJoinClass} className="space-y-8">
+                        {/* Class Code Input Section */}
+                        <div className="space-y-3">
+                            <h3 className="text-lg font-medium text-gray-900 dark:text-white text-center">
+                                Join Class
+                            </h3>
+                            
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                Enter the class code provided by your teacher to join the class.
+                            </p>
+
+                            <div className="space-y-2">
+                                <label
+                                    htmlFor="class-code-input"
+                                    className="block text-sm font-semibold text-gray-900 dark:text-white"
+                                >
+                                    Class Code
+                                </label>
+                                <input
+                                    id="class-code-input"
+                                    type="text"
+                                    placeholder="Enter Class Code"
+                                    value={classCode}
+                                    onChange={(e) => setClassCode(e.target.value)}
+                                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 
+                                                dark:bg-gray-800 dark:text-white p-2.5 text-sm focus:ring-2 
+                                                focus:ring-blue-500 focus:outline-none transition-all duration-200
+                                                hover:border-gray-400 dark:hover:border-gray-500"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex justify-center">
+                            <button 
+                                type="submit"
+                                disabled={isLoading}
+                                className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg 
+                                         hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 
+                                         focus:ring-blue-500 transition-colors duration-200 shadow-sm
+                                         hover:shadow-md w-full sm:w-auto disabled:opacity-50 
+                                         disabled:cursor-not-allowed disabled:hover:bg-blue-600"
+                            >  
+                                {isLoading ? (
+                                    <span className="flex items-center justify-center">
+                                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Joining Class...
+                                    </span>
+                                ) : (
+                                    'Join Class'
+                                )}
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </div> 
-
-            <div className="h-12"></div>
-
-            <button 
-                type="submit"
-                className="inline-block w-[200px] cursor-pointer border-2 border-gray-300 rounded-lg p-4 m-2 bg-transparent
-                         font-medium text-[1.1rem] text-gray-800 text-center font-nunito
-                         transition-all duration-300 ease-in-out
-                         hover:border-gray-400 hover:-translate-y-1 hover:shadow-lg
-                         active:-translate-y-0.5 active:shadow-md
-                         focus:outline-none focus:outline-offset-2"
-            >  
-                Join Class
-            </button>
-        </form>
+            </div>
+        </div>
         </>
     ); 
 }; 

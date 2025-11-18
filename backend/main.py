@@ -33,13 +33,29 @@ import firebase_admin
 from firebase_admin import credentials
 from dotenv import load_dotenv
 import pathlib
-# we need to load the env file because it contains the GOOGLE_APPLICATION_CREDENTIALS
-basedir = pathlib.Path(__file__).parent
-load_dotenv(basedir / ".env")
-cred = credentials.Certificate(basedir / "service-account.json")
-firebase_admin.initialize_app(cred)
-print("TAI:",firebase_admin.get_app().project_id)
+import json
 
+# This version for deployment
+## START Deployment needed
+svc_json = os.getenv("SERVICE_ACCOUNT_JSON")
+if svc_json is None:
+    raise ValueError("SERVICE_ACCOUNT_JSON environment variable is not set")
+svc_dct = json.loads(svc_json)
+cred = credentials.Certificate(svc_dct)
+firebase_admin.initialize_app(cred)
+print("TAI:",firebase_admin.get_app().project_id) 
+## END Deployment needed
+
+# This is for local
+## START Local needed
+# service_account_path = os.path.join(os.path.dirname(__file__), 'service-account.json')
+# if not os.path.exists(service_account_path):
+#     raise FileNotFoundError(f"Service account file not found at {service_account_path}")
+
+# cred = credentials.Certificate(service_account_path)
+# firebase_admin.initialize_app(cred)
+# print("TAI:", firebase_admin.get_app().project_id)
+## END Local needed
 
 
 app = FastAPI(
@@ -105,33 +121,9 @@ def maybe_initialize_db():
             print(f"[startup] InitializeDB failed: {e}")
     else:
         print("[startup] Database initialization skipped.")
-        
-@app.get("/")
-def serve_frontend():
-    """Serve the main React app HTML file"""
-    return FileResponse("tai-frontend/build/index.html")
-
-@app.get("/favicon.ico")
-def serve_favicon():
-    """Serve favicon"""
-    return FileResponse("tai-frontend/build/favicon.ico")
-
-@app.get("/manifest.json")
-def serve_manifest():
-    """Serve web app manifest"""
-    return FileResponse("tai-frontend/build/manifest.json")
-
-@app.get("/logo192.png")
-def serve_logo192():
-    """Serve 192px logo"""
-    return FileResponse("tai-frontend/build/logo192.png")
-
-@app.get("/logo512.png")
-def serve_logo512():
-    """Serve 512px logo"""
-    return FileResponse("tai-frontend/build/logo512.png")
 
 
+# Include API routers FIRST (before catch-all routes)
 app.include_router(home.router)
 app.include_router(classroom.router)
 app.include_router(unit.router)
@@ -161,34 +153,36 @@ def handle_invalid_class_code(request: Request, exception: InvalidClassCodeExcep
 def handle_unauthorized(request: Request, exception: UnauthorizedException):
     return exception.response()
 
-"""
-load_dotenv() 
 
-def generate_response(prompt):
-    url = "https://api.deepseek.com/v1/chat/completions"
-    headers = {
-        "Authorization": f"Bearer {os.getenv('DEEPSEEK_API_KEY')}",
-        "Content-Type": "application/json"
-    }
-    data = {
-        "model": "deepseek-chat",
-        "messages": [
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-    }
-    
-    response = requests.post(url, headers=headers, json=data)
-    return response.json()
+# Serve React app static assets - MUST BE AFTER API ROUTES
+@app.get("/favicon.ico")
+def serve_favicon():
+    """Serve favicon"""
+    return FileResponse("tai-frontend/build/favicon.ico")
 
-# Example usage
-response = generate_response("Write a one-sentence bedtime story about a unicorn.")
-print(response['choices'][0]['message']['content'])
-"""
-# todo: add routes and logic here 
+@app.get("/manifest.json")
+def serve_manifest():
+    """Serve web app manifest"""
+    return FileResponse("tai-frontend/build/manifest.json")
 
-# TODO: Route for a teacher or student ID from the DB   
+@app.get("/logo192.png")
+def serve_logo192():
+    """Serve 192px logo"""
+    return FileResponse("tai-frontend/build/logo192.png")
 
-# TODO: Route for getting all the classes a student is enrolled in 
+@app.get("/logo512.png")
+def serve_logo512():
+    """Serve 512px logo"""
+    return FileResponse("tai-frontend/build/logo512.png")
+
+
+# CATCH-ALL ROUTE - MUST BE LAST!
+# This handles all React Router routes (like /home, /unitpage, etc.)
+@app.get("/{full_path:path}")
+async def serve_react_app(full_path: str):
+    """
+    Catch-all route to serve the React app for any unmatched routes.
+    This enables React Router to handle client-side routing.
+    """
+    # Serve index.html for all routes that don't match API endpoints
+    return FileResponse("tai-frontend/build/index.html")

@@ -10,8 +10,9 @@ import { useIsAuthenticated } from "../../store/user-store";
 import { useAllUnits, useUnitLoading, useUnitError } from "../../store/unit-store"; 
 import DeleteModal from "../../shared/modals/DeleteModal";
 import { deleteUnit } from "../services/delete-unit"; 
-import { putPublishUnit } from "../services/put-publish-unit"; 
- 
+import { putPublishUnit } from "../services/put-publish-unit";  
+import StatisticsCard from "../components/StatisticsCard";
+
 
 /**
  * TeacherStudentUnitPage 
@@ -98,6 +99,10 @@ const TeacherStudentUnitPage = () => {
         }
     };
 
+    const handleStatisticsClick = () => {
+        navigate('/statistics');
+    };
+
     /**
      * populateUnitCards
      * Generates a list of `UnitCard` components based on the fetched unit data.
@@ -137,15 +142,23 @@ const TeacherStudentUnitPage = () => {
                     onClickPublish={handlePublishUnit}
                 />
             ))}  
+            
+            {user.role === "teacher" && units.length > 0 && (
+                <StatisticsCard 
+                    classData={currentClass}
+                    onClick={handleStatisticsClick}
+                />
+            )}
             {user.role === "teacher" 
-                ? <UnitCard 
+                ? 
+                <UnitCard 
                     key={null} 
                     unit={null}  
                     onClick={handleUnitSelect} 
                     onClickDelete={handleOpenDeleteModal}
-                />
+                />   
                 : null
-            }
+            } 
             </>
         )
     };

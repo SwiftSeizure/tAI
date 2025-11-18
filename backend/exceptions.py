@@ -34,7 +34,7 @@ class UploadNotFoundException(Exception):
 class DuplicateNameException(Exception):
     """Exception for a non-existent entity."""
     def __init__(self, entity_type: str, entity_name: str):
-        self.status_code = 404
+        self.status_code = 409
         self.error = f"duplicate_name"
         self.message = f"A(n) {entity_type} with name={entity_name} already exists."
         

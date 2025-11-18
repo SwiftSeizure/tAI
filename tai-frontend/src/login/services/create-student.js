@@ -1,6 +1,6 @@
 import api from "../../shared/services/axios";
 
-export const createStudent = async (name, username) => {
+export const createStudent = async (name, username) => { 
     try {
         const response = await api.post('/student/new', {
             name: name,
