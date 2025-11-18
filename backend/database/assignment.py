@@ -102,7 +102,14 @@ def get_prompt_count_all_students(assignmentID: int, session: Session):
         DBPrompt_Count_Assignment.assignmentID == assignmentID
     )
     prompt_counts = session.execute(stmt).scalars().all()
-    return {prompt_count.studentID: prompt_count.count for prompt_count in prompt_counts}  
+    return_dict = {}
+    for prompt_count in prompt_counts:
+        student = get_student(prompt_count.studentID, session) # type: ignore
+        return_dict[prompt_count.studentID] = {
+            "count": prompt_count.count,
+            "student": student.name
+        }
+    return return_dict
 
 def get_assignment_id_by_path(path: str, session: Session):
     stmt = select(DBAssignment).filter(

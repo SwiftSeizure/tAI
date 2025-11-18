@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from .schema import DBMaterial, DBDay, DBPrompt_Count_Material
 from backend.exceptions import EntityNotFoundException, UploadNotFoundException
 from pathlib import Path
+from backend.database.student import get_student
 
 def delete_material(dayId: int, filename: str, session: Session):
     """Delete a material from the database and return its path.
@@ -97,7 +98,14 @@ def get_prompt_count_all_material(materialID: int, session: Session):
         DBPrompt_Count_Material.materialID == materialID
     )
     prompt_counts = session.execute(stmt).scalars().all()
-    return {prompt_count.studentID: prompt_count.count for prompt_count in prompt_counts}
+    return_dict = {}
+    for prompt_count in prompt_counts:
+        student = get_student(prompt_count.studentID, session) # type: ignore
+        return_dict[prompt_count.studentID] = {
+            "count": prompt_count.count,
+            "student": student.name
+        }
+    return return_dict
 
 def get_material_id_by_path(path: str, session: Session):
     stmt = select(DBMaterial).filter(
