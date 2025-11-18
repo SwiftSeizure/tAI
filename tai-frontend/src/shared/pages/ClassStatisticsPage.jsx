@@ -10,6 +10,7 @@ import { getMaterialStudentPrompts } from '../services/get-material-student-prom
 import { getAssignmentStudentPrompts } from '../services/get-assignment-student-prompts'; 
 import { getMaterialStudentChat } from '../services/get-material-student-chat';
 import { getAssignmentStudentChat } from '../services/get-assignment-student-chat';
+import AnalyticsDashboard from '../components/AnalyticsDashboard';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
@@ -687,8 +688,9 @@ export default function ClassStatisticsPage() {
                 )} 
 
                 {/* Specific Student Chat History */}
-                {selectedStudent && (
-                    <div className="bg-white p-6 rounded-xl shadow-md">
+                {selectedStudent && ( 
+                    <div>
+                    <div className="bg-white p-6 rounded-xl shadow-md" >
                         <div className="flex items-center justify-between mb-6">
                             <div>
                                 <h2 className="text-lg font-semibold">
@@ -745,12 +747,23 @@ export default function ClassStatisticsPage() {
                                         </div>
                                     </div>
                                 ))}
-                            </div>
+                            </div> 
+                            
                         ) : (
                             <NoDataMessage message="No chat history available for this student" />
                         )}
+                    </div>  
+
+                    <div className="mt-8">
+                        <AnalyticsDashboard 
+                            assignmentsData={assignmentsData} 
+                            materialsData={materialsData} 
+                            studentData={studentData}
+                            chatHistory={chatHistory}
+                        />  
                     </div>
-                )}
+                </div>
+                )} 
             </div>
         </div>
     ); 
