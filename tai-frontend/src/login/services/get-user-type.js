@@ -2,6 +2,33 @@ import api from "../../shared/services/axios";
 import { createStudent } from "./create-student";
 import { auth } from "../../auth/firebase";
 
+// Helper function to verify user was created successfully
+const verifyUserCreated = async (userId, role) => {
+    const maxRetries = 10;
+    const retryDelay = 300; // 300ms between retries
+    
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            // Try to fetch the user's classes to verify they exist
+            const url = `/home/${role}/${userId}`;
+            await api.get(url);
+            console.log(`User ${userId} verified as ${role} after ${i + 1} attempts`);
+            return; // Success - user exists
+        } catch (error) {
+            if (error.response && error.response.status === 404) {
+                // User not found yet, wait and retry
+                if (i < maxRetries - 1) {
+                    await new Promise(resolve => setTimeout(resolve, retryDelay));
+                    continue;
+                }
+            }
+            // If it's not a 404 or we've exhausted retries, throw the error
+            throw error;
+        }
+    }
+    throw new Error(`Failed to verify user creation after ${maxRetries} attempts`);
+};
+
 export const getUserType = async () => {
     try {
         const response = await api.get(`/home/usertype`, { 
@@ -38,16 +65,16 @@ export const getUserType = async () => {
                         await createTeacher(userName, username);
                         console.log('Teacher account created successfully');
                         
-                        // Small delay to ensure database transaction is committed
-                        await new Promise(resolve => setTimeout(resolve, 500));
+                        // Verify the user was created successfully
+                        await verifyUserCreated(currentUser.uid, 'teacher');
                         return 'teacher';
                     } else {
                         // Create student account (default)
                         await createStudent(userName, username);
                         console.log('Student account created successfully');
                         
-                        // Small delay to ensure database transaction is committed
-                        await new Promise(resolve => setTimeout(resolve, 500));
+                        // Verify the user was created successfully
+                        await verifyUserCreated(currentUser.uid, 'student');
                         return 'student';
                     }
                 } else {

@@ -1,6 +1,4 @@
-import axios from "axios";
-
-const BASE_URL = "http://localhost:8000";
+import api from "../../shared/services/axios";
 
 export const createTeacher = async (name, username) => {
     try {
@@ -9,7 +7,7 @@ export const createTeacher = async (name, username) => {
             throw new Error('No authentication token found');
         }
 
-        const response = await axios.post(`${BASE_URL}/teacher/new`, {
+        const response = await api.post(`/teacher/new`, {
             name: name,
             username: username
         }, {
