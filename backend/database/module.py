@@ -4,9 +4,6 @@ from backend.exceptions import EntityNotFoundException
 from backend.database.schema import DBModule,DBDay
 from backend.database.day import delete_day_files
 
-# Canvas stuff
-import httpx
-
 def get_module(moduleID: int, session:Session) -> DBModule:
     """Get a DBModule object by its ID.
     
