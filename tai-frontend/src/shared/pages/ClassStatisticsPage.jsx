@@ -69,12 +69,42 @@ export default function ClassStatisticsPage() {
                     response = await getMaterialStudentChat(selectedItemID, studentID);
                 }
                 
-                // Handle response format - could be array or object
+                // Handle response format - could be array or object with messages/responses
                 if (Array.isArray(response)) {
-                    setChatHistory(response);
+                    setChatHistory(response); 
+                    console.log("Chat history line 75:", response);
                 } else if (response && typeof response === 'object') {
-                    // Convert object to array if needed
-                    setChatHistory(Object.values(response));
+                    // Handle object with messages and responses arrays
+                    if (response.messages && response.responses) {
+                        // Combine messages and responses into a single array with proper ordering
+                        const combinedChat = [];
+                        const messages = response.messages || [];
+                        const responses = response.responses || [];
+                        
+                        // Interleave messages and responses
+                        for (let i = 0; i < Math.max(messages.length, responses.length); i++) {
+                            if (messages[i]) {
+                                combinedChat.push({
+                                    ...messages[i],
+                                    role: 'user',
+                                    sender: 'student'
+                                });
+                            }
+                            if (responses[i]) {
+                                combinedChat.push({
+                                    ...responses[i],
+                                    role: 'assistant',
+                                    sender: 'ai'
+                                });
+                            }
+                        }
+                        setChatHistory(combinedChat);
+                        console.log("Combined chat history:", combinedChat);
+                    } else {
+                        // Convert object to array if needed
+                        setChatHistory(Object.values(response));
+                        console.log("Chat history line 78:", response);
+                    }
                 } else {
                     setChatHistory([]);
                 }
