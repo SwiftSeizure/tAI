@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, JSON,Boolean,Text
+from sqlalchemy import Column, Integer, String, ForeignKey, JSON,Boolean,Text, DATETIME
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+from datetime import datetime
 
 # Declare the base class for models
 Base = declarative_base()
@@ -52,6 +53,8 @@ class DBClass(Base):
     units = relationship("DBUnit", back_populates="class_", order_by="DBUnit.sequence", cascade="all, delete")
     
     canvas_api_key = Column(String(255), nullable=True)
+    canvas_class_id = Column(String(255), nullable=True)
+    canvas_domain_name = Column(String(255), nullable=True)
     
     settings = Column(JSON, nullable=False)
     
@@ -74,7 +77,7 @@ class DBModule(Base):
     __tablename__ = "module"
 
     id = Column(Integer, primary_key = True, index = True)
-    name = Column(String(25), nullable=False)
+    name = Column(String(255), nullable=False)
     sequence = Column(Integer, nullable=False)
     unitID = Column(ForeignKey("unit.id",ondelete="CASCADE"))
 
@@ -82,6 +85,9 @@ class DBModule(Base):
     days = relationship("DBDay",back_populates="module",cascade="all, delete-orphan")
 
     settings = Column(JSON, nullable=True)
+    
+    canvas_id = Column(String(255), nullable=True)
+    
 
 
 class DBDay(Base):
@@ -102,12 +108,13 @@ class DBAssignment(Base):
     __tablename__ = "assignment"
 
     id = Column(Integer, primary_key = True, index = True)
-    name = Column(String(25), nullable=False)
+    name = Column(String(255), nullable=False)
     filename = Column(String(225), nullable=False)
     sequence = Column(Integer, nullable=False)
     path = Column(String(255),nullable=False)
     remoteID = Column(String(255),nullable=True)
     dayId = Column(ForeignKey("day.id", ondelete="CASCADE"))
+    updated_at = Column(DATETIME, nullable=True)
 
     day = relationship("DBDay", back_populates="assignments")
 
@@ -115,12 +122,13 @@ class DBMaterial(Base):
     __tablename__ = "material"
 
     id = Column(Integer, primary_key = True, index = True)
-    name = Column(String(25), nullable=False)
+    name = Column(String(255), nullable=False)
     filename = Column(String(225), nullable=False)
     sequence = Column(Integer, nullable=False)
     path = Column(String(255),nullable=False)
     remoteID = Column(String(255),nullable=True)
     dayId = Column(ForeignKey("day.id", ondelete="CASCADE"))
+    updated_at = Column(DATETIME, nullable=True)
 
     day = relationship("DBDay", back_populates="materials")
 
@@ -157,7 +165,6 @@ class DBResponse(Base):
     conversation = relationship("DBConversation", back_populates="responses")    
 
 
-
 class DBPrompt_Count_Material(Base):
     __tablename__ = "prompt_count_material"
 
@@ -178,4 +185,5 @@ class DBPrompt_Count_Assignment(Base):
     count = Column(Integer, nullable=False)
 
     assignment = relationship("DBAssignment")
+
 

@@ -47,8 +47,10 @@ class CreateUnit(BaseModel):
     settings: dict
     published: bool
     
-class CanvasAPIKey(BaseModel):
+class CanvasData(BaseModel):
     api_key: str
+    class_id: str
+    domain_name: str
 
 # Classroom Response Models ---------------------------------------
 class ClassroomResponse(BaseModel):
