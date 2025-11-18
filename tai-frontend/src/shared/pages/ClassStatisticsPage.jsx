@@ -353,7 +353,7 @@ export default function ClassStatisticsPage() {
 
     // Student pie chart data
     const studentPieData = studentData ? {
-        labels: Object.values(studentData).map(s => s.studentName),
+        labels: Object.values(studentData).map(s => s.student),
         datasets: [{
             label: 'Prompts',
             data: Object.values(studentData).map(s => s.count),
