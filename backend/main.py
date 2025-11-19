@@ -36,7 +36,7 @@ from firebase_admin import credentials
 from dotenv import load_dotenv
 import pathlib
 import json
-
+ 
 # This version for deployment
 ## START Deployment needed
 svc_json = os.getenv("SERVICE_ACCOUNT_JSON")
@@ -107,6 +107,7 @@ def maybe_initialize_db():
 
     print("[startup] Database initialization skipped (disabled during development).")
     
+
     init_db = False
     init_tables_only = True
     
@@ -121,6 +122,7 @@ def maybe_initialize_db():
         try:
             print("[startup] Initializing database tables...")
             Base.metadata.create_all(bind=engine)
+
             print("[startup] Database tables initialized successfully.")
         except Exception as e:
             print(f"[startup] InitializeDB failed: {e}")
