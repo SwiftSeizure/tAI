@@ -18,6 +18,8 @@ from backend.routers import home, classroom, unit, module, day, assignment, mate
 from backend.Seed_Database import PopulateDB, InitializeDB
 from fastapi.middleware.cors import CORSMiddleware
 from backend.exceptions import EntityNotFoundException, UploadNotFoundException, DuplicateNameException, InvalidClassCodeException, UnauthorizedException
+from backend.database.schema import Base
+from backend.dependencies import engine
 #import os
 #import requests
 
@@ -37,24 +39,24 @@ import json
 
 # This version for deployment
 ## START Deployment needed
-#svc_json = os.getenv("SERVICE_ACCOUNT_JSON")
-#if svc_json is None:
-#    raise ValueError("SERVICE_ACCOUNT_JSON environment variable is not set")
-#svc_dct = json.loads(svc_json)
-#cred = credentials.Certificate(svc_dct)
-#firebase_admin.initialize_app(cred)
-#print("TAI:",firebase_admin.get_app().project_id) 
+svc_json = os.getenv("SERVICE_ACCOUNT_JSON")
+if svc_json is None:
+    raise ValueError("SERVICE_ACCOUNT_JSON environment variable is not set")
+svc_dct = json.loads(svc_json)
+cred = credentials.Certificate(svc_dct)
+firebase_admin.initialize_app(cred)
+print("TAI:",firebase_admin.get_app().project_id) 
 ## END Deployment needed
 
 # This is for local
 ## START Local needed
-service_account_path = os.path.join(os.path.dirname(__file__), 'service-account.json')
-if not os.path.exists(service_account_path):
-    raise FileNotFoundError(f"Service account file not found at {service_account_path}")
+#service_account_path = os.path.join(os.path.dirname(__file__), 'service-account.json')
+#if not os.path.exists(service_account_path):
+#    raise FileNotFoundError(f"Service account file not found at {service_account_path}")
 
-cred = credentials.Certificate(service_account_path)
-firebase_admin.initialize_app(cred)
-print("TAI:", firebase_admin.get_app().project_id)
+#cred = credentials.Certificate(service_account_path)
+#firebase_admin.initialize_app(cred)
+#print("TAI:", firebase_admin.get_app().project_id)
 ## END Local needed
 
 
@@ -105,8 +107,8 @@ def maybe_initialize_db():
 
     print("[startup] Database initialization skipped (disabled during development).")
     
-    init_db = os.getenv("INIT_DB_ON_STARTUP", "false").lower() == "true"
-    init_tables_only = os.getenv("INIT_DB_TABLES_ONLY", "false").lower() == "true"
+    init_db = False
+    init_tables_only = True
     
     if init_db:
         try:
@@ -118,7 +120,7 @@ def maybe_initialize_db():
     elif init_tables_only:
         try:
             print("[startup] Initializing database tables...")
-            InitializeDB()
+            Base.metadata.create_all(bind=engine)
             print("[startup] Database tables initialized successfully.")
         except Exception as e:
             print(f"[startup] InitializeDB failed: {e}")
