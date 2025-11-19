@@ -37,24 +37,24 @@ import json
 
 # This version for deployment
 ## START Deployment needed
-svc_json = os.getenv("SERVICE_ACCOUNT_JSON")
-if svc_json is None:
-    raise ValueError("SERVICE_ACCOUNT_JSON environment variable is not set")
-svc_dct = json.loads(svc_json)
-cred = credentials.Certificate(svc_dct)
-firebase_admin.initialize_app(cred)
-print("TAI:",firebase_admin.get_app().project_id) 
+#svc_json = os.getenv("SERVICE_ACCOUNT_JSON")
+#if svc_json is None:
+#    raise ValueError("SERVICE_ACCOUNT_JSON environment variable is not set")
+#svc_dct = json.loads(svc_json)
+#cred = credentials.Certificate(svc_dct)
+#firebase_admin.initialize_app(cred)
+#print("TAI:",firebase_admin.get_app().project_id) 
 ## END Deployment needed
 
 # This is for local
 ## START Local needed
-# service_account_path = os.path.join(os.path.dirname(__file__), 'service-account.json')
-# if not os.path.exists(service_account_path):
-#     raise FileNotFoundError(f"Service account file not found at {service_account_path}")
+service_account_path = os.path.join(os.path.dirname(__file__), 'service-account.json')
+if not os.path.exists(service_account_path):
+    raise FileNotFoundError(f"Service account file not found at {service_account_path}")
 
-# cred = credentials.Certificate(service_account_path)
-# firebase_admin.initialize_app(cred)
-# print("TAI:", firebase_admin.get_app().project_id)
+cred = credentials.Certificate(service_account_path)
+firebase_admin.initialize_app(cred)
+print("TAI:", firebase_admin.get_app().project_id)
 ## END Local needed
 
 
@@ -102,9 +102,8 @@ def maybe_initialize_db():
     - Set INIT_DB_ON_STARTUP=true to seed the database with test data (for development)
     - Set INIT_DB_TABLES_ONLY=true to only create tables without data (for production)
     """
-    # Temporarily disabled to prevent data loss during development with hot reload
+
     print("[startup] Database initialization skipped (disabled during development).")
-    return
     
     init_db = os.getenv("INIT_DB_ON_STARTUP", "false").lower() == "true"
     init_tables_only = os.getenv("INIT_DB_TABLES_ONLY", "false").lower() == "true"
