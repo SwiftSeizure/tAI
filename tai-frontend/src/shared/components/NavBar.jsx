@@ -8,6 +8,7 @@ import { auth } from '../../auth/firebase';
 import { useUser } from '../../store/user-store';
 import VerificationModal from '../modals/VerificationModal';
 import { putUpdateStudent } from '../services/put-update-student';
+import { putUpdateTeacher } from '../services/put-update-teacher'; 
 
 import '../../App.css';
 export const NavBar = ({ title, settings }) => { 
@@ -44,8 +45,12 @@ export const NavBar = ({ title, settings }) => {
             // Update profile if needed
             if (displayName || avatarFile) {
                 console.log("Updating student name in backend..., displayName: ", displayName);
-                try {
-                    await putUpdateStudent(user.uid, displayName); 
+                try { 
+                    if (user.role === 'student') {
+                        await putUpdateStudent(user.uid, displayName); 
+                    } else if (user.role === 'teacher') {
+                        await putUpdateTeacher(user.uid, displayName); 
+                    }
                     await updateProfile(user, { 
                         displayName: displayName || user.displayName, 
                         photoURL: avatarFile || user.photoURL 
