@@ -34,7 +34,7 @@ from firebase_admin import credentials
 from dotenv import load_dotenv
 import pathlib
 import json
-
+ 
 # This version for deployment
 ## START Deployment needed
 svc_json = os.getenv("SERVICE_ACCOUNT_JSON")
