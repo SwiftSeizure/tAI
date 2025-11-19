@@ -26,10 +26,6 @@ function App() {
                     // Check if we already have user data in store (from localStorage)
                     const storedUser = JSON.parse(localStorage.getItem('tai_user_state') || '{}'); 
 
-                    if  (localStorage.getItem('isSigningUp') === 'true') {
-                        console.log('Signup in progress, skipping auth state change handler');
-                        return;
-                    }
                     
                     // If we have stored user data with the same ID, use it immediately
                     if (storedUser.user?.id === firebaseUser.uid && storedUser.user?.role) {
