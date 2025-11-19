@@ -27,23 +27,23 @@ export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 
 // Helper functions for common auth operations
-export const signInWithGoogle = () => {
+export const signInWithGoogle = async () => {
   return signInWithPopup(auth, googleProvider);
 };
 
-export const signInWithEmail = (email, password) => {
+export const signInWithEmail = async (email, password) => {
   return signInWithEmailAndPassword(auth, email, password);
 };
 
-export const signUpWithEmail = (email, password) => {
+export const signUpWithEmail = async (email, password) => {
   return createUserWithEmailAndPassword(auth, email, password);
 };
 
-export const logout = () => {
+export const logout = async () => {
   return signOut(auth);
 };
 
 // Listen to auth state changes
-export const onAuthStateChange = (callback) => {
+export const onAuthStateChange = async (callback) => {
   return onAuthStateChanged(auth, callback);
 };

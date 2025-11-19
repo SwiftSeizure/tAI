@@ -1,18 +1,13 @@
+import React from "react";
 import SettingsIcon from '@mui/icons-material/Settings';
 import DeleteIcon from '@mui/icons-material/Delete'; 
 import PersonIcon from '@mui/icons-material/Person';
 import VisibilityIcon from '@mui/icons-material/Visibility'; 
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import SchoolIcon from '@mui/icons-material/School';
 
 /**
- * ClassCard Component
- * This component represents a card for a class. It displays the class name
- * and allows navigation to different pages based on the user's role and actions.
- * Props:
- * - classID: Unique identifier for the class
- * - classname: Name of the class
- * - userID: ID of the current user
- * - role: Role of the user (e.g., "teacher" or "student")
+ * ClassCard Component with Modern Animations
  */
 const ClassCard = ( { 
     classroom, 
@@ -23,7 +18,6 @@ const ClassCard = ( {
     onClickRoster,
     onPublishClass
 }  ) => {
-
     
     const handleClick = () => { 
         onClick(classroom);
@@ -45,24 +39,59 @@ const ClassCard = ( {
         onPublishClass(classroom);
     }; 
 
-    // Logo for the class card 
-    // TODO: change this to allow teacher to upload or select from a list of logos
-    const logo = require("../../images/example-class-logo.png");  
-
- 
-    //TODO: make one conditional on if this is a new class or not 
-    // Render the class card based on the classname prop
-    if (classroom?.name !== "newClass") {
+    // Render "Add New Class" card
+    if (classroom?.name === "newClass") {
         return (
+            <div className="group relative max-w-sm bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-dashed border-blue-300 hover:border-blue-400 hover:from-blue-100 hover:to-indigo-100">
+                <button onClick={handleClick} className="w-full">
+                    <div className="relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-t from-blue-600/20 to-transparent z-10"></div>
+                        <div className="w-full h-56 bg-gray-200 flex items-center justify-center opacity-60 group-hover:opacity-80 transition-all duration-500">
+                            <div className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 z-20">
+                                <svg 
+                                    className="w-10 h-10 text-blue-600" 
+                                    fill="none" 
+                                    stroke="currentColor" 
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="p-6">
+                        <h5 className="text-2xl font-bold tracking-tight text-gray-900 group-hover:text-blue-700 transition-colors duration-300">
+                            Add New Class
+                        </h5>
+                        <p className="mt-2 text-sm text-gray-600">
+                            Create a new class to get started
+                        </p>
+                    </div>
+                </button>
+            </div>
+            );
+    }   
+
+    // Normal class card with modern gradient animation
+    return (
             <div className="group relative max-w-sm bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-200/80 hover:border-gray-300">
-                {/* Class Image */}
+                {/* Animated Gradient Header */}
                 <button onClick={handleClick} className="w-full relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
-                    <img 
-                        className="w-full h-56 object-cover transform group-hover:scale-105 transition-transform duration-500" 
-                        src={logo} 
-                        alt="Class Logo" 
-                    />
+                    <div className="w-full h-56 bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 flex items-center justify-center transform group-hover:scale-105 transition-transform duration-500">
+                        {/* Class Icon */}
+                        <div className="relative">
+                            <div className="w-28 h-28 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-4 border-white/40 group-hover:border-white/60 transition-all duration-300">
+                                <SchoolIcon 
+                                    sx={{ fontSize: 64 }} 
+                                    className="text-white drop-shadow-lg"
+                                />
+                            </div>
+                            {/* Animated pulse ring */}
+                            <div className="absolute inset-0 bg-white/20 rounded-full animate-ping opacity-0 group-hover:opacity-75"></div>
+                        </div>
+                    </div>
                 </button>
 
                 {/* Content */}
@@ -95,7 +124,6 @@ const ClassCard = ( {
                                     )}
                                 </span>
                             </div>
-                            
                             {/* Class Code */}
                             <div className="flex items-center gap-2 text-sm">
                                 <span className="text-gray-500 font-medium">Class Code:</span>
@@ -169,49 +197,6 @@ const ClassCard = ( {
                 </div>
             </div>
         );
-    } 
-    
-    // Add/join new class card
-    else {
-        return (
-            <div className="group relative max-w-sm bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-dashed border-blue-300 hover:border-blue-400 hover:from-blue-100 hover:to-indigo-100">
-                <button onClick={handleClick} className="w-full">
-                    {/* Image with overlay */}
-                    <div className="relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-t from-blue-600/20 to-transparent z-10"></div>
-                        <img 
-                            className="w-full h-56 object-cover opacity-60 group-hover:opacity-80 transform group-hover:scale-105 transition-all duration-500"  
-                            src={logo} 
-                            alt="New Class" 
-                        />
-                        {/* Plus Icon Overlay */}
-                        <div className="absolute inset-0 flex items-center justify-center z-20">
-                            <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                                <svg 
-                                    className="w-8 h-8 text-blue-600" 
-                                    fill="none" 
-                                    stroke="currentColor" 
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {/* Content */}
-                    <div className="p-6">
-                        <h5 className="text-2xl font-bold tracking-tight text-gray-900 group-hover:text-blue-700 transition-colors duration-300">
-                            Add New Class
-                        </h5>
-                        <p className="mt-2 text-sm text-gray-600">
-                            Create a new class to get started
-                        </p>
-                    </div>
-                </button>
-            </div>
-        );
-    }
 };
 
 export default ClassCard;

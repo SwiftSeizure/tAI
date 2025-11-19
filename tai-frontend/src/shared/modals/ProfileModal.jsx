@@ -1,15 +1,12 @@
 import React, { useRef, useEffect, useState } from "react"; 
-import { useCurrentUser } from "../../store/user-store";
 
-export default function ProfileModal({ isOpen, onClose, onChangeDisplayName, currentUser }) {
+export default function ProfileModal({ isOpen, onClose, onSaveInformation, user }) {
     const modalRef = useRef(null);  
 
-    // TODO: Add the functionality to update the display name here, send the API call in the NAV bar component and update the local storage there too
-
-    const { user } = useCurrentUser();
-
     const [displayName, setDisplayName] = useState(user?.displayName || "");
-    const [email, setEmail] = useState(user?.email || "");
+    const [newEmail, setNewEmail] = useState(user?.email || "");
+    const [profilePictureURL, setProfilePictureURL] = useState(user?.photoURL || ""); 
+    const [password, setPassword] = useState("");
 
     const handleClickOutside = (event) => {
         if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -23,7 +20,7 @@ export default function ProfileModal({ isOpen, onClose, onChangeDisplayName, cur
             document.body.style.overflow = 'hidden';
             // Update local state when modal opens
             setDisplayName(user?.displayName || "");
-            setEmail(user?.email || "");
+            setNewEmail(user?.email || "");
         } else {
             document.body.style.overflow = 'unset';
         }
@@ -32,11 +29,11 @@ export default function ProfileModal({ isOpen, onClose, onChangeDisplayName, cur
             document.removeEventListener('mousedown', handleClickOutside);
             document.body.style.overflow = 'unset';
         };
-    }, [isOpen, currentUser]);
+    }, [isOpen, user]);
 
-    const handleSave = () => {
-        if (onChangeDisplayName) {
-            onChangeDisplayName(displayName);
+    const handleSave = async () => {
+        if (onSaveInformation) {
+            await onSaveInformation(profilePictureURL, displayName, newEmail, password);
         }
         onClose();
     };
@@ -87,33 +84,30 @@ export default function ProfileModal({ isOpen, onClose, onChangeDisplayName, cur
                     
                     {/* Modal body */}
                     <div className="space-y-4">
-                        {/* Avatar */} 
-                        {/* TODO: Add avatar upload */}
-                        <div className="flex justify-center">
-                            <div className="relative">
-                                <div className="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center overflow-hidden">
-                                    {currentUser?.photoURL ? (
+                        {/* Avatar */}  
+
+                        {/* TODO: Add avatar upload */} 
+                        <div className="flex justify-center"> 
+                            <div className="relative w-24 h-24">
+                                {/* {user?.photoURL ? (
+                                    <div className="w-full h-full p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500">
                                         <img 
-                                            src={currentUser.photoURL} 
+                                            src={user.photoURL} 
                                             alt="Profile" 
-                                            className="w-full h-full object-cover"
+                                            className="w-full h-full rounded-full object-cover"
                                         />
-                                    ) : (
-                                        <svg
-                                            className="w-12 h-12 text-gray-400 dark:text-gray-500"
-                                            fill="currentColor"
-                                            viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <path
-                                                fillRule="evenodd"
-                                                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                                                clipRule="evenodd"
-                                            />
-                                        </svg>
-                                    )}
-                                </div>
-                            </div>
+                                    </div>
+                                ) : ( */}
+                                    <div className="relative w-full h-full">
+                                        <div className="absolute inset-0 rounded-full ring-2 ring-gray-300 dark:ring-gray-500" />
+                                        <div className="relative flex items-center justify-center w-full h-full overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                                            <span className="text-4xl font-medium text-gray-600 dark:text-gray-300">
+                                                {user?.displayName?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase()}
+                                            </span>
+                                        </div>
+                                    </div>
+                                {/* )} */}
+                            </div>  
                         </div>
 
                         {/* Display Name */}
@@ -134,7 +128,7 @@ export default function ProfileModal({ isOpen, onClose, onChangeDisplayName, cur
                             />
                         </div>
 
-                        {/* Email (read-only at the moment) */}
+                        {/* Email*/}
                         <div>
                             <label 
                                 htmlFor="email" 
@@ -145,15 +139,64 @@ export default function ProfileModal({ isOpen, onClose, onChangeDisplayName, cur
                             <input
                                 type="email"
                                 id="email"
-                                value={email}
-                                readOnly
-                                className="bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400"
+                                value={newEmail}
+                                onChange={(e) => setNewEmail(e.target.value)}
+                                className="bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400"
                             />
-                            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                Email cannot be changed yet
-                            </p>
                         </div>
                     </div>
+
+                    {/* Password */}
+                    {newEmail !== user.email && (
+                        <div className="p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 border border-red-200 dark:border-red-800">
+                            <div className="flex items-center">
+                                <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 bg-red-100 dark:bg-red-900/30 rounded-full mr-2">
+                                    <svg
+                                        className="w-5 h-5 text-red-600 dark:text-red-400"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 20 20"
+                                    >
+                                        <path
+                                            stroke="currentColor"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                        />
+                                    </svg>
+                                </div>
+                                <span className="font-medium">Security Verification Required</span>
+                            </div>
+                            <div className="mt-2 ">
+                                <div className="space-y-2">
+                                    <div>
+                                        <label 
+                                            htmlFor="password" 
+                                            className="block text-sm font-medium text-red-700 dark:text-red-400"
+                                        >
+                                            Enter your current password to confirm email change
+                                        </label>
+                                        <div className="mt-1 relative rounded-md shadow-sm">
+
+                                            <input
+                                                type="password"
+                                                id="password"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)} 
+                                                placeholder="••••••••"
+                                                className="bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-lg block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400"
+                                            />
+                                        </div>
+                                        <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+                                            For security reasons, please verify your identity to change your email.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Modal footer */}
                     <div className="flex items-center pt-4 border-t border-gray-200 dark:border-gray-600">

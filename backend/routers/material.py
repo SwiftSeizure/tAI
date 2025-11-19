@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, File, UploadFile
+from fastapi import APIRouter, HTTPException, File, UploadFile, Query
 from fastapi.responses import FileResponse
 from typing import Annotated
 from fastapi import Depends
@@ -28,7 +28,8 @@ router=APIRouter(prefix="/material", tags=["material"])
 
 #BASE_DIR = Path(__file__).parent.parent.parent
 
-DATA_ROOT = Path(os.getenv("DATA_ROOT", Path(__file__).parent.parent.parent))
+# Use DATA_ROOT from env if provided (Fly sets "/var/appdata"), otherwise default to project root
+DATA_ROOT = Path(os.getenv("DATA_ROOT") or str(Path(__file__).parent.parent.parent))
 
 
 #Create a validator instance
@@ -121,24 +122,23 @@ def delete_file(dayID: int,
 
 
 @router.post("/{dayID}/{filename}",
-
                 status_code=201,
                 responses={
                     409: {"model": ClientErrorResponse},
                     },
                 summary="Upload a material file for a specific day.")
 async def upload_single_file(dayID: int, 
-                             name: str, 
                              user: Annotated[dict, Depends(get_firebase_user_from_token)],
                              session: DBSession, 
-                             file: UploadFile = File(...)):
+                             file: UploadFile = File(...),
+                             name: str = Query(None)):
 
     user_id = user["uid"]
     teacher_id = db_day.get_teacher_by_day_id(dayID, session)
     if user_id != teacher_id and user_id != "test-user":
-            raise UnauthorizedException("delete assignment") 
+            raise UnauthorizedException("upload assignment") 
     
-    """Upload a single file with basic validation"""
+    # Upload a single file with basic validation
     if file.filename == "":
         raise HTTPException(status_code=400, detail="No file selected")
 
@@ -146,7 +146,7 @@ async def upload_single_file(dayID: int,
 
     UPLOAD_DIR = DATA_ROOT / "uploads" / "material" / str(dayID)
 
-    UPLOAD_DIR.mkdir(exist_ok=True)
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
     
     # Use the original filename from the uploaded file
     if not file.filename:
@@ -204,6 +204,17 @@ async def upload_single_file(dayID: int,
     return db_material.create_material(dayID, name, safe_filename, file.content_type, session, remoteID)    
 
 
+@router.get("/prompt/all",
+            status_code=200,
+            responses={
+                404: {"model": ClientErrorResponse},
+            },
+            summary="Get the prompt count for all materials.")
+def get_prompt_count_all(
+    session: DBSession
+):
+    return db_material.get_prompt_count_all(session)
+
 @router.get("/{path:path}",
             status_code=200,
             responses={
@@ -212,3 +223,31 @@ async def upload_single_file(dayID: int,
             summary="Get remoteID for given path.")
 def get_RemoteID(path: str, session: DBSession):
     return db_material.get_RemoteID(path, session)
+
+
+@router.post("/{materialID}/{studentID}/prompt",
+            status_code=201,
+            responses={
+                409: {"model": ClientErrorResponse},
+            },
+            summary="Increment the prompt count for a material.")
+def increment_prompt_count(materialID: int, studentID: str, session: DBSession):
+    return db_material.increment_prompt_count_material(materialID, studentID, session)
+
+@router.get("/{materialID}/{studentID}/prompt",
+            status_code=200,
+            responses={
+                404: {"model": ClientErrorResponse},
+            },
+            summary="Get the prompt count for a material.")
+def get_prompt_count(materialID: int, studentID: str, session: DBSession):
+    return db_material.get_prompt_count_material(materialID, studentID, session)
+
+@router.get("/{materialID}/prompt",
+            status_code=200,
+            responses={
+                404: {"model": ClientErrorResponse},
+            },
+            summary="Get the prompt count for all students for a material.")
+def get_prompt_count_all_students(materialID: int, session: DBSession):
+    return db_material.get_prompt_count_all_material(materialID, session)

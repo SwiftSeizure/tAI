@@ -46,8 +46,6 @@ export default function AddAssignmentModal({ isOpen, onClose, onAddAssignment })
             name: newAssignmentName.trim(),
             file: selectedFile
         }; 
-
-        console.log("Assignment Data in modal: ", assignmentData); 
         
         onAddAssignment(assignmentData);
         onClose();

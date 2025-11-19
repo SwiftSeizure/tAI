@@ -59,7 +59,6 @@ const TeacherStudentModulePage = () => {
     // UI State
     const [isChatExpanded, setIsChatExpanded] = useState(false); // Tracks chat expansion state
     const [displayType, setDisplayType] = useState('welcome'); // Tracks the type of content to display
-    const [chatWidth, setChatWidth] = useState(600); // Default width in pixels
 
     // Modal States
     const [showAddModuleModal, setShowAddModuleModal] = useState(false);
@@ -146,7 +145,6 @@ const TeacherStudentModulePage = () => {
     const handleDaySelect =  async (day) => {    
 
         await setSelectedDay(day); 
-        console.log("Selected day ID:", day.id);
         setDisplayType('day'); 
     };    
 
@@ -389,65 +387,6 @@ const TeacherStudentModulePage = () => {
     };
 
 
-
-
-    //Move 
-    /**
-     * startResizing
-     * Initiates the resizing of the chat overlay when the user starts dragging the resize handle.
-     * @param {object} e - The mouse down event.
-     */
-    const startResizing = (e) => {
-        // Prevent text selection while resizing
-        e.preventDefault();
-
-        // Add event listeners for mouse movement and release
-        window.addEventListener("mousemove", resizeOverlay);
-        window.addEventListener("mouseup", stopResizing);
-    };
-
-    const resizeOverlay = (e) => {
-        // Calculate the total available width for the grid
-        const totalWidth = window.innerWidth;
-
-        // Calculate the maximum width for the chat overlay
-        const maxChatWidth = totalWidth - 280; // Subtract the sidebar width (280px)
-
-        // Calculate the new width based on the mouse position
-        const newWidth = totalWidth - e.clientX;
-
-        // Set a minimum and maximum width for the overlay
-        if (newWidth >= 200 && newWidth <= maxChatWidth) {
-            setChatWidth(newWidth);
-        }
-    };
-
-    const stopResizing = () => {
-        // Remove event listeners when resizing is complete
-        window.removeEventListener("mousemove", resizeOverlay);
-        window.removeEventListener("mouseup", stopResizing);
-    };
-
-    // Adjust chatWidth dynamically when the window is resized
-    useEffect(() => {
-        const handleResize = () => {
-            const totalWidth = window.innerWidth;
-            const maxChatWidth = totalWidth - 280;
-
-            if (chatWidth > maxChatWidth) {
-                setChatWidth(maxChatWidth);
-            }
-        };
-
-        window.addEventListener("resize", handleResize);
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        };
-    }, [chatWidth]);  
-    // End Move
-
-
-
     /**
      * renderModules
      * Renders the list of modules as `ModuleComponent` components.
@@ -482,11 +421,13 @@ const TeacherStudentModulePage = () => {
                         />
                     ))}
 
+                    {/* Add Module Button */}
                     {user.role === "teacher" && (
                         <button 
                             onClick={() => setShowAddModuleModal(true)}
-                            className="mt-6 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-2xl hover:from-green-700 hover:to-emerald-700 focus:ring-4 focus:ring-green-200 transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95 border border-green-500/20"
+                            className="w-full p-3 rounded-lg border-2 border-dashed border-gray-300 bg-white hover:bg-gray-50 hover:border-blue-400 transition-colors duration-200 text-gray-600 hover:text-blue-600 font-medium text-sm flex items-center justify-center gap-2"
                         >
+                            <span className="text-lg">+</span>
                             Add Module
                         </button>
                     )}
@@ -496,86 +437,86 @@ const TeacherStudentModulePage = () => {
         }
     };   
 
-    /**
+ /**
      * renderContent
      * Renders the content based on the current display type (e.g., welcome, material, assignment, chat).
      */
-    return(  
-        <>   
+ return(  
+    <>   
         <div className="h-screen w-screen bg-gradient-to-br from-gray-50 via-green-50 to-emerald-50 bg-[length:100%_200%] animate-scrollGradient">
-            
-            <NavBar title={currentUnit?.name || 'Loading...'} /> 
+        
+        <NavBar title={currentUnit?.name || 'Loading...'} /> 
 
-            <div className="grid grid-cols-[300px_1fr_auto] gap-6 p-6 relative h-[calc(90vh-90px)] max-w-full overflow-x-hidden">  
-                {/* Sidebar for modules */}
-                <div className="relative bg-gradient-to-br from-gray-100/95 via-blue-100/85 to-cyan-100/95 bg-[length:200%_200%] backdrop-blur-lg rounded-2xl shadow-lg border border-gray-300/60 p-6 overflow-auto" style={{animation: 'gradient-shift 12s ease-in-out infinite'}}>
-                    {renderModules()} 
-                </div>  
+        <div className="grid grid-cols-[300px_1fr_auto] gap-6 p-6 relative h-[calc(100vh-90px)] max-w-full overflow-x-hidden">  
+            {/* Sidebar for modules */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 overflow-auto">
+                {renderModules()} 
+            </div>  
 
-                {/* Main content area for displaying selected module content */}
-                <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-lg border border-gray-200/50 p-6 overflow-auto"> 
-                    <MainContent 
-                        displayType={displayType}
-                        currentUnit={currentUnit}
-                        selectedContent={selectedContent}
-                        selectedContentURL={selectedContentURL}
-                    />
-                </div>  
+            {/* Main content area for displaying selected module content */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 overflow-auto"> 
+                <MainContent 
+                    displayType={displayType}
+                    currentUnit={currentUnit}
+                    selectedContent={selectedContent}
+                    selectedContentURL={selectedContentURL}
+                />
+            </div>  
 
 
-                {/* Chat button for students */}
-                {user.role === 'student' && !isChatExpanded && (
-                    <button 
-                        className="fixed bottom-4 right-8 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out z-50 bg-white shadow-lg hover:scale-110"  
-                        onClick={toggleChatExpand} 
-                        aria-label="Toggle chat"
-                    > 
-                        <img 
-                            className="rounded-md transition-all duration-200 ease-in-out w-10 h-10 hover:w-12 hover:h-12"
-                            src={chatImage}
-                            alt="Chat"
-                        /> 
-                    </button>
-                )}
-            </div>
+            {/* Chat button for students */}
+            {user.role === 'student' && !isChatExpanded && (
+                <button 
+                    className="fixed bottom-4 right-8 w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-in-out z-50 bg-white shadow-lg hover:scale-110"  
+                    onClick={toggleChatExpand} 
+                    aria-label="Toggle chat"
+                > 
+                    <img 
+                        className="rounded-md transition-all duration-200 ease-in-out w-10 h-10 hover:w-12 hover:h-12"
+                        src={chatImage}
+                        alt="Chat"
+                    /> 
+                </button>
+            )}
+        </div>
 
-            {/* Chat panel for students */}
-            {user.role === 'student' && (
-                <>
-                    {/* Chat overlay backdrop */}
-                    <div 
-                        className={`fixed inset-0 bg-black z-40 transition-opacity duration-300 ease-out pointer-events-none ${
-                            isChatExpanded ? 'bg-opacity-25 pointer-events-auto' : 'bg-opacity-0'
-                        }`}
-                        onClick={toggleChatExpand}
-                    />
-                    
-                    {/* Chat panel */}
-                    <div className={`fixed right-0 top-0 h-full bg-white shadow-lg z-50 w-1/3 min-w-[400px] max-w-[600px] transform transition-transform duration-300 ease-out ${
-                        isChatExpanded ? 'translate-x-0' : 'translate-x-full'
-                    }`}>
-                        <div className="flex flex-col h-full">
-                            <div className="flex justify-between items-center p-4 border-b bg-gray-50">
-                                <h3 className="text-lg font-semibold text-gray-800">Chat</h3>
-                                <button 
-                                    onClick={toggleChatExpand} 
-                                    className="text-gray-500 hover:text-gray-700 hover:bg-gray-200 rounded-full p-2 text-xl font-bold transition-colors"
-                                    aria-label="Close chat"
-                                >
-                                    ✕
-                                </button>
-                            </div>
-                            <div className="flex-1 overflow-hidden">
-                                <ChatFeature
-                                    displayType={displayType}
-                                    selectedContent={selectedContent}
-                                    onSendMessage={handleChatMessage}
-                                />
-                            </div>
+        {/* Chat panel for students */}
+        {user.role === 'student' && (
+            <>
+                {/* Chat overlay backdrop */}
+                <div 
+                    className={`fixed inset-0 bg-black z-40 transition-opacity duration-300 ease-out pointer-events-none ${
+                        isChatExpanded ? 'bg-opacity-25 pointer-events-auto' : 'bg-opacity-0'
+                    }`}
+                    onClick={toggleChatExpand}
+                />
+                
+                {/* Chat panel */}
+                <div className={`fixed right-0 top-0 h-full shadow-lg z-50 w-1/3 min-w-[400px] max-w-[600px] transform transition-transform duration-300 ease-out ${
+                    isChatExpanded ? 'translate-x-0' : 'translate-x-full'
+                }`}>
+                    <div className="flex flex-col h-full bg-transparent">
+                        <div className="flex-1 overflow-hidden relative bg-transparent">
+                            <button 
+                                onClick={toggleChatExpand} 
+                                className="absolute top-2 right-2 z-10 text-gray-300 hover:text-white hover:bg-gray-700 rounded-full p-2 text-xl font-bold transition-colors"
+                                aria-label="Close chat"
+                            >
+                                ✕
+                            </button>
+                            <ChatFeature
+                                displayType={displayType}
+                                selectedContent={selectedContent}
+                                selectedDay={selectedDay}
+                                user={user}
+                                classID={currentUnit?.classID}
+                                onSendMessage={handleChatMessage}
+                            />
                         </div>
                     </div>
-                </>
-            )}
+                </div>
+            </>
+        )}
         </div> 
             {user.role === "teacher" && (
                 <div>

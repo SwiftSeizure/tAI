@@ -1,18 +1,21 @@
 import api from "../../shared/services/axios";
 
-export const putUpdateClassSettings = async (classID, requestBody) => {
+export const putUpdateClassSettings = async (classID, setting) => {
     if (!classID) {
         throw new Error('Class ID is required');
     }
 
-    const URL = `/classroom/${classID}`;
+    const URL = `/classroom/settings/${classID}`;
     
     try {
-        const response = await api.put(URL, requestBody, {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        });
+        const response = await api.put(URL, 
+            { settings: setting }, 
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            }
+        );
         
         return response;
     } catch (error) {

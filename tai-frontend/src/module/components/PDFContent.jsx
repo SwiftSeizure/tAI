@@ -1,28 +1,32 @@
-import { pdfjs } from 'react-pdf';
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import 'react-pdf/dist/esm/Page/TextLayer.css';
-
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
-
+import React, { useState } from 'react';
 
 const PDFContent = ({ fileURL }) => {
+    const [scale, setScale] = useState(100);
+
+    // Ability to add the custom controlls here  TODO to make look a lot better 
+
+    // Build the PDF URL with zoom parameter
+    const getPDFUrl = () => {
+        if (!fileURL) return '';
+        return `${fileURL}#zoom=${scale}`;
+    };
+
     return (
-        <div className="pdf-container" 
-            style={{ 
-                width: '100%', 
-                height: '600px' 
-            }}>
-            <iframe 
-                src={fileURL} 
-                width="100%" 
-                height="100%" 
-                title="PDF Viewer"
-                style={{ border: 'none' }}
-            />
+        <div className="flex flex-col h-full">
+
+            {/* PDF Viewer */}
+            <div className="flex-1 overflow-auto bg-gray-100 rounded-lg">
+                <iframe 
+                    key={getPDFUrl()} // Force reload when zoom changes
+                    src={getPDFUrl()} 
+                    width="100%" 
+                    height="100%" 
+                    title="PDF Viewer"
+                    style={{ border: 'none', minHeight: '500px' }}
+                />
+            </div>
         </div>
     );
 };  
 
 export default PDFContent;
-

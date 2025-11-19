@@ -23,6 +23,7 @@ class DBTeacher(Base):
     name = Column(String(25), nullable=False)
     userName = Column(String(25), nullable=False)
     password_hash = Column(String(255), nullable=False)
+    # profilePic = Column(String(225), nullable=True) # the value of this is the path to the profile picture - commented out until feature is implemented
     
     classes = relationship("DBClass", back_populates="owner", cascade="all, delete")
 
@@ -107,7 +108,7 @@ class DBAssignment(Base):
     __tablename__ = "assignment"
 
     id = Column(Integer, primary_key = True, index = True)
-    name = Column(String(25), nullable=False)
+    name = Column(String(255), nullable=False)
     filename = Column(String(225), nullable=False)
     sequence = Column(Integer, nullable=False)
     path = Column(String(255),nullable=False)
@@ -162,4 +163,42 @@ class DBResponse(Base):
     conversationID = Column(ForeignKey("conversation.id", ondelete="CASCADE"))
     
     conversation = relationship("DBConversation", back_populates="responses")    
+
+
+class DBPracticeAttempt(Base):
+    __tablename__ = "practice_attempt"
+
+    id = Column(Integer, primary_key=True, index=True)
+    studentID = Column(String(128), ForeignKey("student.id", ondelete="CASCADE"))
+    classID = Column(Integer, ForeignKey("class.id", ondelete="CASCADE"))
+    path = Column(String(255), nullable=False)  # Path to material or assignment
+    level = Column(Integer, nullable=False)  # Level of the question when answered
+    is_correct = Column(Boolean, nullable=False)  # Whether the answer was correct
+    
+    student = relationship("DBStudent")
+    class_ = relationship("DBClass")
+
+
+
+class DBPrompt_Count_Material(Base):
+    __tablename__ = "prompt_count_material"
+
+    id = Column(Integer, primary_key=True, index=True)
+    studentID = Column(String(128), ForeignKey("student.id", ondelete="CASCADE"))
+    materialID = Column(Integer, ForeignKey("material.id", ondelete="CASCADE"))
+    count = Column(Integer, nullable=False)
+
+    material = relationship("DBMaterial")
+    
+
+class DBPrompt_Count_Assignment(Base):
+    __tablename__ = "prompt_count_assignment"
+
+    id = Column(Integer, primary_key=True, index=True)
+    studentID = Column(String(128), ForeignKey("student.id", ondelete="CASCADE"))
+    assignmentID = Column(Integer, ForeignKey("assignment.id", ondelete="CASCADE"))
+    count = Column(Integer, nullable=False)
+
+    assignment = relationship("DBAssignment")
+
 

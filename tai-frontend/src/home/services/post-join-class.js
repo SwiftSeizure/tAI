@@ -7,7 +7,6 @@ export const postJoinClass = async (requestBody) => {
     		  'Content-Type': 'application/json'
     		}
     	}); 
-    	console.log("This is classID in postJoinClass: ", response.data);
     	return response.data; 
 		
     } catch (error) {

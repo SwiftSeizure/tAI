@@ -3,22 +3,13 @@ import { useCurrentUser } from "../../store/user-store";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from '@mui/icons-material/Visibility'; 
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 /**
- * UnitCard Component
- * This component represents a card for a unit. It displays the unit name and logo,
- * and allows navigation to the module page for the selected unit.
- * 
- * Props:
- * - unitID: Unique identifier for the unit.
- * - unitName: Name of the unit to display on the card.
+ * UnitCard Component with Modern Animations
  */
 
 const UnitCard = ( {unit, onClick, onClickDelete, onClickPublish } ) => {   
-
-    // Placeholder logo for the unit card 
-    // TODO: Change this so that it pulls the logo from the backend
-    const logo = require("../../images/example-class-logo.png");  
 
     const { user } = useCurrentUser();
 
@@ -39,11 +30,9 @@ const UnitCard = ( {unit, onClick, onClickDelete, onClickPublish } ) => {
         return (
             <div className="group relative max-w-sm bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-dashed border-blue-300 hover:border-blue-400 hover:from-blue-100 hover:to-indigo-100">
                 <button onClick={handleOnClick} className="w-full">
-                    {/* Image with overlay */}
                     <div className="relative overflow-hidden">
                         <div className="absolute inset-0 bg-gradient-to-t from-blue-600/20 to-transparent z-10"></div>
                         <div className="w-full h-56 bg-gray-200 flex items-center justify-center opacity-60 group-hover:opacity-80 transition-all duration-500">
-                            {/* Plus Icon Overlay */}
                             <div className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300 z-20">
                                 <svg 
                                     className="w-10 h-10 text-blue-600" 
@@ -57,7 +46,6 @@ const UnitCard = ( {unit, onClick, onClickDelete, onClickPublish } ) => {
                         </div>
                     </div>
                     
-                    {/* Content */}
                     <div className="p-6">
                         <h3 className="text-2xl font-bold tracking-tight text-gray-900 group-hover:text-blue-700 transition-colors duration-300">
                             Create New Unit
@@ -71,17 +59,25 @@ const UnitCard = ( {unit, onClick, onClickDelete, onClickPublish } ) => {
         );
     }
 
-    // Normal unit card
+    // Normal unit card with modern gradient animation
     return (
         <div className="group relative max-w-sm bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-200/80 hover:border-gray-300">
-            {/* Unit Image */}
+            {/* Animated Gradient Header */}
             <button onClick={handleOnClick} className="w-full relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
-                <img 
-                    className="w-full h-56 object-cover transform group-hover:scale-105 transition-transform duration-500" 
-                    src={logo} 
-                    alt="Unit Logo" 
-                />
+                <div className="w-full h-56 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 flex items-center justify-center transform group-hover:scale-105 transition-transform duration-500">
+                    {/* Unit Icon */}
+                    <div className="relative">
+                        <div className="w-28 h-28 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-4 border-white/40 group-hover:border-white/60 transition-all duration-300">
+                            <MenuBookIcon 
+                                sx={{ fontSize: 64 }} 
+                                className="text-white drop-shadow-lg"
+                            />
+                        </div>
+                        {/* Animated pulse ring */}
+                        <div className="absolute inset-0 bg-white/20 rounded-full animate-ping opacity-0 group-hover:opacity-75"></div>
+                    </div>
+                </div>
             </button>
 
             {/* Content */}

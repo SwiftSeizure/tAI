@@ -10,7 +10,9 @@ import { deleteClass } from "../services/delete-class";
 import { getStudentsEnrolled } from "../services/get-students-enrolled";  
 import { deleteStudentFromClass } from "../services/delete-student-from-class";  
 import { postPublishClass } from "../services/post-publish-class";   
-import { putUpdateClassSettings } from "../services/put-update-class-settings";
+import { putUpdateClassSettings } from "../services/put-update-class-settings"; 
+import { postCanvasCode } from "../services/post-canvas-code"; 
+import { putUpdateClassName } from "../services/put-update-class-name";
 
 import DeleteModal from "../../shared/modals/DeleteModal"; 
 import RosterModal from "../modals/RosterModal";
@@ -104,8 +106,21 @@ const TeacherStudentHomePage = () => {
 
     const handleOnSaveSettings = async (formData) => { 
         try { 
-            //This is where updating logic will go  
-            await putUpdateClassSettings(selectedClass.id, formData); 
+            //This is where updating logic will go   
+            //TODO: Update name separately 
+            if (formData.name) {
+                await putUpdateClassName(selectedClass.id, formData.name); 
+            }
+
+            if (formData.settings) {
+                await putUpdateClassSettings(selectedClass.id, formData.settings); 
+            }
+
+            if (formData.canvasCode) {
+                await postCanvasCode(selectedClass.id, formData.canvasCode); 
+            }  
+            
+            await fetchClasses(user.id, user.role); 
             // Right now this handles both settings and name, now we need to update name then settings. 
             // refresh the classes here 
         }
@@ -142,7 +157,6 @@ const TeacherStudentHomePage = () => {
     }; 
 
     const handleOpenRosterModal = async (classroom) => {  
-        console.log("classroom", classroom); 
         if (!classroom.id){ 
             return;
         } 
@@ -151,7 +165,6 @@ const TeacherStudentHomePage = () => {
 
         //TODO: get students from the classroom 
         const serverResponse = await getStudentsEnrolled(classroom.id);  
-        console.log("Students enrolled:", serverResponse.students);
         await setEnrolledStudents(serverResponse.students);
     };  
 
@@ -170,7 +183,6 @@ const TeacherStudentHomePage = () => {
     }; 
 
     const handlePublishClass = async (classroom) => {   
-        console.log("classroom", classroom); 
         try { 
             await postPublishClass(classroom.id); 
             fetchClasses(user.id, user.role); 
@@ -241,8 +253,7 @@ const TeacherStudentHomePage = () => {
     }; 
 
     // Title for the page, personalized with the user's name
-    const title = `Welcome Home ${user?.name || ''}`; 
-    console.log("user", user);
+    const title = `Welcome Home ${user?.name || ''}`;
 
     return ( 
         <>   
@@ -301,7 +312,8 @@ const TeacherStudentHomePage = () => {
                     isOpen={isSettingsModalOpen}
                     onClose={handleCloseSettingsModal}
                     classroom={selectedClass} 
-                    onSaveSettings={handleOnSaveSettings}
+                    onSaveSettings={handleOnSaveSettings} 
+                    // onCanvasCodeChange={handleOnCanvasCodeChange}
                 />
             )} 
 

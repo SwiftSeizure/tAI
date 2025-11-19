@@ -25,8 +25,8 @@ from backend.auth import get_firebase_user_from_token
 from typing import Any, Annotated
 
 # Also Canvas
-basedir = __import__("pathlib").Path(__file__).parent
-load_dotenv(basedir / ".env")   # loads .env in repo root
+#basedir = __import__("pathlib").Path(__file__).parent
+#load_dotenv(basedir / ".env")   # loads .env in repo root
 fernet_key = os.getenv("FERNET_KEY")
 if not fernet_key:
     raise EntityNotFoundException("FERNET_KEY", "environment variable")

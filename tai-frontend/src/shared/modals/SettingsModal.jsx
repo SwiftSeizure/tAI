@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChatSettings } from "../components/ChatSettings";
-import { ClassSettings } from "../components/ClassSettings";  
+import { ClassSettings } from "../components/ClassSettings";   
+import { CanvasCodeSettings } from "../components/CanvasCodeSettings"; 
+
 
 export const SettingsModal = ({ isOpen, onClose, classroom, onSaveSettings }) => {
 	const modalRef = useRef(null);
@@ -26,7 +28,8 @@ export const SettingsModal = ({ isOpen, onClose, classroom, onSaveSettings }) =>
 
 	const [formData, setFormData] = useState({
 		name: "",
-		settings: {}
+		settings: {},
+		canvasCode: ""
 	}); 
 
     if (!isOpen) {
@@ -49,9 +52,15 @@ export const SettingsModal = ({ isOpen, onClose, classroom, onSaveSettings }) =>
 
 	const handleSaveSettings = () => {
 		// Call the parent's onSaveSettings with the current form data 
-		console.log("This is the form data", formData);
 		onSaveSettings(formData);
 	}; 
+
+	const handleCanvasCodeChange = (canvasCode) => {
+		setFormData((prev) => ({
+			...prev,
+			canvasCode: canvasCode
+		}));
+	};
 
 	const handleOnClose = () => {
 		onClose();
@@ -103,7 +112,8 @@ export const SettingsModal = ({ isOpen, onClose, classroom, onSaveSettings }) =>
 					<div className="p-4 md:p-5 space-y-6 max-h-[400px] overflow-y-auto">
 						
 						<ClassSettings onClassNameChange={handleClassNameChange} />
-						<ChatSettings onSettingsChange={handleSettingsChange} /> 
+						<ChatSettings onSettingsChange={handleSettingsChange} />  
+						<CanvasCodeSettings onCanvasCodeChange={handleCanvasCodeChange} />
 						
 					</div>
 
