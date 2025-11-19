@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import Depends, HTTPException, status, Request
+from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from firebase_admin.auth import verify_id_token
 
@@ -8,7 +8,7 @@ ACTIVE = True
 # Bearer scheme setup
 bearer_scheme = HTTPBearer(auto_error=False)
 
-def get_firebase_user_from_token(request: Request,
+def get_firebase_user_from_token(
     token: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer_scheme)]
 ) -> dict | None:
     """Uses bearer token to identify firebase user id
@@ -19,19 +19,8 @@ def get_firebase_user_from_token(request: Request,
     Raises:
         HTTPException 401 if user does not exist or token is invalid
     """
-    if request.method == "OPTIONS":
-        return None  # CORS preflight request
-    
     if not ACTIVE:
         return {"uid": "test-user"}
-    
-    if token is None:
-        # return a FastAPI error that will still get CORS headers
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authorization header missing",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
     
     try:
         if not token:

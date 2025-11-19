@@ -139,6 +139,7 @@ def get_user_type(
     Returns:
         UserTypeResponse: A response model containing the user type.
     """
+    
     uid = user["uid"]
     
     teacher = session.get(DBTeacher, uid)
