@@ -256,8 +256,8 @@ async def get_canvas_materials(classroom: DBClass, db_day: DBDay, db_module: DBM
                     tmp.write(resp.content)
                     temp_path = tmp.name
                     tmp_file = UploadFile(filename=filename, file=open(temp_path, "rb"))
-            
-                    material = await upload_single_file(db_day.id, item['title'], user, session, tmp_file) #type: ignore
+                    
+                    material = await upload_single_file(db_day.id, user, session, tmp_file, item['title']) #type: ignore
                     
                     iso = file_info['updated_at']
                     dt = datetime.fromisoformat(iso.replace("Z", ""))
