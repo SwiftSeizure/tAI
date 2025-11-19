@@ -105,7 +105,7 @@ def maybe_initialize_db():
     # Temporarily disabled to prevent data loss during development with hot reload
     print("[startup] Database initialization skipped (disabled during development).")
     
-    
+    InitializeDB()
     init_db = os.getenv("INIT_DB_ON_STARTUP", "false").lower() == "true"
     init_tables_only = os.getenv("INIT_DB_TABLES_ONLY", "false").lower() == "true"
     
@@ -119,7 +119,7 @@ def maybe_initialize_db():
     elif init_tables_only:
         try:
             print("[startup] Initializing database tables...")
-            InitializeDB()
+            #InitializeDB()
             print("[startup] Database tables initialized successfully.")
         except Exception as e:
             print(f"[startup] InitializeDB failed: {e}")
