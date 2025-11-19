@@ -34,7 +34,8 @@ firebase-admin = "^7.1.0"
 pypdf2 = "^3.0.1"
 
 psycopg2-binary = "^2.9.10"
-cryptography = "^42.0.0"
+fernet = "^1.0.1"
+httpx = "^0.28.1"
 
 
 [tool.poetry.group.dev.dependencies]

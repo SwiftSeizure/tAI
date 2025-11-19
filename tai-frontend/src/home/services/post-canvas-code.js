@@ -4,7 +4,9 @@ export const postCanvasCode = async (classId, canvasCode) => {
     console.log("Canvas code in post-canvas-code.js:", canvasCode);
     try {
         const response = await api.post(`/classroom/${classId}/canvas`, { 
-            api_key: canvasCode 
+            api_key: canvasCode.api_key,
+            class_id: canvasCode.class_id,
+            domain_name: canvasCode.domain_name
         },
         {
             headers: {
