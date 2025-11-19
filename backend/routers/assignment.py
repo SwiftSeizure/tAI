@@ -43,8 +43,11 @@ doc_validator = DocumentValidator(max_size= 25 * 1024 * 1024)
             responses={
                 404: {"model": ClientErrorResponse},
             },
-            summary="Get the prompt count for an assignment for a specific student.")
-def get_prompt_count(assignmentID: int, studentID: str, session: DBSession):
+            summary="Get the prompt count for an assignment for a specific student. Must be an authenticated user.")
+def get_prompt_count(assignmentID: int, 
+                    studentID: str, 
+                    user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                    session: DBSession):
     return db_assignment.get_prompt_count_assignment(assignmentID, studentID, session)
 
 @router.get("/{assignmentID}/prompt",
@@ -52,8 +55,10 @@ def get_prompt_count(assignmentID: int, studentID: str, session: DBSession):
             responses={
                 404: {"model": ClientErrorResponse},
             },
-            summary="Get the prompt count for all students for an assignment.")
-def get_prompt_count_all_students(assignmentID: int, session: DBSession):
+            summary="Get the prompt count for all students for an assignment. Must be an authenticated user.")
+def get_prompt_count_all_students(assignmentID: int, 
+                                  user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                                  session: DBSession):
     return db_assignment.get_prompt_count_all_students(assignmentID, session)
 
 @router.get("/prompt/all",
@@ -61,8 +66,9 @@ def get_prompt_count_all_students(assignmentID: int, session: DBSession):
             responses={
                 404: {"model": ClientErrorResponse},
             },
-            summary="Get the prompt count for all assignments.")
+            summary="Get the prompt count for all assignments. Must be an authenticated user.")
 def get_prompt_count_all(
+    user: Annotated[dict, Depends(get_firebase_user_from_token)],
     session: DBSession
 ):
     return db_assignment.get_prompt_count_all(session)
@@ -266,6 +272,8 @@ async def upload_assignment(dayID: int,
             responses={
                 404: {"model": ClientErrorResponse}
             },
-            summary="Get remoteID for given path.")
-def get_RemoteID(path: str, session: DBSession):
+            summary="Get remoteID for given path. Must be an authenticated user.")
+def get_RemoteID(path: str, 
+                 user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                 session: DBSession):
     return db_assignment.get_RemoteID(path, session)

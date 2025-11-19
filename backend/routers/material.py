@@ -209,8 +209,9 @@ async def upload_single_file(dayID: int,
             responses={
                 404: {"model": ClientErrorResponse},
             },
-            summary="Get the prompt count for all materials.")
+            summary="Get the prompt count for all materials. Must be an authenticated user.")
 def get_prompt_count_all(
+    user: Annotated[dict, Depends(get_firebase_user_from_token)],
     session: DBSession
 ):
     return db_material.get_prompt_count_all(session)
@@ -220,8 +221,10 @@ def get_prompt_count_all(
             responses={
                 404: {"model": ClientErrorResponse}
             },
-            summary="Get remoteID for given path.")
-def get_RemoteID(path: str, session: DBSession):
+            summary="Get remoteID for given path. Must be an authenticated user.")
+def get_RemoteID(path: str, 
+                 user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                 session: DBSession):
     return db_material.get_RemoteID(path, session)
 
 
@@ -230,8 +233,11 @@ def get_RemoteID(path: str, session: DBSession):
             responses={
                 409: {"model": ClientErrorResponse},
             },
-            summary="Increment the prompt count for a material.")
-def increment_prompt_count(materialID: int, studentID: str, session: DBSession):
+            summary="Increment the prompt count for a material. Must be an authenticated user.")
+def increment_prompt_count(materialID: int, 
+                          studentID: str, 
+                          user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                          session: DBSession):
     return db_material.increment_prompt_count_material(materialID, studentID, session)
 
 @router.get("/{materialID}/{studentID}/prompt",
@@ -239,8 +245,11 @@ def increment_prompt_count(materialID: int, studentID: str, session: DBSession):
             responses={
                 404: {"model": ClientErrorResponse},
             },
-            summary="Get the prompt count for a material.")
-def get_prompt_count(materialID: int, studentID: str, session: DBSession):
+            summary="Get the prompt count for a material. Must be an authenticated user.")
+def get_prompt_count(materialID: int, 
+                    studentID: str, 
+                    user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                    session: DBSession):
     return db_material.get_prompt_count_material(materialID, studentID, session)
 
 @router.get("/{materialID}/prompt",
@@ -248,6 +257,8 @@ def get_prompt_count(materialID: int, studentID: str, session: DBSession):
             responses={
                 404: {"model": ClientErrorResponse},
             },
-            summary="Get the prompt count for all students for a material.")
-def get_prompt_count_all_students(materialID: int, session: DBSession):
+            summary="Get the prompt count for all students for a material. Must be an authenticated user.")
+def get_prompt_count_all_students(materialID: int, 
+                                  user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                                  session: DBSession):
     return db_material.get_prompt_count_all_material(materialID, session)
