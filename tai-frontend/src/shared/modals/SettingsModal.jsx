@@ -52,7 +52,6 @@ export const SettingsModal = ({ isOpen, onClose, classroom, onSaveSettings }) =>
 
 	const handleSaveSettings = () => {
 		// Call the parent's onSaveSettings with the current form data 
-		console.log("This is the form data", formData);
 		onSaveSettings(formData);
 	}; 
 

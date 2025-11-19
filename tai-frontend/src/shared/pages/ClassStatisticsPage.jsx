@@ -51,10 +51,6 @@ export default function ClassStatisticsPage() {
             const studentArray = Object.entries(studentData);
             const [studentID, studentInfo] = studentArray[index]; 
 
-            console.log("Student ID line 52:", studentID);
-            console.log("Student Info line 53:", studentInfo); 
-            console.log("Student Name line 54:", studentInfo.student);
-            
             setSelectedStudent({
                 id: studentID,
                 name: studentInfo.student
@@ -73,7 +69,6 @@ export default function ClassStatisticsPage() {
                 // Handle response format - could be array or object with messages/responses
                 if (Array.isArray(response)) {
                     setChatHistory(response); 
-                    console.log("Chat history line 75:", response);
                 } else if (response && typeof response === 'object') {
                     // Handle object with messages and responses arrays
                     if (response.messages && response.responses) {
@@ -100,11 +95,9 @@ export default function ClassStatisticsPage() {
                             }
                         }
                         setChatHistory(combinedChat);
-                        console.log("Combined chat history:", combinedChat);
                     } else {
                         // Convert object to array if needed
                         setChatHistory(Object.values(response));
-                        console.log("Chat history line 78:", response);
                     }
                 } else {
                     setChatHistory([]);
@@ -153,9 +146,7 @@ export default function ClassStatisticsPage() {
     const populateAssignmentStudentPrompts = async (id) => {
         try {
             const response = await getAssignmentStudentPrompts(id); 
-            console.log("Assignment student prompts in response:", response);  
             await setStudentData(response); 
-            console.log("Student data line 124:", studentData);
         } catch (error) {
             console.error("Error fetching assignment student prompts:", error);
             setStudentData(null);
@@ -165,7 +156,6 @@ export default function ClassStatisticsPage() {
     const populateMaterialStudentPrompts = async (id) => {
         try {
             const response = await getMaterialStudentPrompts(id); 
-            console.log("Material student prompts in response:", response);
             setStudentData(response);
         } catch (error) {
             console.error("Error fetching material student prompts:", error);
@@ -176,7 +166,6 @@ export default function ClassStatisticsPage() {
     const fetchAssignmentsPrompts = async () => {
         try {
             const response = await getAssignmentsPrompts();
-            console.log("Assignments prompts in response:", response);
 
             if (response && typeof response === 'object' && !Array.isArray(response)) {
                 const formattedData = Object.entries(response).map(([id, item]) => ({
@@ -184,7 +173,7 @@ export default function ClassStatisticsPage() {
                     name: item.assignment || `Assignment ${id}`,
                     value: item.count || 0
                 }));
-                console.log("Formatted assignments data:", formattedData);
+    
                 setAssignmentsData(formattedData);
             } else {
                 console.error("Unexpected response format:", response);
@@ -199,7 +188,6 @@ export default function ClassStatisticsPage() {
     const fetchMaterialsPrompts = async () => {
         try {
             const response = await getMaterialsPrompts();
-            console.log("Materials prompts in response:", response);
 
             if (response && typeof response === 'object' && !Array.isArray(response)) {
                 const formattedData = Object.entries(response).map(([id, item]) => ({
@@ -207,10 +195,8 @@ export default function ClassStatisticsPage() {
                     name: item.material || item.assignment || `Material ${id}`,
                     value: item.count || 0
                 }));
-                console.log("Formatted materials data:", formattedData);
                 setMaterialsData(formattedData);
             } else {
-                console.error("Unexpected response format:", response);
                 setMaterialsData([]);
             }
         } catch (error) {
@@ -645,7 +631,6 @@ export default function ClassStatisticsPage() {
                                             {studentTableData.map((student) => {
                                                 const percentage = ((student.count / totalPrompts) * 100).toFixed(1);
                                                 const isSelected = selectedStudent?.id === student.studentID; 
-                                                console.log("This is the info about a student", selectedStudent)
                                                 return (
                                                     <tr 
                                                         key={student.studentID} 

@@ -44,7 +44,6 @@ export const NavBar = ({ title, settings }) => {
         try { 
             // Update profile if needed
             if (displayName || avatarFile) {
-                console.log("Updating student name in backend..., displayName: ", displayName);
                 try { 
                     if (user.role === 'student') {
                         await putUpdateStudent(user.uid, displayName); 

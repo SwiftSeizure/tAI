@@ -50,7 +50,6 @@ export const getUserType = async () => {
                 'Content-Type': 'application/json',
             },
         }); 
-        console.log("User type response:", response);
         return response.data.user_type;
     } catch (error) {
         console.error('Error fetching user type:', error);

@@ -157,7 +157,6 @@ const TeacherStudentHomePage = () => {
     }; 
 
     const handleOpenRosterModal = async (classroom) => {  
-        console.log("classroom", classroom); 
         if (!classroom.id){ 
             return;
         } 
@@ -166,7 +165,6 @@ const TeacherStudentHomePage = () => {
 
         //TODO: get students from the classroom 
         const serverResponse = await getStudentsEnrolled(classroom.id);  
-        console.log("Students enrolled:", serverResponse.students);
         await setEnrolledStudents(serverResponse.students);
     };  
 
@@ -185,7 +183,6 @@ const TeacherStudentHomePage = () => {
     }; 
 
     const handlePublishClass = async (classroom) => {   
-        console.log("classroom", classroom); 
         try { 
             await postPublishClass(classroom.id); 
             fetchClasses(user.id, user.role); 
@@ -256,8 +253,7 @@ const TeacherStudentHomePage = () => {
     }; 
 
     // Title for the page, personalized with the user's name
-    const title = `Welcome Home ${user?.name || ''}`; 
-    console.log("user", user);
+    const title = `Welcome Home ${user?.name || ''}`;
 
     return ( 
         <>   

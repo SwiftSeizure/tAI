@@ -65,7 +65,7 @@ const CreateClassPage = () => {
         }
 
         catch (error) { 
-            console.log("Error creating class:", error); 
+            console.error("Error creating class:", error); 
         }
     }; 
 

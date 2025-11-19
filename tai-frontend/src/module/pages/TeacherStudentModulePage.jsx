@@ -145,7 +145,6 @@ const TeacherStudentModulePage = () => {
     const handleDaySelect =  async (day) => {    
 
         await setSelectedDay(day); 
-        console.log("Selected day ID:", day.id);
         setDisplayType('day'); 
     };    
 

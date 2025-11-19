@@ -10,7 +10,6 @@ export const createStudent = async (name, username) => {
                 'Content-Type': 'application/json',
             },
         });
-        console.log("Student created:", response.data);
         return response.data;
     } catch (error) {
         console.error('Error creating student:', error);

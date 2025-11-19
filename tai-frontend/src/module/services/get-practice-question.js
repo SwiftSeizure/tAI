@@ -14,13 +14,9 @@ export const getPracticeQuestion = async (studentID, classID, displayType, dayID
     try {
         const url = `/chat/practice-question/uploads/${displayType}/${dayID}/${currentFileName}`;
         
-        console.log("Fetching practice question from:", url, "at level", level);
-        
         const response = await api.get(url, {
             params: { studentID, classID, level }
         });
-        
-        console.log("Practice question response:", response.data);
         
         return response.data;
     } catch (error) {

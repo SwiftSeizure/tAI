@@ -46,8 +46,6 @@ export default function AddMaterialModal({ isOpen, onClose, onAddMaterial }) {
             name: newMaterialName.trim(),
             file: selectedFile
         }; 
-
-        console.log("Material Data in modal: ", materialData); 
         
         onAddMaterial(materialData);
         onClose();
