@@ -197,15 +197,15 @@ export default function AnalyticsDashboard({
                 </div>
 
                 <div className="bg-white p-6 rounded-xl shadow-md border-l-4 border-red-500">
-                    <h3 className="text-sm font-medium text-gray-600 mb-2">At Risk</h3>
+                    <h3 className="text-sm font-medium text-gray-600 mb-2">Less Engaged Students</h3>
                     <p className="text-3xl font-bold text-gray-900">{analytics.atRiskStudents.length}</p>
-                    <p className="text-xs text-gray-500 mt-1">students below threshold</p>
+                    <p className="text-xs text-gray-500 mt-1">students with low chat engagement</p>
                 </div>
 
                 <div className="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
-                    <h3 className="text-sm font-medium text-gray-600 mb-2">Top Performers</h3>
+                    <h3 className="text-sm font-medium text-gray-600 mb-2">Highly Engaged Students</h3>
                     <p className="text-3xl font-bold text-gray-900">{analytics.topPerformers.length}</p>
-                    <p className="text-xs text-gray-500 mt-1">highly engaged students</p>
+                    <p className="text-xs text-gray-500 mt-1">highly engaged students with the chat</p>
                 </div>
 
                 <div className="bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500">
