@@ -39,11 +39,15 @@ import json
 ## START Deployment needed
 svc_json = os.getenv("SERVICE_ACCOUNT_JSON")
 if svc_json is None:
-    raise ValueError("SERVICE_ACCOUNT_JSON environment variable is not set")
-svc_dct = json.loads(svc_json)
-cred = credentials.Certificate(svc_dct)
-firebase_admin.initialize_app(cred)
-print("TAI:",firebase_admin.get_app().project_id) 
+    print("WARNING: SERVICE_ACCOUNT_JSON environment variable is not set. Firebase features will be disabled.")
+else:
+    try:
+        svc_dct = json.loads(svc_json)
+        cred = credentials.Certificate(svc_dct)
+        firebase_admin.initialize_app(cred)
+        print("TAI:",firebase_admin.get_app().project_id) 
+    except Exception as e:
+        print(f"ERROR: Failed to initialize Firebase: {e}")
 ## END Deployment needed
 
 # This is for local

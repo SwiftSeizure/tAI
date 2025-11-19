@@ -1,9 +1,16 @@
 from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+import firebase_admin
 from firebase_admin.auth import verify_id_token
 
-ACTIVE = True
+# Check if Firebase is initialized
+try:
+    firebase_admin.get_app()
+    ACTIVE = True
+except:
+    print("WARNING: Firebase not initialized. Authentication will be disabled.")
+    ACTIVE = False
 
 # Bearer scheme setup
 bearer_scheme = HTTPBearer(auto_error=False)
