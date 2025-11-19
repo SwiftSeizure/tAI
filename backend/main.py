@@ -97,34 +97,43 @@ def read_root():
 
 @app.on_event("startup")
 def maybe_initialize_db():
+    try:
+        print("[startup] FORCING database table initialization...")
+        InitializeDB()
+        print("[startup] Database tables initialized successfully.")
+    except Exception as e:
+        print(f"[startup] InitializeDB failed: {e}")
+        import traceback
+        traceback.print_exc()
     """
     Conditionally initialize or seed the database on startup.
     - Set INIT_DB_ON_STARTUP=true to seed the database with test data (for development)
     - Set INIT_DB_TABLES_ONLY=true to only create tables without data (for production)
     """
     # Temporarily disabled to prevent data loss during development with hot reload
-    print("[startup] Database initialization skipped (disabled during development).")
-   
+    # print("[startup] Database initialization skipped (disabled during development).")
+    #     return
     
-    init_db = os.getenv("INIT_DB_ON_STARTUP", "false").lower() == "true"
-    init_tables_only = os.getenv("INIT_DB_TABLES_ONLY", "false").lower() == "true"
+    # init_db = os.getenv("INIT_DB_ON_STARTUP", "false").lower() == "true"
+    # init_tables_only = os.getenv("INIT_DB_TABLES_ONLY", "false").lower() == "true"
     
-    if init_db:
-        try:
-            print("[startup] Seeding database with test data...")
-            PopulateDB()
-            print("[startup] Database seeded successfully.")
-        except Exception as e:
-            print(f"[startup] PopulateDB failed: {e}")
-    elif init_tables_only:
-        try:
-            print("[startup] Initializing database tables...")
-            InitializeDB()
-            print("[startup] Database tables initialized successfully.")
-        except Exception as e:
-            print(f"[startup] InitializeDB failed: {e}")
-    else:
-        print("[startup] Database initialization skipped.")
+    # if init_db:
+    #     try:
+    #         print("[startup] Seeding database with test data...")
+    #         PopulateDB()
+    #         print("[startup] Database seeded successfully.")
+    #     except Exception as e:
+    #         print(f"[startup] PopulateDB failed: {e}")
+    # elif init_tables_only:
+    #     try:
+    #         print("[startup] Initializing database tables...")
+    #         InitializeDB()
+    #         print("[startup] Database tables initialized successfully.")
+    #     except Exception as e:
+    #         print(f"[startup] InitializeDB failed: {e}")
+    # else:
+    #     print("[startup] Database initialization skipped.") 
+     
 
 
 # Include API routers FIRST (before catch-all routes)
