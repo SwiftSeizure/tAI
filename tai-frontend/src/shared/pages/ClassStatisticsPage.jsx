@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { NavBar } from '../../shared/components/NavBar';
 import { useCurrentClass } from '../../store/class-store';
-import { Pie, Bar } from 'react-chartjs-2';
+import { Pie, Bar, Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js'; 
 import { getAssignmentsPrompts } from '../services/get-assignments-prompt-count';
 import { getMaterialsPrompts } from '../services/get-materials-prompt-count';
@@ -440,6 +440,68 @@ export default function ClassStatisticsPage() {
         } finally {
             setLoadingChat(false);
         }
+    }; 
+
+    // Calculate difficulty scores
+    const getDifficultyRadarData = () => {
+        const allItems = [...assignmentsData, ...materialsData];
+        const avgPrompts = allItems.length > 0
+            ? allItems.reduce((sum, item) => sum + item.value, 0) / allItems.length
+            : 0;
+
+        const itemsWithScores = allItems.map(item => ({
+            id: item.assignmentID || item.materialID,
+            name: item.name,
+            score: avgPrompts > 0 ? (item.value / avgPrompts) * 100 : 0
+        }));
+
+        const topDifficultItems = itemsWithScores
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 5);
+
+        return {
+            labels: topDifficultItems.map(item => 
+                item.name.length > 20 ? item.name.substring(0, 20) + '...' : item.name
+            ),
+            datasets: [{
+                label: 'Difficulty Score',
+                data: topDifficultItems.map(item => item.score),
+                backgroundColor: 'rgba(139, 92, 246, 0.2)',
+                borderColor: 'rgb(139, 92, 246)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgb(139, 92, 246)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgb(139, 92, 246)'
+            }],
+        };
+    };
+
+    const difficultyRadarOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            r: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 25
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                backgroundColor: 'white',
+                titleColor: '#111827',
+                bodyColor: '#374151',
+                borderColor: '#e5e7eb',
+                borderWidth: 1,
+                padding: 12,
+                cornerRadius: 8,
+            }
+        }
     };
 
     return (
@@ -572,17 +634,31 @@ export default function ClassStatisticsPage() {
                     </div>
                 </div>
 
-                {/* Combined Bar Chart */}
+                {/* Combined Analytics Section */}
                 {(hasAssignments || hasMaterials) && (
-                    <div className="bg-white p-6 rounded-xl shadow-md mb-8">
-                        <h2 className="text-lg font-semibold mb-4">Material vs Assignment Prompt Comparison</h2>
-                        {hasAssignments && hasMaterials ? (
-                            <div className="h-96">
-                                <Bar data={combinedBarData} options={barChartOptions} />
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        {/* Combined Bar Chart */}
+                        <div className="bg-white p-6 rounded-xl shadow-md">
+                            <h2 className="text-lg font-semibold mb-4">Material vs Assignment Prompt Comparison</h2>
+                            {hasAssignments && hasMaterials ? (
+                                <div className="h-80">
+                                    <Bar data={combinedBarData} options={barChartOptions} />
+                                </div>
+                            ) : (
+                                <NoDataMessage message="Unfortunately, there is not enough data to show a comparison. Great job teaching!" />
+                            )}
+                        </div>
+                        
+                        {/* Difficulty Analysis */}
+                        <div className="bg-white p-6 rounded-xl shadow-md">
+                            <h2 className="text-lg font-semibold mb-4">Predicted Content Difficulty Analysis</h2>
+                            <div className="h-80">
+                                <Radar data={getDifficultyRadarData()} options={difficultyRadarOptions} />
                             </div>
-                        ) : (
-                            <NoDataMessage message="Unfortunately, there is not enough data to show a comparison. Great job teaching!" />
-                        )}
+                            <p className="text-xs text-gray-500 mt-3">
+                                Top 5 assignments/materials by relative difficulty score
+                            </p>
+                        </div>
                     </div>
                 )}
 

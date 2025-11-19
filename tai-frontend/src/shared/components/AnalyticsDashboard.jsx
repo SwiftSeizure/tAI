@@ -215,29 +215,15 @@ export default function AnalyticsDashboard({
                 </div>
             </div>
 
-            {/* Charts Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Engagement Distribution */}
-                <div className="bg-white p-6 rounded-xl shadow-md">
-                    <h2 className="text-lg font-semibold mb-4">Engagement Distribution</h2>
-                    <div className="h-80">
-                        <Bar data={engagementChartData} options={engagementChartOptions} />
-                    </div>
-                    <p className="text-xs text-gray-500 mt-3">
-                        Distribution of student engagement levels based on prompt count
-                    </p>
+            {/* Engagement Distribution - Full Width */}
+            <div className="bg-white p-6 rounded-xl shadow-md">
+                <h2 className="text-lg font-semibold mb-4">Engagement Distribution</h2>
+                <div className="h-80">
+                    <Bar data={engagementChartData} options={engagementChartOptions} />
                 </div>
-
-                {/* Difficulty Analysis */}
-                <div className="bg-white p-6 rounded-xl shadow-md">
-                    <h2 className="text-lg font-semibold mb-4">Content Difficulty Analysis</h2>
-                    <div className="h-80">
-                        <Radar data={radarChartData} options={radarChartOptions} />
-                    </div>
-                    <p className="text-xs text-gray-500 mt-3">
-                        Top 5 assignments/materials by relative difficulty score 
-                    </p>
-                </div>
+                <p className="text-xs text-gray-500 mt-3 text-center">
+                    Distribution of student engagement levels based on prompt count
+                </p>
             </div>
 
             {/* At-Risk Students Table */}

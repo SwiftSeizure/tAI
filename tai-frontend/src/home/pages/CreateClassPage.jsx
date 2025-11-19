@@ -77,7 +77,8 @@ const CreateClassPage = () => {
         setNewClassName(className);
     }; 
 
-    const handleCanvasCodeChange = (canvasCode) => {
+    const handleCanvasCodeChange = (canvasCode) => { 
+        console.log("Canvas code:", canvasCode);
         setNewCanvasCode(canvasCode);
     }; 
 
