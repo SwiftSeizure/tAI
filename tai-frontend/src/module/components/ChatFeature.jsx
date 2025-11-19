@@ -56,9 +56,6 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, sele
     
     const convoRef = useRef(null); 
 
-    console.log("messages", messages);
-    console.log("responses", responses);
-
     // Set current chat when component mounts or effectiveChatId changes
     useEffect(() => {
         if (effectiveChatId) {

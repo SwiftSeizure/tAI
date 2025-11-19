@@ -41,8 +41,6 @@ export const sendChatMessage = async ({
             selectedContent.filename,
             message
         );
-
-        console.log("Server response:", serverResponse);
       
         // Process the response to pair messages with their responses
         if (serverResponse && serverResponse.messages && serverResponse.responses) {

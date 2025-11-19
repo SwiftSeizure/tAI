@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { NavBar } from '../../shared/components/NavBar';
 import { useCurrentClass } from '../../store/class-store';
-import { Pie, Bar } from 'react-chartjs-2';
+import { Pie, Bar, Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js'; 
 import { getAssignmentsPrompts } from '../services/get-assignments-prompt-count';
 import { getMaterialsPrompts } from '../services/get-materials-prompt-count';
@@ -51,10 +51,6 @@ export default function ClassStatisticsPage() {
             const studentArray = Object.entries(studentData);
             const [studentID, studentInfo] = studentArray[index]; 
 
-            console.log("Student ID line 52:", studentID);
-            console.log("Student Info line 53:", studentInfo); 
-            console.log("Student Name line 54:", studentInfo.student);
-            
             setSelectedStudent({
                 id: studentID,
                 name: studentInfo.student
@@ -73,7 +69,6 @@ export default function ClassStatisticsPage() {
                 // Handle response format - could be array or object with messages/responses
                 if (Array.isArray(response)) {
                     setChatHistory(response); 
-                    console.log("Chat history line 75:", response);
                 } else if (response && typeof response === 'object') {
                     // Handle object with messages and responses arrays
                     if (response.messages && response.responses) {
@@ -100,11 +95,9 @@ export default function ClassStatisticsPage() {
                             }
                         }
                         setChatHistory(combinedChat);
-                        console.log("Combined chat history:", combinedChat);
                     } else {
                         // Convert object to array if needed
                         setChatHistory(Object.values(response));
-                        console.log("Chat history line 78:", response);
                     }
                 } else {
                     setChatHistory([]);
@@ -153,9 +146,7 @@ export default function ClassStatisticsPage() {
     const populateAssignmentStudentPrompts = async (id) => {
         try {
             const response = await getAssignmentStudentPrompts(id); 
-            console.log("Assignment student prompts in response:", response);  
             await setStudentData(response); 
-            console.log("Student data line 124:", studentData);
         } catch (error) {
             console.error("Error fetching assignment student prompts:", error);
             setStudentData(null);
@@ -165,7 +156,6 @@ export default function ClassStatisticsPage() {
     const populateMaterialStudentPrompts = async (id) => {
         try {
             const response = await getMaterialStudentPrompts(id); 
-            console.log("Material student prompts in response:", response);
             setStudentData(response);
         } catch (error) {
             console.error("Error fetching material student prompts:", error);
@@ -176,7 +166,6 @@ export default function ClassStatisticsPage() {
     const fetchAssignmentsPrompts = async () => {
         try {
             const response = await getAssignmentsPrompts();
-            console.log("Assignments prompts in response:", response);
 
             if (response && typeof response === 'object' && !Array.isArray(response)) {
                 const formattedData = Object.entries(response).map(([id, item]) => ({
@@ -184,7 +173,7 @@ export default function ClassStatisticsPage() {
                     name: item.assignment || `Assignment ${id}`,
                     value: item.count || 0
                 }));
-                console.log("Formatted assignments data:", formattedData);
+    
                 setAssignmentsData(formattedData);
             } else {
                 console.error("Unexpected response format:", response);
@@ -199,7 +188,6 @@ export default function ClassStatisticsPage() {
     const fetchMaterialsPrompts = async () => {
         try {
             const response = await getMaterialsPrompts();
-            console.log("Materials prompts in response:", response);
 
             if (response && typeof response === 'object' && !Array.isArray(response)) {
                 const formattedData = Object.entries(response).map(([id, item]) => ({
@@ -207,10 +195,8 @@ export default function ClassStatisticsPage() {
                     name: item.material || item.assignment || `Material ${id}`,
                     value: item.count || 0
                 }));
-                console.log("Formatted materials data:", formattedData);
                 setMaterialsData(formattedData);
             } else {
-                console.error("Unexpected response format:", response);
                 setMaterialsData([]);
             }
         } catch (error) {
@@ -454,6 +440,68 @@ export default function ClassStatisticsPage() {
         } finally {
             setLoadingChat(false);
         }
+    }; 
+
+    // Calculate difficulty scores
+    const getDifficultyRadarData = () => {
+        const allItems = [...assignmentsData, ...materialsData];
+        const avgPrompts = allItems.length > 0
+            ? allItems.reduce((sum, item) => sum + item.value, 0) / allItems.length
+            : 0;
+
+        const itemsWithScores = allItems.map(item => ({
+            id: item.assignmentID || item.materialID,
+            name: item.name,
+            score: avgPrompts > 0 ? (item.value / avgPrompts) * 100 : 0
+        }));
+
+        const topDifficultItems = itemsWithScores
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 5);
+
+        return {
+            labels: topDifficultItems.map(item => 
+                item.name.length > 20 ? item.name.substring(0, 20) + '...' : item.name
+            ),
+            datasets: [{
+                label: 'Difficulty Score',
+                data: topDifficultItems.map(item => item.score),
+                backgroundColor: 'rgba(139, 92, 246, 0.2)',
+                borderColor: 'rgb(139, 92, 246)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgb(139, 92, 246)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgb(139, 92, 246)'
+            }],
+        };
+    };
+
+    const difficultyRadarOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            r: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 25
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                backgroundColor: 'white',
+                titleColor: '#111827',
+                bodyColor: '#374151',
+                borderColor: '#e5e7eb',
+                borderWidth: 1,
+                padding: 12,
+                cornerRadius: 8,
+            }
+        }
     };
 
     return (
@@ -586,17 +634,31 @@ export default function ClassStatisticsPage() {
                     </div>
                 </div>
 
-                {/* Combined Bar Chart */}
+                {/* Combined Analytics Section */}
                 {(hasAssignments || hasMaterials) && (
-                    <div className="bg-white p-6 rounded-xl shadow-md mb-8">
-                        <h2 className="text-lg font-semibold mb-4">Material vs Assignment Prompt Comparison</h2>
-                        {hasAssignments && hasMaterials ? (
-                            <div className="h-96">
-                                <Bar data={combinedBarData} options={barChartOptions} />
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        {/* Combined Bar Chart */}
+                        <div className="bg-white p-6 rounded-xl shadow-md">
+                            <h2 className="text-lg font-semibold mb-4">Material vs Assignment Prompt Comparison</h2>
+                            {hasAssignments && hasMaterials ? (
+                                <div className="h-80">
+                                    <Bar data={combinedBarData} options={barChartOptions} />
+                                </div>
+                            ) : (
+                                <NoDataMessage message="Unfortunately, there is not enough data to show a comparison. Great job teaching!" />
+                            )}
+                        </div>
+                        
+                        {/* Difficulty Analysis */}
+                        <div className="bg-white p-6 rounded-xl shadow-md">
+                            <h2 className="text-lg font-semibold mb-4">Predicted Content Difficulty Analysis</h2>
+                            <div className="h-80">
+                                <Radar data={getDifficultyRadarData()} options={difficultyRadarOptions} />
                             </div>
-                        ) : (
-                            <NoDataMessage message="Unfortunately, there is not enough data to show a comparison. Great job teaching!" />
-                        )}
+                            <p className="text-xs text-gray-500 mt-3">
+                                Top 5 assignments/materials by relative difficulty score
+                            </p>
+                        </div>
                     </div>
                 )}
 
@@ -645,7 +707,6 @@ export default function ClassStatisticsPage() {
                                             {studentTableData.map((student) => {
                                                 const percentage = ((student.count / totalPrompts) * 100).toFixed(1);
                                                 const isSelected = selectedStudent?.id === student.studentID; 
-                                                console.log("This is the info about a student", selectedStudent)
                                                 return (
                                                     <tr 
                                                         key={student.studentID} 

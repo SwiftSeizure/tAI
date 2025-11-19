@@ -197,15 +197,15 @@ export default function AnalyticsDashboard({
                 </div>
 
                 <div className="bg-white p-6 rounded-xl shadow-md border-l-4 border-red-500">
-                    <h3 className="text-sm font-medium text-gray-600 mb-2">At Risk</h3>
+                    <h3 className="text-sm font-medium text-gray-600 mb-2">Less Engaged Students</h3>
                     <p className="text-3xl font-bold text-gray-900">{analytics.atRiskStudents.length}</p>
-                    <p className="text-xs text-gray-500 mt-1">students below threshold</p>
+                    <p className="text-xs text-gray-500 mt-1">students with low chat engagement</p>
                 </div>
 
                 <div className="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
-                    <h3 className="text-sm font-medium text-gray-600 mb-2">Top Performers</h3>
+                    <h3 className="text-sm font-medium text-gray-600 mb-2">Highly Engaged Students</h3>
                     <p className="text-3xl font-bold text-gray-900">{analytics.topPerformers.length}</p>
-                    <p className="text-xs text-gray-500 mt-1">highly engaged students</p>
+                    <p className="text-xs text-gray-500 mt-1">highly engaged students with the chat</p>
                 </div>
 
                 <div className="bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500">
@@ -215,29 +215,15 @@ export default function AnalyticsDashboard({
                 </div>
             </div>
 
-            {/* Charts Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Engagement Distribution */}
-                <div className="bg-white p-6 rounded-xl shadow-md">
-                    <h2 className="text-lg font-semibold mb-4">Engagement Distribution</h2>
-                    <div className="h-80">
-                        <Bar data={engagementChartData} options={engagementChartOptions} />
-                    </div>
-                    <p className="text-xs text-gray-500 mt-3">
-                        Distribution of student engagement levels based on prompt count
-                    </p>
+            {/* Engagement Distribution - Full Width */}
+            <div className="bg-white p-6 rounded-xl shadow-md">
+                <h2 className="text-lg font-semibold mb-4">Engagement Distribution</h2>
+                <div className="h-80">
+                    <Bar data={engagementChartData} options={engagementChartOptions} />
                 </div>
-
-                {/* Difficulty Analysis */}
-                <div className="bg-white p-6 rounded-xl shadow-md">
-                    <h2 className="text-lg font-semibold mb-4">Content Difficulty Analysis</h2>
-                    <div className="h-80">
-                        <Radar data={radarChartData} options={radarChartOptions} />
-                    </div>
-                    <p className="text-xs text-gray-500 mt-3">
-                        Top 5 assignments/materials by relative difficulty score 
-                    </p>
-                </div>
+                <p className="text-xs text-gray-500 mt-3 text-center">
+                    Distribution of student engagement levels based on prompt count
+                </p>
             </div>
 
             {/* At-Risk Students Table */}

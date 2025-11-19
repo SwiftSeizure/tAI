@@ -65,7 +65,7 @@ const CreateClassPage = () => {
         }
 
         catch (error) { 
-            console.log("Error creating class:", error); 
+            console.error("Error creating class:", error); 
         }
     }; 
 
@@ -77,7 +77,8 @@ const CreateClassPage = () => {
         setNewClassName(className);
     }; 
 
-    const handleCanvasCodeChange = (canvasCode) => {
+    const handleCanvasCodeChange = (canvasCode) => { 
+        console.log("Canvas code:", canvasCode);
         setNewCanvasCode(canvasCode);
     }; 
 

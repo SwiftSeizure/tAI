@@ -37,19 +37,11 @@ const JoinClassPage = () => {
         setIsLoading(true);
 
        try {
-            console.log("Attempting to join class with:", { 
-                studentID: user.id, 
-                classCode: classCode,
-                userRole: user.role,
-                userName: user.name 
-            });
 
             // Ensure the student exists in the database before trying to enroll
             if (user.role === 'student') {
-                console.log("Ensuring student exists in database...");
                 try {
                     await ensureStudentExists();
-                    console.log("Student record confirmed.");
                 } catch (studentError) {
                     console.error("Error ensuring student exists:", studentError);
                     alert("There was an issue verifying your student account. Please try logging out and back in.");
@@ -62,7 +54,6 @@ const JoinClassPage = () => {
                 classCode: classCode,
             } 
             const classID = await postJoinClass(requestBody);    
-            console.log("Class ID:", classID); 
             
             // Fetch classes and set current class
             try {
@@ -74,7 +65,6 @@ const JoinClassPage = () => {
                 // The user joined successfully, we can still navigate
             }
             
-            console.log("Class joined successfully:", classCode); 
             navigate('/unitpage'); 
        } 
        catch (error) {  
