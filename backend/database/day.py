@@ -256,8 +256,6 @@ async def get_canvas_materials(classroom: DBClass, db_day: DBDay, db_module: DBM
                     tmp.write(resp.content)
                     temp_path = tmp.name
                     tmp_file = UploadFile(filename=filename, file=open(temp_path, "rb"))
-
-                    print(user)
                     
                     material = await upload_single_file(db_day.id, user, session, tmp_file, item['title']) #type: ignore
                     
