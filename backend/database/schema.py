@@ -11,7 +11,7 @@ class DBStudent(Base):
 
     id = Column(String(128), primary_key=True, index=True)  # Using Firebase UID as primary key
     name = Column(String(25), nullable=False)
-    userName = Column(String(25), nullable=False)
+    userName = Column("username", String(25), nullable=False)
     password_hash = Column(String(255), nullable=False)
     
     classes = relationship("DBEnrolled", back_populates="student")
@@ -21,7 +21,7 @@ class DBTeacher(Base):
 
     id = Column(String(128), primary_key=True, index=True)  # Using Firebase UID as primary key
     name = Column(String(25), nullable=False)
-    userName = Column(String(25), nullable=False)
+    userName = Column("username", String(25), nullable=False)
     password_hash = Column(String(255), nullable=False)
     # profilePic = Column(String(225), nullable=True) # the value of this is the path to the profile picture - commented out until feature is implemented
     

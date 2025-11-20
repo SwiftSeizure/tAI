@@ -4,13 +4,9 @@ try {
   if (typeof window !== "undefined") {
     const host = window.location.hostname || "";
     const protocol = window.location.protocol === "https:" ? "https" : "http";
-    // If we're on taiteach.com (frontend), default API to api.taiteach.com and match protocol (prefer HTTPS)
+    // If we're on taiteach.com (frontend), default API to api.taiteach.com and match protocol
     if (host.endsWith("taiteach.com")) {
       DEFAULT_API_BASE = `${protocol}://api.taiteach.com`;
-      // Always prefer HTTPS in production environments
-      if (protocol === "http") {
-        DEFAULT_API_BASE = "https://api.taiteach.com";
-      }
     }
   }
 } catch (_) {
