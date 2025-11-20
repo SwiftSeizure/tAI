@@ -142,17 +142,6 @@ export default function ClassStatisticsPage() {
         }
     };   
 
-    const assignmentChartOptions = {
-        ...chartOptions,
-        onClick: (event, elements, chart) => handleMaterialAssignmentPieClick(event, elements, chart, true)
-    };
-
-    // For Material chart
-    const materialChartOptions = {
-        ...chartOptions,
-        onClick: (event, elements, chart) => handleMaterialAssignmentPieClick(event, elements, chart, false)
-    };
-
     const populateAssignmentStudentPrompts = async (id) => {
         try {
             const response = await getAssignmentStudentPrompts(id); 
@@ -284,6 +273,16 @@ export default function ClassStatisticsPage() {
                 displayColors: true,
             },
         },
+    }; 
+
+    const assignmentChartOptions = {
+        ...chartOptions,
+        onClick: (event, elements, chart) => handleMaterialAssignmentPieClick(event, elements, chart, true)
+    };
+
+    const materialChartOptions = {
+        ...chartOptions,
+        onClick: (event, elements, chart) => handleMaterialAssignmentPieClick(event, elements, chart, false)
     };
 
     const combinedBarData = {
