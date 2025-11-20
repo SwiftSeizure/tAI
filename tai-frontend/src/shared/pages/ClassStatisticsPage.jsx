@@ -155,7 +155,7 @@ export default function ClassStatisticsPage() {
     const populateMaterialStudentPrompts = async (id) => {
         try {
             const response = await getMaterialStudentPrompts(id); 
-            setStudentData(response);
+            await setStudentData(response);
         } catch (error) {
             console.error("Error fetching material student prompts:", error);
             setStudentData(null);
