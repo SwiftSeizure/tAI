@@ -35,90 +35,60 @@ DATA_ROOT = Path(os.getenv("DATA_ROOT") or str(Path(__file__).parent.parent.pare
 #Create a validator instance
 doc_validator = DocumentValidator(max_size= 25 * 1024 * 1024)
 
-@router.get("/{dayID}/{filename}",
+
+# ============================================================================
+# SPECIFIC ROUTES FIRST (most specific to least specific)
+# ============================================================================
+
+@router.get("/prompt/all",
             status_code=200,
             responses={
-                404: {"model": ClientErrorResponse}
+                404: {"model": ClientErrorResponse},
             },
-            summary="Get a material file for a specific day. Must be an authenticated user.",)
-def get_file(dayID: int, 
-             user: Annotated[dict, Depends(get_firebase_user_from_token)],
-             filename: str):
-    # Start from BASE_DIR and navigate to uploads
-
-    file_path = DATA_ROOT / "uploads" / "material" / str(dayID) / filename
-    base_uploads = DATA_ROOT / "uploads"
-
-    
-    print(f"Checking path: {file_path}")
-    
-     # Security checks
-    try:
-        # Check if file exists and is within uploads directory
-        if not file_path.is_file() or not file_path.resolve().is_relative_to(base_uploads.resolve()):
-            raise UploadNotFoundException(dayID, filename)
-        
-        # Check for path traversal attempts
-        if '..' in str(file_path.relative_to(base_uploads)):
-            raise HTTPException(status_code=403, detail="Invalid path")
-        
-        mime_type, _ = mimetypes.guess_type(file_path)
-        return FileResponse(
-            path=file_path,
-            media_type=mime_type or "application/octet-stream",
-            filename=filename
-        )
-    except (ValueError, RuntimeError):
-        raise UploadNotFoundException(dayID, filename)
+            summary="Get the prompt count for all materials. Must be an authenticated user.")
+def get_prompt_count_all(
+    user: Annotated[dict, Depends(get_firebase_user_from_token)],
+    session: DBSession
+):
+    return db_material.get_prompt_count_all(session)
 
 
-@router.delete("/{dayID}/{filename}",
-                status_code=204,
-                responses={
-                    404: {"model": ClientErrorResponse},
-                    403: {"model": ClientErrorResponse}
-                },
-                summary="Delete a file for a specific day.")
-def delete_file(dayID: int, 
-                filename: str, 
-                user: Annotated[dict, Depends(get_firebase_user_from_token)],
-                session: DBSession):
-    
-    user_id = user["uid"]
-    teacher_id = db_day.get_teacher_by_day_id(dayID, session)
-    if user_id != teacher_id and user_id != "test-user":
-        raise UnauthorizedException("delete assignment") 
-    
-    # Start from BASE_DIR and navigate to uploads
+@router.get("/{materialID}/prompt",
+            status_code=200,
+            responses={
+                404: {"model": ClientErrorResponse},
+            },
+            summary="Get the prompt count for all students for a material. Must be an authenticated user.")
+def get_prompt_count_all_students(materialID: int, 
+                                  user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                                  session: DBSession):
+    return db_material.get_prompt_count_all_material(materialID, session)
 
-    file_path = DATA_ROOT / "uploads" / "material" / str(dayID) / filename
-    base_uploads = DATA_ROOT / "uploads"
 
-    
-     # Security checks
-    try:
-        # Check if file exists and is within uploads directory
-        if not file_path.is_file() or not file_path.resolve().is_relative_to(base_uploads.resolve()):
-            raise UploadNotFoundException(dayID, filename)
-        
-        # Check for path traversal attempts
-        if '..' in str(file_path.relative_to(base_uploads)):
-            raise HTTPException(status_code=403, detail="Invalid path")
-        
-        db_material.delete_material(dayID, filename, session)
-        
-        # Delete the actual file
-        try:
-            os.remove(file_path)
-        except FileNotFoundError:
-            # File already deleted from disk, that's okay
-            pass
-        
-        return None
-        
-    except (ValueError, RuntimeError):
-        raise UploadNotFoundException(dayID, filename)
+@router.post("/{materialID}/{studentID}/prompt",
+            status_code=201,
+            responses={
+                409: {"model": ClientErrorResponse},
+            },
+            summary="Increment the prompt count for a material. Must be an authenticated user.")
+def increment_prompt_count(materialID: int, 
+                          studentID: str, 
+                          user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                          session: DBSession):
+    return db_material.increment_prompt_count_material(materialID, studentID, session)
 
+
+@router.get("/{materialID}/{studentID}/prompt",
+            status_code=200,
+            responses={
+                404: {"model": ClientErrorResponse},
+            },
+            summary="Get the prompt count for a material. Must be an authenticated user.")
+def get_prompt_count(materialID: int, 
+                    studentID: str, 
+                    user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                    session: DBSession):
+    return db_material.get_prompt_count_material(materialID, studentID, session)
 
 
 @router.post("/{dayID}/{filename}",
@@ -204,17 +174,94 @@ async def upload_single_file(dayID: int,
     return db_material.create_material(dayID, name, safe_filename, file.content_type, session, remoteID)    
 
 
-@router.get("/prompt/all",
+@router.delete("/{dayID}/{filename}",
+                status_code=204,
+                responses={
+                    404: {"model": ClientErrorResponse},
+                    403: {"model": ClientErrorResponse}
+                },
+                summary="Delete a file for a specific day.")
+def delete_file(dayID: int, 
+                filename: str, 
+                user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                session: DBSession):
+    
+    user_id = user["uid"]
+    teacher_id = db_day.get_teacher_by_day_id(dayID, session)
+    if user_id != teacher_id and user_id != "test-user":
+        raise UnauthorizedException("delete assignment") 
+    
+    # Start from BASE_DIR and navigate to uploads
+
+    file_path = DATA_ROOT / "uploads" / "material" / str(dayID) / filename
+    base_uploads = DATA_ROOT / "uploads"
+
+    
+     # Security checks
+    try:
+        # Check if file exists and is within uploads directory
+        if not file_path.is_file() or not file_path.resolve().is_relative_to(base_uploads.resolve()):
+            raise UploadNotFoundException(dayID, filename)
+        
+        # Check for path traversal attempts
+        if '..' in str(file_path.relative_to(base_uploads)):
+            raise HTTPException(status_code=403, detail="Invalid path")
+        
+        db_material.delete_material(dayID, filename, session)
+        
+        # Delete the actual file
+        try:
+            os.remove(file_path)
+        except FileNotFoundError:
+            # File already deleted from disk, that's okay
+            pass
+        
+        return None
+        
+    except (ValueError, RuntimeError):
+        raise UploadNotFoundException(dayID, filename)
+
+
+@router.get("/{dayID}/{filename}",
             status_code=200,
             responses={
-                404: {"model": ClientErrorResponse},
+                404: {"model": ClientErrorResponse}
             },
-            summary="Get the prompt count for all materials. Must be an authenticated user.")
-def get_prompt_count_all(
-    user: Annotated[dict, Depends(get_firebase_user_from_token)],
-    session: DBSession
-):
-    return db_material.get_prompt_count_all(session)
+            summary="Get a material file for a specific day. Must be an authenticated user.",)
+def get_file(dayID: int, 
+             user: Annotated[dict, Depends(get_firebase_user_from_token)],
+             filename: str):
+    # Start from BASE_DIR and navigate to uploads
+
+    file_path = DATA_ROOT / "uploads" / "material" / str(dayID) / filename
+    base_uploads = DATA_ROOT / "uploads"
+
+    
+    print(f"Checking path: {file_path}")
+    
+     # Security checks
+    try:
+        # Check if file exists and is within uploads directory
+        if not file_path.is_file() or not file_path.resolve().is_relative_to(base_uploads.resolve()):
+            raise UploadNotFoundException(dayID, filename)
+        
+        # Check for path traversal attempts
+        if '..' in str(file_path.relative_to(base_uploads)):
+            raise HTTPException(status_code=403, detail="Invalid path")
+        
+        mime_type, _ = mimetypes.guess_type(file_path)
+        return FileResponse(
+            path=file_path,
+            media_type=mime_type or "application/octet-stream",
+            filename=filename
+        )
+    except (ValueError, RuntimeError):
+        raise UploadNotFoundException(dayID, filename)
+
+
+# ============================================================================
+# CATCH-ALL ROUTE LAST (least specific)
+# ============================================================================
 
 @router.get("/{path:path}",
             status_code=200,
@@ -226,39 +273,3 @@ def get_RemoteID(path: str,
                  user: Annotated[dict, Depends(get_firebase_user_from_token)],
                  session: DBSession):
     return db_material.get_RemoteID(path, session)
-
-
-@router.post("/{materialID}/{studentID}/prompt",
-            status_code=201,
-            responses={
-                409: {"model": ClientErrorResponse},
-            },
-            summary="Increment the prompt count for a material. Must be an authenticated user.")
-def increment_prompt_count(materialID: int, 
-                          studentID: str, 
-                          user: Annotated[dict, Depends(get_firebase_user_from_token)],
-                          session: DBSession):
-    return db_material.increment_prompt_count_material(materialID, studentID, session)
-
-@router.get("/{materialID}/{studentID}/prompt",
-            status_code=200,
-            responses={
-                404: {"model": ClientErrorResponse},
-            },
-            summary="Get the prompt count for a material. Must be an authenticated user.")
-def get_prompt_count(materialID: int, 
-                    studentID: str, 
-                    user: Annotated[dict, Depends(get_firebase_user_from_token)],
-                    session: DBSession):
-    return db_material.get_prompt_count_material(materialID, studentID, session)
-
-@router.get("/{materialID}/prompt",
-            status_code=200,
-            responses={
-                404: {"model": ClientErrorResponse},
-            },
-            summary="Get the prompt count for all students for a material. Must be an authenticated user.")
-def get_prompt_count_all_students(materialID: int, 
-                                  user: Annotated[dict, Depends(get_firebase_user_from_token)],
-                                  session: DBSession):
-    return db_material.get_prompt_count_all_material(materialID, session)

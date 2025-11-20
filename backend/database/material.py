@@ -80,7 +80,7 @@ def increment_prompt_count_material(materialID: int, studentID: str, session: Se
         prompt_count = DBPrompt_Count_Material(materialID=materialID, studentID=studentID, count=1)
         session.add(prompt_count)
     else:
-        prompt_count.count += 1
+        prompt_count.count += 1 #type: ignore
     session.commit()
     return prompt_count
 

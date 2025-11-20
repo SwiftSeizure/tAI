@@ -18,6 +18,8 @@ from backend.routers import home, classroom, unit, module, day, assignment, mate
 from backend.Seed_Database import PopulateDB, InitializeDB
 from fastapi.middleware.cors import CORSMiddleware
 from backend.exceptions import EntityNotFoundException, UploadNotFoundException, DuplicateNameException, InvalidClassCodeException, UnauthorizedException
+from backend.database.schema import Base
+from backend.dependencies import engine
 #import os
 #import requests
 
@@ -48,13 +50,13 @@ print("TAI:",firebase_admin.get_app().project_id)
 
 # This is for local
 ## START Local needed
-# service_account_path = os.path.join(os.path.dirname(__file__), 'service-account.json')
-# if not os.path.exists(service_account_path):
-#     raise FileNotFoundError(f"Service account file not found at {service_account_path}")
+#service_account_path = os.path.join(os.path.dirname(__file__), 'service-account.json')
+#if not os.path.exists(service_account_path):
+#    raise FileNotFoundError(f"Service account file not found at {service_account_path}")
 
-# cred = credentials.Certificate(service_account_path)
-# firebase_admin.initialize_app(cred)
-# print("TAI:", firebase_admin.get_app().project_id)
+#cred = credentials.Certificate(service_account_path)
+#firebase_admin.initialize_app(cred)
+#print("TAI:", firebase_admin.get_app().project_id)
 ## END Local needed
 
 
@@ -79,7 +81,7 @@ app.add_middleware(
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
 # Serve static files - check for production environment or if build directory exists
@@ -102,12 +104,12 @@ def maybe_initialize_db():
     - Set INIT_DB_ON_STARTUP=true to seed the database with test data (for development)
     - Set INIT_DB_TABLES_ONLY=true to only create tables without data (for production)
     """
-    # Temporarily disabled to prevent data loss during development with hot reload
+
     print("[startup] Database initialization skipped (disabled during development).")
     
-    
-    init_db = os.getenv("INIT_DB_ON_STARTUP", "false").lower() == "true"
-    init_tables_only = os.getenv("INIT_DB_TABLES_ONLY", "false").lower() == "true"
+
+    init_db = False
+    init_tables_only = True
     
     if init_db:
         try:
@@ -119,7 +121,8 @@ def maybe_initialize_db():
     elif init_tables_only:
         try:
             print("[startup] Initializing database tables...")
-            InitializeDB()
+            Base.metadata.create_all(bind=engine)
+
             print("[startup] Database tables initialized successfully.")
         except Exception as e:
             print(f"[startup] InitializeDB failed: {e}")

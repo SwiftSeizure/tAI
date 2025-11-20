@@ -411,5 +411,3 @@ async def update_canvas_modules(classID: int, unit: DBUnit, user: Annotated[dict
         
         await update_canvas_assignments(classroom, db_day, db_module, user, session)
         await update_canvas_materials(classroom, db_day, db_module, user, session)
-        
-        

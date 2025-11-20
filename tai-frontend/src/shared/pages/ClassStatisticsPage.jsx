@@ -111,7 +111,7 @@ export default function ClassStatisticsPage() {
         }
     };
 
-    const handleMaterialAssignmentPieClick = (event, elements, chart) => {
+    const handleMaterialAssignmentPieClick = (event, elements, chart, isAssignment = true) => {
         // Clear any selected student when changing assignment/material
         setSelectedStudent(null);
         setChatHistory(null);
@@ -119,29 +119,28 @@ export default function ClassStatisticsPage() {
         if (elements.length > 0) {
             const clickedElement = elements[0];
             const index = clickedElement.index;
-            const id = assignmentsData[index]?.assignmentID || materialsData[index]?.materialID;
-            
-            if (id) {
-                if (assignmentsData.some(item => item.assignmentID === id)) {
-                    const assignment = assignmentsData.find(item => item.assignmentID === id);
-                    setSelectedItemName(assignment.name);
+
+            // Determine which dataset was clicked based on the chart
+            const dataSource = isAssignment ? assignmentsData : materialsData;
+            const item = dataSource[index];
+
+            if (item) {
+                if (isAssignment) {
+                    setSelectedItemName(item.name);
                     setSelectedItemType('Assignment');
-                    setSelectedItemID(id);
-                    populateAssignmentStudentPrompts(id);
-                } else if (materialsData.some(item => item.materialID === id)) {
-                    const material = materialsData.find(item => item.materialID === id);
-                    setSelectedItemName(material.name);
-                    setSelectedItemType('Material');
-                    setSelectedItemID(id);
-                    populateMaterialStudentPrompts(id);
+                    setSelectedItemID(item.assignmentID);
+                    populateAssignmentStudentPrompts(item.assignmentID);
                 } else {
-                    console.error('Could not determine if ID belongs to assignment or material:', id);
+                    setSelectedItemName(item.name);
+                    setSelectedItemType('Material');
+                    setSelectedItemID(item.materialID);
+                    populateMaterialStudentPrompts(item.materialID);
                 }
             } else {
-                console.error('Could not find ID for clicked element');
+                console.error('Could not find item for clicked element at index:', index);
             }
         }
-    };  
+    };   
 
     const populateAssignmentStudentPrompts = async (id) => {
         try {
@@ -156,7 +155,7 @@ export default function ClassStatisticsPage() {
     const populateMaterialStudentPrompts = async (id) => {
         try {
             const response = await getMaterialStudentPrompts(id); 
-            setStudentData(response);
+            await setStudentData(response);
         } catch (error) {
             console.error("Error fetching material student prompts:", error);
             setStudentData(null);
@@ -274,6 +273,16 @@ export default function ClassStatisticsPage() {
                 displayColors: true,
             },
         },
+    }; 
+
+    const assignmentChartOptions = {
+        ...chartOptions,
+        onClick: (event, elements, chart) => handleMaterialAssignmentPieClick(event, elements, chart, true)
+    };
+
+    const materialChartOptions = {
+        ...chartOptions,
+        onClick: (event, elements, chart) => handleMaterialAssignmentPieClick(event, elements, chart, false)
     };
 
     const combinedBarData = {
@@ -519,7 +528,7 @@ export default function ClassStatisticsPage() {
                         {hasAssignments ? (
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                 <div className="h-80">
-                                    <Pie data={assignmentData} options={chartOptions} />
+                                    <Pie data={assignmentData} options={assignmentChartOptions} />
                                 </div>
                                 
                                 <div className="flex flex-col">
@@ -579,7 +588,7 @@ export default function ClassStatisticsPage() {
                         {hasMaterials ? (
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                 <div className="h-80">
-                                    <Pie data={materialData} options={chartOptions} />
+                                    <Pie data={materialData} options={materialChartOptions} />
                                 </div>
                                 
                                 <div className="flex flex-col">
