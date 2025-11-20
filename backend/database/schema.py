@@ -32,8 +32,8 @@ class DBEnrolled(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     
-    studentID = Column(String(128), ForeignKey("student.id", ondelete="CASCADE"))
-    classID = Column(Integer, ForeignKey("class.id", ondelete="CASCADE"))
+    studentID = Column("studentid", String(128), ForeignKey("student.id", ondelete="CASCADE"))
+    classID = Column("classid", Integer, ForeignKey("class.id", ondelete="CASCADE"))
 
     student = relationship("DBStudent", back_populates="classes")
     class_ = relationship("DBClass", back_populates="enrollment") 
@@ -44,8 +44,8 @@ class DBClass(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(25), nullable=False)
     
-    ownerID = Column(String(128), ForeignKey("teacher.id", ondelete="CASCADE"))
-    classCode = Column(String(6), nullable=False, unique=True)  # Changed to String(6) for alphanumeric codes
+    ownerID = Column("ownerid", String(128), ForeignKey("teacher.id", ondelete="CASCADE"))
+    classCode = Column("classcode", String(6), nullable=False, unique=True)  # Changed to String(6) for alphanumeric codes
     published = Column(Boolean,nullable = False)
 
     owner = relationship("DBTeacher", back_populates="classes")
@@ -64,7 +64,7 @@ class DBUnit(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(25), nullable=False)
     sequence = Column(Integer, nullable=False)
-    classID = Column(Integer, ForeignKey("class.id", ondelete="CASCADE"))
+    classID = Column("classid", Integer, ForeignKey("class.id", ondelete="CASCADE"))
 
     class_ = relationship("DBClass", back_populates="units")
     modules = relationship("DBModule", back_populates="unit")
@@ -79,7 +79,7 @@ class DBModule(Base):
     id = Column(Integer, primary_key = True, index = True)
     name = Column(String(255), nullable=False)
     sequence = Column(Integer, nullable=False)
-    unitID = Column(ForeignKey("unit.id",ondelete="CASCADE"))
+    unitID = Column("unitid", ForeignKey("unit.id",ondelete="CASCADE"))
 
     unit = relationship("DBUnit",back_populates="modules")
     days = relationship("DBDay",back_populates="module",cascade="all, delete-orphan")
@@ -96,7 +96,7 @@ class DBDay(Base):
     id = Column(Integer, primary_key = True, index = True)
     name = Column(String(25), nullable=False)
     sequence = Column(Integer, nullable=False)
-    moduleID = Column(Integer, ForeignKey("module.id", ondelete="CASCADE"), nullable=True)
+    moduleID = Column("moduleid", Integer, ForeignKey("module.id", ondelete="CASCADE"), nullable=True)
 
     assignments = relationship("DBAssignment",back_populates="day", cascade="all, delete-orphan")
     materials = relationship("DBMaterial",back_populates="day", cascade="all, delete-orphan")
@@ -112,8 +112,8 @@ class DBAssignment(Base):
     filename = Column(String(225), nullable=False)
     sequence = Column(Integer, nullable=False)
     path = Column(String(255),nullable=False)
-    remoteID = Column(String(255),nullable=True)
-    dayId = Column(ForeignKey("day.id", ondelete="CASCADE"))
+    remoteID = Column("remoteid", String(255), nullable=True)
+    dayId = Column("dayid", ForeignKey("day.id", ondelete="CASCADE"))
     updated_at = Column(DATETIME, nullable=True)
 
     day = relationship("DBDay", back_populates="assignments")
@@ -126,8 +126,8 @@ class DBMaterial(Base):
     filename = Column(String(225), nullable=False)
     sequence = Column(Integer, nullable=False)
     path = Column(String(255),nullable=False)
-    remoteID = Column(String(255),nullable=True)
-    dayId = Column(ForeignKey("day.id", ondelete="CASCADE"))
+    remoteID = Column("remoteid", String(255), nullable=True)
+    dayId = Column("dayid", ForeignKey("day.id", ondelete="CASCADE"))
     updated_at = Column(DATETIME, nullable=True)
 
     day = relationship("DBDay", back_populates="materials")
@@ -136,7 +136,7 @@ class DBConversation(Base):
     __tablename__ = "conversation"
 
     id = Column(Integer, primary_key=True, index=True)
-    studentID = Column(String(128), ForeignKey("student.id", ondelete="CASCADE"))
+    studentID = Column("studentid", String(128), ForeignKey("student.id", ondelete="CASCADE"))
     path = Column(String(255), nullable=True)
 
     student = relationship("DBStudent")
@@ -149,7 +149,7 @@ class DBMessage(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     content = Column(Text, nullable=False)
-    conversationID = Column(ForeignKey("conversation.id", ondelete="CASCADE"))
+    conversationID = Column("conversationid", ForeignKey("conversation.id", ondelete="CASCADE"))
     
     conversation = relationship("DBConversation", back_populates="messages")
 
@@ -160,7 +160,7 @@ class DBResponse(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     content = Column(Text, nullable=False)
-    conversationID = Column(ForeignKey("conversation.id", ondelete="CASCADE"))
+    conversationID = Column("conversationid", ForeignKey("conversation.id", ondelete="CASCADE"))
     
     conversation = relationship("DBConversation", back_populates="responses")    
 
@@ -169,8 +169,8 @@ class DBPracticeAttempt(Base):
     __tablename__ = "practice_attempt"
 
     id = Column(Integer, primary_key=True, index=True)
-    studentID = Column(String(128), ForeignKey("student.id", ondelete="CASCADE"))
-    classID = Column(Integer, ForeignKey("class.id", ondelete="CASCADE"))
+    studentID = Column("studentid", String(128), ForeignKey("student.id", ondelete="CASCADE"))
+    classID = Column("classid", Integer, ForeignKey("class.id", ondelete="CASCADE"))
     path = Column(String(255), nullable=False)  # Path to material or assignment
     level = Column(Integer, nullable=False)  # Level of the question when answered
     is_correct = Column(Boolean, nullable=False)  # Whether the answer was correct
@@ -184,8 +184,8 @@ class DBPrompt_Count_Material(Base):
     __tablename__ = "prompt_count_material"
 
     id = Column(Integer, primary_key=True, index=True)
-    studentID = Column(String(128), ForeignKey("student.id", ondelete="CASCADE"))
-    materialID = Column(Integer, ForeignKey("material.id", ondelete="CASCADE"))
+    studentID = Column("studentid", String(128), ForeignKey("student.id", ondelete="CASCADE"))
+    materialID = Column("materialid", Integer, ForeignKey("material.id", ondelete="CASCADE"))
     count = Column(Integer, nullable=False)
 
     material = relationship("DBMaterial")
@@ -195,8 +195,8 @@ class DBPrompt_Count_Assignment(Base):
     __tablename__ = "prompt_count_assignment"
 
     id = Column(Integer, primary_key=True, index=True)
-    studentID = Column(String(128), ForeignKey("student.id", ondelete="CASCADE"))
-    assignmentID = Column(Integer, ForeignKey("assignment.id", ondelete="CASCADE"))
+    studentID = Column("studentid", String(128), ForeignKey("student.id", ondelete="CASCADE"))
+    assignmentID = Column("assignmentid", Integer, ForeignKey("assignment.id", ondelete="CASCADE"))
     count = Column(Integer, nullable=False)
 
     assignment = relationship("DBAssignment")
