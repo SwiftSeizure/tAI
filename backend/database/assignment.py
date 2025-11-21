@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from backend.database.schema import DBAssignment, DBConversation, DBPrompt_Count_Assignment
+from backend.database.schema import DBAssignment, DBConversation, DBPrompt_Count_Assignment, DBClass, DBDay, DBModule, DBUnit
 from backend.exceptions import EntityNotFoundException, UploadNotFoundException
 import backend.database.student as student_db
 
@@ -79,7 +79,7 @@ def increment_prompt_count_assignment(assignmentID: int, studentID: str, session
         prompt_count = DBPrompt_Count_Assignment(assignmentID=assignmentID,studentID=studentID, count=1)
         session.add(prompt_count)
     else:
-        prompt_count.count += 1
+        prompt_count.count += 1 # type: ignore
     session.commit()
     return prompt_count
 
@@ -119,8 +119,14 @@ def get_assignment_id_by_path(path: str, session: Session):
     assignment = session.execute(stmt).scalar_one_or_none()
     return assignment.id if assignment else None
 
-def get_prompt_count_all(session: Session):
-    stmt = select(DBPrompt_Count_Assignment)
+def get_prompt_count_all(classID: int, session: Session):
+    stmt = (select(DBPrompt_Count_Assignment)
+        .join(DBAssignment, DBPrompt_Count_Assignment.assignmentID == DBAssignment.id)
+        .join(DBDay, DBAssignment.dayId == DBDay.id)
+        .join(DBModule, DBDay.moduleID == DBModule.id)
+        .join(DBUnit, DBModule.unitID == DBUnit.id)
+        .join(DBClass, DBUnit.classID == DBClass.id)
+        .where(DBClass.id == classID))
     prompt_counts = session.execute(stmt).scalars().all()
 
     return_dict = {}

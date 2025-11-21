@@ -40,17 +40,17 @@ doc_validator = DocumentValidator(max_size= 25 * 1024 * 1024)
 # SPECIFIC ROUTES FIRST (most specific to least specific)
 # ============================================================================
 
-@router.get("/prompt/all",
+@router.get("/prompt/{classID}/all",
             status_code=200,
             responses={
                 404: {"model": ClientErrorResponse},
             },
             summary="Get the prompt count for all materials. Must be an authenticated user.")
-def get_prompt_count_all(
-    user: Annotated[dict, Depends(get_firebase_user_from_token)],
-    session: DBSession
-):
-    return db_material.get_prompt_count_all(session)
+def get_prompt_count_all(classID: int,
+                         user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                         session: DBSession
+                        ):
+    return db_material.get_prompt_count_all(classID, session)
 
 
 @router.get("/{materialID}/prompt",

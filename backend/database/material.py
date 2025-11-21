@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from .schema import DBConversation, DBMaterial, DBDay, DBPrompt_Count_Material
+from .schema import DBConversation, DBMaterial, DBDay, DBPrompt_Count_Material, DBClass, DBModule, DBUnit
 from backend.exceptions import EntityNotFoundException, UploadNotFoundException
 from pathlib import Path
 from backend.database.student import get_student
@@ -121,8 +121,16 @@ def get_material_id_by_path(path: str, session: Session):
     material = session.execute(stmt).scalar_one_or_none()
     return material.id if material else None
 
-def get_prompt_count_all(session: Session):
-    stmt = select(DBPrompt_Count_Material)
+def get_prompt_count_all(classID: int, session: Session):
+    stmt = (
+        select(DBPrompt_Count_Material)
+        .join(DBMaterial, DBPrompt_Count_Material.materialID == DBMaterial.id)
+        .join(DBDay, DBMaterial.dayId == DBDay.id)
+        .join(DBModule, DBDay.moduleID == DBModule.id)
+        .join(DBUnit, DBModule.unitID == DBUnit.id)
+        .join(DBClass, DBUnit.classID == DBClass.id)
+        .where(DBClass.id == classID)
+    )
     prompt_counts = session.execute(stmt).scalars().all()
 
     return_dict = {}
