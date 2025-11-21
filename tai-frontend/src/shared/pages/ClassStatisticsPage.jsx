@@ -10,7 +10,6 @@ import { getMaterialStudentPrompts } from '../services/get-material-student-prom
 import { getAssignmentStudentPrompts } from '../services/get-assignment-student-prompts'; 
 import { getMaterialStudentChat } from '../services/get-material-student-chat';
 import { getAssignmentStudentChat } from '../services/get-assignment-student-chat'; 
-import { useCurrentClass } from '../../store/class-store';
 import AnalyticsDashboard from '../components/AnalyticsDashboard';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
