@@ -4,6 +4,7 @@ from backend.database.schema import DBClass, DBEnrolled, DBUnit,DBStudent, DBMod
 from backend.exceptions import EntityNotFoundException, DuplicateNameException
 from backend.models import ClassroomStudent, CreateUnit, ClassroomNameUpdate, ClassroomSettingsUpdate, CanvasData
 from backend.database.day import delete_day_files, get_canvas_materials, get_canvas_assignments, update_canvas_assignments, update_canvas_materials
+from backend.database.unit import delete_unit
 
 # Cavnas Stuff
 from cryptography.fernet import Fernet
@@ -16,6 +17,8 @@ from backend.exceptions import UnauthorizedException
 from fastapi import Depends
 from backend.auth import get_firebase_user_from_token
 from typing import Any, Annotated
+
+from backend.routers import classroom
 
 # Also Canvas
 #basedir = __import__("pathlib").Path(__file__).parent
@@ -192,6 +195,12 @@ async def add_canvas_api_key(classID: int, data: CanvasData, user: Annotated[dic
     classroom.canvas_api_key = fernet.encrypt(data.api_key.encode()) # type: ignore
     classroom.canvas_class_id = data.class_id # type: ignore
     classroom.canvas_domain_name = data.domain_name # type: ignore
+    
+    for unit in classroom.units:
+        if unit.name == "Canvas Modules":
+            # Delete existing Canvas Modules unit
+            delete_unit(unit.id, session)
+    
     create_new_unit(classID, CreateUnit(name="Canvas Modules", settings={}, published=False,), session)
     session.commit()
     await get_canvas_modules(classID, user, session)
