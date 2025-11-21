@@ -16,10 +16,8 @@ export const ensureStudentExists = async () => {
             }
         });
         
-        console.log('Student exists:', response.data);
         return response.data;
     } catch (error) {
-        console.log('Student not found, creating...', error);
         
         // If student doesn't exist (404), create them
         if (error.response && error.response.status === 404) {
@@ -30,7 +28,6 @@ export const ensureStudentExists = async () => {
                 
                 try {
                     const newStudent = await createStudent(displayName, username);
-                    console.log('Student created successfully:', newStudent);
                     
                     // Wait a moment for database consistency
                     await new Promise(resolve => setTimeout(resolve, 1000));

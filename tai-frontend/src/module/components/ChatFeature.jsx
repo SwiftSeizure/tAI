@@ -85,8 +85,6 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, sele
             // We'll let the parent component handle updating the chat state
             if (response && response.data) {
                 const { messages = [], responses = [] } = response.data;
-                console.log('Messages:', messages);
-                console.log('Responses:', responses);
             }
         } catch (error) {
             console.error('Error sending message:', error);

@@ -12,7 +12,6 @@ const verifyUserCreatedAndReady = async (userId, role) => {
             // Try to fetch the user's classes to verify they exist AND are ready
             const url = `/home/${role}/${userId}`;
             const response = await api.get(url);
-            console.log(`User ${userId} verified as ${role} and ready after ${i + 1} attempts`);
             
             // Additional check: ensure the response is valid
             if (response.data) {
@@ -22,13 +21,11 @@ const verifyUserCreatedAndReady = async (userId, role) => {
             if (error.response && error.response.status === 404) {
                 // User not found yet, wait and retry
                 if (i < maxRetries - 1) {
-                    console.log(`Waiting for user to be ready... attempt ${i + 1}/${maxRetries}`);
                     await new Promise(resolve => setTimeout(resolve, retryDelay));
                     continue;
                 }
             } else if (error.response && error.response.status !== 404) {
                 // Some other error occurred, but user might exist
-                console.log(`Non-404 error on attempt ${i + 1}, retrying...`, error.response.status);
                 if (i < maxRetries - 1) {
                     await new Promise(resolve => setTimeout(resolve, retryDelay));
                     continue;
@@ -56,7 +53,6 @@ export const getUserType = async () => {
         
         // If user is not found (404), they are a new user - create account based on role preference
         if (error.response && error.response.status === 404) {
-            console.log('User not found in database - creating new user account');
             
             try {
                 const currentUser = auth.currentUser;
@@ -71,14 +67,13 @@ export const getUserType = async () => {
                     const username = pendingUsername || currentUser.email?.split('@')[0] || `user_${Date.now()}`;
                     const userRole = pendingRole || 'student'; // Default to student if no role specified
                     
-                    console.log(`Creating ${userRole} account for ${userName}`);
+                    
                     
                     // Create account based on role
                     if (userRole === 'teacher') {
                         // Import createTeacher dynamically to avoid circular imports
                         const { createTeacher } = await import('./create-teacher');
                         await createTeacher(userName, username);
-                        console.log('Teacher account created successfully');
                         
                         // Verify the user was created successfully AND is ready
                         await verifyUserCreatedAndReady(currentUser.uid, 'teacher');
@@ -86,7 +81,6 @@ export const getUserType = async () => {
                     } else {
                         // Create student account (default)
                         await createStudent(userName, username);
-                        console.log('Student account created successfully');
                         
                         // Verify the user was created successfully AND is ready
                         await verifyUserCreatedAndReady(currentUser.uid, 'student');
