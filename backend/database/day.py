@@ -313,7 +313,7 @@ async def get_canvas_assignments(classroom: DBClass, db_day: DBDay, db_module: D
                                 tmp_file = UploadFile(filename=filename, file=open(temp_path, "rb"))
 
                                 assignment = await upload_assignment(db_day.id, item['title'], user, session, tmp_file) #type: ignore
-                                iso = assignment_info['updated_at']
+                                iso = file_info['updated_at']
                                 dt = datetime.fromisoformat(iso.replace("Z", ""))
                                 assignment.updated_at = dt  # type: ignore
                                 session.commit()
