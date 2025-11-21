@@ -42,8 +42,8 @@ const ChatFeature = ({ chatId, onSendMessage, displayType, selectedContent, sele
     const { currentChat, currentChatId, setCurrentChat } = useCurrentChat();
     
     // If no chatId is provided but we have displayType and selectedContent, generate a chatId
-    const effectiveChatId = chatId || (displayType && selectedContent?.id 
-        ? `${displayType}_${selectedContent.id}` 
+    const effectiveChatId = chatId || (displayType && selectedContent?.id && user?.id
+        ? `${displayType}_${selectedContent.id}_user_${user.id}` 
         : null);
 
     // Use the chat from currentChat if chatId matches, otherwise use a fallback

@@ -162,7 +162,7 @@ const TeacherStudentModulePage = () => {
             const fileURL = await getAssignmentURL(dayID, assignment.filename); 
             await setSelectedContent(assignment, 'assignment', fileURL);
             setDisplayType('assignment');
-            const chatId = `assignment_${assignment.id}`;
+            const chatId = `assignment_${assignment.id}_user_${user.id}`;
             setCurrentChat(chatId);
 
         } catch (error) {
@@ -188,7 +188,7 @@ const TeacherStudentModulePage = () => {
 
             setDisplayType('material');  
 
-            const chatId = `material_${material.id}`;
+            const chatId = `material_${material.id}_user_${user.id}`;
             setCurrentChat(chatId);
 
         } catch (error) {
@@ -518,12 +518,12 @@ const TeacherStudentModulePage = () => {
             </>
         )}
         </div> 
-            {user.role === "teacher" && (
-                <div>
+            {user.role === "teacher" && ( 
+                <div> 
                     <AddModuleModal 
-                        isOpen={showAddModuleModal}
-                        onClose={() => setShowAddModuleModal(false)}
-                        onAddModule={handleNewModule}
+                        isOpen={showAddModuleModal} 
+                        onClose={() => setShowAddModuleModal(false)} 
+                        onAddModule={handleNewModule} 
                     />
                     <AddDayModal
                         isOpen={showAddDayModal}

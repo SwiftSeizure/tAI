@@ -209,7 +209,7 @@ export default function AnalyticsDashboard({
                 </div>
 
                 <div className="bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500">
-                    <h3 className="text-sm font-medium text-gray-600 mb-2">Total Students</h3>
+                    <h3 className="text-sm font-medium text-gray-600 mb-2">Students Engaged with Chat</h3>
                     <p className="text-3xl font-bold text-gray-900">{analytics.totalStudents}</p>
                     <p className="text-xs text-gray-500 mt-1">in this class</p>
                 </div>

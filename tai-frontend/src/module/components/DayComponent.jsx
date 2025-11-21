@@ -158,14 +158,14 @@ const DayComponent = ( {
                                             {materials.map(material => (
                                                 <li key={`material-${material.id}`} className="flex items-center gap-1"> 
                                                     <button
-                                                        className={`flex items-center gap-2 py-2 px-3 rounded-lg border transition-all duration-200 flex-1 ${selectedContent && selectedContent.name === material.name ? 'bg-blue-50 border-blue-300 shadow-sm' : 'bg-white border-gray-200 hover:border-blue-200 hover:bg-blue-50'}`}
+                                                        className={`flex items-center gap-2 py-2 px-3 rounded-lg border transition-all duration-200 flex-1 min-w-0 ${selectedContent && selectedContent.name === material.name ? 'bg-blue-50 border-blue-300 shadow-sm' : 'bg-white border-gray-200 hover:border-blue-200 hover:bg-blue-50'}`}
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             onMaterialSelect(day.id, material);
                                                         }}
                                                     >
                                                         <FaFile className="text-sm text-green-500 flex-shrink-0" />
-                                                        <span className="text-sm text-gray-700 font-medium truncate min-w-0 overflow-hidden">{material.name}</span>
+                                                        <span className="text-sm text-gray-700 font-medium truncate block min-w-0">{material.name}</span>
                                                     </button> 
                                                     {user.role === "teacher" && (
                                                         <button 
@@ -214,7 +214,7 @@ const DayComponent = ( {
                                             {assignments.map(assignment => (
                                                 <li key={`assignment-${assignment.id}`} className="flex items-center gap-1"> 
                                                     <button
-                                                        className={`flex items-center gap-2 py-2 px-3 rounded-lg border transition-all duration-200 flex-1 ${selectedContent && selectedContent.name === assignment.name ? 'bg-blue-50 border-blue-300 shadow-sm' : 'bg-white border-gray-200 hover:border-blue-200 hover:bg-blue-50'}`}
+                                                        className={`flex items-center gap-2 py-2 px-3 rounded-lg border transition-all duration-200 flex-1 min-w-0 ${selectedContent && selectedContent.name === assignment.name ? 'bg-blue-50 border-blue-300 shadow-sm' : 'bg-white border-gray-200 hover:border-blue-200 hover:bg-blue-50'}`}
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             onAssignmentSelect(day.id, assignment); 
@@ -223,7 +223,7 @@ const DayComponent = ( {
                                                     >
                                                 
                                                         <MdAssignment className="text-sm text-emerald-500 flex-shrink-0" />
-                                                        <span className="text-sm text-gray-700 font-medium truncate">{assignment.name}</span>
+                                                        <span className="text-sm text-gray-700 font-medium truncate block min-w-0">{assignment.name}</span>
                                                     </button> 
                                                     {user.role === "teacher" && (
                                                         <button 
