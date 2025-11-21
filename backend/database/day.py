@@ -439,7 +439,7 @@ async def update_canvas_materials(classroom: DBClass, db_day: DBDay, db_module: 
                     if len(name) > 255:
                         name = name[:255]
             
-                    material = await upload_single_file(db_day.id, name, user, session, tmp_file) #type: ignore
+                    material = await upload_single_file(db_day.id, user, session, tmp_file, name) #type: ignore
                     
                     iso = file_info['updated_at']
                     dt = datetime.fromisoformat(iso.replace("Z", ""))
