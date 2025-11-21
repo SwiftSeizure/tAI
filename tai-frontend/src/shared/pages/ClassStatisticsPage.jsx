@@ -9,7 +9,8 @@ import { NoDataMessage } from '../components/NoDataMessage';
 import { getMaterialStudentPrompts } from '../services/get-material-student-prompts';
 import { getAssignmentStudentPrompts } from '../services/get-assignment-student-prompts'; 
 import { getMaterialStudentChat } from '../services/get-material-student-chat';
-import { getAssignmentStudentChat } from '../services/get-assignment-student-chat';
+import { getAssignmentStudentChat } from '../services/get-assignment-student-chat'; 
+import { useCurrentClass } from '../../store/class-store';
 import AnalyticsDashboard from '../components/AnalyticsDashboard';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
@@ -42,7 +43,7 @@ export default function ClassStatisticsPage() {
     const hasAssignments = assignmentsData.length > 0;
     const hasMaterials = materialsData.length > 0;
     const hasStudentData = studentData && Object.keys(studentData).length > 0;
-    const hasChatHistory = chatHistory && chatHistory.length > 0;
+    const hasChatHistory = chatHistory && chatHistory.length > 0; 
 
     const handleStudentPieClick = async (event, elements, chart) => {
         if (elements.length > 0) {
@@ -164,7 +165,7 @@ export default function ClassStatisticsPage() {
 
     const fetchAssignmentsPrompts = async () => {
         try {
-            const response = await getAssignmentsPrompts();
+            const response = await getAssignmentsPrompts(currentClass.id);
 
             if (response && typeof response === 'object' && !Array.isArray(response)) {
                 const formattedData = Object.entries(response).map(([id, item]) => ({
@@ -186,7 +187,7 @@ export default function ClassStatisticsPage() {
 
     const fetchMaterialsPrompts = async () => {
         try {
-            const response = await getMaterialsPrompts();
+            const response = await getMaterialsPrompts(currentClass.id);
 
             if (response && typeof response === 'object' && !Array.isArray(response)) {
                 const formattedData = Object.entries(response).map(([id, item]) => ({
