@@ -90,7 +90,6 @@ const TeacherStudentUnitPage = () => {
 
     const handlePublishUnit = async (unit) => {
         try { 
-            console.log('Publishing unit:', unit);
             await putPublishUnit(unit.id);
             fetchUnits(currentClass.id);
         } 

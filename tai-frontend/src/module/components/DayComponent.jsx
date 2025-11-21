@@ -90,7 +90,7 @@ const DayComponent = ( {
                     setAssignments(assignments || []);
                 }
             } catch (error) {
-                console.log(error);
+                console.error(error);
             } finally {
                 if (!isCancelled) setLoading(false);
             }

@@ -16,8 +16,6 @@ export const validatePracticeAnswer = async (studentID, classID, displayType, da
     try {
         const url = `/chat/validate-practice-answer/uploads/${displayType}/${dayID}/${currentFileName}`;
         
-        console.log("Validating practice answer at:", url, "level", level);
-        
         const formData = new FormData();
         formData.append('question', question);
         formData.append('answer', answer);
@@ -26,8 +24,6 @@ export const validatePracticeAnswer = async (studentID, classID, displayType, da
         const response = await api.post(url, formData, {
             params: { studentID, classID }
         });
-        
-        console.log("Validation response:", response.data);
         
         return response.data;
     } catch (error) {

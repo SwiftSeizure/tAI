@@ -647,7 +647,7 @@ export default function ClassStatisticsPage() {
                 {(hasAssignments || hasMaterials) && (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                         {/* Combined Bar Chart */}
-                        <div className="bg-white p-6 rounded-xl shadow-md">
+                        {/* <div className="bg-white p-6 rounded-xl shadow-md">
                             <h2 className="text-lg font-semibold mb-4">Material vs Assignment Prompt Comparison</h2>
                             {hasAssignments && hasMaterials ? (
                                 <div className="h-80">
@@ -656,7 +656,7 @@ export default function ClassStatisticsPage() {
                             ) : (
                                 <NoDataMessage message="Unfortunately, there is not enough data to show a comparison. Great job teaching!" />
                             )}
-                        </div>
+                        </div> */}
                         
                         {/* Difficulty Analysis */}
                         <div className="bg-white p-6 rounded-xl shadow-md">

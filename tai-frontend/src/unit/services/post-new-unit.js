@@ -16,8 +16,6 @@ export const postNewUnit = async (classID, unitName) => {
             }
         }; 
 
-        console.log('Sending request with body:', JSON.stringify(requestBody, null, 2));
-
         const response = await api.post(
             `/classroom/${classID}/unit`,
             requestBody,

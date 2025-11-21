@@ -265,7 +265,6 @@ const TeacherStudentModulePage = () => {
             formData.append('file', assignmentData.file);  
 
             const fileName = assignmentData.name; 
-            console.log('Selected day:', selectedDay); 
             
             await postCreateAssignment(selectedDay.id, fileName, formData); 
              
@@ -350,12 +349,8 @@ const TeacherStudentModulePage = () => {
 
     const handleDeleteMaterial = async () => {
         try { 
-            console.log('Deleting material:', currentDeleteMaterial);   
-            console.log('Selected day:', selectedDay); 
             await deleteMaterial(selectedDay.id, currentDeleteMaterial.filename);
-            await fetchModules(currentUnit.id);
-            
-            // Trigger refresh of day components to hide deleted material immediately
+            await fetchModules(currentUnit.id); 
             setRefreshKey(prev => prev + 1);
         } catch (error) {
             console.error('Error deleting material:', error);
@@ -373,12 +368,9 @@ const TeacherStudentModulePage = () => {
     };
 
     const handleDeleteAssignment = async () => {
-        try {
-            console.log('Deleting assignment:', currentDeleteAssignment); 
+        try { 
             await deleteAssignment(selectedDay.id, currentDeleteAssignment.filename);
-            await fetchModules(currentUnit.id);
-            
-            // Trigger refresh of day components to hide deleted assignment immediately
+            await fetchModules(currentUnit.id); 
             setRefreshKey(prev => prev + 1);
         } catch (error) {
             console.error('Error deleting assignment:', error);
