@@ -227,7 +227,7 @@ def get_teacher_by_day_id(dayID: int, session: Session) -> str:
 async def get_canvas_materials(classroom: DBClass, db_day: DBDay, db_module: DBModule, user: Annotated[dict, Depends(get_firebase_user_from_token)], session: Session):
     
     # Data needed for API call
-    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode() # type: ignore
+    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode().strip() # type: ignore
     class_id = classroom.canvas_class_id # type: ignore
     module_id = db_module.canvas_id # type: ignore
     domain_name = classroom.canvas_domain_name # type: ignore
@@ -269,7 +269,7 @@ async def get_canvas_materials(classroom: DBClass, db_day: DBDay, db_module: DBM
                     
 async def get_canvas_assignments(classroom: DBClass, db_day: DBDay, db_module: DBModule, user: Annotated[dict, Depends(get_firebase_user_from_token)], session: Session):
     # Data needed for API call
-    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode() # type: ignore
+    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode().strip() # type: ignore
     class_id = classroom.canvas_class_id # type: ignore
     module_id = db_module.canvas_id # type: ignore
     domain_name = classroom.canvas_domain_name # type: ignore
@@ -329,7 +329,7 @@ async def update_canvas_assignments(classroom: DBClass, db_day: DBDay, db_module
         session (Session): 
     """
     # Data needed for API call
-    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode() # type: ignore
+    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode().strip() # type: ignore
     class_id = classroom.canvas_class_id # type: ignore
     module_id = db_module.canvas_id # type: ignore
     domain_name = classroom.canvas_domain_name # type: ignore
@@ -394,7 +394,7 @@ async def update_canvas_assignments(classroom: DBClass, db_day: DBDay, db_module
 
 async def update_canvas_materials(classroom: DBClass, db_day: DBDay, db_module: DBModule, user: Annotated[dict, Depends(get_firebase_user_from_token)], session: Session):
     # Data needed for API call
-    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode() # type: ignore
+    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode().strip() # type: ignore
     class_id = classroom.canvas_class_id # type: ignore
     module_id = db_module.canvas_id # type: ignore
     domain_name = classroom.canvas_domain_name # type: ignore

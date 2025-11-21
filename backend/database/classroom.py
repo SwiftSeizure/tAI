@@ -192,7 +192,7 @@ async def add_canvas_api_key(classID: int, data: CanvasData, user: Annotated[dic
     if not classroom:
         raise EntityNotFoundException("classroom", classID) # type: ignore
 
-    classroom.canvas_api_key = fernet.encrypt(data.api_key.encode()) # type: ignore
+    classroom.canvas_api_key = fernet.encrypt(data.api_key.encode().strip()).decode() # type: ignore
     classroom.canvas_class_id = data.class_id # type: ignore
     classroom.canvas_domain_name = data.domain_name # type: ignore
     
@@ -303,7 +303,7 @@ async def get_canvas_modules(classID: int, user: Annotated[dict, Depends(get_fir
         raise EntityNotFoundException("classroom", classID) # type: ignore
     
     # Data needed for API call
-    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode() # type: ignore
+    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode().strip() # type: ignore
     class_id = classroom.canvas_class_id # type: ignore
     domain_name = classroom.canvas_domain_name # type: ignore
     
@@ -363,7 +363,7 @@ async def update_canvas_modules(classID: int, unit: DBUnit, user: Annotated[dict
         raise EntityNotFoundException("classroom", classID) # type: ignore
     
     # Data needed for API call
-    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode() # type: ignore
+    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode().strip() # type: ignore
     class_id = classroom.canvas_class_id # type: ignore
     domain_name = classroom.canvas_domain_name # type: ignore
     
