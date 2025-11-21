@@ -388,7 +388,7 @@ async def update_canvas_modules(classID: int, unit: DBUnit, user: Annotated[dict
         # See if this module already exists
         stmt = select(DBModule).filter(
             DBModule.unitID == unit.id,
-            DBModule.canvas_id == module['id']
+            DBModule.canvas_id == str(module['id'])
         )
         existing_module = session.execute(stmt).scalar_one_or_none()
         if existing_module:
@@ -402,7 +402,7 @@ async def update_canvas_modules(classID: int, unit: DBUnit, user: Annotated[dict
             name = module['name'],
             sequence = module['position'],
             unitID = canvas_unit.id,
-            canvas_id = module['id']  # type: ignore
+            canvas_id = str(module['id'])  # type: ignore
         )
         session.add(db_module)
         session.commit()
