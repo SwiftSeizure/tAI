@@ -165,7 +165,7 @@ const DayComponent = ( {
                                                         }}
                                                     >
                                                         <FaFile className="text-sm text-green-500 flex-shrink-0" />
-                                                        <span className="text-sm text-gray-700 font-medium truncate">{material.name}</span>
+                                                        <span className="text-sm text-gray-700 font-medium truncate min-w-0 overflow-hidden">{material.name}</span>
                                                     </button> 
                                                     {user.role === "teacher" && (
                                                         <button 
