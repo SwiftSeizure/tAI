@@ -4,6 +4,7 @@ from backend.database.schema import DBClass, DBEnrolled, DBUnit,DBStudent, DBMod
 from backend.exceptions import EntityNotFoundException, DuplicateNameException
 from backend.models import ClassroomStudent, CreateUnit, ClassroomNameUpdate, ClassroomSettingsUpdate, CanvasData
 from backend.database.day import delete_day_files, get_canvas_materials, get_canvas_assignments, update_canvas_assignments, update_canvas_materials
+from backend.database.unit import delete_unit
 
 # Cavnas Stuff
 from cryptography.fernet import Fernet
@@ -16,6 +17,8 @@ from backend.exceptions import UnauthorizedException
 from fastapi import Depends
 from backend.auth import get_firebase_user_from_token
 from typing import Any, Annotated
+
+from backend.routers import classroom
 
 # Also Canvas
 #basedir = __import__("pathlib").Path(__file__).parent
@@ -189,9 +192,15 @@ async def add_canvas_api_key(classID: int, data: CanvasData, user: Annotated[dic
     if not classroom:
         raise EntityNotFoundException("classroom", classID) # type: ignore
 
-    classroom.canvas_api_key = fernet.encrypt(data.api_key.encode()) # type: ignore
+    classroom.canvas_api_key = fernet.encrypt(data.api_key.encode().strip()).decode() # type: ignore
     classroom.canvas_class_id = data.class_id # type: ignore
     classroom.canvas_domain_name = data.domain_name # type: ignore
+    
+    for unit in classroom.units:
+        if unit.name == "Canvas Modules":
+            # Delete existing Canvas Modules unit
+            delete_unit(unit.id, session)
+    
     create_new_unit(classID, CreateUnit(name="Canvas Modules", settings={}, published=False,), session)
     session.commit()
     await get_canvas_modules(classID, user, session)
@@ -294,7 +303,7 @@ async def get_canvas_modules(classID: int, user: Annotated[dict, Depends(get_fir
         raise EntityNotFoundException("classroom", classID) # type: ignore
     
     # Data needed for API call
-    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode() # type: ignore
+    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode().strip() # type: ignore
     class_id = classroom.canvas_class_id # type: ignore
     domain_name = classroom.canvas_domain_name # type: ignore
     
@@ -354,7 +363,7 @@ async def update_canvas_modules(classID: int, unit: DBUnit, user: Annotated[dict
         raise EntityNotFoundException("classroom", classID) # type: ignore
     
     # Data needed for API call
-    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode() # type: ignore
+    api_key = fernet.decrypt(classroom.canvas_api_key.encode()).decode().strip() # type: ignore
     class_id = classroom.canvas_class_id # type: ignore
     domain_name = classroom.canvas_domain_name # type: ignore
     
@@ -379,7 +388,7 @@ async def update_canvas_modules(classID: int, unit: DBUnit, user: Annotated[dict
         # See if this module already exists
         stmt = select(DBModule).filter(
             DBModule.unitID == unit.id,
-            DBModule.canvas_id == module['id']
+            DBModule.canvas_id == str(module['id'])
         )
         existing_module = session.execute(stmt).scalar_one_or_none()
         if existing_module:
@@ -393,7 +402,7 @@ async def update_canvas_modules(classID: int, unit: DBUnit, user: Annotated[dict
             name = module['name'],
             sequence = module['position'],
             unitID = canvas_unit.id,
-            canvas_id = module['id']  # type: ignore
+            canvas_id = str(module['id'])  # type: ignore
         )
         session.add(db_module)
         session.commit()

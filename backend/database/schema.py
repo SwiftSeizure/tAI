@@ -52,7 +52,7 @@ class DBClass(Base):
     enrollment = relationship("DBEnrolled", back_populates="class_")
     units = relationship("DBUnit", back_populates="class_", order_by="DBUnit.sequence", cascade="all, delete")
     
-    canvas_api_key = Column(String(255), nullable=True)
+    canvas_api_key = Column(Text, nullable=True)
     canvas_class_id = Column(String(255), nullable=True)
     canvas_domain_name = Column(String(255), nullable=True)
     

@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from .schema import DBMaterial, DBDay, DBPrompt_Count_Material
+from .schema import DBConversation, DBMaterial, DBDay, DBPrompt_Count_Material
 from backend.exceptions import EntityNotFoundException, UploadNotFoundException
 from pathlib import Path
 from backend.database.student import get_student
@@ -86,12 +86,19 @@ def increment_prompt_count_material(materialID: int, studentID: str, session: Se
 
 
 def get_prompt_count_material(materialID: int, studentID: str, session: Session):
-    stmt = select(DBPrompt_Count_Material).filter(
-        DBPrompt_Count_Material.materialID == materialID,
-        DBPrompt_Count_Material.studentID == studentID
+    stmt = select(DBMaterial).filter(
+        DBMaterial.id == materialID
     )
-    prompt_count = session.execute(stmt).scalar_one_or_none()
-    return prompt_count.count if prompt_count else 0
+    material = session.execute(stmt).scalar_one_or_none()
+    if not material:
+        raise EntityNotFoundException("material", materialID)  # pyright: ignore[reportArgumentType]
+    stmt = select(DBConversation).filter(
+        DBConversation.studentID == studentID,
+        DBConversation.path == material.path
+    )
+    conversation = session.execute(stmt).scalar_one_or_none()
+    
+    return {"messages": conversation.messages, "responses": conversation.responses}  # pyright: ignore[reportUndefinedVariable, reportOptionalMemberAccess]
 
 def get_prompt_count_all_material(materialID: int, session: Session):
     stmt = select(DBPrompt_Count_Material).filter(
