@@ -26,9 +26,10 @@ export const sendChatMessage = async ({
 }) => {
     if (!message.trim() || !displayType) return '';
 
+    // ✅ FIXED: Include user.id in chatId
     const chatId = displayType === 'material' 
-        ? `material_${selectedContent.id}`
-        : `assignment_${selectedContent.id}`;
+        ? `material_${selectedContent.id}_user_${user.id}`
+        : `assignment_${selectedContent.id}_user_${user.id}`;
     
     try {
         setLoading(true);
