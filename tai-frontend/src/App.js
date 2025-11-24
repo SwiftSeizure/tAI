@@ -13,6 +13,7 @@ import JoinClassPage from './home/pages/JoinClassPage';
 import CreateUnitPage from './unit/pages/CreateUnitPage';  
 import ClassStatisticsPage from './shared/pages/ClassStatisticsPage';
 import NotFoundPage from './shared/pages/NotFoundPage';
+import TeamPage from './shared/pages/TeamPage';
 
 function App() {
     const [{ user }, { setUser, clearUser }] = useUser();
@@ -135,7 +136,10 @@ function App() {
                     <Route path="/statistics" element={<ClassStatisticsPage />} /> 
 
   	  	  	  	  	{/* 404 - Catch all unmatched routes */}
-  	  	  	  	  	<Route path="*" element={<NotFoundPage />} />
+  	  	  	  	  	<Route path="*" element={<NotFoundPage />} /> 
+
+                    {/* Team page for wiki presence */} 
+                    <Route path="/team" element={<TeamPage />} />
 	  	  	  	</Routes>
 	  	  	</div>
 	  	</BrowserRouter>
