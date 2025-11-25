@@ -27,10 +27,8 @@ export const NavBarTeamPresence = ({ title }) => {
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center space-x-4">
                         {navigationLinks.map((link) => {  
-                            let Icon = null;
-                            if (link.icon) { 
-                                Icon = link.icon;
-                            }
+                            const Icon = link.icon;
+
                             return (
                                 <a
                                     key={link.name}
@@ -38,7 +36,7 @@ export const NavBarTeamPresence = ({ title }) => {
                                     className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-700 
                                              hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
                                 >
-                                    <Icon className="w-4 h-4" />
+                                    {Icon && <Icon className="w-4 h-4" />}
                                     <span>{link.name}</span>
                                 </a>
                             );
