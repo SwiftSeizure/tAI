@@ -75,6 +75,10 @@ export default function MembersPage() {
                                         src={member.image} 
                                         alt={member.name}
                                         className="w-48 h-48 rounded-xl object-cover shadow-md mx-auto sm:mx-0"
+                                        onError={(e) => {
+                                            e.target.onerror = null; // Prevent infinite loop if the fallback also fails
+                                            e.target.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2M0YzVjNyIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xOCA2TDEyIDJsLTYgNGgxMnoiPjwvcGF0aD48cGF0aCBkPSJNMTggMjBWNmwtNiA0bC02LTR2MTRsNi00IDYgNHoiPjwvcGF0aD48L3N2Zz4=';
+                                        }}
                                     />
                                 </div>
 
