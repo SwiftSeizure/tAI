@@ -40,15 +40,6 @@ export default function MembersPage() {
         },
         {
             id: 3,
-            name: "Ethan Phelps",
-            role: "Backend Engineer",
-            email: "ezphelps@gmail.com",
-            linkedin: "",
-            image: kieranHeadshot, 
-            biography: "Some stuff about Ethan"
-        },
-        {
-            id: 4,
             name: "Wilson Webster",
             role: "Frontend Enginner",
             email: "wilweb72@gmail.com",
@@ -59,7 +50,16 @@ export default function MembersPage() {
                         Our capstone project, TAi, is an AI-powered teaching assistant that integrates with Canvas to help instructors generate practice material and give students clearer, more controllable AI support. On TAi, I work across the stack, designing FastAPI + SQL services, React/Tailwind interfaces, and running user studies with teachers.
 
                         Outside class, I own and operate a fine-art photography and framing business. I choose to spend much of my time researching the latest advancements in tech or in the great outdoors, both in leisurely and adrenalized activities.`
-        }
+        },
+        {
+            id: 4,
+            name: "Ethan Phelps",
+            role: "Backend Engineer",
+            email: "ezphelps@gmail.com",
+            linkedin: "",
+            image: kieranHeadshot, 
+            biography: "Some stuff about Ethan"
+        },
     ];
 
     return (
