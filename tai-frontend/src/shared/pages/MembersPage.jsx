@@ -4,6 +4,7 @@ import { Mail, Linkedin, Youtube, Users } from 'lucide-react';
 import kieranHeadshot from '../../shared/images/team-page/kieran-headshot.png'; 
 import haidanHeadshot from '../../shared/images/team-page/haidan-headshot.png';
 import wilsonHeadshot from '../../shared/images/team-page/wilson-headshot.jpg';
+//import ethanHeadshot from '../../shared/images/team-page/ethan-headshot.png'; TODO
 
 export default function MembersPage() { 
 
@@ -57,8 +58,8 @@ export default function MembersPage() {
             role: "Backend Engineer",
             email: "ezphelps@gmail.com",
             linkedin: "",
-            image: kieranHeadshot, 
-            biography: "Some stuff about Ethan"
+            image: kieranHeadshot,  // ethanHeadshot TODO
+            biography: "Some stuff about Ethan" // paste the bio TODO
         },
     ];
 
