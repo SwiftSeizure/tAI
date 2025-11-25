@@ -4,7 +4,7 @@ import { Youtube, BookOpen } from 'lucide-react';
 export default function TeamPage() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
-            <NavBarTeamPresence title="Our Team" />
+            <NavBarTeamPresence title="About TAi" />
             
             <div className="max-w-4xl mx-auto px-4 py-8">
                 <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
