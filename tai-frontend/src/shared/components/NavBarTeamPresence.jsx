@@ -11,8 +11,8 @@ export const NavBarTeamPresence = ({ title }) => {
     const navigationLinks = [
         { name: 'Use Our App', href: '/' },
         { name: 'Tutorial', href: '/tutorial', icon: Video },
-        { name: 'Team', href: '/team', icon: Users },
-        { name: 'Members', href: '/members', icon: BookOpen },
+        { name: 'TAi', href: '/team', icon: Home },
+        { name: 'Members', href: '/members', icon: Users },
     ];
 
     return (
