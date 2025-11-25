@@ -12,7 +12,7 @@ export default function TutorialPage() {
                     {/* Title */}
                     <div className="text-center space-y-2">
                         <h1 className="text-4xl font-bold text-gray-900">Getting Started Tutorial</h1>
-                        <p className="text-xl text-gray-600">Learn how to use our platform effectively</p>
+                        <p className="text-xl text-gray-600">Learn How to Get the Most Out of TAi</p>
                     </div>
 
                     {/* Subtitle */}
@@ -21,9 +21,7 @@ export default function TutorialPage() {
                             Watch Our Complete Guide
                         </h2>
                         <p className="text-gray-600 leading-relaxed">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor 
-                            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
-                            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                            The tutorial bellow will teach you everything you need to know about using our applicaiton. We are excited to have you and to continue promoting education.
                         </p>
                     </div>
 

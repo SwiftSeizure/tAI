@@ -9,7 +9,7 @@ export const NavBarTeamPresence = ({ title }) => {
     };
 
     const navigationLinks = [
-        { name: 'Home', href: '/', icon: Home },
+        { name: 'Use Our App', href: '/' },
         { name: 'Tutorial', href: '/tutorial', icon: Video },
         { name: 'Team', href: '/team', icon: Users },
         { name: 'Members', href: '/members', icon: BookOpen },
@@ -26,8 +26,11 @@ export const NavBarTeamPresence = ({ title }) => {
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center space-x-4">
-                        {navigationLinks.map((link) => {
-                            const Icon = link.icon;
+                        {navigationLinks.map((link) => {  
+                            let Icon = null;
+                            if (link.icon) { 
+                                Icon = link.icon;
+                            }
                             return (
                                 <a
                                     key={link.name}
@@ -41,14 +44,6 @@ export const NavBarTeamPresence = ({ title }) => {
                             );
                         })}
                         
-                        {/* Logout Button */}
-                        <button
-                            className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg 
-                                     hover:bg-red-700 transition-colors duration-200"
-                        >
-                            <LogOut className="w-4 h-4" />
-                            <span>Logout</span>
-                        </button>
                     </div>
 
                     {/* Mobile Menu Button */}
