@@ -35,7 +35,7 @@ export default function MembersPage() {
             role: "Backend Engineer",
             email: "ezphelps@gmail.com",
             linkedin: "",
-            image: "https://via.placeholder.com/200/6A4C93/FFFFFF?text=MJ", 
+            image: kieranHeadshot, 
             biography: "Some stuff about Ethan"
         },
         {
