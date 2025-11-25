@@ -34,7 +34,7 @@ export default function TeamPage() {
                                 <div className="grid md:grid-cols-2 gap-6">
                                     <div className="bg-white p-4 rounded-lg border-l-4 border-blue-500">
                                         <h3 className="font-semibold text-gray-800 mb-2">For Students</h3>
-                                        <p>24/7 AI tutor that understands course materials, asks guiding questions, and provides tailored practice—all while encouraging understanding over simple answers.</p>
+                                        <p>24/7 AI tutor that understands course materials, asks guiding questions, and provides tailored practice, all while encouraging understanding over simple answers.</p>
                                     </div>
                                     <div className="bg-white p-4 rounded-lg border-l-4 border-green-500">
                                         <h3 className="font-semibold text-gray-800 mb-2">For Teachers</h3>
@@ -65,7 +65,7 @@ export default function TeamPage() {
                                 <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
                                     <h3 className="font-semibold text-lg text-gray-800 mb-3">User-Centric Frontend</h3>
                                     <p className="text-gray-700 leading-7">
-                                        Our responsive React interface features real-time chat with Markdown/LaTeX support, embedded document viewing, and intuitive analytics dashboards—all designed with educators and students in mind.
+                                        Our responsive React interface features real-time chat with Markdown/LaTeX support, embedded document viewing, and intuitive analytics dashboards, all designed with educators and students in mind.
                                     </p>
                                 </div>
                             </div>
