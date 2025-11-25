@@ -73,20 +73,12 @@ export const NavBarTeamPresence = ({ title }) => {
                                                  hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
                                         onClick={() => setIsMenuOpen(false)}
                                     >
-                                        <Icon className="w-5 h-5" />
+                                        {Icon && <Icon className="w-4 h-4" />}
                                         <span>{link.name}</span>
                                     </a>
                                 );
                             })}
                             
-                            {/* Mobile Logout Button */}
-                            <button
-                                className="flex items-center gap-3 px-4 py-3 bg-red-600 text-white rounded-lg 
-                                         hover:bg-red-700 transition-colors duration-200"
-                            >
-                                <LogOut className="w-5 h-5" />
-                                <span>Logout</span>
-                            </button>
                         </div>
                     </div>
                 )}
