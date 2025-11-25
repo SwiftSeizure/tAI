@@ -1,57 +1,223 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavBarTeamPresence } from '../../shared/components/NavBarTeamPresence';
-import { Youtube, Users, BookOpen } from 'lucide-react';
+import { Youtube, Users, BookOpen, GraduationCap, UserCircle, ChevronDown, ChevronUp } from 'lucide-react';
 
 export default function TutorialPage() {
+    const [expandedSection, setExpandedSection] = useState('teacher');
+
+    const toggleSection = (section) => {
+        setExpandedSection(expandedSection === section ? null : section);
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
             <NavBarTeamPresence title="Tutorial" />
             
-            <div className="max-w-4xl mx-auto px-4 py-8">
+            <div className="max-w-5xl mx-auto px-4 py-8">
                 <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
                     {/* Title */}
                     <div className="text-center space-y-2">
-                        <h1 className="text-4xl font-bold text-gray-900">Getting Started Tutorial</h1>
-                        <p className="text-xl text-gray-600">Learn How to Get the Most Out of TAi</p>
+                        <h1 className="text-4xl font-bold text-gray-900">Getting Started with TAi</h1>
+                        <p className="text-xl text-gray-600">Learn How to Get the Most Out of Our Platform</p>
                     </div>
 
-                    {/* Subtitle */}
+                    {/* Introduction */}
                     <div className="border-t border-gray-200 pt-6">
-                        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                            Watch Our Complete Guide
-                        </h2>
-                        <p className="text-gray-600 leading-relaxed">
-                            The tutorial bellow will teach you everything you need to know about using our applicaiton. We are excited to have you and to continue promoting education.
+                        <p className="text-gray-700 leading-relaxed text-center">
+                            The tutorials below will teach you everything you need to know about using our application. 
+                            We are excited to have you and to continue promoting education.
                         </p>
                     </div>
 
-                    {/* YouTube Video Link */}
-                    <div className="bg-gradient-to-r from-red-50 to-pink-50 rounded-xl p-6 border border-red-200">
-                        <div className="flex items-center gap-3 mb-4">
-                            <Youtube className="w-8 h-8 text-red-600" />
-                            <h3 className="text-xl font-semibold text-gray-900">Video Tutorial</h3>
-                        </div>
-                        
-                        {/* Video Embed Placeholder */}
-                        <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center mb-4">
-                            <div className="text-center space-y-2">
-                                <Youtube className="w-16 h-16 text-gray-400 mx-auto" />
-                                <p className="text-gray-500">YouTube Video Embed</p>
-                                <p className="text-sm text-gray-400">Replace with actual video URL</p>
-                            </div>
+                    {/* Tutorial Sections */}
+                    <div className="space-y-4">
+                        {/* Teacher Tutorial */}
+                        <div className="border border-gray-200 rounded-xl overflow-hidden">
+                            <button
+                                onClick={() => toggleSection('teacher')}
+                                className="w-full flex items-center justify-between p-6 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 transition-colors duration-200"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <GraduationCap className="w-8 h-8 text-blue-600" />
+                                    <div className="text-left">
+                                        <h2 className="text-2xl font-bold text-gray-900">Teacher Tutorial</h2>
+                                        <p className="text-sm text-gray-600">Set up your classroom and manage students</p>
+                                    </div>
+                                </div>
+                                {expandedSection === 'teacher' ? (
+                                    <ChevronUp className="w-6 h-6 text-gray-600" />
+                                ) : (
+                                    <ChevronDown className="w-6 h-6 text-gray-600" />
+                                )}
+                            </button>
+                            
+                            {expandedSection === 'teacher' && (
+                                <div className="p-6 bg-white space-y-6">
+                                    {/* Step 1 */}
+                                    <div className="flex gap-4">
+                                        <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
+                                            1
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-gray-900 mb-2">Login to Your Account</h3>
+                                            <p className="text-gray-700">Click login and enter your user credentials to access the platform.</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Step 2 */}
+                                    <div className="flex gap-4">
+                                        <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
+                                            2
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-gray-900 mb-2">Create a New Classroom</h3>
+                                            <p className="text-gray-700">
+                                                Create a new classroom and set your desired chat settings. If you have a Canvas class, 
+                                                follow the on-screen instructions to import it directly.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Step 3 */}
+                                    <div className="flex gap-4">
+                                        <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
+                                            3
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-gray-900 mb-2">Organize Your Content</h3>
+                                            <p className="text-gray-700">
+                                                Add your desired units, modules, and days. Then upload your materials and assignments 
+                                                for each section to build your course structure.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Step 4 */}
+                                    <div className="flex gap-4">
+                                        <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
+                                            4
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-gray-900 mb-2">Share Class Code with Students</h3>
+                                            <p className="text-gray-700">
+                                                Find your class code on the class home page and share it with your students so they 
+                                                can join and interact with the class.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Step 5 */}
+                                    <div className="flex gap-4">
+                                        <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
+                                            5
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-gray-900 mb-2">Monitor Student Progress</h3>
+                                            <p className="text-gray-700">
+                                                Access student statistics by navigating to your class and going to the student 
+                                                statistics card. Click on pie charts to drill down into more detailed information.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
-                        <a 
-                            href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white font-medium 
-                                     rounded-lg hover:bg-red-700 transition-colors duration-200 shadow-sm hover:shadow-md"
-                        >
-                            <Youtube className="w-5 h-5" />
-                            Watch on YouTube
-                        </a>
+                        {/* Student Tutorial */}
+                        <div className="border border-gray-200 rounded-xl overflow-hidden">
+                            <button
+                                onClick={() => toggleSection('student')}
+                                className="w-full flex items-center justify-between p-6 bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 transition-colors duration-200"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <UserCircle className="w-8 h-8 text-purple-600" />
+                                    <div className="text-left">
+                                        <h2 className="text-2xl font-bold text-gray-900">Student Tutorial</h2>
+                                        <p className="text-sm text-gray-600">Join classes and get AI-powered help</p>
+                                    </div>
+                                </div>
+                                {expandedSection === 'student' ? (
+                                    <ChevronUp className="w-6 h-6 text-gray-600" />
+                                ) : (
+                                    <ChevronDown className="w-6 h-6 text-gray-600" />
+                                )}
+                            </button>
+                            
+                            {expandedSection === 'student' && (
+                                <div className="p-6 bg-white space-y-6">
+                                    {/* Step 1 */}
+                                    <div className="flex gap-4">
+                                        <div className="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold">
+                                            1
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-gray-900 mb-2">Login to Your Account</h3>
+                                            <p className="text-gray-700">Click login and enter your user credentials to access the platform.</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Step 2 */}
+                                    <div className="flex gap-4">
+                                        <div className="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold">
+                                            2
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-gray-900 mb-2">Join a Classroom</h3>
+                                            <p className="text-gray-700">
+                                                Add a classroom using the class code provided by your teacher.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Step 3 */}
+                                    <div className="flex gap-4">
+                                        <div className="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold">
+                                            3
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-gray-900 mb-2">Navigate Course Content</h3>
+                                            <p className="text-gray-700">
+                                                Browse through your course by selecting units, modules, and days to find the 
+                                                materials and assignments you need.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Step 4 */}
+                                    <div className="flex gap-4">
+                                        <div className="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold">
+                                            4
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-gray-900 mb-2">Get AI Teaching Assistant Help</h3>
+                                            <p className="text-gray-700">
+                                                When viewing a material or assignment, press the chat button in the bottom right 
+                                                corner to open your helpful AI teaching assistant.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Step 5 */}
+                                    <div className="flex gap-4">
+                                        <div className="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold">
+                                            5
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-gray-900 mb-2">Practice with AI-Generated Problems</h3>
+                                            <p className="text-gray-700">
+                                                In the chat, click "Practice Level 1" to generate practice problems based on the 
+                                                material you're viewing. Keep answering questions correctly to level up and increase 
+                                                the difficulty.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
+
+                    {/* Video Tutorial Section */}
+                     
 
                     {/* Navigation Links */}
                     <div className="flex flex-wrap gap-4 pt-6 border-t border-gray-200">
