@@ -5,7 +5,16 @@ import kieranHeadshot from '../../shared/images/team-page/kieran-headshot.png';
 import haidanHeadshot from '../../shared/images/team-page/haidan-headshot.png';
 import wilsonHeadshot from '../../shared/images/team-page/wilson-headshot.jpg';
 
-export default function MembersPage() {
+export default function MembersPage() { 
+
+    const getImageSrc = (image) => {
+        try {
+            return image || "https://via.placeholder.com/200/CCCCCC/FFFFFF?text=No+Image";
+        } catch {
+            return "https://via.placeholder.com/200/CCCCCC/FFFFFF?text=No+Image";
+        }
+    }; 
+
     const members = [
         {
             id: 1,
@@ -72,7 +81,7 @@ export default function MembersPage() {
                                 {/* Headshot */}
                                 <div className="flex-shrink-0">
                                     <img 
-                                        src={member.image} 
+                                        src={getImageSrc(member.image)} 
                                         alt={member.name}
                                         className="w-48 h-48 rounded-xl object-cover shadow-md mx-auto sm:mx-0"
                                         onError={(e) => {
