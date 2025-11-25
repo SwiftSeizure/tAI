@@ -10,31 +10,74 @@ export default function TeamPage() {
                 <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
                     {/* Title */}
                     <div className="text-center space-y-2">
-                        <h1 className="text-4xl font-bold text-gray-900">Meet Our Team</h1>
-                        <p className="text-xl text-gray-600">The people behind the platform</p>
+                        <h1 className="text-4xl font-bold text-gray-900">Welcome to TAi</h1>
+                        <p className="text-xl text-gray-600">See what makes us special</p>
                     </div>
 
-                    {/* Content Paragraphs */}
-                    <div className="space-y-4 text-gray-700 leading-relaxed">
-                        <p>
-                            tAI is an AI powered teaching assistant designed to sit alongside real classes, real teachers, and real students in order to amplify what's already happening in the classroom. At its core, tAI is a full stack educational platform where students get on demand, context aware help with their actual course materials, and teachers gain a window into how students are thinking, struggling, and progressing over time. We built it because we genuinely believe that every student deserves tutoring level support, and that modern AI can finally make that scalable without sacrificing teacher oversight or pedagogical integrity.
-                        </p>
-                        
-                        <p>
-                            The problem we're addressing is simple but deep: teachers do not have the time or capacity to give individualized support to every student exactly when they need it, and traditional tools only ever show the final answer, not the learning journey. Students get stuck on homework late at night, go days without feedback, or quietly fall behind because they're afraid to ask "basic" questions. Teachers, meanwhile, see grades but not the misconceptions that produced them. tAI tackles both sides of this gap. For students, it provides a 24/7 AI tutor that reads the same PDFs, problem sets, and notes they're working from, then uses a deliberately Socratic style that is to ask guiding questions, breaking down concepts, and generating practice problems at appropriate difficulty level rather than simply giving away solutions. For teachers, it logs interactions, surfaces analytics about engagement and difficulty, and preserves full chat histories so they can understand what students are actually wrestling with and how the AI is intervening.
-                        </p>
-                        
-                        <p>
-                            To make this work in real classrooms, tAI is built as a robust web application with a modern, scalable architecture. The backend uses Python with FastAPI, PostgreSQL, and SQLAlchemy to model a rich hierarchy of classes, units, modules, days, materials, and assignments. Authentication and identity are handled via Firebase, with the backend verifying Firebase JWTs on each request to maintain a clean separation between auth and application logic. AI functionality is powered by OpenAI's GPT models, with teacher uploaded course files sent to OpenAI's file API to allow the assistant to ground its responses in the exact materials used in class. Canvas LMS is integrated with encrypted storage of API tokens and automatic import of modules and assignments so teachers don't have to duplicate their work or change their existing workflows.
-                        </p>
+                    {/* Content Sections */}
+                    <div className="space-y-8">
+                        {/* Introduction Section */}
+                        <section className="space-y-4">
+                            <h2 className="text-2xl font-bold text-gray-800">Empowering Education with AI</h2>
+                            <p className="text-gray-700 leading-7 text-justify">
+                                TAi is an AI-powered teaching assistant designed to enhance real classrooms by providing personalized support. Our platform offers students on-demand, context-aware help with their course materials while giving teachers valuable insights into student progress and challenges. We believe every student deserves tutoring-level support, and modern AI makes this scalable without compromising educational quality.
+                            </p>
+                        </section>
 
-                        <p>
-                            On the frontend, tAI is a tailored React application using React Router for navigation and react sweet state with localStorage persistence for managing session state across chat, practice, and class contexts. The UI is built with Material UI components and Tailwind CSS for a responsive, accessible interface that feels ergonomic and familiar to teachers and students. The chat experience supports rich formatting and math through Markdown and LaTeX rendering, while embedded PDF viewing lets students read and ask about materials in one place. Teacher analytics dashboards use Chart.js to visualize engagement patterns, prompt counts, and practice performance in a way that supports real instructional decisions.
-                        </p> 
+                        {/* Problem Statement */}
+                        <section className="space-y-4 bg-blue-50 p-6 rounded-xl">
+                            <h2 className="text-2xl font-bold text-gray-800">The Challenge We're Solving</h2>
+                            <div className="space-y-4 text-gray-700 leading-7">
+                                <p>
+                                    <span className="font-medium text-gray-800">The Problem:</span> Teachers struggle to provide individualized support to every student, while students often feel stuck without immediate guidance. Traditional tools show final answers but miss the learning journey.
+                                </p>
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="bg-white p-4 rounded-lg border-l-4 border-blue-500">
+                                        <h3 className="font-semibold text-gray-800 mb-2">For Students</h3>
+                                        <p>24/7 AI tutor that understands course materials, asks guiding questions, and provides tailored practice—all while encouraging understanding over simple answers.</p>
+                                    </div>
+                                    <div className="bg-white p-4 rounded-lg border-l-4 border-green-500">
+                                        <h3 className="font-semibold text-gray-800 mb-2">For Teachers</h3>
+                                        <p>Comprehensive analytics, interaction logs, and progress tracking to understand student challenges and optimize teaching strategies.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
 
-                        <p>
-                            Taken together tAI a bet on the bridge between the growing capabilities of AI and the foundational potential of education. tAI is designed to respect teachers' bandwidth, honor students' need for genuine understanding, and use AI as a force multiplier rather than a shortcut. We believe deeply that this is the right shape for classroom AI: grounded in real course content, transparent to instructors, adaptive to individual learners, and built on a foundation that can grow with the realities of modern education.
-                        </p>
+                        {/* Technical Architecture */}
+                        <section className="space-y-4">
+                            <h2 className="text-2xl font-bold text-gray-800">How It Works</h2>
+                            <div className="space-y-6">
+                                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                                    <h3 className="font-semibold text-lg text-gray-800 mb-3">Robust Backend Infrastructure</h3>
+                                    <p className="text-gray-700 leading-7">
+                                        Built with Python's FastAPI and PostgreSQL, our backend efficiently manages complex educational hierarchies. We use Firebase for secure authentication and integrate with Canvas LMS to streamline teacher workflows.
+                                    </p>
+                                </div>
+                                
+                                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                                    <h3 className="font-semibold text-lg text-gray-800 mb-3">Intelligent AI Integration</h3>
+                                    <p className="text-gray-700 leading-7">
+                                        Powered by OpenAI's GPT models, TAi grounds its responses in your actual course materials. Teachers can upload documents that the AI references, ensuring accurate and relevant assistance.
+                                    </p>
+                                </div>
+                                
+                                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                                    <h3 className="font-semibold text-lg text-gray-800 mb-3">User-Centric Frontend</h3>
+                                    <p className="text-gray-700 leading-7">
+                                        Our responsive React interface features real-time chat with Markdown/LaTeX support, embedded document viewing, and intuitive analytics dashboards—all designed with educators and students in mind.
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Closing */}
+                        <section className="text-center py-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl">
+                            <h2 className="text-2xl font-bold text-gray-800 mb-3">The Future of Classroom AI</h2>
+                            <p className="text-gray-700 max-w-3xl mx-auto leading-7">
+                                TAi represents a new approach to educational technology—one that enhances human teaching rather than replacing it. By combining cutting-edge AI with deep educational insights, we're creating tools that adapt to individual learning needs while keeping teachers firmly in control of the educational experience.
+                            </p>
+                        </section>
                     </div> 
 
                     {/* System Architecture Section */}
