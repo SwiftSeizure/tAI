@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
     signInWithEmailAndPassword, 
     signInWithPopup,
@@ -362,6 +362,13 @@ const LoginPage = () => {
                                     Get Started
                                 </span>
                             </button>
+                            <Link 
+                                to="/team"
+                                className="mt-4 px-8 py-3 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors duration-200 group"
+                            >
+                                Learn More
+                                <span className="block w-0 group-hover:w-full h-0.5 bg-blue-600 transition-all duration-300"></span>
+                            </Link>
                         </div>
                     </div>
                 </section>
