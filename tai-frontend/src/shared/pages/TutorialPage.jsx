@@ -85,7 +85,7 @@ export default function TutorialPage() {
                                     <GraduationCap className="w-8 h-8 text-blue-600" />
                                     <div className="text-left">
                                         <h2 className="text-2xl font-bold text-gray-900">Teacher Tutorial</h2>
-                                        <p className="text-sm text-gray-600">Set up your classroom and manage students</p>
+                                        <p className="text-sm text-gray-600">Set up classrooms and manage students</p>
                                     </div>
                                 </div>
                                 {expandedSection === 'teacher' ? (
