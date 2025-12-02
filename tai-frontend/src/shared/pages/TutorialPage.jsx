@@ -57,7 +57,7 @@ export default function TutorialPage() {
                                 <div className="p-6 bg-white space-y-4">
                                     {/* Bullet Point Items */}
                                     <div className="flex gap-4">
-                                        <div className="flex-shrink-0 w-2 h-2 bg-green-600 rounded-full mt-2"></div>
+                                        <div className="flex-shrink-0 w-8 h-8 bg-green-600 rounded-full mt-0.5"></div>
                                         <div>
                                             <h3 className="font-semibold text-gray-900 mb-1"> Create Your Account</h3>
                                             <p className="text-gray-700">Click on the get started button on the home page to create your account.</p>
@@ -65,7 +65,7 @@ export default function TutorialPage() {
                                     </div>
 
                                     <div className="flex gap-4">
-                                        <div className="flex-shrink-0 w-2 h-2 bg-green-600 rounded-full mt-2"></div>
+                                        <div className="flex-shrink-0 w-8 h-8 bg-green-600 rounded-full mt-0.5"></div>
                                         <div>
                                             <h3 className="font-semibold text-gray-900 mb-1">Edit Your Profile </h3>
                                             <p className="text-gray-700"> Click on the profile icon in the top right to change your display name, and associated email address.</p>
@@ -122,24 +122,146 @@ export default function TutorialPage() {
                                         </div>
                                     </div>
 
+                                    <div className="ml-4 space-y-3 mt-3 border-l-2 border-blue-200 pl-4">
+                                        <div className="flex gap-3">
+                                            <div className="flex-shrink-0 w-7 h-7 bg-blue-400 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                                                2.1
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-gray-800 mb-1">Class Settings </h4>
+                                                <p className="text-sm text-gray-600">Click on the settings icon on the class card to update the class name or change the desired chat settings.</p>
+                                            </div>
+                                        </div>
+                                    </div> 
+
+                                    <div className="ml-4 space-y-3 mt-3 border-l-2 border-blue-200 pl-4">
+                                        <div className="flex gap-3">
+                                            <div className="flex-shrink-0 w-7 h-7 bg-blue-400 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                                                2.2
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-gray-800 mb-1">Delete Class </h4>
+                                                <p className="text-sm text-gray-600">Click on the trash icon on the class card to be prompted to delete the classroom. </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="ml-4 space-y-3 mt-3 border-l-2 border-blue-200 pl-4">
+                                        <div className="flex gap-3">
+                                            <div className="flex-shrink-0 w-7 h-7 bg-blue-400 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                                                2.3
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-gray-800 mb-1">Class Roster </h4>
+                                                <p className="text-sm text-gray-600">Click on the person icon on the class card to view the students enrolled in the course as well as remove students.</p>
+                                            </div>
+                                        </div>
+                                    </div> 
+
+                                    <div className="ml-4 space-y-3 mt-3 border-l-2 border-blue-200 pl-4">
+                                        <div className="flex gap-3">
+                                            <div className="flex-shrink-0 w-7 h-7 bg-blue-400 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                                                2.4
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-gray-800 mb-1">Publish Class </h4>
+                                                <p className="text-sm text-gray-600">Click on the eye icon on the class card to publish and unpublish the class for students.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     {/* Step 3 */}
                                     <div className="flex gap-4">
                                         <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
                                             3
                                         </div>
                                         <div>
-                                            <h3 className="font-semibold text-gray-900 mb-2">Organize Your Content</h3>
+                                            <h3 className="font-semibold text-gray-900 mb-2">Create a Unit</h3>
                                             <p className="text-gray-700">
-                                                Add your desired units, modules, and days. Then upload your materials and assignments 
-                                                for each section to build your course structure.
+                                                Add your desired units, by clicking on the create unit card and following the instructions on the screen. 
                                             </p>
                                         </div>
-                                    </div>
+                                    </div> 
+
+                                    <div className="ml-4 space-y-3 mt-3 border-l-2 border-blue-200 pl-4">
+                                        <div className="flex gap-3">
+                                            <div className="flex-shrink-0 w-7 h-7 bg-blue-400 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                                                3.1
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-gray-800 mb-1"> Deleting Units </h4>
+                                                <p className="text-sm text-gray-600">Click on the trash icon on the unit card to perminately delete the unit.</p>
+                                            </div>
+                                        </div>
+                                    </div> 
+
+                                    <div className="ml-4 space-y-3 mt-3 border-l-2 border-blue-200 pl-4">
+                                        <div className="flex gap-3">
+                                            <div className="flex-shrink-0 w-7 h-7 bg-blue-400 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                                                3.2
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-gray-800 mb-1"> Publishing Units </h4>
+                                                <p className="text-sm text-gray-600">Click on the eye icon on the unit card to publish the unit for a student.</p>
+                                            </div>
+                                        </div>
+                                    </div> 
 
                                     {/* Step 4 */}
                                     <div className="flex gap-4">
                                         <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
                                             4
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-gray-900 mb-2">Organize Your Content</h3>
+                                            <p className="text-gray-700">
+                                                Contiue to add multiple modules and days within a unit to further organize the content. 
+                                            </p>
+                                        </div>
+                                    </div>  
+
+                                    <div className="ml-4 space-y-3 mt-3 border-l-2 border-blue-200 pl-4">
+                                        <div className="flex gap-3">
+                                            <div className="flex-shrink-0 w-7 h-7 bg-blue-400 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                                                4.1
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-gray-800 mb-1"> Deleting Modules and Days </h4>
+                                                <p className="text-sm text-gray-600">Click on the trash icon or delete button to perminately delete a module or day and the contents within it.</p>
+                                            </div>
+                                        </div>
+                                    </div> 
+
+                                    {/* Step 5 */}
+                                    <div className="flex gap-4">
+                                        <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
+                                            5
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-gray-900 mb-2">Adding Materials and Assignments</h3>
+                                            <p className="text-gray-700">
+                                                Click on the Add Material or Add Assignment to upload a file. 
+                                            </p>
+                                        </div>
+                                    </div> 
+
+                                    
+                                    <div className="ml-4 space-y-3 mt-3 border-l-2 border-blue-200 pl-4">
+                                        <div className="flex gap-3">
+                                            <div className="flex-shrink-0 w-7 h-7 bg-blue-400 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                                                5.1
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-gray-800 mb-1">Uploading a file </h4>
+                                                <p className="text-sm text-gray-600">Click on the upload file icon and then name the file accordingly.</p>
+                                            </div>
+                                        </div>
+                                    </div> 
+
+                                    {/* Step 6 */}
+                                    <div className="flex gap-4">
+                                        <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
+                                            6
                                         </div>
                                         <div>
                                             <h3 className="font-semibold text-gray-900 mb-2">Share Class Code with Students</h3>
@@ -150,10 +272,10 @@ export default function TutorialPage() {
                                         </div>
                                     </div>
 
-                                    {/* Step 5 */}
+                                    {/* Step 7 */}
                                     <div className="flex gap-4">
                                         <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
-                                            5
+                                            7
                                         </div>
                                         <div>
                                             <h3 className="font-semibold text-gray-900 mb-2">Monitor Student Progress</h3>
@@ -162,7 +284,32 @@ export default function TutorialPage() {
                                                 statistics card. Click on pie charts to drill down into more detailed information.
                                             </p>
                                         </div>
-                                    </div>
+                                    </div> 
+
+                                    <div className="ml-4 space-y-3 mt-3 border-l-2 border-blue-200 pl-4">
+                                        <div className="flex gap-3">
+                                            <div className="flex-shrink-0 w-7 h-7 bg-blue-400 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                                                7.1
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-gray-800 mb-1">See Student Prompt Count </h4>
+                                                <p className="text-sm text-gray-600">Click on an Assignment or Material in the Assignment Prompts or Material Prompts pie chart.</p>
+                                            </div>
+                                        </div>
+                                    </div> 
+
+                                    <div className="ml-4 space-y-3 mt-3 border-l-2 border-blue-200 pl-4">
+                                        <div className="flex gap-3">
+                                            <div className="flex-shrink-0 w-7 h-7 bg-blue-400 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                                                7.2
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-gray-800 mb-1">Student Chats and More Class Statistics </h4>
+                                                <p className="text-sm text-gray-600">Click on a student in the Student Prompts for Pie Chart to see a students chat and more Assignment or Material statistics. </p>
+                                            </div>
+                                        </div>
+                                    </div> 
+
                                 </div>
                             )}
                         </div>
@@ -254,7 +401,19 @@ export default function TutorialPage() {
                                                 the difficulty.
                                             </p>
                                         </div>
-                                    </div>
+                                    </div> 
+
+                                    <div className="ml-4 space-y-3 mt-3 border-l-2 border-blue-200 pl-4">
+                                        <div className="flex gap-3">
+                                            <div className="flex-shrink-0 w-7 h-7 bg-purple-400 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                                                5.1
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-gray-800 mb-1">Master Concepts </h4>
+                                                <p className="text-sm text-gray-600">Continue practicing questions to gain a mastering of the concepts. </p>
+                                            </div>
+                                        </div>
+                                    </div> 
                                 </div>
                             )}
                         </div>
