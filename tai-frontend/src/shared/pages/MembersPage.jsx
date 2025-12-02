@@ -4,7 +4,7 @@ import { Mail, Linkedin, Youtube, Users } from 'lucide-react';
 import kieranHeadshot from '../../shared/images/team-page/kieran-headshot.png'; 
 import haidanHeadshot from '../../shared/images/team-page/haidan-headshot.png';
 import wilsonHeadshot from '../../shared/images/team-page/wilson-headshot.jpg';
-//import ethanHeadshot from '../../shared/images/team-page/ethan-headshot.png'; TODO
+import ethanHeadshot from '../../shared/images/team-page/ethan-headshot.png';
 
 export default function MembersPage() { 
 
@@ -58,8 +58,12 @@ export default function MembersPage() {
             role: "Backend Engineer",
             email: "ezphelps@gmail.com",
             linkedin: "",
-            image: kieranHeadshot,  // ethanHeadshot TODO
-            biography: "Some stuff about Ethan" // paste the bio TODO
+            image: ethanHeadshot,
+            biography: `I am Ethan Phelps and a computer science student at the University of Utah graduating in Fall 2025. In addition to my degree I am working toward certificates in Computer Systems, Software Development, and Programming Languages. I’ve shaped my studies around understanding how software works from the ground up, with classes in compilers, computer networks, programming languages, and systems guiding most of my interests.
+
+                        Much of my work centers on building things that deepen that understanding. I’ve created a JPL compiler, exploring every stage from lexing and parsing to type checking and code generation. I’m also a backend developer for TAi, my senior capstone project, which is a virtual teaching assistant that helps students get guided support on assignments while giving instructors meaningful insight into class activity. In earlier classes I’ve worked on full-stack web applications using FastAPI, React, MySQL/PostgreSQL, Docker, and cloud deployment tools. and I enjoy writing clean, reliable software that solves real problems.
+
+                        Outside of academics, I spend a lot of time outdoors, especially hiking and exploring the national parks around the South West. I also enjoy cooking, and taking on creative side projects. I’ve always been driven by curiosity and problem-solving, and I bring that mindset into every project I take on.`
         },
     ];
 
