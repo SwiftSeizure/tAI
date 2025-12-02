@@ -30,7 +30,51 @@ export default function TutorialPage() {
                     </div>
 
                     {/* Tutorial Sections */}
-                    <div className="space-y-4">
+                    <div className="space-y-4"> 
+
+
+                        {/* Everyone Tutorial */}
+                        <div className="border border-gray-200 rounded-xl overflow-hidden">
+                            <button
+                                onClick={() => toggleSection('everyone')}
+                                className="w-full flex items-center justify-between p-6 bg-gradient-to-r from-green-50 to-teal-50 hover:from-green-100 hover:to-teal-100 transition-colors duration-200"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <Users className="w-8 h-8 text-green-600" />
+                                    <div className="text-left">
+                                        <h2 className="text-2xl font-bold text-gray-900"> Everyone </h2>
+                                        <p className="text-sm text-gray-600">Best practices for all users</p>
+                                    </div>
+                                </div>
+                                {expandedSection === 'everyone' ? (
+                                    <ChevronUp className="w-6 h-6 text-gray-600" />
+                                ) : (
+                                    <ChevronDown className="w-6 h-6 text-gray-600" />
+                                )}
+                            </button>
+                            
+                            {expandedSection === 'everyone' && (
+                                <div className="p-6 bg-white space-y-4">
+                                    {/* Bullet Point Items */}
+                                    <div className="flex gap-4">
+                                        <div className="flex-shrink-0 w-2 h-2 bg-green-600 rounded-full mt-2"></div>
+                                        <div>
+                                            <h3 className="font-semibold text-gray-900 mb-1"> Create Your Account</h3>
+                                            <p className="text-gray-700">Click on the get started button on the home page to create your account.</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-4">
+                                        <div className="flex-shrink-0 w-2 h-2 bg-green-600 rounded-full mt-2"></div>
+                                        <div>
+                                            <h3 className="font-semibold text-gray-900 mb-1">Edit Your Profile </h3>
+                                            <p className="text-gray-700"> Click on the profile icon in the top right to change your display name, and associated email address.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div> 
+
                         {/* Teacher Tutorial */}
                         <div className="border border-gray-200 rounded-xl overflow-hidden">
                             <button
@@ -215,8 +259,6 @@ export default function TutorialPage() {
                             )}
                         </div>
                     </div>
-
-                    {/* Video Tutorial Section */}
                      
 
                     {/* Navigation Links */}
