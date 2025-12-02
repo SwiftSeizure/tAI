@@ -3,7 +3,7 @@ import { NavBarTeamPresence } from '../../shared/components/NavBarTeamPresence';
 import { Youtube, Users, BookOpen, GraduationCap, UserCircle, ChevronDown, ChevronUp } from 'lucide-react';
 
 export default function TutorialPage() {
-    const [expandedSection, setExpandedSection] = useState('teacher');
+    const [expandedSection, setExpandedSection] = useState(null);
 
     const toggleSection = (section) => {
         setExpandedSection(expandedSection === section ? null : section);
