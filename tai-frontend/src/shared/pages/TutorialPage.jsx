@@ -355,7 +355,7 @@ export default function TutorialPage() {
                                         <div>
                                             <h3 className="font-semibold text-gray-900 mb-2">Join a Classroom</h3>
                                             <p className="text-gray-700">
-                                                Add a classroom using the class code provided by your teacher.
+                                                Select the join class card once logged in and enter the code that is provided by the teacher.
                                             </p>
                                         </div>
                                     </div>
@@ -372,7 +372,20 @@ export default function TutorialPage() {
                                                 materials and assignments you need.
                                             </p>
                                         </div>
-                                    </div>
+                                    </div> 
+
+                                    
+                                    <div className="ml-4 space-y-3 mt-3 border-l-2 border-blue-200 pl-4">
+                                        <div className="flex gap-3">
+                                            <div className="flex-shrink-0 w-7 h-7 bg-purple-400 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                                                3.1
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-gray-800 mb-1">Downloading Files </h4>
+                                                <p className="text-sm text-gray-600">Only one Material or Assignment can be viewed at a time although you have the ability to download these files for offline access. </p>
+                                            </div>
+                                        </div>
+                                    </div> 
 
                                     {/* Step 4 */}
                                     <div className="flex gap-4">
@@ -386,7 +399,19 @@ export default function TutorialPage() {
                                                 corner to open your helpful AI teaching assistant.
                                             </p>
                                         </div>
-                                    </div>
+                                    </div> 
+
+                                    <div className="ml-4 space-y-3 mt-3 border-l-2 border-blue-200 pl-4">
+                                        <div className="flex gap-3">
+                                            <div className="flex-shrink-0 w-7 h-7 bg-purple-400 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                                                4.1
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-gray-800 mb-1">Getting tailored help </h4>
+                                                <p className="text-sm text-gray-600">Make sure the material that is asked about is currently selected f </p>
+                                            </div>
+                                        </div>
+                                    </div> 
 
                                     {/* Step 5 */}
                                     <div className="flex gap-4">
