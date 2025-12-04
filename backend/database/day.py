@@ -11,9 +11,9 @@ import os
 from dotenv import load_dotenv
 import httpx
 from fastapi import File, UploadFile
-from backend.routers.material import upload_single_file
+from backend.routers.material import upload_single_file, upload_canvas_material, delete_canvas_material
 from backend.routers.material import delete_file as delete_material_file
-from backend.routers.assignment import upload_assignment
+from backend.routers.assignment import upload_assignment, upload_canvas_assignment, delete_canvas_assignment
 from backend.routers.assignment import delete_file as delete_assignment_file
 import tempfile
 from datetime import datetime
@@ -358,7 +358,7 @@ async def update_canvas_assignments(classroom: DBClass, db_day: DBDay, db_module
                 if existing_assignment.updated_at == dt: # type: ignore
                     continue  # No update needed
                 else:
-                    delete_assignment_file(db_day.id, existing_assignment.filename, user, session) #type:ignore
+                    delete_canvas_assignment(db_day.id, existing_assignment.filename, user, session) #type:ignore
                     
             description = assignment_info["description"].split("=")
             for i in range(len(description)):
@@ -384,7 +384,7 @@ async def update_canvas_assignments(classroom: DBClass, db_day: DBDay, db_module
                                 temp_path = tmp.name
                                 tmp_file = UploadFile(filename=filename, file=open(temp_path, "rb"))
 
-                                assignment = await upload_assignment(db_day.id, item['title'], user, session, tmp_file) #type: ignore
+                                assignment = await upload_canvas_assignment(db_day.id, item['title'], user, session, tmp_file) #type: ignore
                                 
                                 iso = file_info['updated_at']
                                 dt = datetime.fromisoformat(iso.replace("Z", ""))
@@ -425,7 +425,7 @@ async def update_canvas_materials(classroom: DBClass, db_day: DBDay, db_module: 
                 if existing_material.updated_at == dt: # type: ignore
                     continue  # No update needed
                 else:
-                    delete_material_file(db_day.id, existing_material.filename, user, session) #type:ignore
+                    delete_canvas_material(db_day.id, existing_material.filename, user, session) #type:ignore
                     
             with httpx.Client(follow_redirects=True) as client:
                 resp = client.get(download_url)
@@ -439,7 +439,7 @@ async def update_canvas_materials(classroom: DBClass, db_day: DBDay, db_module: 
                     if len(name) > 255:
                         name = name[:255]
             
-                    material = await upload_single_file(db_day.id, user, session, tmp_file, name) #type: ignore
+                    material = await upload_canvas_material(db_day.id, user, session, tmp_file, name) #type: ignore
                     
                     iso = file_info['updated_at']
                     dt = datetime.fromisoformat(iso.replace("Z", ""))

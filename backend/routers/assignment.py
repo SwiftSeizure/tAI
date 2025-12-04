@@ -287,3 +287,121 @@ def get_RemoteID(path: str,
                  user: Annotated[dict, Depends(get_firebase_user_from_token)],
                  session: DBSession):
     return db_assignment.get_RemoteID(path, session)
+
+
+
+# Canvas Specific routes ---------------------------------------------------------
+
+async def upload_canvas_assignment(dayID: int, 
+                            name: str, 
+                            user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                            session: DBSession, 
+                            file: UploadFile = File(...)):
+        
+    """Upload a single file with basic validation"""
+    if file.filename == "":
+        raise HTTPException(status_code=400, detail="No file selected")
+
+    # Check if the folder exists, if not create it
+
+    UPLOAD_DIR = DATA_ROOT / "uploads" / "assignment" / str(dayID)
+
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+    
+    # Use the original filename from the uploaded file
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="Invalid file: filename is missing")
+    safe_filename = Path(file.filename).name  # Remove any path components
+    file_path = UPLOAD_DIR / safe_filename
+
+    # Validate the file first
+    validation = await doc_validator.validate_file(file)
+
+    if not validation["valid"]:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "message": "File validation failed",
+                "errors": validation["errors"]
+            }
+        )
+
+    # Check if file already exists
+    if file_path.exists():
+        raise DuplicateNameException("file" , safe_filename)
+    
+    # Save the file
+    try:
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to save file: {str(e)}"
+        )
+
+    try:
+        with open(file_path, "rb") as f:
+            openai_file = client.files.create(
+                file=f,
+                purpose="assistants"
+            )
+            remoteID = openai_file.id
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"OpenAI upload failed: {str(e)}"
+        )
+    # Add the new material to the database and return the created entry.
+    return db_assignment.create_assignment(dayID, name, safe_filename, file.content_type, session, remoteID)
+
+
+
+def delete_canvas_assignment(dayID: int, 
+                filename: str, 
+                user: Annotated[dict, Depends(get_firebase_user_from_token)],
+                session: DBSession):
+    """Delete an assignment file and its database entry.
+    
+    Args:
+        dayID (int): The ID of the day the assignment belongs to
+        filename (str): The name of the file to delete
+        session (DBSession): Database session
+        
+    Raises:
+        FileNotFoundException: If the file doesn't exist
+        HTTPException: If there's a path traversal attempt
+        
+    Returns:
+        None
+    """
+    
+
+    file_path = DATA_ROOT / "uploads" / "assignment" / str(dayID) / filename
+    base_uploads = DATA_ROOT / "uploads"
+
+    
+    
+    try:
+        # Security checks
+        if not file_path.is_file() or not file_path.resolve().is_relative_to(base_uploads.resolve()):
+            raise UploadNotFoundException(dayID, filename)
+        
+        if '..' in str(file_path.relative_to(base_uploads)):
+            raise HTTPException(status_code=403, detail="Invalid path")
+        
+        # Delete from database first
+        db_assignment.delete_assignment(dayID, filename, session)
+        
+        # Then delete the file from disk
+        try:
+            os.remove(file_path)
+        except FileNotFoundError:
+            # File already deleted from disk, that's okay
+            pass
+        
+        return None
+        
+    except (ValueError, RuntimeError):
+        raise UploadNotFoundException(dayID, filename)
